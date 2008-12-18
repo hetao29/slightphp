@@ -87,7 +87,7 @@ class SlightPHP{
 		}
 	}
 	function redirect404($msg){
-		header("HTTP/1.1 404 Not Found $msg");
+		die("$msg");
 		exit;
 	}
 	function run(){
