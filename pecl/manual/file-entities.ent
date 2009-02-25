@@ -1,0 +1,3 @@
+<!ENTITY reference.SlightPHP.reference SYSTEM './SlightPHP/reference.xml'>
+<!ENTITY reference.SlightPHP.configure SYSTEM './SlightPHP/configure.xml'>
+<!ENTITY reference.SlightPHP.functions SYSTEM './functions.xml'>
