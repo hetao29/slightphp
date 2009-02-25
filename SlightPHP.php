@@ -1,131 +1,159 @@
 <?php
+/*
+  +----------------------------------------------------------------------+
+  | PHP Version 5                                                        |
+  +----------------------------------------------------------------------+
+  | Copyright (c) 1997-2008 The PHP Group                                |
+  +----------------------------------------------------------------------+
+  | This source file is subject to version 3.01 of the PHP license,      |
+  | that is bundled with this package in the file LICENSE, and is        |
+  | available through the world-wide-web at the following url:           |
+  | http://www.php.net/license/3_01.txt                                  |
+  | If you did not receive a copy of the PHP license and are unable to   |
+  | obtain it through the world-wide-web, please send a note to          |
+  | license@php.net so we can mail you a copy immediately.               |
+  +----------------------------------------------------------------------+
+  | Authors: Hetal <hetao@hetao.name>                                    |
+  |          SlightPHP <admin@slightphp.com>                             |
+  |          http://www.slightphp.com                                    |
+  +----------------------------------------------------------------------+
+*/
 
-define("SlightPHP_ROOT",dirname(__FILE__));
-
-define("SlightPHP_VERSION","0.1");
-define("SlightPHP_AUTHOR","HETAL");
-define("SlightPHP_WEBSITE","WWW.SlightPHP.com");
-
-define("SlightPHP_DIR_LIB",SlightPHP_ROOT.DIRECTORY_SEPARATOR."lib");
-define("SlightPHP_DIR_LOG",SlightPHP_ROOT.DIRECTORY_SEPARATOR."log".DIRECTORY_SEPARATOR."log_".date("Ymd").".log");
-
-define("SlightPHP_DEBUG_DISPLAY",true);
-
-
-function SInclude($name){
-	if(strpos($name,"SlightPHP")===0){
-		//框架类
-		$path = SlightPHP_DIR_LIB.DIRECTORY_SEPARATOR."$name.class.php";
-	}else{
-		if(strpos($name,"_")){
-			//程序类
-			$tmp = str_replace("_",DIRECTORY_SEPARATOR,$name);
-			$path = APP_DIR.DIRECTORY_SEPARATOR.$tmp.".class.php";
-			if(file_exists($path)){
-				include_once($path);
-				return true;
-			}
-			$path = APP_DIR.DIRECTORY_SEPARATOR.$tmp.".php";
-			if(file_exists($path)){
-				include_once($path);
-				return true;
-			}
-		}else{
-			//程序公用类
-			$path = APP_DIR.DIRECTORY_SEPARATOR."class".DIRECTORY_SEPARATOR.$name.".class.php";
-		}
-	}
-	if(file_exists($path)){
-		include_once($path);
-		return true;
-	}
-}
 class SlightPHP{
-	var $ModuleName ="index";	//目录名,程序在 APP_DIR / ModuleName / PageName.class.php 里
-	var $PageName = "index";
-	var $Action = "entry";		//执行的方法名
+	/**
+	 * @var string
+	 */
+	var $appDir=".";
+	/**
+	 * @var string
+	 */
+	var $pluginsDir="plugins";
+	/**
+	 * @var string
+	 */
+	var $defaultZone="index";
+	/**
+	 * @var string
+	 */
+	var $defaultClass="default";
+	/**
+	 * @var string
+	 */
+	var $defaultMethod="entry";
 	
-	var $RELATIVE_PATH="";
-	var $PATH_ARRAY=array();
+	/**
+	 * construct method
+	 *
+	 */
 
 	function SlightPHP(){
 		//{{{
-			$PATH_ARRAY = array();
-			if (!empty($_SERVER["PATH_INFO"])) // This ensures Zoop works as a fastcgi script
-			{
-				if(substr($_SERVER["PATH_INFO"],0,1) == "/")
-					$PATH_INFO = $_SERVER["PATH_INFO"];
-				else
-					$PATH_INFO = "/" . $_SERVER["PATH_INFO"];
-				$PATH_ARRAY = explode("/",$PATH_INFO);
-			}
-			
+		$PATH_ARRAY = array();
+		if (!empty($_SERVER["PATH_INFO"])){
+			if(substr($_SERVER["PATH_INFO"],0,1) == "/")
+				$PATH_INFO = $_SERVER["PATH_INFO"];
+			else
+				$PATH_INFO = "/" . $_SERVER["PATH_INFO"];
+			$PATH_ARRAY = explode("/",$PATH_INFO);
+		}
+		
 
-			$xtrapath = "";
-			foreach($PATH_ARRAY as $key =>$val){
-				if ($val){
-					$xtrapath = "../" . $xtrapath;
-				}
+		$xtrapath = "";
+		foreach($PATH_ARRAY as $key =>$val){
+			if ($val){
+				$xtrapath = "../" . $xtrapath;
 			}
-			$this->RELATIVE_PATH = $xtrapath;
-			$this->PATH_ARRAY = $PATH_ARRAY;
+		}
 		//}}}
-		if(!empty($_REQUEST['_modulename'])){
-			$this->ModuleName=$_REQUEST['_modulename'];
+		if(!empty($_REQUEST['_zone'])){
+			$this->defaultZone=$_REQUEST['_zone'];
 		}elseif(!empty($PATH_ARRAY[1])){
-			$this->ModuleName=$PATH_ARRAY[1];
+			$this->defaultZone=$PATH_ARRAY[1];
 		}
-		if(!empty($_REQUEST['_pagename'])){
-			$this->PageName=$_REQUEST['_pagename'];
+		if(!empty($_REQUEST['_class'])){
+			$this->defaultClass=$_REQUEST['_class'];
 		}elseif(!empty($PATH_ARRAY[2])){
-			$this->PageName=$PATH_ARRAY[2];
+			$this->defaultClass=$PATH_ARRAY[2];
 		}
-		if(!empty($_REQUEST['_action'])){
-			$this->Action=$_REQUEST['_action'];
+		if(!empty($_REQUEST['_method'])){
+			$this->defaultMethod=$_REQUEST['_method'];
 		}elseif(!empty($PATH_ARRAY[3])){
-			$this->Action=$PATH_ARRAY[3];
+			$this->defaultMethod=$PATH_ARRAY[3];
 		}
 	}
-	function redirect404($msg){
-		die("$msg");
-		exit;
-	}
+	/**
+	 * main method!
+	 *
+	 * @param
+	 * @return boolean
+	 */
+
 	function run(){
-		$app_file = APP_DIR . DIRECTORY_SEPARATOR . $this->ModuleName . DIRECTORY_SEPARATOR . $this->PageName . ".php";
+		$app_file = $this->appDir . DIRECTORY_SEPARATOR . $this->defaultZone . DIRECTORY_SEPARATOR . $this->defaultClass . ".class.php";
 		if(!file_exists($app_file)){
-			$this->redirect404("$app_file not exists");
+			$this->debug("file[$app_file] not exists");
+			return false;
 		}else{
-			require_once($app_file);
+			$this->loadFile($app_file);
 		}
-		$method = "Page".$this->Action;
-		$classname = $this->ModuleName ."_". $this->PageName;
-		SInclude($classname);
+		$method = "Page".$this->defaultMethod;
+		$classname = $this->defaultZone ."_". $this->defaultClass;
+		
+
+
 		if(!class_exists($classname)){
-			$this->redirect404("$classname not exits in file $app_file");
+			$this->debug("class[$classname] not exists");
+			return false;
 		}
 		$classInstance = new $classname;
 		if(!method_exists($classInstance,$method)){
-			$this->redirect404("$method not exits in class $classname");
+			$this->debug("method[$method] not exists in class[%classname]");
+			return false;
 		}
-		$classInstance->ModuleName = $this->ModuleName;
 		$para= array_slice($this->PATH_ARRAY,4);
-		global $APP_CONFIG;
-		$returnType="";
-		if(!empty($APP_CONFIG[$this->ModuleName]) and !empty($APP_CONFIG[$this->ModuleName]['type'])){
-			$returnType = $APP_CONFIG[$this->ModuleName]['type'];
+
+		return call_user_func(array(&$classInstance,$method),$para);
+	}
+	/**
+	 * loadFile,like require_once
+	 *
+	 * @param string $file
+	 * @return boolean
+	 */
+	function loadFile($filePath){
+		if(file_exists($filePath)){
+			require_once($filePath);
+			return true;
+		}else{
+			$this->debug("file[$filePath] not exists");
+			return false;
 		}
-		$r = call_user_func(array(&$classInstance,$method),$para);
-		
-		switch($returnType){
-			case "json":
-				SInclude("SlightPHPJson");
-				$json = new SlightPHPJson;
-				echo $json->encode($r);
-				break;
-			default:
-				echo $r;
+	}
+	/**
+	 * loadPlugin in $pluginsDir 
+	 *
+	 * @param string $pluginName
+	 * @return boolean
+	 */
+	function loadPlugin($pluginName){
+		$app_file = $this->pluginsDir. DIRECTORY_SEPARATOR . $pluginName. ".class.php";
+		return $this->loadFile($app_file);
+
+	}
+
+
+
+	/**
+	 * @var int
+	 */
+	var $_debug=0;
+
+	/*private*/
+	private function debug($debugmsg){
+		if($this->_debug){
+			error_log($debugmsg);
+			echo "<!--slightphp debug:".$debugmsg."-->";
 		}
 	}
 }
-
 ?>
