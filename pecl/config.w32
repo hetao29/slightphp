@@ -1,8 +1,0 @@
-// $ Id: $
-// vim:ft=javascript
-
-ARG_ENABLE('SlightPHP' , 'SlightPHP Framework', 'no');
-if (PHP_SLIGHTPHP == "yes") {
-  EXTENSION("SlightPHP", "SlightPHP.c");
-  AC_DEFINE("HAVE_SLIGHTPHP", 1, "SlightPHP support");
-}

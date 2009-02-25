@@ -117,7 +117,7 @@ class SlightPHP{
 	/**
 	 * loadFile,like require_once
 	 *
-	 * @param string $file
+	 * @param string $filePath
 	 * @return boolean
 	 */
 	function loadFile($filePath){
