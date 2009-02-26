@@ -47,39 +47,6 @@ class SlightPHP{
 	 */
 
 	function SlightPHP(){
-		//{{{
-		$PATH_ARRAY = array();
-		if (!empty($_SERVER["PATH_INFO"])){
-			if(substr($_SERVER["PATH_INFO"],0,1) == "/")
-				$PATH_INFO = $_SERVER["PATH_INFO"];
-			else
-				$PATH_INFO = "/" . $_SERVER["PATH_INFO"];
-			$PATH_ARRAY = explode("/",$PATH_INFO);
-		}
-		
-
-		$xtrapath = "";
-		foreach($PATH_ARRAY as $key =>$val){
-			if ($val){
-				$xtrapath = "../" . $xtrapath;
-			}
-		}
-		//}}}
-		if(!empty($_REQUEST['_zone'])){
-			$this->defaultZone=$_REQUEST['_zone'];
-		}elseif(!empty($PATH_ARRAY[1])){
-			$this->defaultZone=$PATH_ARRAY[1];
-		}
-		if(!empty($_REQUEST['_class'])){
-			$this->defaultClass=$_REQUEST['_class'];
-		}elseif(!empty($PATH_ARRAY[2])){
-			$this->defaultClass=$PATH_ARRAY[2];
-		}
-		if(!empty($_REQUEST['_method'])){
-			$this->defaultMethod=$_REQUEST['_method'];
-		}elseif(!empty($PATH_ARRAY[3])){
-			$this->defaultMethod=$PATH_ARRAY[3];
-		}
 	}
 	/**
 	 * main method!
@@ -89,6 +56,31 @@ class SlightPHP{
 	 */
 
 	function run(){
+		//{{{
+		$PATH_ARRAY = array();
+		if (!empty($_SERVER["PATH_INFO"])){
+			$PATH_ARRAY = preg_split("/\//",$_SERVER["PATH_INFO"],-1,PREG_SPLIT_NO_EMPTY);
+		}
+		if(!empty($PATH_ARRAY[0])){
+			$this->defaultZone=$PATH_ARRAY[0];
+		}else{
+			$PATH_ARRAY[0] = $this->defaultZone ;
+		}
+
+		if(!empty($PATH_ARRAY[1])){
+			$this->defaultClass=$PATH_ARRAY[1];
+		}else{
+			$PATH_ARRAY[1] = $this->defaultClass ;
+		}
+
+		if(!empty($PATH_ARRAY[2])){
+			$this->defaultMethod=$PATH_ARRAY[2];
+		}else{
+			$PATH_ARRAY[2] = $this->defaultMethod ;
+		}
+
+
+		//}}}
 		$app_file = $this->appDir . DIRECTORY_SEPARATOR . $this->defaultZone . DIRECTORY_SEPARATOR . $this->defaultClass . ".class.php";
 		if(!file_exists($app_file)){
 			$this->debug("file[$app_file] not exists");
@@ -110,9 +102,7 @@ class SlightPHP{
 			$this->debug("method[$method] not exists in class[%classname]");
 			return false;
 		}
-		$para= array_slice($this->PATH_ARRAY,4);
-
-		return call_user_func(array(&$classInstance,$method),$para);
+		return call_user_func(array(&$classInstance,$method),$PATH_ARRAY);
 	}
 	/**
 	 * loadFile,like require_once
