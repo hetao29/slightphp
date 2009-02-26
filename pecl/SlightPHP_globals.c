@@ -76,7 +76,7 @@ int SlightPHP_loadFile(zval *file_name,zval *_debug_flag TSRMLS_DC){
 	}
 	return FAILURE;
 }
-int SlightPHP_run(zval*zone,zval*class_name,zval*method,zval**return_value, zval*_debug_flag TSRMLS_DC){
+int SlightPHP_run(zval*zone,zval*class_name,zval*method,zval**return_value, int param_count,zval ** params[],zval*_debug_flag TSRMLS_DC){
 	zval *rt;
 	zval *object;
 
@@ -115,7 +115,7 @@ int SlightPHP_run(zval*zone,zval*class_name,zval*method,zval**return_value, zval
 		}
 
 		if(zend_hash_exists(&Z_OBJCE_P(object)->function_table, Z_STRVAL(real_method_zval), Z_STRLEN(real_method_zval)+1)){
-			if(call_user_function_ex(&Z_OBJCE_P(object)->function_table, &object, &real_method_zval, return_value, 0, NULL, 0,NULL TSRMLS_CC)!=SUCCESS){
+			if(call_user_function_ex(&Z_OBJCE_P(object)->function_table, &object, &real_method_zval, return_value, param_count, params, 0,NULL TSRMLS_CC)!=SUCCESS){
 			}else{
 			}
 		}else{

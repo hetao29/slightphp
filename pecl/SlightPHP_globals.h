@@ -27,6 +27,7 @@
 #include "php_globals.h"
 #include "php_streams.h"
 #include "ext/standard/info.h"
+#include "ext/pcre/php_pcre.h"
 
 #include "standard/php_string.h"
 #include "standard/basic_functions.h"
@@ -35,4 +36,4 @@
 int debug(zval*_debug_flag,char*format,...);
 int SlightPHP_load(zval*appDir,zval*zone,zval*class_name,zval*_debug_flag TSRMLS_DC);
 int SlightPHP_loadFile(zval *file_name ,zval*_debug_flag TSRMLS_DC);
-int SlightPHP_run (zval*zone,zval*class_name,zval*method,zval**return_value ,zval *_debug_flag TSRMLS_DC);
+int SlightPHP_run (zval*zone,zval*class_name,zval*method,zval**return_value ,int param_count,zval **params[],zval *_debug_flag TSRMLS_DC);
