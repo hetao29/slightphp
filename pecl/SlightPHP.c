@@ -138,13 +138,16 @@ PHP_METHOD(SlightPHP, loadPlugin)
 		zval *pluginsDir = zend_read_property(_this_ce,_this_zval,"pluginsDir",sizeof("pluginsDir")-1,1 TSRMLS_CC);
 		zval *_debug_flag = zend_read_property(_this_ce,_this_zval,"_debug",sizeof("_debug")-1,1 TSRMLS_CC);
 		char*inc_filename;
-		int ret;
 		spprintf(&inc_filename,0,"%s%c%s.class.php",Z_STRVAL_P(pluginsDir),DEFAULT_SLASH,Z_STRVAL_P(pluginName));
 		zval file_name;
 		ZVAL_STRING(&file_name,inc_filename,1);
-		ret = SlightPHP_loadFile(&file_name,_debug_flag TSRMLS_CC);
-		efree(inc_filename);
-		ZVAL_LONG(return_value,ret);
+		if(SlightPHP_loadFile(&file_name,_debug_flag TSRMLS_CC)==SUCCESS){;
+			efree(inc_filename);
+			RETURN_TRUE;
+		}else{
+			efree(inc_filename);
+			RETURN_FALSE;
+		}
 	} while (0);
 }
 /* }}} loadPlugin */
