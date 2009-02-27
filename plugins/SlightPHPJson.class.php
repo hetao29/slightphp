@@ -2,9 +2,24 @@
 if(extension_loaded("json")):
 
 	class SlightPHPJson{
-		function encode($str){
-			return json_encode($str);
+	   /**
+		* encode object to json
+		*
+		* @param    mixed  $object
+		* @return   string  json
+		* @access   public
+		*/
+		function encode($object){
+			return json_encode($object);
 		}
+		/**
+		 * decode string to json object
+		 *
+		 * @param	string $str
+		 * @rturn object 
+		 * @access public
+		 */
+
 		function decode($str){
 			return json_decode($str);
 		}
