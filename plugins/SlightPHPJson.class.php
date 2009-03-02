@@ -16,7 +16,7 @@ if(extension_loaded("json")):
 		 * decode string to json object
 		 *
 		 * @param	string $str
-		 * @rturn object 
+		 * @return mixed object
 		 * @access public
 		 */
 
