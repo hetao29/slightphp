@@ -202,23 +202,23 @@ PHP_METHOD(SlightPHP, run)
 		zval *class_name=NULL;
 		zval *method=NULL;
 
-		zval **dest_entry;
 		zval **token;
 		zval *path=NULL;
+		zval *server=NULL;
+		zval *path_array;
 
 		//{{{
 		zval *_debug_flag = zend_read_property(_this_ce,_this_zval,"_debug",sizeof("_debug")-1,1 TSRMLS_CC);
 		//}}}
 
-		zend_is_auto_global("_SERVER", sizeof("_SERVER") - 1 TSRMLS_CC);
-		if (zend_hash_find(&EG(symbol_table), "_SERVER",sizeof("_SERVER"), (void **) &dest_entry) == SUCCESS &&
-				Z_TYPE_PP(dest_entry) == IS_ARRAY &&
-				zend_hash_find(Z_ARRVAL_PP(dest_entry), "PATH_INFO", sizeof("PATH_INFO"), (void **) &token) == SUCCESS
+		server = PG(http_globals)[TRACK_VARS_SERVER];
+		if(!server){
+			RETURN_FALSE;
+		}
+		if(zend_hash_find(HASH_OF(server), "PATH_INFO", sizeof("PATH_INFO"), (void **) &token) == SUCCESS
 		){
-			path = token[0];
+			path = *token;
 			}
-
-		zval *path_array;
 		MAKE_STD_ZVAL(path_array);
 		array_init(path_array);
 
@@ -235,26 +235,14 @@ PHP_METHOD(SlightPHP, run)
 			
 			//}}}
 			int n_elems = zend_hash_num_elements(Z_ARRVAL_P(path_array));
-			if(zend_hash_index_exists(Z_ARRVAL_P(path_array),0)){
-				if(zend_hash_index_find(Z_ARRVAL_P(path_array), 0, (void **)&dest_entry) != FAILURE) {
-					if(Z_STRLEN_PP(dest_entry)>0){
-						zone = dest_entry[0];
-					}
-				}
+			if(zend_hash_index_find(Z_ARRVAL_P(path_array), 0, (void **)&token) != FAILURE) {
+				zone = *token;
 			}
-			if(zend_hash_index_exists(Z_ARRVAL_P(path_array),1)){
-				if(zend_hash_index_find(Z_ARRVAL_P(path_array), 1, (void **)&dest_entry) != FAILURE) {
-					if(Z_STRLEN_PP(dest_entry)>0){
-						class_name = dest_entry[0];
-					}
-				}
+			if(zend_hash_index_find(Z_ARRVAL_P(path_array), 1, (void **)&token) != FAILURE) {
+				class_name = *token;
 			}
-			if(zend_hash_index_exists(Z_ARRVAL_P(path_array),2)){
-				if(zend_hash_index_find(Z_ARRVAL_P(path_array), 2, (void **)&dest_entry) != FAILURE) {
-					if(Z_STRLEN_PP(dest_entry)>0){
-						method = dest_entry[0];
-					}
-				}
+			if(zend_hash_index_find(Z_ARRVAL_P(path_array), 2, (void **)&token) != FAILURE) {
+				method = *token;
 			}
 				
 		}
