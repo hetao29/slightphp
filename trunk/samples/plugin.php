@@ -1,4 +1,6 @@
 <?php
+require_once("../SlightPHP.php");
+
 $slight=new SlightPHP;
 $slight->appDir="..";
 $slight->pluginsDir="../plugins";

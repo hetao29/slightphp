@@ -1,6 +1,7 @@
 <?php
-class zone_default{
+class zone_default extends SlightPHP{
 	function pageEntry($inPath){
+		print_r($this);
 		print_r($inPath);
 		print_r($_GET);
 	}
