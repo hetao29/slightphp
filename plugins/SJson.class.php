@@ -116,7 +116,7 @@ define('SERVICES_JSON_LOOSE_TYPE', 16);
 /**
  * Behavior switch for json::decode()
  */
-define('SERVICES_JSON_SUPPRESS_ERRORS', 32);
+//define('SERVICES_JSON_SUPPRESS_ERRORS', 32);
 
 /**
  * Converts to and from JSON format.
@@ -442,10 +442,10 @@ class SJson
 
                 return '{' . join(',', $properties) . '}';
 
-            default:
+            default:return null;/*
                 return ($this->use & SERVICES_JSON_SUPPRESS_ERRORS)
                     ? 'null'
-                    : new Services_JSON_Error(gettype($var)." can not be encoded as JSON string");
+                    : new Services_JSON_Error(gettype($var)." can not be encoded as JSON string");*/
         }
     }
 
