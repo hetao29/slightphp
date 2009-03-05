@@ -77,7 +77,7 @@ class SMysql{
 	public $error=array('code'=>0,'msg'=>"");
 
 	/**
-	 * ¹¹Ôì·½·¨
+	 * æ„é€ æ–¹æ³•
 	 *
 	 * @param string host
 	 * @param string user
@@ -94,7 +94,7 @@ class SMysql{
 		$this->__connect();
 	}
 	/**
-	 * ÉèÖÃÊÇ·ñ¼ÆËã×ÜÊı
+	 * è®¾ç½®æ˜¯å¦è®¡ç®—æ€»æ•°
 	 *
 	 * @param boolean count
 	 */
@@ -107,9 +107,9 @@ class SMysql{
 		}
 	}
 	/**
-	 * ÉèÖÃÒ³Âë
+	 * è®¾ç½®é¡µç 
 	 *
-	 * @param int page Ò³Âë£¬Ä¬ÈÏÎª1
+	 * @param int page é¡µç ï¼Œé»˜è®¤ä¸º1
 	 */
 	function setPage($page)
 	{
@@ -117,9 +117,9 @@ class SMysql{
 		$this->page=$page;
 	}
 	/**
-	 * ÉèÖÃ¼ìË÷ÏŞÖÆ
+	 * è®¾ç½®æ£€ç´¢é™åˆ¶
 	 *
-	 * @param int limit Ä¬ÈÏÎª0£¬¾ÍÊÇ²»ÏŞÖÆ
+	 * @param int limit é»˜è®¤ä¸º0ï¼Œå°±æ˜¯ä¸é™åˆ¶
 	 */
 	function setLimit($limit)
 	{
@@ -127,10 +127,10 @@ class SMysql{
 		$this->limit=$limit;
 	}
 	/**
-	 * ÉèÖÃGroupby
+	 * è®¾ç½®Groupby
 	 *
-	 * @param string groupby Ä¬ÈÏÎª¿Õ£¬
-	 * Àı×Ó:setGroupby("groupby MusicID");
+	 * @param string groupby é»˜è®¤ä¸ºç©ºï¼Œ
+	 * ä¾‹å­:setGroupby("groupby MusicID");
 	 *      setGroupby("groupby MusicID,MusicName");
 	 */
 	function setGroupby($groupby)
@@ -138,10 +138,10 @@ class SMysql{
 		$this->groupby=$groupby;
 	}
 	/**
-	 * ÉèÖÃOrderby
+	 * è®¾ç½®Orderby
 	 *
-	 * @param string orderby Ä¬ÈÏÎª¿Õ£¬
-	 * Àı×Ó:setOrderby("order by MusicID Desc");
+	 * @param string orderby é»˜è®¤ä¸ºç©ºï¼Œ
+	 * ä¾‹å­:setOrderby("order by MusicID Desc");
 	 */
 	function setOrderby($orderby)
 	{
@@ -149,14 +149,14 @@ class SMysql{
 	}
 
 	/**
-	 * ¼ìË÷Êı¾İ·½·¨
+	 * æ£€ç´¢æ•°æ®æ–¹æ³•
 	 *
-	 * @param mixed $table£¬±íÃû£¬ÓÃÊı×éÊÇ¶à¸ö±í
-	 * @param array $condition ¼ìË÷Ìõ¼ş
-	 * @param array $item ·µ»ØµÄ×Ö¶Î
-	 * @param string $groupby  groupbyÓï¾ä
-	 * @param string $orderby  orderbyÓï¾ä
-	 * @param string $leftjoin  leftjoinÓï¾ä
+	 * @param mixed $tableï¼Œè¡¨åï¼Œç”¨æ•°ç»„æ˜¯å¤šä¸ªè¡¨
+	 * @param array $condition æ£€ç´¢æ¡ä»¶
+	 * @param array $item è¿”å›çš„å­—æ®µ
+	 * @param string $groupby  groupbyè¯­å¥
+	 * @param string $orderby  orderbyè¯­å¥
+	 * @param string $leftjoin  leftjoinè¯­å¥
 	 * @return SDbData object
 	 */
 	function select($table,$condition="",$item="*",$groupby="",$orderby="",$leftjoin=""){
@@ -211,14 +211,14 @@ class SMysql{
 		return $this->query($this->sql,$this->countsql);
 	}
 	/**
-	 * ¼ìË÷Êı¾İ·½·¨
+	 * æ£€ç´¢æ•°æ®æ–¹æ³•
 	 *
-	 * @param mixed $table£¬±íÃû£¬ÓÃÊı×éÊÇ¶à¸ö±í
-	 * @param array $condition ¼ìË÷Ìõ¼ş
-	 * @param array $item ·µ»ØµÄ×Ö¶Î
-	 * @param string $groupby  groupbyÓï¾ä
-	 * @param string $orderby  orderbyÓï¾ä
-	 * @param string $leftjoin  leftjoinÓï¾ä
+	 * @param mixed $tableï¼Œè¡¨åï¼Œç”¨æ•°ç»„æ˜¯å¤šä¸ªè¡¨
+	 * @param array $condition æ£€ç´¢æ¡ä»¶
+	 * @param array $item è¿”å›çš„å­—æ®µ
+	 * @param string $groupby  groupbyè¯­å¥
+	 * @param string $orderby  orderbyè¯­å¥
+	 * @param string $leftjoin  leftjoinè¯­å¥
 	 * @return array item
 	 */
 	function selectOne($table,$condition="",$item="*",$groupby="",$orderby="",$leftjoin="")
@@ -233,13 +233,13 @@ class SMysql{
 	}
 
 	/**
-	 * ¸üĞÂº¯Êı£¬Ö»ÄÜ¶ÔÒ»¸ö±í¸üĞÂ
+	 * æ›´æ–°å‡½æ•°ï¼Œåªèƒ½å¯¹ä¸€ä¸ªè¡¨æ›´æ–°
 	 *
-	 * @param array $table Òª¸üĞÂµÄ±í
-	 * @param string,array $condition ¸üĞÂÌõ¼ş
-	 * @param array $item ¸üĞÂ¶ÔÏñ
-	 * @param int $limit ÏŞÖÆÌõÊı 0±íÊ¾Ã»ÓĞÏŞÖÆ
-	 * @package int ·µ»ØĞŞ¸ÄµÄÌõÊı
+	 * @param array $table è¦æ›´æ–°çš„è¡¨
+	 * @param string,array $condition æ›´æ–°æ¡ä»¶
+	 * @param array $item æ›´æ–°å¯¹åƒ
+	 * @param int $limit é™åˆ¶æ¡æ•° 0è¡¨ç¤ºæ²¡æœ‰é™åˆ¶
+	 * @package int è¿”å›ä¿®æ”¹çš„æ¡æ•°
 	 * update("table",array('name'=>'myName','pass'=>'myPass'),array('id'=>1));
 	 * update("table",array('name'=>'myName','pass'=>'myPass'),array("pass=$myPass"));
 	 */
@@ -254,12 +254,12 @@ class SMysql{
 		return $this->rowCount();
 	}
 	/**
-	 * É¾³ıº¯Êı£¬Ö»ÄÜ¶ÔÒ»¸ö±íÉ¾³ı
+	 * åˆ é™¤å‡½æ•°ï¼Œåªèƒ½å¯¹ä¸€ä¸ªè¡¨åˆ é™¤
 	 *
-	 * @param array table ÒªÉ¾³ıµÄ±í
-	 * @param string,array $condition ¸üĞÂÌõ¼ş
-	 * @param int $limit ÏŞÖÆÌõÊı 0±íÊ¾Ã»ÓĞÏŞÖÆ
-	 * @return int ·µ»ØÉ¾³ıÌõÊı
+	 * @param array table è¦åˆ é™¤çš„è¡¨
+	 * @param string,array $condition æ›´æ–°æ¡ä»¶
+	 * @param int $limit é™åˆ¶æ¡æ•° 0è¡¨ç¤ºæ²¡æœ‰é™åˆ¶
+	 * @return int è¿”å›åˆ é™¤æ¡æ•°
 	 * delete("table",array('name'=>'myName','pass'=>'myPass'),array('id'=>1));
 	 * delete("table",array('name'=>'myName','pass'=>'myPass'),array("pass=$myPass"));
 	 */
@@ -273,12 +273,12 @@ class SMysql{
 		return $this->rowCount();
 	}
 	/**
-	 * ²åÈëº¯Êı£¬Ö»ÄÜ¶ÔÒ»¸ö±í²åÈë
-	 * @param $table ±íÃû
-	 * @param array $item ²åÈëµÄÊı¾İÈçarray(0,4)»òÕßarray("ID"=>3,"PlayID"=>4)
-	 * @param array $update ,ÖµÊÇ array("key"=>value,"key2"=>value2")¸ñÊ½»òÕß array("a=>b","c=>x")£¬²»ÄÜÊÇarray("b","c") Ö´ĞĞÈçÈçÏÂSQL:
+	 * æ’å…¥å‡½æ•°ï¼Œåªèƒ½å¯¹ä¸€ä¸ªè¡¨æ’å…¥
+	 * @param $table è¡¨å
+	 * @param array $item æ’å…¥çš„æ•°æ®å¦‚array(0,4)æˆ–è€…array("ID"=>3,"PlayID"=>4)
+	 * @param array $update ,å€¼æ˜¯ array("key"=>value,"key2"=>value2")æ ¼å¼æˆ–è€… array("a=>b","c=>x")ï¼Œä¸èƒ½æ˜¯array("b","c") æ‰§è¡Œå¦‚å¦‚ä¸‹SQL:
 		 insert into zone_user_online values(2,'','','','',now(),now()) on duplicate key update onlineactivetime=CURRENT_TIMESTAMP;
-	 * @return int InsertID ·µ»ØInsertID
+	 * @return int InsertID è¿”å›InsertID
 	 */
 	function insert($table,$item="",$isreplace=false,$isdelayed=false,$update=array())
 	{
@@ -307,7 +307,7 @@ class SMysql{
 	}
 
 	/**
-	 * Ö±½Ó²éÑ¯Óï¾ä
+	 * ç›´æ¥æŸ¥è¯¢è¯­å¥
 	 *
 	 * @param string $sql
 	 * @return SDbData object
@@ -349,7 +349,7 @@ class SMysql{
 		return mysql_affected_rows($GLOBALS[$this->key]);
 	}
 	/**
-	 * Îö¹¹º¯Êı
+	 * ææ„å‡½æ•°
 	 */
 
 	function __connect($forceReconnect=false){
@@ -361,7 +361,7 @@ class SMysql{
 			$GLOBALS[$this->key] = mysql_connect($this->host,$this->user,$this->pass,false,MYSQL_CLIENT_COMPRESS);
 		}
 		if(!$GLOBALS[$this->key]){
-			die("ÍøÂç·±Ã¦£¬ÇëÉÔºóÔÚÊÔ");
+			die("ç½‘ç»œç¹å¿™ï¼Œè¯·ç¨ååœ¨è¯•");
 		}
 		if($this->database!=""){
 			mysql_select_db($this->database,$GLOBALS[$this->key]);
