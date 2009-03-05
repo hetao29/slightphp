@@ -792,17 +792,18 @@ class SJson
      */
     function isError($data, $code = null)
     {
+		/*
         if (class_exists('pear')) {
             return PEAR::isError($data, $code);
         } elseif (is_object($data) && (get_class($data) == 'services_json_error' ||
                                  is_subclass_of($data, 'services_json_error'))) {
             return true;
         }
-
+		*/
         return false;
     }
 }
-
+/*
 if (class_exists('PEAR_Error')) {
 
     class Services_JSON_Error extends PEAR_Error
@@ -815,10 +816,10 @@ if (class_exists('PEAR_Error')) {
     }
 
 } else {
-
+*/
     /**
      * @todo Ultimately, this class shall be descended from PEAR_Error
-     */
+     *//*
     class Services_JSON_Error
     {
         function Services_JSON_Error($message = 'unknown error', $code = null,
@@ -829,6 +830,6 @@ if (class_exists('PEAR_Error')) {
     }
 
 }
-
+*/
 endif;
 ?>
