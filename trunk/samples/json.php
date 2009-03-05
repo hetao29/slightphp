@@ -4,11 +4,11 @@ require_once("../SlightPHP.php");
 $slight=new SlightPHP;
 //$slight->appDir="..";
 $slight->pluginsDir="../plugins";
-//$slight->_debug=true;
-if($slight->loadPlugin("SlightPHPJson")==false){
+$slight->_debug=true;
+if($slight->loadPlugin("SJson")==false){
 	die("loadPlugin error\n");
 }
-$sm = new SlightPHPJson;
+$sm = new SJson;
 $testObject = new stdclass;
 $testObject->name="SlightPHP";
 $testObject->value=array("min"=>1,"max"=>999);

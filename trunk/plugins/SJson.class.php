@@ -1,7 +1,7 @@
 <?php
 if(extension_loaded("json")):
 
-	class SlightPHPJson{
+	class SJson{
 	   /**
 		* encode object to json
 		*
@@ -139,7 +139,7 @@ define('SERVICES_JSON_SUPPRESS_ERRORS', 32);
  * $value = $json->decode($input);
  * </code>
  */
-class SlightPHPJson
+class SJson
 {
    /**
     * constructs a new JSON instance
@@ -157,7 +157,7 @@ class SlightPHPJson
     *                                   bubble up with an error, so all return values
     *                                   from encode() should be checked with isError()
     */
-    function SlightPHPJson($use = 0)
+    function SJson($use = 0)
     {
         $this->use = $use;
     }
@@ -408,7 +408,7 @@ class SlightPHPJson
                                             array_values($var));
 
                     foreach($properties as $property) {
-                        if(SlightPHPJson::isError($property)) {
+                        if(SJson::isError($property)) {
                             return $property;
                         }
                     }
@@ -420,7 +420,7 @@ class SlightPHPJson
                 $elements = array_map(array($this, 'encode'), $var);
 
                 foreach($elements as $element) {
-                    if(SlightPHPJson::isError($element)) {
+                    if(SJson::isError($element)) {
                         return $element;
                     }
                 }
@@ -435,7 +435,7 @@ class SlightPHPJson
                                         array_values($vars));
 
                 foreach($properties as $property) {
-                    if(SlightPHPJson::isError($property)) {
+                    if(SJson::isError($property)) {
                         return $property;
                     }
                 }
@@ -462,7 +462,7 @@ class SlightPHPJson
     {
         $encoded_value = $this->encode($value);
 
-        if(SlightPHPJson::isError($encoded_value)) {
+        if(SJson::isError($encoded_value)) {
             return $encoded_value;
         }
 
@@ -510,7 +510,7 @@ class SlightPHPJson
     */
     function decode($str)
     {
-        $str = SlightPHPJson::reduce_string($str);
+        $str = SJson::reduce_string($str);
 
         switch (strtolower($str)) {
             case 'true':
@@ -655,7 +655,7 @@ class SlightPHPJson
                                            'delim' => false));
 
                     $chrs = substr($str, 1, -1);
-                    $chrs = SlightPHPJson::reduce_string($chrs);
+                    $chrs = SJson::reduce_string($chrs);
 
                     if ($chrs == '') {
                         if (reset($stk) == SERVICES_JSON_IN_ARR) {
