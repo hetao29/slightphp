@@ -18,6 +18,7 @@
   |          http://www.slightphp.com                                    |
   +----------------------------------------------------------------------+
 */
+//if(!class_exists("SlightPHP")){
 
 class SlightPHP{
 	/**
@@ -146,4 +147,6 @@ class SlightPHP{
 		}
 	}
 }
+
+//}
 ?>

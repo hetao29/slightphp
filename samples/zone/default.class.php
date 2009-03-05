@@ -4,6 +4,8 @@ class zone_default extends SlightPHP{
 		print_r($this);
 		print_r($inPath);
 		print_r($_GET);
+		$a = new Smarty;
+		print_r($a);
 	}
 }
 ?>
