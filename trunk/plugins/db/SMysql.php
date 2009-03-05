@@ -77,7 +77,7 @@ class SMysql{
 	public $error=array('code'=>0,'msg'=>"");
 
 	/**
-	 * 构造方法
+	 * construct
 	 *
 	 * @param string host
 	 * @param string user
@@ -94,7 +94,7 @@ class SMysql{
 		$this->__connect();
 	}
 	/**
-	 * 设置是否计算总数
+	 * is count 
 	 *
 	 * @param boolean count
 	 */
@@ -107,9 +107,9 @@ class SMysql{
 		}
 	}
 	/**
-	 * 设置页码
+	 * page number
 	 *
-	 * @param int page 页码，默认为1
+	 * @param int page 
 	 */
 	function setPage($page)
 	{
@@ -117,9 +117,9 @@ class SMysql{
 		$this->page=$page;
 	}
 	/**
-	 * 设置检索限制
+	 * page size
 	 *
-	 * @param int limit 默认为0，就是不限制
+	 * @param int limit ,0 is all
 	 */
 	function setLimit($limit)
 	{
@@ -127,10 +127,10 @@ class SMysql{
 		$this->limit=$limit;
 	}
 	/**
-	 * 设置Groupby
+	 * group by sql
 	 *
-	 * @param string groupby 默认为空，
-	 * 例子:setGroupby("groupby MusicID");
+	 * @param string groupby 
+	 * eg:	setGroupby("groupby MusicID");
 	 *      setGroupby("groupby MusicID,MusicName");
 	 */
 	function setGroupby($groupby)
@@ -138,10 +138,10 @@ class SMysql{
 		$this->groupby=$groupby;
 	}
 	/**
-	 * 设置Orderby
+	 * order by sql
 	 *
-	 * @param string orderby 默认为空，
-	 * 例子:setOrderby("order by MusicID Desc");
+	 * @param string orderby
+	 * eg:	setOrderby("order by MusicID Desc");
 	 */
 	function setOrderby($orderby)
 	{
@@ -149,14 +149,14 @@ class SMysql{
 	}
 
 	/**
-	 * 检索数据方法
+	 * select data from db
 	 *
-	 * @param mixed $table，表名，用数组是多个表
-	 * @param array $condition 检索条件
-	 * @param array $item 返回的字段
-	 * @param string $groupby  groupby语句
-	 * @param string $orderby  orderby语句
-	 * @param string $leftjoin  leftjoin语句
+	 * @param mixed $table 
+	 * @param array $condition
+	 * @param array $item 
+	 * @param string $groupby 
+	 * @param string $orderby
+	 * @param string $leftjoin
 	 * @return SDbData object
 	 */
 	function select($table,$condition="",$item="*",$groupby="",$orderby="",$leftjoin=""){
@@ -211,14 +211,14 @@ class SMysql{
 		return $this->query($this->sql,$this->countsql);
 	}
 	/**
-	 * 检索数据方法
+	 * 
 	 *
-	 * @param mixed $table，表名，用数组是多个表
-	 * @param array $condition 检索条件
-	 * @param array $item 返回的字段
-	 * @param string $groupby  groupby语句
-	 * @param string $orderby  orderby语句
-	 * @param string $leftjoin  leftjoin语句
+	 * @param mixed $table
+	 * @param array $condition
+	 * @param array $item 
+	 * @param string $groupby
+	 * @param string $orderby
+	 * @param string $leftjoin
 	 * @return array item
 	 */
 	function selectOne($table,$condition="",$item="*",$groupby="",$orderby="",$leftjoin="")
@@ -233,13 +233,13 @@ class SMysql{
 	}
 
 	/**
-	 * 更新函数，只能对一个表更新
+	 * update data
 	 *
-	 * @param array $table 要更新的表
-	 * @param string,array $condition 更新条件
-	 * @param array $item 更新对像
-	 * @param int $limit 限制条数 0表示没有限制
-	 * @package int 返回修改的条数
+	 * @param mixed $table
+	 * @param string,array $condition
+	 * @param array $item
+	 * @param int $limit
+	 * @package int
 	 * update("table",array('name'=>'myName','pass'=>'myPass'),array('id'=>1));
 	 * update("table",array('name'=>'myName','pass'=>'myPass'),array("pass=$myPass"));
 	 */
@@ -254,12 +254,12 @@ class SMysql{
 		return $this->rowCount();
 	}
 	/**
-	 * 删除函数，只能对一个表删除
+	 * delete
 	 *
-	 * @param array table 要删除的表
-	 * @param string,array $condition 更新条件
-	 * @param int $limit 限制条数 0表示没有限制
-	 * @return int 返回删除条数
+	 * @param mixed table
+	 * @param string,array $condition
+	 * @param int $limit
+	 * @return int
 	 * delete("table",array('name'=>'myName','pass'=>'myPass'),array('id'=>1));
 	 * delete("table",array('name'=>'myName','pass'=>'myPass'),array("pass=$myPass"));
 	 */
@@ -273,12 +273,13 @@ class SMysql{
 		return $this->rowCount();
 	}
 	/**
-	 * 插入函数，只能对一个表插入
-	 * @param $table 表名
-	 * @param array $item 插入的数据如array(0,4)或者array("ID"=>3,"PlayID"=>4)
-	 * @param array $update ,值是 array("key"=>value,"key2"=>value2")格式或者 array("a=>b","c=>x")，不能是array("b","c") 执行如如下SQL:
+	 * insert
+	 * 
+	 * @param $table
+	 * @param array $item 
+	 * @param array $update ,egarray("key"=>value,"key2"=>value2")
 		 insert into zone_user_online values(2,'','','','',now(),now()) on duplicate key update onlineactivetime=CURRENT_TIMESTAMP;
-	 * @return int InsertID 返回InsertID
+	 * @return int InsertID
 	 */
 	function insert($table,$item="",$isreplace=false,$isdelayed=false,$update=array())
 	{
@@ -307,7 +308,7 @@ class SMysql{
 	}
 
 	/**
-	 * 直接查询语句
+	 * query
 	 *
 	 * @param string $sql
 	 * @return SDbData object
@@ -348,9 +349,7 @@ class SMysql{
 	function rowCount(){
 		return mysql_affected_rows($GLOBALS[$this->key]);
 	}
-	/**
-	 * 析构函数
-	 */
+
 
 	function __connect($forceReconnect=false){
 		if(empty($GLOBALS[$this->key]) || $forceReconnect){
@@ -361,7 +360,7 @@ class SMysql{
 			$GLOBALS[$this->key] = mysql_connect($this->host,$this->user,$this->pass,false,MYSQL_CLIENT_COMPRESS);
 		}
 		if(!$GLOBALS[$this->key]){
-			die("网络繁忙，请稍后在试");
+			die("connect database error");
 		}
 		if($this->database!=""){
 			mysql_select_db($this->database,$GLOBALS[$this->key]);
