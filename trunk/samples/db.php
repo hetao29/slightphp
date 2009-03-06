@@ -16,7 +16,7 @@ CREATE TABLE `test` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 */
 $slight->loadPlugin("SDb");
-$db = new SDb("localhost","root","huoqiabc","test");
+$db = new SDb("localhost","root","","test");
 //插入记录
 print_r($db->insert($table = "test",$items=array("name"=>"testName","password"=>"testPassword")));
 //检索一个
