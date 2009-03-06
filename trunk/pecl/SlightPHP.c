@@ -223,14 +223,21 @@ PHP_METHOD(SlightPHP, run)
 		array_init(path_array);
 
 		if (path){
-			zval delim;
-				ZVAL_STRING(&delim, "/", 0);
-			//{{{
-			char                *regex="/\\//";
+			zval quotedFlag;
+			char	*regex;
 			pcre_cache_entry    *pce;
+			zval *splitFlag = zend_read_property(_this_ce,_this_zval,"splitFlag",sizeof("splitFlag")-1,1 TSRMLS_CC);
+			if(preg_quote(splitFlag,&quotedFlag,_debug_flag)>0){
+				spprintf(&regex,0,"/[%s\\/]/",Z_STRVAL(quotedFlag));
+			}else{
+				spprintf(&regex,0,"/[\\/]/");
+			}
+			//{{{
 			if ((pce = pcre_get_compiled_regex_cache(regex, strlen(regex) TSRMLS_CC)) == NULL) {
+				efree(regex);
 					RETURN_FALSE;
 				}
+			efree(regex);
 			php_pcre_split_impl(pce, Z_STRVAL_P(path),Z_STRLEN_P(path),path_array, -1, 1 TSRMLS_CC);
 			
 			//}}}
@@ -324,6 +331,10 @@ static void class_init_SlightPHP(TSRMLS_D)
 
 	zend_declare_property_string(SlightPHP_ce_ptr, 
 		"defaultMethod", 13, "entry", 
+		ZEND_ACC_PUBLIC TSRMLS_CC);
+
+	zend_declare_property_string(SlightPHP_ce_ptr, 
+		"splitFlag", 9, "", 
 		ZEND_ACC_PUBLIC TSRMLS_CC);
 
 	zend_declare_property_long(SlightPHP_ce_ptr, 
