@@ -126,3 +126,56 @@ int SlightPHP_run(zval*zone,zval*class_name,zval*method,zval**return_value, int 
 	}
 	return SUCCESS;
 }
+
+int preg_quote(zval *in_str,zval*out_str,zval * _debug_flag){
+	if(Z_STRLEN_P(in_str)==0){
+		return 0;
+	}
+	char	*tmp_str, *p, *q, c;
+
+	tmp_str= safe_emalloc(4, Z_STRLEN_P(in_str), 1);
+
+	for(p = Z_STRVAL_P(in_str), q = tmp_str; p != Z_STRVAL_P(in_str)+Z_STRLEN_P(in_str); p++) {
+		c = *p;
+		switch(c) {
+			case '.':
+			case '\\':
+			case '+':
+			case '*':
+			case '?':
+			case '[':
+			case '^':
+			case ']':
+			case '$':
+			case '(':
+			case ')':
+			case '{':
+			case '}':
+			case '=':
+			case '!':
+			case '>':
+			case '<':
+			case '|':
+			case ':':
+			case '/':
+				*q++ = '\\';
+				*q++ = c;
+				break;
+
+			case '\0':
+				*q++ = '\\';
+				*q++ = '0';
+				*q++ = '0';
+				*q++ = '0';
+				break;
+
+			default:
+				*q++ = c;
+				break;
+		}
+	}
+	*q = '\0';
+	ZVAL_STRING(out_str,tmp_str,1);
+	efree(tmp_str);
+	return Z_STRLEN_P(out_str);
+}
