@@ -106,7 +106,8 @@ class SError extends Exception{
 		if(!empty($backtrace[$i]['args']) &&!empty($backtrace[$i]['args'][0]) &&!empty($backtrace[$i]['args'][1])){
 			//error
 			$errorCode = $backtrace[$i]['args'][0];
-			$html.='<tr style="background-color: #cccccc; color: #000000;"><td>'.($index++).'</td><td>'.$backtrace[$i]['args'][2].'</td><td>'.$backtrace[$i]['line'].'</td><td></td><td style="font-weight:bold">'.SError::$error_type[$errorCode].':'.(!empty($backtrace[$i]['args'])?$backtrace[$i]['args'][1]:"").'</td></tr>';
+			$line = empty($backtrace[$i]['line'])?0:$backtrace[$i]['line'];
+			$html.='<tr style="background-color: #cccccc; color: #000000;"><td>'.($index++).'</td><td>'.$backtrace[$i]['args'][2].'</td><td>'.$line.'</td><td></td><td style="font-weight:bold">'.SError::$error_type[$errorCode].':'.(!empty($backtrace[$i]['args'])?$backtrace[$i]['args'][1]:"").'</td></tr>';
 		}elseif($e){
 			$html.='<tr style="background-color: #cccccc; color: #000000;"><td>'.($index++).'</td><td>'.$e->getFile().'</td><td>'.$e->getLine().'</td><td></td><td style="font-weight:bold">'.$e->getCode().':'.$e->getMessage().'</td></tr>';
 		}
