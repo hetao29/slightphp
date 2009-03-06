@@ -80,7 +80,7 @@ class SError extends Exception{
 		$index=0;
 		if($arrLen>0){
 			for($i=$arrLen-1;$i>0;$i--){
-				$text.=($index++)."\t".$backtrace[$i]['file']."(".$backtrace[$i]['line'].")\t".(!empty($backtrace[$i]['class'])?$backtrace[$i]['class']:"").'::'.(!empty($backtrace[$i]['function'])?$backtrace[$i]['function']:"").'('.(!empty($backtrace[$i]['args'])?implode(",",$backtrace[$i]['args']):"").")\r\n";
+				$text.=($index++)."\t".$backtrace[$i]['file']."(".$backtrace[$i]['line'].")\t".(!empty($backtrace[$i]['class'])?$backtrace[$i]['class']:"").'::'.(!empty($backtrace[$i]['function'])?$backtrace[$i]['function']:"")."()\r\n";
 			}
 		}
 		$i=0;
@@ -99,7 +99,21 @@ class SError extends Exception{
 		$index=0;
 		if($arrLen>0){
 			for($i=$arrLen-1;$i>0;$i--){
-				$html.='<tr style="background-color: #cccccc; color: #000000;"><td>'.($index++).'</td><td>'.$backtrace[$i]['file'].'</td><td>'.$backtrace[$i]['line'].'</td><td>'.(!empty($backtrace[$i]['class'])?$backtrace[$i]['class']:"").'::'.(!empty($backtrace[$i]['function'])?$backtrace[$i]['function']:"").'('.(!empty($backtrace[$i]['args'])?implode(",",$backtrace[$i]['args']):"").')<td></td></tr>';
+				$a = implode(",",array($backtrace[$i]['args']));
+				$html.='<tr style="background-color: #cccccc; color: #000000;"><td>'.($index++).'</td><td>'.$backtrace[$i]['file'].'</td><td>'.$backtrace[$i]['line'].'</td><td>'.(!empty($backtrace[$i]['class'])?$backtrace[$i]['class']:"").'::'.(!empty($backtrace[$i]['function'])?$backtrace[$i]['function']:"").'(';
+				if(!empty($backtrace[$i]['args'])){
+					$tmpK=array();	
+					foreach($backtrace[$i]['args'] as $value){
+						if(is_object($value)){
+							$tmpK[]=get_class ($value );
+						}else{
+							$tmpK[]=$value;
+						}
+					}
+					$html.=implode(",",$tmpK);
+						
+				}
+				$html.=')<td></td></tr>';
 			}
 		}
 		$i=0;
