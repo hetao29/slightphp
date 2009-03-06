@@ -41,6 +41,13 @@ class SlightPHP{
 	 * @var string
 	 */
 	var $defaultMethod="entry";
+	/**
+	 * split flag of zone,classs,method
+	 *
+	 * @var string
+	 */
+	var $splitFlag="";
+
 	
 	/**
 	 * construct method
@@ -58,9 +65,10 @@ class SlightPHP{
 
 	function run(){
 		//{{{
+		$splitFlag = preg_quote($this->splitFlag,"/");
 		$PATH_ARRAY = array();
 		if (!empty($_SERVER["PATH_INFO"])){
-			$PATH_ARRAY = preg_split("/\//",$_SERVER["PATH_INFO"],-1,PREG_SPLIT_NO_EMPTY);
+			$PATH_ARRAY = preg_split("/[$splitFlag\/]/",$_SERVER["PATH_INFO"],-1,PREG_SPLIT_NO_EMPTY);
 		}
 		if(!empty($PATH_ARRAY[0])){
 			$this->defaultZone=$PATH_ARRAY[0];
