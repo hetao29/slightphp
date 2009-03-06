@@ -3,18 +3,19 @@
  * sample to test
  *
  * http://localhost/samples/index.php/zone/default/entry/a/b/c
+ * http://localhost/samples/index.php/zone-default-entry-a-b-c.html
  *
  */
-//error_reporting(0);
-//require_once("../SlightPHP.php");
+require_once("../SlightPHP.php");
 $slight=new SlightPHP;
 $slight->_debug=true;
+$slight->splitFlag="-_";
 $slight->appDir=".";
 $slight->defaultZone = "zone";
 $slight->pluginsDir="../plugins";
-$slight->_debug=true;
 $slight->loadPlugin("Smarty");
-$slight->loadPlugin("SlightPHPJson");
+$slight->loadPlugin("SError");
+$slight->loadPlugin("SJson");
 if($slight->run()===false){
 	//redirect to 404
 	die("ERROR ENTRY");
