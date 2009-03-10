@@ -99,7 +99,6 @@ class SError extends Exception{
 		$index=0;
 		if($arrLen>0){
 			for($i=$arrLen-1;$i>0;$i--){
-				$a = implode(",",array($backtrace[$i]['args']));
 				$html.='<tr style="background-color: #cccccc; color: #000000;"><td>'.($index++).'</td><td>'.$backtrace[$i]['file'].'</td><td>'.$backtrace[$i]['line'].'</td><td>'.(!empty($backtrace[$i]['class'])?$backtrace[$i]['class']:"").'::'.(!empty($backtrace[$i]['function'])?$backtrace[$i]['function']:"").'(';
 				if(!empty($backtrace[$i]['args'])){
 					$tmpK=array();	
