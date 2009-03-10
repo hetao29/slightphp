@@ -211,6 +211,7 @@ PHP_METHOD(SlightPHP, run)
 		zval *_debug_flag = zend_read_property(_this_ce,_this_zval,"_debug",sizeof("_debug")-1,1 TSRMLS_CC);
 		//}}}
 
+		zend_is_auto_global("_SERVER", sizeof("_SERVER") - 1 TSRMLS_CC);
 		server = PG(http_globals)[TRACK_VARS_SERVER];
 		if(!server){
 			RETURN_FALSE;
