@@ -50,29 +50,14 @@ int SlightPHP_load(zval*appDir,zval*zone,zval*class_name,zval * _debug_flag TSRM
 int SlightPHP_loadFile(zval *file_name,zval *_debug_flag TSRMLS_DC){
 	int dummy = 1;
 	zend_file_handle file_handle;
-	zend_op_array *new_op_array;
-	zval *result = NULL;
 	int ret;
-	ret = zend_stream_open(Z_STRVAL_P(file_name), &file_handle TSRMLS_CC);
-	if (ret == SUCCESS) {
+	if(zend_stream_open(Z_STRVAL_P(file_name), &file_handle TSRMLS_CC)==SUCCESS){;
 		if (!file_handle.opened_path) {
+		//debug(_debug_flag,"LINE[%d]",__LINE__);
 			file_handle.opened_path = estrndup(Z_STRVAL_P(file_name), Z_STRLEN_P(file_name));
 		}
-		if (zend_hash_add(&EG(included_files), file_handle.opened_path, strlen(file_handle.opened_path)+1, (void *)&dummy, sizeof(int), NULL)==SUCCESS) {
-			new_op_array = zend_compile_file(&file_handle, ZEND_REQUIRE TSRMLS_CC);
-			zend_destroy_file_handle(&file_handle TSRMLS_CC);
-		} else {
-			new_op_array = NULL;
-			zend_file_handle_dtor(&file_handle);
-		}
-		if (new_op_array) {
-			zend_execute(new_op_array TSRMLS_CC);
-			destroy_op_array(new_op_array TSRMLS_CC);
-			efree(new_op_array);
-			return SUCCESS;
-		}
-	}else{
-		debug(_debug_flag,"file[%s] not exists",Z_STRVAL_P(file_name));
+//		debug(_debug_flag,"LINE[%d]",__LINE__);
+		return php_execute_simple_script(&file_handle,NULL TSRMLS_CC);
 	}
 	return FAILURE;
 }
