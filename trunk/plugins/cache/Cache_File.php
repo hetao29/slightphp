@@ -55,13 +55,13 @@ class Cache_File extends CacheObject{
 		$timeout = $timestamp==-1?-1:(time()+$timestamp);
 
 		
-		$fp=gzopen($realFile,"w");
+		$fp=fopen($realFile,"w");
 		if(!$fp){return false;}
 		flock($fp,LOCK_EX);
 		$content  =$timeout."\r\n".serialize($value);
-        gzputs($fp,$content);
+        fputs($fp,$content);
 		flock($fp,LOCK_UN);
-        gzclose($fp);
+        fclose($fp);
 		return true;
 	}
 	/**
@@ -75,7 +75,7 @@ class Cache_File extends CacheObject{
 		if(!$realFile || !file_exists($realFile)){
 			return false;
 		}
-		$fp=gzopen($realFile,"r");
+		$fp=fopen($realFile,"r");
 		if(!$fp){return false;}
 		flock($fp,LOCK_SH);
 		$timeout =trim(gzgets($fp));
@@ -85,14 +85,14 @@ class Cache_File extends CacheObject{
 				echo "cached\n";
 				$data = gzread($fp,filesize($realFile));
 				flock($fp,LOCK_UN);
-				gzclose($fp);
+				fclose($fp);
 				return unserialize($data);
 			}else{
 				//过期了，应该删除这个文件，但为了性能考虑，不删除
 			}
 		}
 		flock($fp,LOCK_UN);
-		gzclose($fp);
+		fclose($fp);
 		return false;
 	}
 	/**
