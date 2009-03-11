@@ -87,12 +87,6 @@ class Db_Mysql extends DbObject{
 		foreach($params as $key=>$value){
 			$this->$key = $value;
 		}
-		print_r($this);/*
-		,$host,$user,$password,$database=null){
-		$this->host= $host;
-		$this->user= $user;
-		$this->password= $password;
-		$this->database= $database;*/
 		$this->key = "mysql:".$this->host.":".$this->user.":".$this->password;
 		$GLOBALS[$this->key]="";
 		$this->__connect();
