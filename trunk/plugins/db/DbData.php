@@ -20,7 +20,7 @@
 */
 
 
-class SDbData{
+class DbData{
 	var $page=1;
 	var $pageSize=0;
 	var $limit=0;
