@@ -16,7 +16,16 @@ CREATE TABLE `test` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 */
 $slight->loadPlugin("SDb");
-$db = new SDb("localhost","root","","test");
+$db = SDb::getDbEngine("mysql");
+if(!$db){
+	die("DbEngine not exits");
+}
+$db->init(array(
+	"host"=>"localhost",
+	"user"=>"root",
+	"password"=>"",
+	"database"=>"test")
+);
 //插入记录
 print_r($db->insert($table = "test",$items=array("name"=>"testName","password"=>"testPassword")));
 //检索一个

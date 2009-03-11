@@ -19,9 +19,8 @@
   +----------------------------------------------------------------------+
 */
 
-require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."SDbData.php");
 
-class SMysql{
+class Db_Mysql extends DbObject{
 	/**
 	 * 
 	 */
@@ -38,7 +37,7 @@ class SMysql{
 	/**
 	 *
 	 */
-	public $pass;
+	public $password;
 	/**
 	 *
 	 */
@@ -81,15 +80,20 @@ class SMysql{
 	 *
 	 * @param string host
 	 * @param string user
-	 * @param string pass
+	 * @param string password
 	 * @param string database
 	 */
-	function SMysql($host,$user,$pass,$database=null){
+	function init($params=array()){
+		foreach($params as $key=>$value){
+			$this->$key = $value;
+		}
+		print_r($this);/*
+		,$host,$user,$password,$database=null){
 		$this->host= $host;
 		$this->user= $user;
-		$this->pass= $pass;
-		$this->database= $database;
-		$this->key = "mysql:".$this->host.":".$this->user.":".$this->pass;
+		$this->password= $password;
+		$this->database= $database;*/
+		$this->key = "mysql:".$this->host.":".$this->user.":".$this->password;
 		$GLOBALS[$this->key]="";
 		$this->__connect();
 	}
@@ -240,8 +244,8 @@ class SMysql{
 	 * @param array $item
 	 * @param int $limit
 	 * @package int
-	 * update("table",array('name'=>'myName','pass'=>'myPass'),array('id'=>1));
-	 * update("table",array('name'=>'myName','pass'=>'myPass'),array("pass=$myPass"));
+	 * update("table",array('name'=>'myName','password'=>'myPass'),array('id'=>1));
+	 * update("table",array('name'=>'myName','password'=>'myPass'),array("password=$myPass"));
 	 */
 	function update($table,$condition="",$item=""){
 		$value = $this->__quoteCondition($item,",");
@@ -260,8 +264,8 @@ class SMysql{
 	 * @param string,array $condition
 	 * @param int $limit
 	 * @return int
-	 * delete("table",array('name'=>'myName','pass'=>'myPass'),array('id'=>1));
-	 * delete("table",array('name'=>'myName','pass'=>'myPass'),array("pass=$myPass"));
+	 * delete("table",array('name'=>'myName','password'=>'myPass'),array('id'=>1));
+	 * delete("table",array('name'=>'myName','password'=>'myPass'),array("password=$myPass"));
 	 */
 	function delete($table,$condition=""){
 		$condiStr = $this->__quoteCondition($condition);
@@ -357,7 +361,7 @@ class SMysql{
 				mysql_close($GLOBALS[$this->key]);
 				unset($GLOBALS[$this->key]);
 			}
-			$GLOBALS[$this->key] = mysql_connect($this->host,$this->user,$this->pass,false,MYSQL_CLIENT_COMPRESS);
+			$GLOBALS[$this->key] = mysql_connect($this->host,$this->user,$this->password,false,MYSQL_CLIENT_COMPRESS);
 		}
 		if(!$GLOBALS[$this->key]){
 			die("connect database error");
