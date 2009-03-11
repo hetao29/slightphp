@@ -155,7 +155,7 @@ class Db_Mysql extends DbObject{
 	 * @param string $groupby 
 	 * @param string $orderby
 	 * @param string $leftjoin
-	 * @return SDbData object
+	 * @return DbData object
 	 */
 	function select($table,$condition="",$item="*",$groupby="",$orderby="",$leftjoin=""){
 		if($item==""){$item="*";}
@@ -309,12 +309,12 @@ class Db_Mysql extends DbObject{
 	 * query
 	 *
 	 * @param string $sql
-	 * @return SDbData object
+	 * @return DbData object
 	 */
 	
 	function query($sql,$countsql="")
 	{
-		$data = new SDbData;
+		$data = new DbData;
 		$data->limit = $this->limit;
 		$start = microtime(true);
 		$result = $this->__execute($sql);
