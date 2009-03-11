@@ -20,10 +20,24 @@
 */
 
 
-require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."cache/Cache_Interface.php");
-require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."cache/Cache_File.php");
-require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."cache/Cache_MemCache.php");
-require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."cache/Cache_APC.php");
+require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."cache/CacheObject.php");
 class SCache{
+	static $engines=array("file","apc","memcache","memcached");
+	static function getCacheEngine($engine){
+		$engine = strtolower($engine);
+		if(!in_array($engine,SCache::$engines)){
+			return false;
+		}
+		if($engine=="apc" && extension_loaded("apc")){
+			require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."cache/Cache_APC.php");
+			return new Cache_APC;
+		}elseif(($engine=="memcache" ||$engine=="memcached")&& extension_loaded("memcache")){
+			require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."cache/Cache_MemCache.php");
+			return new Cache_MemCache;
+		}elseif($engine=="file"){
+			require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."cache/Cache_File.php");
+			return new Cache_File;
+		}
+	}
 }
 ?>

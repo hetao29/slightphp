@@ -13,8 +13,8 @@ $slight->splitFlag="-_";
 $slight->appDir=".";
 $slight->defaultZone = "zone";
 $slight->pluginsDir="../plugins";
-$slight->loadPlugin("Smarty");
 $slight->loadPlugin("SError");
+$slight->loadPlugin("SSmarty");
 $slight->loadPlugin("SJson");
 if($slight->run()===false){
 	//redirect to 404

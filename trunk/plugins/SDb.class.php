@@ -19,12 +19,19 @@
   +----------------------------------------------------------------------+
 */
 
-
-	if(!defined("DB_ENGINE"))define("DB_ENGINE","MYSQL");
-	if(DB_ENGINE=="MYSQL"){
-		require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."db/SMysql.php");
-		class SDb extends SMysql{
+require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."db/DbData.php");
+require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."db/DbObject.php");
+class SDb{
+	static $engines=array("mysql");
+	static function getDbEngine($engine){
+		$engine = strtolower($engine);
+		if(!in_array($engine,SDb::$engines)){
+			return false;
 		}
-	}else{
+		if($engine=="mysql" && extension_loaded("mysql")){
+			require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."db/Db_Mysql.php");
+			return new Db_Mysql;
+		}
 	}
+}
 ?>
