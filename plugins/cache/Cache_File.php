@@ -78,12 +78,12 @@ class Cache_File extends CacheObject{
 		$fp=fopen($realFile,"r");
 		if(!$fp){return false;}
 		flock($fp,LOCK_SH);
-		$timeout =trim(gzgets($fp));
+		$timeout =trim(fgets($fp));
 		if(!empty($timeout)){
 			$timenow =time();
 			if($timeout ==-1 || $timenow < $timeout){
 				echo "cached\n";
-				$data = gzread($fp,filesize($realFile));
+				$data = fread($fp,filesize($realFile));
 				flock($fp,LOCK_UN);
 				fclose($fp);
 				return unserialize($data);
