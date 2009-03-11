@@ -20,7 +20,7 @@
 */
 
 
-class SError extends Exception{
+class SError{
 
 	/**
 	 * 
