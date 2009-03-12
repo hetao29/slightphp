@@ -1,5 +1,5 @@
-SlightPHP.lo: /root/SlightPHP/SlightPHP/SlightPHP.c
-	$(LIBTOOL) --mode=compile $(CC)  -I. -I/root/SlightPHP/SlightPHP $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)  -c /root/SlightPHP/SlightPHP/SlightPHP.c -o SlightPHP.lo 
+SlightPHP.lo: /data/www/pecl/SlightPHP.c
+	$(LIBTOOL) --mode=compile $(CC)  -I. -I/data/www/pecl $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)  -c /data/www/pecl/SlightPHP.c -o SlightPHP.lo 
 $(phplibdir)/SlightPHP.la: ./SlightPHP.la
 	$(LIBTOOL) --mode=install cp ./SlightPHP.la $(phplibdir)
 

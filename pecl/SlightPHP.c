@@ -22,13 +22,13 @@ typedef struct _op_item{
 	time_t op_mtime;
 	zend_op_array op_codes;
 }op_item;
-#include "SlightPHP_globals.h"
-#include "SlightPHP_globals.c"
 /* {{{ Class definitions */
 
 /* {{{ Class SlightPHP */
 
 static zend_class_entry * SlightPHP_ce_ptr = NULL;
+#include "SlightPHP_globals.h"
+#include "SlightPHP_globals.c"
 
 /* {{{ Methods */
 
@@ -37,23 +37,13 @@ static zend_class_entry * SlightPHP_ce_ptr = NULL;
    */
 PHP_METHOD(SlightPHP, setAppDir)
 {
-	zend_class_entry * _this_ce;
-
-	zval * _this_zval = NULL;
-	zval * appDir = NULL;
-
-
-
-	if (zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "Oz/", &_this_zval, SlightPHP_ce_ptr, &appDir) == FAILURE) {
-		return;
+	char* appDir;
+	int appDir_len;
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &appDir,&appDir_len) == FAILURE) {
+		RETURN_FALSE;
 	}
-
-	_this_ce = Z_OBJCE_P(_this_zval);
-
-
-	do {
-		zend_update_property_string(_this_ce, _this_zval, "appDir", sizeof("appDir")-1, Z_STRVAL_P(appDir) TSRMLS_CC);
-	} while (0);
+	zend_update_static_property_string(SlightPHP_ce_ptr, "appDir", sizeof("appDir")-1, appDir TSRMLS_CC);
+	RETURN_TRUE;
 }
 /* }}} setAppDir */
 
@@ -63,54 +53,138 @@ PHP_METHOD(SlightPHP, setAppDir)
    */
 PHP_METHOD(SlightPHP, getAppDir)
 {
-	zend_class_entry * _this_ce;
-
-	zval * _this_zval = NULL;
-
-
-
-	if (zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &_this_zval, SlightPHP_ce_ptr) == FAILURE) {
-		return;
-	}
-
-	_this_ce = Z_OBJCE_P(_this_zval);
-
-
-	do {
-		if (Z_TYPE_P(_this_zval) == IS_OBJECT) {
-			zval *data = zend_read_property(_this_ce,_this_zval,"appDir",sizeof("appDir")-1,1 TSRMLS_CC);
-				RETURN_ZVAL(data,1,0);
-		}
-		return NULL;
-	} while (0);
+	zval *data = zend_read_static_property(SlightPHP_ce_ptr,"appDir",sizeof("appDir")-1,1 TSRMLS_CC);
+	RETURN_ZVAL(data,1,0);
 }
 /* }}} getAppDir */
 
+PHP_METHOD(SlightPHP, setPluginsDir)
+{
+	char * pluginsDir = NULL;
+	int pluginsDir_len;
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &pluginsDir,&pluginsDir_len) == FAILURE) {
+			RETURN_FALSE;
+	}
+	//if (Z_TYPE_P(pluginsDir)!= IS_STRING){ RETURN_FALSE; }
+
+	zend_update_static_property_string(SlightPHP_ce_ptr, "pluginsDir", sizeof("pluginsDir")-1, pluginsDir TSRMLS_CC);
+	RETURN_TRUE;
+}
+PHP_METHOD(SlightPHP, getPluginsDir)
+{
+	zval *data = zend_read_static_property(SlightPHP_ce_ptr,"pluginsDir",sizeof("pluginsDir")-1,1 TSRMLS_CC);
+	RETURN_ZVAL(data,1,0);
+}
+
+
+PHP_METHOD(SlightPHP, setDefaultZone)
+{
+	char* defaultZone= NULL;
+	int defaultZone_len;
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &defaultZone,&defaultZone_len) == FAILURE) {
+			RETURN_FALSE;
+	}
+	zend_update_static_property_string(SlightPHP_ce_ptr, "defaultZone", sizeof("defaultZone")-1, defaultZone TSRMLS_CC);
+	RETURN_TRUE;
+}
+PHP_METHOD(SlightPHP, getDefaultZone)
+{
+	zval *data = zend_read_static_property(SlightPHP_ce_ptr,"defaultZone",sizeof("defaultZone")-1,1 TSRMLS_CC);
+	RETURN_ZVAL(data,1,0);
+}
+
+
+
+
+PHP_METHOD(SlightPHP, setDefaultClass)
+{
+	char * defaultClass= NULL;
+	int defaultClass_len;
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &defaultClass,&defaultClass_len) == FAILURE) {
+			RETURN_FALSE;
+	}
+	zend_update_static_property_string(SlightPHP_ce_ptr, "defaultClass", sizeof("defaultClass")-1, defaultClass TSRMLS_CC);
+	RETURN_TRUE;
+}
+PHP_METHOD(SlightPHP, getDefaultClass)
+{
+	zval *data = zend_read_static_property(SlightPHP_ce_ptr,"defaultClass",sizeof("defaultClass")-1,1 TSRMLS_CC);
+	RETURN_ZVAL(data,1,0);
+}
+
+
+
+
+PHP_METHOD(SlightPHP, setDefaultMethod)
+{
+	char * defaultMethod= NULL;
+	int defaultMethod_len;
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &defaultMethod,&defaultMethod_len) == FAILURE) {
+			RETURN_FALSE;
+	}
+	zend_update_static_property_string(SlightPHP_ce_ptr, "defaultMethod", sizeof("defaultMethod")-1, defaultMethod TSRMLS_CC);
+	RETURN_TRUE;
+}
+PHP_METHOD(SlightPHP, getDefaultMethod)
+{
+	zval *data = zend_read_static_property(SlightPHP_ce_ptr,"defaultMethod",sizeof("defaultMethod")-1,1 TSRMLS_CC);
+	RETURN_ZVAL(data,1,0);
+}
+
+
+
+PHP_METHOD(SlightPHP, setSpligFlag)
+{
+	char * splitFlag = NULL;
+	int splitFlag_len;
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &splitFlag, &splitFlag_len) == FAILURE) {
+			RETURN_FALSE;
+	}
+	zend_update_static_property_string(SlightPHP_ce_ptr, "splitFlag", sizeof("splitFlag")-1, splitFlag TSRMLS_CC);
+	RETURN_TRUE;
+}
+PHP_METHOD(SlightPHP, getSpligFlag)
+{
+	zval *data = zend_read_static_property(SlightPHP_ce_ptr,"splitFlag",sizeof("splitFlag")-1,1 TSRMLS_CC);
+	RETURN_ZVAL(data,1,0);
+}
+
+
+
+PHP_METHOD(SlightPHP, setDebug)
+{
+	int _debug;
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &_debug) == FAILURE) {
+			RETURN_FALSE;
+	}
+	zend_update_static_property_long(SlightPHP_ce_ptr, "_debug", sizeof("_debug")-1, _debug TSRMLS_CC);
+	RETURN_TRUE;
+}
+PHP_METHOD(SlightPHP, getDebug)
+{
+	zval *data = zend_read_static_property(SlightPHP_ce_ptr,"_debug",sizeof("_debug")-1,1 TSRMLS_CC);
+	convert_to_long(data);
+	RETURN_BOOL(Z_LVAL_P(data));
+}
 
 
 /* {{{ proto int loadFile(mixed filepath)
    */
 PHP_METHOD(SlightPHP, loadFile)
 {
-	zend_class_entry * _this_ce;
-
-	zval * _this_zval = NULL;
 	zval * filepath = NULL;
-
-
-
-	if (zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "Oz/", &_this_zval, SlightPHP_ce_ptr, &filepath) == FAILURE) {
-		return;
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "z/", &filepath) == FAILURE) {
+			RETURN_FALSE;
+	}
+	if (Z_TYPE_P(filepath)!= IS_STRING){
+			RETURN_FALSE;
 	}
 
-	_this_ce = Z_OBJCE_P(_this_zval);
-
-
-	do {
-		zval *_debug_flag = zend_read_property(_this_ce,_this_zval,"_debug",sizeof("_debug")-1,1 TSRMLS_CC);
-		int ret = SlightPHP_loadFile(filepath,_debug_flag TSRMLS_CC);
-		ZVAL_LONG(return_value,ret);
-	} while (0);
+	if(SlightPHP_loadFile(filepath TSRMLS_CC)==SUCCESS){
+		RETURN_TRUE;
+	}else{
+		RETURN_FALSE;
+	}
 }
 /* }}} loadFile */
 
@@ -120,35 +194,25 @@ PHP_METHOD(SlightPHP, loadFile)
    */
 PHP_METHOD(SlightPHP, loadPlugin)
 {
-	zend_class_entry * _this_ce;
-
-	zval * _this_zval = NULL;
-	zval * pluginName = NULL;
-
-
-
-	if (zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "Oz/", &_this_zval, SlightPHP_ce_ptr, &pluginName) == FAILURE) {
-		return;
-	}
-
-	_this_ce = Z_OBJCE_P(_this_zval);
-
-
-	do {
-		zval *pluginsDir = zend_read_property(_this_ce,_this_zval,"pluginsDir",sizeof("pluginsDir")-1,1 TSRMLS_CC);
-		zval *_debug_flag = zend_read_property(_this_ce,_this_zval,"_debug",sizeof("_debug")-1,1 TSRMLS_CC);
-		char*inc_filename;
-		spprintf(&inc_filename,0,"%s%c%s.class.php",Z_STRVAL_P(pluginsDir),DEFAULT_SLASH,Z_STRVAL_P(pluginName));
-		zval file_name;
-		ZVAL_STRING(&file_name,inc_filename,1);
-		if(SlightPHP_loadFile(&file_name,_debug_flag TSRMLS_CC)==SUCCESS){;
-			efree(inc_filename);
-			RETURN_TRUE;
-		}else{
-			efree(inc_filename);
+	//zval * pluginName = NULL;
+	char * pluginName = NULL;
+	int pluginName_len;
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &pluginName,&pluginName_len) == FAILURE) {
 			RETURN_FALSE;
-		}
-	} while (0);
+	}	
+
+	zval *pluginsDir = zend_read_static_property(SlightPHP_ce_ptr,"pluginsDir",sizeof("pluginsDir")-1,1 TSRMLS_CC);
+	char*inc_filename;
+	spprintf(&inc_filename,0,"%s%c%s.class.php",Z_STRVAL_P(pluginsDir),DEFAULT_SLASH,pluginName);
+	zval file_name;
+	ZVAL_STRING(&file_name,inc_filename,1);
+	if(SlightPHP_loadFile(&file_name TSRMLS_CC)==SUCCESS){;
+		efree(inc_filename);
+		RETURN_TRUE;
+	}else{
+		efree(inc_filename);
+		RETURN_FALSE;
+	}
 }
 /* }}} loadPlugin */
 
@@ -163,18 +227,12 @@ PHP_METHOD(SlightPHP, __construct)
 
 	zval * version = NULL;
 
-
-
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|z/", &version) == FAILURE) {
 		return;
 	}
 
 	_this_zval = getThis();
 	_this_ce = Z_OBJCE_P(_this_zval);
-
-
-	do {
-	} while (0);
 }
 /* }}} __construct */
 
@@ -184,122 +242,126 @@ PHP_METHOD(SlightPHP, __construct)
    */
 PHP_METHOD(SlightPHP, run)
 {
-	zend_class_entry * _this_ce;
+	zval *zone=NULL;
+	zval *class_name=NULL;
+	zval *method=NULL;
 
-	zval * _this_zval = NULL;
+	zval **token;
+	zval *path=NULL;
+	zval *server=NULL;
+	zval *path_array;
 
+	//{{{
+	//}}}
 
+	zend_is_auto_global("_SERVER", sizeof("_SERVER") - 1 TSRMLS_CC);
+	server = PG(http_globals)[TRACK_VARS_SERVER];
+	if(!server){
+		RETURN_FALSE;
+	}
+	if(zend_hash_find(HASH_OF(server), "PATH_INFO", sizeof("PATH_INFO"), (void **) &token) == SUCCESS
+	){
+		path = *token;
+	}
+	MAKE_STD_ZVAL(path_array);
+	array_init(path_array);
 
-	if (zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &_this_zval, SlightPHP_ce_ptr) == FAILURE) {
-		return;
+	if (path){
+		zval quotedFlag;
+		char	*regex;
+		pcre_cache_entry    *pce;
+		zval *splitFlag = zend_read_static_property(SlightPHP_ce_ptr,"splitFlag",sizeof("splitFlag")-1,1 TSRMLS_CC);
+		if(preg_quote(splitFlag,&quotedFlag)>0){
+			spprintf(&regex,0,"/[%s\\/]/",Z_STRVAL(quotedFlag));
+		}else{
+			spprintf(&regex,0,"/[\\/]/");
+		}
+		//{{{
+		if ((pce = pcre_get_compiled_regex_cache(regex, strlen(regex) TSRMLS_CC)) == NULL) {
+			efree(regex);
+				RETURN_FALSE;
+			}
+		efree(regex);
+		php_pcre_split_impl(pce, Z_STRVAL_P(path),Z_STRLEN_P(path),path_array, -1, 1 TSRMLS_CC);
+		
+		//}}}
+		int n_elems = zend_hash_num_elements(Z_ARRVAL_P(path_array));
+		if(zend_hash_index_find(Z_ARRVAL_P(path_array), 0, (void **)&token) != FAILURE) {
+			zone = *token;
+		}
+		if(zend_hash_index_find(Z_ARRVAL_P(path_array), 1, (void **)&token) != FAILURE) {
+			class_name = *token;
+		}
+		if(zend_hash_index_find(Z_ARRVAL_P(path_array), 2, (void **)&token) != FAILURE) {
+			method = *token;
+		}
+			
+	}
+	if(!zone){
+		zone = zend_read_static_property(SlightPHP_ce_ptr,"defaultZone",sizeof("defaultZone")-1,1 TSRMLS_CC);
+		zend_hash_next_index_insert(Z_ARRVAL_P(path_array),&zone,sizeof(zval*),NULL);
+	}
+	if(!class_name){
+		class_name = zend_read_static_property(SlightPHP_ce_ptr,"defaultClass",sizeof("defaultClass")-1,1 TSRMLS_CC);
+		zend_hash_next_index_insert(Z_ARRVAL_P(path_array),&class_name,sizeof(zval*),NULL);
+	}
+	if(!method){
+		method = zend_read_static_property(SlightPHP_ce_ptr,"defaultMethod",sizeof("defaultMethod")-1,1 TSRMLS_CC);
+		zend_hash_next_index_insert(Z_ARRVAL_P(path_array),&method,sizeof(zval*),NULL);
 	}
 
-	_this_ce = Z_OBJCE_P(_this_zval);
+	zval *tmp_result=NULL;
+
+	zval *appDir = zend_read_static_property(SlightPHP_ce_ptr,"appDir",sizeof("appDir")-1,1 TSRMLS_CC);
+	
+	zval **params[1];
+	params[0]=&path_array;
 
 
-	do {
-		zval *zone=NULL;
-		zval *class_name=NULL;
-		zval *method=NULL;
+	if(SlightPHP_load(appDir,zone,class_name TSRMLS_CC) == SUCCESS){
+		if(SlightPHP_run(zone,class_name,method,&tmp_result,1,params TSRMLS_CC)==SUCCESS){
+		};
+	}
+	FREE_ZVAL(path_array);
 
-		zval **token;
-		zval *path=NULL;
-		zval *server=NULL;
-		zval *path_array;
-
-		//{{{
-		zval *_debug_flag = zend_read_property(_this_ce,_this_zval,"_debug",sizeof("_debug")-1,1 TSRMLS_CC);
-		//}}}
-
-		zend_is_auto_global("_SERVER", sizeof("_SERVER") - 1 TSRMLS_CC);
-		server = PG(http_globals)[TRACK_VARS_SERVER];
-		if(!server){
-			RETURN_FALSE;
-		}
-		if(zend_hash_find(HASH_OF(server), "PATH_INFO", sizeof("PATH_INFO"), (void **) &token) == SUCCESS
-		){
-			path = *token;
-			}
-		MAKE_STD_ZVAL(path_array);
-		array_init(path_array);
-
-		if (path){
-			zval quotedFlag;
-			char	*regex;
-			pcre_cache_entry    *pce;
-			zval *splitFlag = zend_read_property(_this_ce,_this_zval,"splitFlag",sizeof("splitFlag")-1,1 TSRMLS_CC);
-			if(preg_quote(splitFlag,&quotedFlag,_debug_flag)>0){
-				spprintf(&regex,0,"/[%s\\/]/",Z_STRVAL(quotedFlag));
-			}else{
-				spprintf(&regex,0,"/[\\/]/");
-			}
-			//{{{
-			if ((pce = pcre_get_compiled_regex_cache(regex, strlen(regex) TSRMLS_CC)) == NULL) {
-				efree(regex);
-					RETURN_FALSE;
-				}
-			efree(regex);
-			php_pcre_split_impl(pce, Z_STRVAL_P(path),Z_STRLEN_P(path),path_array, -1, 1 TSRMLS_CC);
-			
-			//}}}
-			int n_elems = zend_hash_num_elements(Z_ARRVAL_P(path_array));
-			if(zend_hash_index_find(Z_ARRVAL_P(path_array), 0, (void **)&token) != FAILURE) {
-				zone = *token;
-			}
-			if(zend_hash_index_find(Z_ARRVAL_P(path_array), 1, (void **)&token) != FAILURE) {
-				class_name = *token;
-			}
-			if(zend_hash_index_find(Z_ARRVAL_P(path_array), 2, (void **)&token) != FAILURE) {
-				method = *token;
-			}
-				
-		}
-		if(!zone){
-			zone = zend_read_property(_this_ce,_this_zval,"defaultZone",sizeof("defaultZone")-1,1 TSRMLS_CC);
-			zend_hash_next_index_insert(Z_ARRVAL_P(path_array),&zone,sizeof(zval*),NULL);
-		}
-		if(!class_name){
-			class_name = zend_read_property(_this_ce,_this_zval,"defaultClass",sizeof("defaultClass")-1,1 TSRMLS_CC);
-			zend_hash_next_index_insert(Z_ARRVAL_P(path_array),&class_name,sizeof(zval*),NULL);
-		}
-		if(!method){
-			method = zend_read_property(_this_ce,_this_zval,"defaultMethod",sizeof("defaultMethod")-1,1 TSRMLS_CC);
-			zend_hash_next_index_insert(Z_ARRVAL_P(path_array),&method,sizeof(zval*),NULL);
-		}
-
-		zval *tmp_result=NULL;
-
-		zval *appDir = zend_read_property(_this_ce,_this_zval,"appDir",sizeof("appDir")-1,1 TSRMLS_CC);
-		
-		zval **params[1];
-		params[0]=&path_array;
-
-
-		if(SlightPHP_load(appDir,zone,class_name,_debug_flag TSRMLS_CC) == SUCCESS){
-			if(SlightPHP_run(zone,class_name,method,&tmp_result,1,params,_debug_flag TSRMLS_CC)==SUCCESS){
-			};
-		}
-		FREE_ZVAL(path_array);
-
-		if(tmp_result){
-			*return_value = *tmp_result;
-			zval_copy_ctor(return_value);
-			zval_ptr_dtor(&tmp_result);
-		}else{
-			RETURN_FALSE;
-		}
-	} while (0);
+	if(tmp_result){
+		*return_value = *tmp_result;
+		zval_copy_ctor(return_value);
+		zval_ptr_dtor(&tmp_result);
+	}else{
+		RETURN_FALSE;
+	}
 }
 /* }}} run */
 
 
 static zend_function_entry SlightPHP_methods[] = {
-	PHP_ME(SlightPHP, setAppDir, SlightPHP__setAppDir_args, /**/ZEND_ACC_PUBLIC)
-	PHP_ME(SlightPHP, getAppDir, NULL, /**/ZEND_ACC_PUBLIC)
-	PHP_ME(SlightPHP, loadFile, SlightPHP__loadFile_args, /**/ZEND_ACC_PUBLIC)
-	PHP_ME(SlightPHP, loadPlugin, SlightPHP__loadPlugin_args, /**/ZEND_ACC_PUBLIC)
+
+	PHP_ME(SlightPHP, setAppDir, SlightPHP__setAppDir_args, /**/ZEND_ACC_STATIC|ZEND_ACC_PUBLIC)
+	PHP_ME(SlightPHP, getAppDir, NULL, /**/ZEND_ACC_STATIC|ZEND_ACC_PUBLIC)
+
+	PHP_ME(SlightPHP, setPluginsDir, SlightPHP__setPluginsDir_arg, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
+	PHP_ME(SlightPHP, getPluginsDir, NULL, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
+
+	PHP_ME(SlightPHP, setDefaultZone , SlightPHP__setDefaultZone_arg, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
+	PHP_ME(SlightPHP, getDefaultZone, NULL, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
+
+	PHP_ME(SlightPHP, setDefaultClass , SlightPHP__setDefaultClass_arg, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
+	PHP_ME(SlightPHP, getDefaultClass, NULL, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
+
+	PHP_ME(SlightPHP, setDefaultMethod, SlightPHP__setDefaultMethod_arg, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
+	PHP_ME(SlightPHP, getDefaultMethod, NULL, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
+
+	PHP_ME(SlightPHP, setDebug, SlightPHP__setDebug_arg, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
+	PHP_ME(SlightPHP, getDebug, NULL, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
+
+	PHP_ME(SlightPHP, setSpligFlag, SlightPHP__setSpligFlag_arg, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
+	PHP_ME(SlightPHP, getSpligFlag, NULL, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
+
+	PHP_ME(SlightPHP, loadFile, SlightPHP__loadFile_args, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
+	PHP_ME(SlightPHP, loadPlugin, SlightPHP__loadPlugin_args, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
 	PHP_ME(SlightPHP, __construct, NULL, /**/ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
-	PHP_ME(SlightPHP, run, NULL, /**/ZEND_ACC_PUBLIC)
+	PHP_ME(SlightPHP, run, NULL, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
 	{ NULL, NULL, NULL }
 };
 
@@ -311,36 +373,37 @@ static void class_init_SlightPHP(TSRMLS_D)
 
 	INIT_CLASS_ENTRY(ce, "SlightPHP", SlightPHP_methods);
 	SlightPHP_ce_ptr = zend_register_internal_class(&ce TSRMLS_CC);
+	SlightPHP_ce_ptr->ce_flags |= ZEND_ACC_FINAL_CLASS;
 
 	/* {{{ Property registration */
 
 	zend_declare_property_string(SlightPHP_ce_ptr, 
 		"appDir", 6, ".", 
-		ZEND_ACC_PUBLIC TSRMLS_CC);
+		ZEND_ACC_STATIC|ZEND_ACC_PUBLIC TSRMLS_CC);
 
 	zend_declare_property_string(SlightPHP_ce_ptr, 
 		"pluginsDir", 10, "plugins", 
-		ZEND_ACC_PUBLIC TSRMLS_CC);
+		ZEND_ACC_STATIC|ZEND_ACC_PUBLIC TSRMLS_CC);
 
 	zend_declare_property_string(SlightPHP_ce_ptr, 
 		"defaultZone", 11, "index", 
-		ZEND_ACC_PUBLIC TSRMLS_CC);
+		ZEND_ACC_STATIC|ZEND_ACC_PUBLIC TSRMLS_CC);
 
 	zend_declare_property_string(SlightPHP_ce_ptr, 
 		"defaultClass", 12, "default", 
-		ZEND_ACC_PUBLIC TSRMLS_CC);
+		ZEND_ACC_STATIC|ZEND_ACC_PUBLIC TSRMLS_CC);
 
 	zend_declare_property_string(SlightPHP_ce_ptr, 
 		"defaultMethod", 13, "entry", 
-		ZEND_ACC_PUBLIC TSRMLS_CC);
+		ZEND_ACC_STATIC|ZEND_ACC_PUBLIC TSRMLS_CC);
 
 	zend_declare_property_string(SlightPHP_ce_ptr, 
 		"splitFlag", 9, "", 
-		ZEND_ACC_PUBLIC TSRMLS_CC);
+		ZEND_ACC_STATIC|ZEND_ACC_PUBLIC TSRMLS_CC);
 
 	zend_declare_property_long(SlightPHP_ce_ptr, 
 		"_debug", 6, 0, 
-		ZEND_ACC_PUBLIC TSRMLS_CC);
+		ZEND_ACC_STATIC|ZEND_ACC_PUBLIC TSRMLS_CC);
 
 	/* }}} Property registration */
 
@@ -396,11 +459,8 @@ ZEND_GET_MODULE(SlightPHP)
 /* {{{ PHP_MINIT_FUNCTION */
 PHP_MINIT_FUNCTION(SlightPHP)
 {
-	REGISTER_STRINGL_CONSTANT("SlightPHP_VERSION", "0.1", 3, CONST_PERSISTENT | CONST_CS);
+	REGISTER_STRINGL_CONSTANT("SlightPHP_VERSION", "0.2", 3, CONST_PERSISTENT | CONST_CS);
 	class_init_SlightPHP(TSRMLS_C);
-	do {
-	} while (0);
-
 	return SUCCESS;
 }
 /* }}} */
@@ -409,9 +469,6 @@ PHP_MINIT_FUNCTION(SlightPHP)
 /* {{{ PHP_MSHUTDOWN_FUNCTION */
 PHP_MSHUTDOWN_FUNCTION(SlightPHP)
 {
-	do {
-	} while (0);
-
 	return SUCCESS;
 }
 /* }}} */
