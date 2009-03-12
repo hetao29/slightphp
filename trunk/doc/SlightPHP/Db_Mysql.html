@@ -1,0 +1,1091 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs For Class Db_Mysql</title>
+			<link rel="stylesheet" href="../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="class-name">Class Db_Mysql</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+													<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+						|											<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+						
+					</div>
+	<div class="info-box-body">
+        		<!-- ========== Info from phpDoc block ========= -->
+		<p class="notes">
+			Located in <a class="field" href="_plugins---db---Db_Mysql.php.html">/plugins/db/Db_Mysql.php</a> (line <span class="field">23</span>)
+		</p>
+		
+				
+		<pre><a href="../SlightPHP/DbObject.html">DbObject</a>
+   |
+   --Db_Mysql</pre>
+	
+			</div>
+</div>
+
+
+
+	<a name="sec-var-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Variable Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+						<span class="disabled">Vars</span> (<a href="#sec-vars">details</a>)
+							| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+								</div>
+		<div class="info-box-body">
+			<div class="var-summary">
+																																																																																																								<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$count" title="details" class="var-name">$count</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$database" title="details" class="var-name">$database</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$error" title="details" class="var-name">$error</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$groupby" title="details" class="var-name">$groupby</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$host" title="details" class="var-name">$host</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$limit" title="details" class="var-name">$limit</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$orderby" title="details" class="var-name">$orderby</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$page" title="details" class="var-name">$page</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$password" title="details" class="var-name">$password</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$sql" title="details" class="var-name">$sql</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$user" title="details" class="var-name">$user</a>
+				</div>
+											</div>
+		</div>
+	</div>
+
+	<a name="sec-method-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Method Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+																		<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+				 
+				|
+						<span class="disabled">Methods</span> (<a href="#sec-methods">details</a>)
+		</div>
+		<div class="info-box-body">			
+			<div class="method-summary">
+																																																																																																																																																				
+												<div class="method-definition">
+											<span class="method-result">int</span>
+										<a href="#delete" title="details" class="method-name">delete</a>
+											(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$table</span>, [<span class="var-type">string,array</span>&nbsp;<span class="var-name">$condition</span> = <span class="var-default">&quot;&quot;</span>], <span class="var-type">int</span>&nbsp;<span class="var-name">$limit</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#init" title="details" class="method-name">init</a>
+											([<span class="var-type">string</span>&nbsp;<span class="var-name">$params</span> = <span class="var-default">array()</span>], <span class="var-type">string</span>&nbsp;<span class="var-name">1</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">2</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">3</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">int</span>
+										<a href="#insert" title="details" class="method-name">insert</a>
+											(<span class="var-type">$table</span>&nbsp;<span class="var-name">$table</span>, [<span class="var-type">array</span>&nbsp;<span class="var-name">$item</span> = <span class="var-default">&quot;&quot;</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$isreplace</span> = <span class="var-default">false</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$isdelayed</span> = <span class="var-default">false</span>], [<span class="var-type">array</span>&nbsp;<span class="var-name">$update</span> = <span class="var-default">array()</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#lastInsertId" title="details" class="method-name">lastInsertId</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result"><a href="../SlightPHP/DbData.html">DbData</a></span>
+										<a href="#query" title="details" class="method-name">query</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$sql</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$countsql</span> = <span class="var-default">&quot;&quot;</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#rowCount" title="details" class="method-name">rowCount</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result"><a href="../SlightPHP/DbData.html">DbData</a></span>
+										<a href="#select" title="details" class="method-name">select</a>
+											(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$table</span>, [<span class="var-type">array</span>&nbsp;<span class="var-name">$condition</span> = <span class="var-default">&quot;&quot;</span>], [<span class="var-type">array</span>&nbsp;<span class="var-name">$item</span> = <span class="var-default">&quot;*&quot;</span>], [<span class="var-type">string</span>&nbsp;<span class="var-name">$groupby</span> = <span class="var-default">&quot;&quot;</span>], [<span class="var-type">string</span>&nbsp;<span class="var-name">$orderby</span> = <span class="var-default">&quot;&quot;</span>], [<span class="var-type">string</span>&nbsp;<span class="var-name">$leftjoin</span> = <span class="var-default">&quot;&quot;</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">array</span>
+										<a href="#selectOne" title="details" class="method-name">selectOne</a>
+											(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$table</span>, [<span class="var-type">array</span>&nbsp;<span class="var-name">$condition</span> = <span class="var-default">&quot;&quot;</span>], [<span class="var-type">array</span>&nbsp;<span class="var-name">$item</span> = <span class="var-default">&quot;*&quot;</span>], [<span class="var-type">string</span>&nbsp;<span class="var-name">$groupby</span> = <span class="var-default">&quot;&quot;</span>], [<span class="var-type">string</span>&nbsp;<span class="var-name">$orderby</span> = <span class="var-default">&quot;&quot;</span>], [<span class="var-type">string</span>&nbsp;<span class="var-name">$leftjoin</span> = <span class="var-default">&quot;&quot;</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setCount" title="details" class="method-name">setCount</a>
+											(<span class="var-type">boolean</span>&nbsp;<span class="var-name">$count</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setGroupby" title="details" class="method-name">setGroupby</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$groupby</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setLimit" title="details" class="method-name">setLimit</a>
+											(<span class="var-type">int</span>&nbsp;<span class="var-name">$limit</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setOrderby" title="details" class="method-name">setOrderby</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$orderby</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setPage" title="details" class="method-name">setPage</a>
+											(<span class="var-type">int</span>&nbsp;<span class="var-name">$page</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#update" title="details" class="method-name">update</a>
+											(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$table</span>, [<span class="var-type">string,array</span>&nbsp;<span class="var-name">$condition</span> = <span class="var-default">&quot;&quot;</span>], [<span class="var-type">array</span>&nbsp;<span class="var-name">$item</span> = <span class="var-default">&quot;&quot;</span>], <span class="var-type">int</span>&nbsp;<span class="var-name">$limit</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#__connect" title="details" class="method-name">__connect</a>
+											([<span class="var-type"></span>&nbsp;<span class="var-name">$forceReconnect</span> = <span class="var-default">false</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#__execute" title="details" class="method-name">__execute</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$sql</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#__quoteCondition" title="details" class="method-name">__quoteCondition</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$condition</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$split</span> = <span class="var-default">&quot;AND&quot;</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#__quoteItem" title="details" class="method-name">__quoteItem</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$item</span>)
+									</div>
+								</div>
+		</div>
+	</div>		
+
+	<a name="sec-vars"></a>
+	<div class="info-box">
+		<div class="info-box-title">Variables</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+										<a href="#sec-var-summary">Vars</a> (<span class="disabled">details</span>)
+						
+			
+										| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+			<a name="var$count" id="$count"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$count</span>
+			 = <span class="var-default">true</span>			(line <span class="line-number">60</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$database" id="$database"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$database</span>
+						(line <span class="line-number">44</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$error" id="$error"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$error</span>
+			 = <span class="var-default">array('code'=&gt;0,'msg'=&gt;&quot;&quot;)</span>			(line <span class="line-number">76</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$groupby" id="$groupby"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$groupby</span>
+						(line <span class="line-number">52</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$host" id="$host"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$host</span>
+						(line <span class="line-number">32</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$limit" id="$limit"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$limit</span>
+						(line <span class="line-number">64</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$orderby" id="$orderby"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$orderby</span>
+						(line <span class="line-number">48</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$page" id="$page"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$page</span>
+			 = <span class="var-default">1</span>			(line <span class="line-number">68</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$password" id="$password"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$password</span>
+						(line <span class="line-number">40</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$sql" id="$sql"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$sql</span>
+						(line <span class="line-number">56</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$user" id="$user"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$user</span>
+						(line <span class="line-number">36</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+						
+		</div>
+	</div>
+	
+	<a name="sec-methods"></a>
+	<div class="info-box">
+		<div class="info-box-title">Methods</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+															<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+																	<a href="#sec-method-summary">Methods</a> (<span class="disabled">details</span>)
+						
+		</div>
+		<div class="info-box-body">
+			<A NAME='method_detail'></A>
+
+<a name="methoddelete" id="delete"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">delete</span> (line <span class="line-number">264</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">delete</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> delete(&quot;table&quot;,array('name'=&gt;'myName','password'=&gt;'myPass'),array('id'=&gt;1));  delete(&quot;table&quot;,array('name'=&gt;'myName','password'=&gt;'myPass'),array(&quot;password=$myPass&quot;));</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">int</span>
+		<span class="method-name">
+			delete
+		</span>
+					(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$table</span>, [<span class="var-type">string,array</span>&nbsp;<span class="var-name">$condition</span> = <span class="var-default">&quot;&quot;</span>], <span class="var-type">int</span>&nbsp;<span class="var-name">$limit</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string,array</span>
+				<span class="var-name">$condition</span>			</li>
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$limit</span>			</li>
+					<li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$table</span><span class="var-description">: table</span>			</li>
+				</ul>
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../SlightPHP/DbObject.html#methoddelete">DbObject::delete()</a></dt>
+					</dl>
+			
+	</div>
+<a name="methodinit" id="init"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">init</span> (line <span class="line-number">86</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">construct</p>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			init
+		</span>
+					([<span class="var-type">string</span>&nbsp;<span class="var-name">$params</span> = <span class="var-default">array()</span>], <span class="var-type">string</span>&nbsp;<span class="var-name">1</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">2</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">3</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">1</span><span class="var-description">: user</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">2</span><span class="var-description">: password</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">3</span><span class="var-description">: database</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$params</span><span class="var-description">: host</span>			</li>
+				</ul>
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../SlightPHP/DbObject.html#methodinit">DbObject::init()</a></dt>
+					</dl>
+			
+	</div>
+<a name="methodinsert" id="insert"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">insert</span> (line <span class="line-number">282</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">insert</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> InsertID</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">int</span>
+		<span class="method-name">
+			insert
+		</span>
+					(<span class="var-type">$table</span>&nbsp;<span class="var-name">$table</span>, [<span class="var-type">array</span>&nbsp;<span class="var-name">$item</span> = <span class="var-default">&quot;&quot;</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$isreplace</span> = <span class="var-default">false</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$isdelayed</span> = <span class="var-default">false</span>], [<span class="var-type">array</span>&nbsp;<span class="var-name">$update</span> = <span class="var-default">array()</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$item</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$update</span><span class="var-description">: ,egarray(&quot;key&quot;=&gt;value,&quot;key2&quot;=&gt;value2&quot;)</span>			</li>
+					<li>
+				<span class="var-type">$table</span>
+				<span class="var-name">$table</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$isreplace</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$isdelayed</span>			</li>
+				</ul>
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../SlightPHP/DbObject.html#methodinsert">DbObject::insert()</a></dt>
+					</dl>
+			
+	</div>
+<a name="methodlastInsertId" id="lastInsertId"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">lastInsertId</span> (line <span class="line-number">344</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			lastInsertId
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodquery" id="query"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">query</span> (line <span class="line-number">315</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">query</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> object</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result"><a href="../SlightPHP/DbData.html">DbData</a></span>
+		<span class="method-name">
+			query
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$sql</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$countsql</span> = <span class="var-default">&quot;&quot;</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$sql</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$countsql</span>			</li>
+				</ul>
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../SlightPHP/DbObject.html#methodquery">DbObject::query()</a></dt>
+					</dl>
+			
+	</div>
+<a name="methodrowCount" id="rowCount"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">rowCount</span> (line <span class="line-number">347</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			rowCount
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodselect" id="select"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">select</span> (line <span class="line-number">160</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">select data from db</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> object</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result"><a href="../SlightPHP/DbData.html">DbData</a></span>
+		<span class="method-name">
+			select
+		</span>
+					(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$table</span>, [<span class="var-type">array</span>&nbsp;<span class="var-name">$condition</span> = <span class="var-default">&quot;&quot;</span>], [<span class="var-type">array</span>&nbsp;<span class="var-name">$item</span> = <span class="var-default">&quot;*&quot;</span>], [<span class="var-type">string</span>&nbsp;<span class="var-name">$groupby</span> = <span class="var-default">&quot;&quot;</span>], [<span class="var-type">string</span>&nbsp;<span class="var-name">$orderby</span> = <span class="var-default">&quot;&quot;</span>], [<span class="var-type">string</span>&nbsp;<span class="var-name">$leftjoin</span> = <span class="var-default">&quot;&quot;</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$table</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$condition</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$item</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$groupby</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$orderby</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$leftjoin</span>			</li>
+				</ul>
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../SlightPHP/DbObject.html#methodselect">DbObject::select()</a></dt>
+					</dl>
+			
+	</div>
+<a name="methodselectOne" id="selectOne"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">selectOne</span> (line <span class="line-number">222</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">return:</span> item</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">array</span>
+		<span class="method-name">
+			selectOne
+		</span>
+					(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$table</span>, [<span class="var-type">array</span>&nbsp;<span class="var-name">$condition</span> = <span class="var-default">&quot;&quot;</span>], [<span class="var-type">array</span>&nbsp;<span class="var-name">$item</span> = <span class="var-default">&quot;*&quot;</span>], [<span class="var-type">string</span>&nbsp;<span class="var-name">$groupby</span> = <span class="var-default">&quot;&quot;</span>], [<span class="var-type">string</span>&nbsp;<span class="var-name">$orderby</span> = <span class="var-default">&quot;&quot;</span>], [<span class="var-type">string</span>&nbsp;<span class="var-name">$leftjoin</span> = <span class="var-default">&quot;&quot;</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$table</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$condition</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$item</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$groupby</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$orderby</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$leftjoin</span>			</li>
+				</ul>
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../SlightPHP/DbObject.html#methodselectOne">DbObject::selectOne()</a></dt>
+					</dl>
+			
+	</div>
+<a name="methodsetCount" id="setCount"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">setCount</span> (line <span class="line-number">99</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">is count</p>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setCount
+		</span>
+					(<span class="var-type">boolean</span>&nbsp;<span class="var-name">$count</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">boolean</span>
+				<span class="var-name">$count</span><span class="var-description">: count</span>			</li>
+				</ul>
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../SlightPHP/DbObject.html#methodsetCount">DbObject::setCount()</a></dt>
+					</dl>
+			
+	</div>
+<a name="methodsetGroupby" id="setGroupby"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">setGroupby</span> (line <span class="line-number">134</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">group by sql</p>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setGroupby
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$groupby</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$groupby</span><span class="var-description">: groupby  eg:    setGroupby(&quot;groupby MusicID&quot;);       setGroupby(&quot;groupby MusicID,MusicName&quot;);</span>			</li>
+				</ul>
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../SlightPHP/DbObject.html#methodsetGroupby">DbObject::setGroupby()</a></dt>
+					</dl>
+			
+	</div>
+<a name="methodsetLimit" id="setLimit"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">setLimit</span> (line <span class="line-number">122</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">page size</p>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setLimit
+		</span>
+					(<span class="var-type">int</span>&nbsp;<span class="var-name">$limit</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$limit</span><span class="var-description">: limit ,0 is all</span>			</li>
+				</ul>
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../SlightPHP/DbObject.html#methodsetLimit">DbObject::setLimit()</a></dt>
+					</dl>
+			
+	</div>
+<a name="methodsetOrderby" id="setOrderby"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">setOrderby</span> (line <span class="line-number">144</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">order by sql</p>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setOrderby
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$orderby</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$orderby</span><span class="var-description">: orderby  eg:    setOrderby(&quot;order by MusicID Desc&quot;);</span>			</li>
+				</ul>
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../SlightPHP/DbObject.html#methodsetOrderby">DbObject::setOrderby()</a></dt>
+					</dl>
+			
+	</div>
+<a name="methodsetPage" id="setPage"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">setPage</span> (line <span class="line-number">112</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">page number</p>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setPage
+		</span>
+					(<span class="var-type">int</span>&nbsp;<span class="var-name">$page</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$page</span><span class="var-description">: page</span>			</li>
+				</ul>
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../SlightPHP/DbObject.html#methodsetPage">DbObject::setPage()</a></dt>
+					</dl>
+			
+	</div>
+<a name="methodupdate" id="update"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">update</span> (line <span class="line-number">244</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">update data</p>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			update
+		</span>
+					(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$table</span>, [<span class="var-type">string,array</span>&nbsp;<span class="var-name">$condition</span> = <span class="var-default">&quot;&quot;</span>], [<span class="var-type">array</span>&nbsp;<span class="var-name">$item</span> = <span class="var-default">&quot;&quot;</span>], <span class="var-type">int</span>&nbsp;<span class="var-name">$limit</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$table</span>			</li>
+					<li>
+				<span class="var-type">string,array</span>
+				<span class="var-name">$condition</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$item</span>			</li>
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$limit</span>			</li>
+				</ul>
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../SlightPHP/DbObject.html#methodupdate">DbObject::update()</a></dt>
+					</dl>
+			
+	</div>
+<a name="method__connect" id="__connect"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">__connect</span> (line <span class="line-number">352</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			__connect
+		</span>
+					([<span class="var-type"></span>&nbsp;<span class="var-name">$forceReconnect</span> = <span class="var-default">false</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$forceReconnect</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="method__execute" id="__execute"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">__execute</span> (line <span class="line-number">371</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			__execute
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$sql</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$sql</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="method__quoteCondition" id="__quoteCondition"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">__quoteCondition</span> (line <span class="line-number">417</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			__quoteCondition
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$condition</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$split</span> = <span class="var-default">&quot;AND&quot;</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$condition</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$split</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="method__quoteItem" id="__quoteItem"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">__quoteItem</span> (line <span class="line-number">388</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			__quoteItem
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$item</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$item</span>			</li>
+				</ul>
+		
+			
+	</div>
+							<h4>Inherited Methods</h4>
+				<a name='inherited_methods'><!-- --></a>	
+									<!-- =========== Summary =========== -->
+					<p>Inherited From <span class="classname"><a href="../SlightPHP/DbObject.html">DbObject</a></span></p>
+					<blockquote>
+													<span class="method-name"><a href="../SlightPHP/DbObject.html#methoddelete">DbObject::delete()</a></span><br>
+													<span class="method-name"><a href="../SlightPHP/DbObject.html#methodinit">DbObject::init()</a></span><br>
+													<span class="method-name"><a href="../SlightPHP/DbObject.html#methodinsert">DbObject::insert()</a></span><br>
+													<span class="method-name"><a href="../SlightPHP/DbObject.html#methodquery">DbObject::query()</a></span><br>
+													<span class="method-name"><a href="../SlightPHP/DbObject.html#methodselect">DbObject::select()</a></span><br>
+													<span class="method-name"><a href="../SlightPHP/DbObject.html#methodselectOne">DbObject::selectOne()</a></span><br>
+													<span class="method-name"><a href="../SlightPHP/DbObject.html#methodsetCount">DbObject::setCount()</a></span><br>
+													<span class="method-name"><a href="../SlightPHP/DbObject.html#methodsetGroupby">DbObject::setGroupby()</a></span><br>
+													<span class="method-name"><a href="../SlightPHP/DbObject.html#methodsetLimit">DbObject::setLimit()</a></span><br>
+													<span class="method-name"><a href="../SlightPHP/DbObject.html#methodsetOrderby">DbObject::setOrderby()</a></span><br>
+													<span class="method-name"><a href="../SlightPHP/DbObject.html#methodsetPage">DbObject::setPage()</a></span><br>
+													<span class="method-name"><a href="../SlightPHP/DbObject.html#methodupdate">DbObject::update()</a></span><br>
+											</blockquote>
+										
+		</div>
+	</div>
+
+
+	<p class="notes" id="credit">
+		Documentation generated on Fri, 27 Feb 2009 11:05:11 +0800 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.1</a>
+	</p>
+	</div></body>
+</html>
