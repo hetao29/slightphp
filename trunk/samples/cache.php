@@ -8,11 +8,11 @@
  */
 require_once("../SlightPHP.php");
 $slight=new SlightPHP;
-$slight->_debug=true;
-$slight->splitFlag="-_";
-$slight->appDir=".";
-$slight->defaultZone = "zone";
-$slight->pluginsDir="../plugins";
+$slight->setDebug(true);
+$slight->setSplitFlag("-_");
+$slight->setDefaultZone("zone");
+$slight->setAppDir(".");
+$slight->setPluginsDir("../plugins");
 $slight->loadPlugin("SCache");
 $slight->loadPlugin("SError");
 
