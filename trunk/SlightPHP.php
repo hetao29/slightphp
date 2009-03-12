@@ -20,33 +20,33 @@
 */
 //if(!class_exists("SlightPHP")){
 
-class SlightPHP{
+final class SlightPHP{
 	/**
 	 * @var string
 	 */
-	var $appDir=".";
+	public static $appDir=".";
 	/**
 	 * @var string
 	 */
-	var $pluginsDir="plugins";
+	public static $pluginsDir="plugins";
 	/**
 	 * @var string
 	 */
-	var $defaultZone="index";
+	public static $defaultZone="index";
 	/**
 	 * @var string
 	 */
-	var $defaultClass="default";
+	public static $defaultClass="default";
 	/**
 	 * @var string
 	 */
-	var $defaultMethod="entry";
+	public static $defaultMethod="entry";
 	/**
 	 * split flag of zone,classs,method
 	 *
 	 * @var string
 	 */
-	var $splitFlag="";
+	public static $splitFlag="";
 
 	
 	/**
@@ -55,6 +55,113 @@ class SlightPHP{
 	 */
 
 	function SlightPHP(){
+
+
+	}
+	/**
+	 * defaultZone set
+	 * 
+	 * @param string $zone
+	 * @return boolean
+	 */
+
+	public static function setDefaultZone($zone){
+		SlightPHP::$defaultZone = $zone;
+		return true;
+	}
+	/**
+	 * defaultZone get
+	 * 
+	 * @return string $zone
+	 */
+
+	public static function getDefaultZone(){
+		return SlightPHP::$defaultZone;
+	}
+	/**
+	 * defaultClass set
+	 * 
+	 * @param string $class
+	 * @return boolean
+	 */
+	public static function setDefaultClass($class){
+		SlightPHP::$defaultClass = $class;
+		return true;
+	}
+	/**
+	 * getDefaultClass get
+	 * 
+	 * @return string $class
+	 */
+	public static function getDefaultClass(){
+		return SlightPHP::$defaultClass;
+	}
+	/**
+	 * defaultMethod set
+	 * 
+	 * @param string $method
+	 * @return boolean
+	 */
+	public static function setDefaultMethod($method){
+		SlightPHP::$defaultMethod = $method;
+		return true;
+	}
+	/**
+	 * defaultMethod get
+	 * 
+	 * @return string $method
+	 */
+	public static function getDefaultMethod(){
+		return SlightPHP::$defaultMethod;
+	}
+	/**
+	 * splitFlag set
+	 * 
+	 * @param string $flag
+	 * @return boolean
+	 */
+	public static function setSplitFlag($flag){
+		SlightPHP::$splitFlag = $flag;
+		return true;
+	}
+	/**
+	 * defaultMethod get
+	 * 
+	 * @return string $flag
+	 */
+	public static function getSplitFlag(){
+		return SlightPHP::$splitFlag;
+	}
+	/**
+	 * appDir set && get
+	 */
+
+	public static function setAppDir($dir){
+		SlightPHP::$appDir = $dir;
+		return true;
+	}
+	public static function getAppDir(){
+		return SlightPHP::$appDir;
+	}
+	/**
+	 * pluginsDir set && get
+	 */
+	public static function setPluginsDir($dir){
+		SlightPHP::$pluginsDir = $dir;
+		return true;
+	}
+	public static function getPluginsDir(){
+		return SlightPHP::$pluginsDir;
+	}
+	/**
+	 * _debug set && get
+	 */
+	public static function setDebug($debug){
+		SlightPHP::$_debug = $debug;
+		return true;
+	}
+	public static function getDebug(){
+		return SlightPHP::$_debug;
 	}
 	/**
 	 * main method!
@@ -63,52 +170,52 @@ class SlightPHP{
 	 * @return boolean
 	 */
 
-	function run(){
+	public static function run(){
 		//{{{
-		$splitFlag = preg_quote($this->splitFlag,"/");
+		$splitFlag = preg_quote(SlightPHP::$splitFlag,"/");
 		$PATH_ARRAY = array();
 		if (!empty($_SERVER["PATH_INFO"])){
 			$PATH_ARRAY = preg_split("/[$splitFlag\/]/",$_SERVER["PATH_INFO"],-1,PREG_SPLIT_NO_EMPTY);
 		}
 		if(!empty($PATH_ARRAY[0])){
-			$this->defaultZone=$PATH_ARRAY[0];
+			SlightPHP::$defaultZone=$PATH_ARRAY[0];
 		}else{
-			$PATH_ARRAY[0] = $this->defaultZone ;
+			$PATH_ARRAY[0] = SlightPHP::$defaultZone ;
 		}
 
 		if(!empty($PATH_ARRAY[1])){
-			$this->defaultClass=$PATH_ARRAY[1];
+			SlightPHP::$defaultClass=$PATH_ARRAY[1];
 		}else{
-			$PATH_ARRAY[1] = $this->defaultClass ;
+			$PATH_ARRAY[1] = SlightPHP::$defaultClass ;
 		}
 
 		if(!empty($PATH_ARRAY[2])){
-			$this->defaultMethod=$PATH_ARRAY[2];
+			SlightPHP::$defaultMethod=$PATH_ARRAY[2];
 		}else{
-			$PATH_ARRAY[2] = $this->defaultMethod ;
+			$PATH_ARRAY[2] = SlightPHP::$defaultMethod ;
 		}
 
 
 		//}}}
-		$app_file = $this->appDir . DIRECTORY_SEPARATOR . $this->defaultZone . DIRECTORY_SEPARATOR . $this->defaultClass . ".class.php";
+		$app_file = SlightPHP::$appDir . DIRECTORY_SEPARATOR . SlightPHP::$defaultZone . DIRECTORY_SEPARATOR . SlightPHP::$defaultClass . ".class.php";
 		if(!file_exists($app_file)){
-			$this->debug("file[$app_file] not exists");
+			SlightPHP::debug("file[$app_file] not exists");
 			return false;
 		}else{
-			$this->loadFile($app_file);
+			SlightPHP::loadFile($app_file);
 		}
-		$method = "Page".$this->defaultMethod;
-		$classname = $this->defaultZone ."_". $this->defaultClass;
+		$method = "Page".SlightPHP::$defaultMethod;
+		$classname = SlightPHP::$defaultZone ."_". SlightPHP::$defaultClass;
 		
 
 
 		if(!class_exists($classname)){
-			$this->debug("class[$classname] not exists");
+			SlightPHP::debug("class[$classname] not exists");
 			return false;
 		}
 		$classInstance = new $classname;
 		if(!method_exists($classInstance,$method)){
-			$this->debug("method[$method] not exists in class[%classname]");
+			SlightPHP::debug("method[$method] not exists in class[%classname]");
 			return false;
 		}
 		return call_user_func(array(&$classInstance,$method),$PATH_ARRAY);
@@ -119,12 +226,12 @@ class SlightPHP{
 	 * @param string $filePath
 	 * @return boolean
 	 */
-	function loadFile($filePath){
+	public static function loadFile($filePath){
 		if(file_exists($filePath)){
 			require_once($filePath);
 			return true;
 		}else{
-			$this->debug("file[$filePath] not exists");
+			SlightPHP::debug("file[$filePath] not exists");
 			return false;
 		}
 	}
@@ -134,9 +241,9 @@ class SlightPHP{
 	 * @param string $pluginName
 	 * @return boolean
 	 */
-	function loadPlugin($pluginName){
-		$app_file = $this->pluginsDir. DIRECTORY_SEPARATOR . $pluginName. ".class.php";
-		return $this->loadFile($app_file);
+	public static function loadPlugin($pluginName){
+		$app_file = SlightPHP::$pluginsDir. DIRECTORY_SEPARATOR . $pluginName. ".class.php";
+		return SlightPHP::loadFile($app_file);
 
 	}
 
@@ -145,11 +252,11 @@ class SlightPHP{
 	/**
 	 * @var int
 	 */
-	var $_debug=0;
+	public static $_debug=0;
 
 	/*private*/
 	private function debug($debugmsg){
-		if($this->_debug){
+		if(SlightPHP::$_debug){
 			error_log($debugmsg);
 			echo "<!--slightphp debug:".$debugmsg."-->";
 		}
