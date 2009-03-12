@@ -23,6 +23,10 @@
 require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."cache/CacheObject.php");
 class SCache{
 	static $engines=array("file","apc","memcache","memcached");
+	/**
+	 * @param string $engine enum("file","apc","memcache","memcached")
+	 * @return CacheObject
+	 */
 	static function getCacheEngine($engine){
 		$engine = strtolower($engine);
 		if(!in_array($engine,SCache::$engines)){

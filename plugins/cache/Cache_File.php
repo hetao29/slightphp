@@ -22,17 +22,18 @@
 
 class Cache_File extends CacheObject{
 	/**
-	 * var cache dir
+	 * @var string $dir cache dir
 	 */
 	var $dir="cache";
 	/**
-	 * var cache dir depth
+	 * @var int $depth cache dir depth
 	 */
 	var $depth=3;
+
 	/**
 	 * init
 	 *
-	 * @param array $params,include dir,depth 
+	 * @param array $params array("dir","depth")
 	 */
 	function init($params=array()){
 		foreach($params as $key=>$value){
@@ -59,9 +60,9 @@ class Cache_File extends CacheObject{
 		if(!$fp){return false;}
 		flock($fp,LOCK_EX);
 		$content  =$timeout."\r\n".serialize($value);
-        fputs($fp,$content);
+        	fputs($fp,$content);
 		flock($fp,LOCK_UN);
-        fclose($fp);
+        	fclose($fp);
 		return true;
 	}
 	/**
@@ -108,7 +109,7 @@ class Cache_File extends CacheObject{
 		}
 		return unlink($realFile);
 	}
-	function _getDir($key,$mk=false){
+	private function _getDir($key,$mk=false){
 		$str = md5($key);
 		$step = ceil(strlen($str)/($this->depth+1));
 		$tmp = array();
@@ -124,7 +125,7 @@ class Cache_File extends CacheObject{
 		}
 		return $realFile;
 	}
-	function _mkdirr($pathname){
+	private function _mkdirr($pathname){
 		if (is_dir($pathname) || empty($pathname)) {
 		  return true;
 		}

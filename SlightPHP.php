@@ -72,7 +72,7 @@ final class SlightPHP{
 	/**
 	 * defaultZone get
 	 * 
-	 * @return string $zone
+	 * @return string
 	 */
 
 	public static function getDefaultZone(){
@@ -91,7 +91,7 @@ final class SlightPHP{
 	/**
 	 * getDefaultClass get
 	 * 
-	 * @return string $class
+	 * @return string
 	 */
 	public static function getDefaultClass(){
 		return SlightPHP::$defaultClass;
@@ -127,39 +127,62 @@ final class SlightPHP{
 	/**
 	 * defaultMethod get
 	 * 
-	 * @return string $flag
+	 * @return string
 	 */
 	public static function getSplitFlag(){
 		return SlightPHP::$splitFlag;
 	}
 	/**
 	 * appDir set && get
+	 *
+	 * @param string $dir
+	 * @return boolean
 	 */
 
 	public static function setAppDir($dir){
 		SlightPHP::$appDir = $dir;
 		return true;
 	}
+	/**
+	 * appDir get
+	 * 
+	 * @return string
+	 */
 	public static function getAppDir(){
 		return SlightPHP::$appDir;
 	}
 	/**
 	 * pluginsDir set && get
+	 * @param string $dir
+	 * @return boolean
 	 */
 	public static function setPluginsDir($dir){
 		SlightPHP::$pluginsDir = $dir;
 		return true;
 	}
+	/**
+	 * pluginsDir get
+	 * 
+	 * @return string
+	 */
 	public static function getPluginsDir(){
 		return SlightPHP::$pluginsDir;
 	}
 	/**
-	 * _debug set && get
+	 * debug status set
+	 *
+	 * @param boolean $debug
+	 * @return boolean
 	 */
 	public static function setDebug($debug){
 		SlightPHP::$_debug = $debug;
 		return true;
 	}
+	/**
+	 * debug status get
+	 * 
+	 * @return boolean 
+	 */
 	public static function getDebug(){
 		return SlightPHP::$_debug;
 	}

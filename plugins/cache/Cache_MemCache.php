@@ -22,25 +22,29 @@
 
 class Cache_MemCache extends CacheObject{
 	/**
-	 * host
+	 * @var string host
 	 */
 	var $host;
 	/**
-	 * port
+	 * @var int $port
 	 */
 
 	var $port="11211";
 	 
 
 	/**
-	 * var boolean $permanent default false
+	 * @var boolean $permanent default false
 	 */
+
 	var $permanent=false;
+	/**
+	 * @var array $globals
+	 */
 	static $globals;
 	/**
 	 * init
 	 *
-	 * @param array $params,include host,port,permanent
+	 * @param array $params array("include","host","port","permanent")
 	 */
 	function init($params=array()){
 		foreach($params as $key=>$value){
@@ -89,7 +93,10 @@ class Cache_MemCache extends CacheObject{
 		return false;
 	}
 	
-	function _connect(){
+	/**
+	 * @return boolean
+	 */
+	private function _connect(){
 		$s_str=md5($this->host.":".$this->port);
 		if(!$this->permanent || empty(Cache_MemCache::$globals[$s_str])){
 			return Cache_MemCache::$globals[$s_str] = memcache_connect($this->host, $this->port);
