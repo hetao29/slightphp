@@ -1,11 +1,13 @@
 <?php
-class zone_default extends SlightPHP{
+class zone_default{
 	function pageEntry($inPath){
-		print_r($this);
+		echo "Hello, SlightPHP";
+		/*
+		SlightPHP::loadPlugin("SSmarty");
 		print_r($inPath);
 		print_r($_GET);
-		$a = new Smarty;
-		print_r($a);
+		$st = new Smarty;
+		*/
 	}
 }
 ?>
