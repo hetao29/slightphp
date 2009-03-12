@@ -1,6 +1,7 @@
 <?php
 class zone_smarty{
 	function pageEntry($inPath){
+		print_r($inPath);
 		$a = new SSmarty;
 		$a->template_dir = "zone/tpl";
 		$a->compile_dir = "zone/tpl";
