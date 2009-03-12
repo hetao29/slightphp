@@ -74,6 +74,9 @@ class SError{
 			}else error_log($log);
 		}
 	}
+	/**
+ 	 * @return string
+	 */
 	function getErrorText($backtrace,$e=null){
 		$arrLen=count($backtrace);
 		$text="\r\n".(empty($e)?"Error":"Exception")."(".date("Y-m-d H:i:s").")\r\n";
@@ -93,6 +96,9 @@ class SError{
 		}
 		return $text;
 	}
+	/**
+ 	 * @return string
+	 */
 	function getErrorHtml($backtrace,$e=null){
 		$arrLen=count($backtrace);
 		$html="\r\n".'<table border="1" cellpadding="3" style="font-size: 75%;border: 1px solid #000000;border-collapse: collapse;"><tr style="background-color: #ccccff; font-weight: bold; color: #000000;"><th >#</th><th >File</th><th >Line</th><th >Class::Method(Args)</th><th>'.(empty($e)?"Error":"Exception").'</th></tr>';

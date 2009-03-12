@@ -23,6 +23,10 @@ require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."db/DbData.php");
 require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."db/DbObject.php");
 class SDb{
 	static $engines=array("mysql");
+	/**
+	 * @param string $engine enum("mysql");
+	 * @return DbObject
+	 */
 	static function getDbEngine($engine){
 		$engine = strtolower($engine);
 		if(!in_array($engine,SDb::$engines)){
