@@ -11,6 +11,8 @@
 require_once("../SlightPHP.php");
 SlightPHP::setDebug(true);
 //var_dump(SlightPHP::getDebug());
+//SlightPHP::setSplitFlag("-_");
+//var_dump(SlightPHP::getSplitFlag());
 SlightPHP::setAppDir(".");
 //var_dump(SlightPHP::getAppDir());
 SlightPHP::setDefaultZone("zone");
