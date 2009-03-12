@@ -133,7 +133,7 @@ PHP_METHOD(SlightPHP, getDefaultMethod)
 
 
 
-PHP_METHOD(SlightPHP, setSpligFlag)
+PHP_METHOD(SlightPHP, setSplitFlag)
 {
 	char * splitFlag = NULL;
 	int splitFlag_len;
@@ -143,7 +143,7 @@ PHP_METHOD(SlightPHP, setSpligFlag)
 	zend_update_static_property_string(SlightPHP_ce_ptr, "splitFlag", sizeof("splitFlag")-1, splitFlag TSRMLS_CC);
 	RETURN_TRUE;
 }
-PHP_METHOD(SlightPHP, getSpligFlag)
+PHP_METHOD(SlightPHP, getSplitFlag)
 {
 	zval *data = zend_read_static_property(SlightPHP_ce_ptr,"splitFlag",sizeof("splitFlag")-1,1 TSRMLS_CC);
 	RETURN_ZVAL(data,1,0);
@@ -355,8 +355,8 @@ static zend_function_entry SlightPHP_methods[] = {
 	PHP_ME(SlightPHP, setDebug, SlightPHP__setDebug_arg, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
 	PHP_ME(SlightPHP, getDebug, NULL, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
 
-	PHP_ME(SlightPHP, setSpligFlag, SlightPHP__setSpligFlag_arg, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
-	PHP_ME(SlightPHP, getSpligFlag, NULL, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
+	PHP_ME(SlightPHP, setSplitFlag, SlightPHP__setSplitFlag_arg, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
+	PHP_ME(SlightPHP, getSplitFlag, NULL, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
 
 	PHP_ME(SlightPHP, loadFile, SlightPHP__loadFile_args, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
 	PHP_ME(SlightPHP, loadPlugin, SlightPHP__loadPlugin_args, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)

@@ -190,22 +190,22 @@ ZEND_END_ARG_INFO()
 
 
 
-PHP_METHOD(SlightPHP, setSpligFlag);
+PHP_METHOD(SlightPHP, setSplitFlag);
 #if (PHP_MAJOR_VERSION >= 5)
-ZEND_BEGIN_ARG_INFO_EX(SlightPHP__setSpligFlag_arg, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, 1)
+ZEND_BEGIN_ARG_INFO_EX(SlightPHP__setSplitFlag_arg, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, 1)
   ZEND_ARG_INFO(0, splitFlag)
 ZEND_END_ARG_INFO()
 #else /* PHP 4.x */
-#define SlightPHP__setSpligFlag_arg NULL
+#define SlightPHP__setSplitFlag_arg NULL
 #endif
 
 
-PHP_METHOD(SlightPHP, getSpligFlag);
+PHP_METHOD(SlightPHP, getSplitFlag);
 #if (PHP_MAJOR_VERSION >= 5)
-ZEND_BEGIN_ARG_INFO_EX(SlightPHP__getSpligFlag_args, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, 0)
+ZEND_BEGIN_ARG_INFO_EX(SlightPHP__getSplitFlag_args, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, 0)
 ZEND_END_ARG_INFO()
 #else /* PHP 4.x */
-#define SlightPHP__getSpligFlag_args NULL
+#define SlightPHP__getSplitFlag_args NULL
 #endif
 
 
