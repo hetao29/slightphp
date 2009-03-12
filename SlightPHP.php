@@ -273,7 +273,7 @@ final class SlightPHP{
 
 
 	/**
-	 * @var int
+	 * @var boolean
 	 */
 	public static $_debug=0;
 
