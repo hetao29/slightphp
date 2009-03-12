@@ -1,7 +1,7 @@
-srcdir = /root/SlightPHP/SlightPHP
-builddir = /root/SlightPHP/SlightPHP
-top_srcdir = /root/SlightPHP/SlightPHP
-top_builddir = /root/SlightPHP/SlightPHP
+srcdir = /data/www/pecl
+builddir = /data/www/pecl
+top_srcdir = /data/www/pecl
+top_builddir = /data/www/pecl
 EGREP = grep -E
 SED = /bin/sed
 CONFIGURE_COMMAND = './configure'
@@ -22,7 +22,7 @@ prefix = /data/php
 exec_prefix = $(prefix)
 libdir = ${exec_prefix}/lib
 prefix = /data/php
-phplibdir = /root/SlightPHP/SlightPHP/modules
+phplibdir = /data/www/pecl/modules
 phpincludedir = /data/php/include/php
 CC = gcc
 CFLAGS = -g -O2
@@ -166,8 +166,8 @@ distclean: clean
 
 .PHONY: all clean install distclean test
 .NOEXPORT:
-SlightPHP.lo: /root/SlightPHP/SlightPHP/SlightPHP.c
-	$(LIBTOOL) --mode=compile $(CC)  -I. -I/root/SlightPHP/SlightPHP $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)  -c /root/SlightPHP/SlightPHP/SlightPHP.c -o SlightPHP.lo 
+SlightPHP.lo: /data/www/pecl/SlightPHP.c
+	$(LIBTOOL) --mode=compile $(CC)  -I. -I/data/www/pecl $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)  -c /data/www/pecl/SlightPHP.c -o SlightPHP.lo 
 $(phplibdir)/SlightPHP.la: ./SlightPHP.la
 	$(LIBTOOL) --mode=install cp ./SlightPHP.la $(phplibdir)
 

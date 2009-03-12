@@ -90,6 +90,129 @@ ZEND_END_ARG_INFO()
 #define SlightPHP__getAppDir_args NULL
 #endif
 
+
+PHP_METHOD(SlightPHP, setPluginsDir);
+#if (PHP_MAJOR_VERSION >= 5)
+ZEND_BEGIN_ARG_INFO_EX(SlightPHP__setPluginsDir_arg, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, 1)
+  ZEND_ARG_INFO(0, pluginsDir)
+ZEND_END_ARG_INFO()
+#else /* PHP 4.x */
+#define SlightPHP__setPluginsDir_arg NULL
+#endif
+
+
+PHP_METHOD(SlightPHP, getPluginsDir);
+#if (PHP_MAJOR_VERSION >= 5)
+ZEND_BEGIN_ARG_INFO_EX(SlightPHP__getPluginsDir_args, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, 0)
+ZEND_END_ARG_INFO()
+#else /* PHP 4.x */
+#define SlightPHP__getPluginsDir_args NULL
+#endif
+
+
+PHP_METHOD(SlightPHP, setDefaultZone);
+#if (PHP_MAJOR_VERSION >= 5)
+ZEND_BEGIN_ARG_INFO_EX(SlightPHP__setDefaultZone_arg, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, 1)
+  ZEND_ARG_INFO(0, defaultZone)
+ZEND_END_ARG_INFO()
+#else /* PHP 4.x */
+#define SlightPHP__setDefaultZone_arg NULL
+#endif
+
+
+PHP_METHOD(SlightPHP, getDefaultZone);
+#if (PHP_MAJOR_VERSION >= 5)
+ZEND_BEGIN_ARG_INFO_EX(SlightPHP__getDefaultZone_args, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, 0)
+ZEND_END_ARG_INFO()
+#else /* PHP 4.x */
+#define SlightPHP__getDefaultZone_args NULL
+#endif
+
+
+PHP_METHOD(SlightPHP, setDebug);
+#if (PHP_MAJOR_VERSION >= 5)
+ZEND_BEGIN_ARG_INFO_EX(SlightPHP__setDebug_arg, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, 1)
+  ZEND_ARG_INFO(0, _debug)
+ZEND_END_ARG_INFO()
+#else /* PHP 4.x */
+#define SlightPHP__setDebug_arg NULL
+#endif
+
+
+PHP_METHOD(SlightPHP, getDebug);
+#if (PHP_MAJOR_VERSION >= 5)
+ZEND_BEGIN_ARG_INFO_EX(SlightPHP__getDebug_args, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, 0)
+ZEND_END_ARG_INFO()
+#else /* PHP 4.x */
+#define SlightPHP__getDebug_args NULL
+#endif
+
+
+
+PHP_METHOD(SlightPHP, setDefaultClass);
+#if (PHP_MAJOR_VERSION >= 5)
+ZEND_BEGIN_ARG_INFO_EX(SlightPHP__setDefaultClass_arg, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, 1)
+  ZEND_ARG_INFO(0, defaultClass)
+ZEND_END_ARG_INFO()
+#else /* PHP 4.x */
+#define SlightPHP__setDefaultClass_arg NULL
+#endif
+
+
+PHP_METHOD(SlightPHP, getDefaultClass);
+#if (PHP_MAJOR_VERSION >= 5)
+ZEND_BEGIN_ARG_INFO_EX(SlightPHP__getDefaultClass_args, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, 0)
+ZEND_END_ARG_INFO()
+#else /* PHP 4.x */
+#define SlightPHP__getDefaultClass_args NULL
+#endif
+
+
+
+
+PHP_METHOD(SlightPHP, setDefaultMethod);
+#if (PHP_MAJOR_VERSION >= 5)
+ZEND_BEGIN_ARG_INFO_EX(SlightPHP__setDefaultMethod_arg, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, 1)
+  ZEND_ARG_INFO(0, defaultMethod)
+ZEND_END_ARG_INFO()
+#else /* PHP 4.x */
+#define SlightPHP__setDefaultMethod_arg NULL
+#endif
+
+
+PHP_METHOD(SlightPHP, getDefaultMethod);
+#if (PHP_MAJOR_VERSION >= 5)
+ZEND_BEGIN_ARG_INFO_EX(SlightPHP__getDefaultMethod_args, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, 0)
+ZEND_END_ARG_INFO()
+#else /* PHP 4.x */
+#define SlightPHP__getDefaultMethod_args NULL
+#endif
+
+
+
+PHP_METHOD(SlightPHP, setSpligFlag);
+#if (PHP_MAJOR_VERSION >= 5)
+ZEND_BEGIN_ARG_INFO_EX(SlightPHP__setSpligFlag_arg, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, 1)
+  ZEND_ARG_INFO(0, splitFlag)
+ZEND_END_ARG_INFO()
+#else /* PHP 4.x */
+#define SlightPHP__setSpligFlag_arg NULL
+#endif
+
+
+PHP_METHOD(SlightPHP, getSpligFlag);
+#if (PHP_MAJOR_VERSION >= 5)
+ZEND_BEGIN_ARG_INFO_EX(SlightPHP__getSpligFlag_args, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, 0)
+ZEND_END_ARG_INFO()
+#else /* PHP 4.x */
+#define SlightPHP__getSpligFlag_args NULL
+#endif
+
+
+
+
+
+
 PHP_METHOD(SlightPHP, loadFile);
 #if (PHP_MAJOR_VERSION >= 5)
 ZEND_BEGIN_ARG_INFO_EX(SlightPHP__loadFile_args, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, 1)

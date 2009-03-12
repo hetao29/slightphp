@@ -17,8 +17,9 @@
   |          http://www.slightphp.com                                    |
   +----------------------------------------------------------------------+
 */
-#include<SlightPHP_globals.h>
-int debug(zval*_debug_flag,char*format,...){
+int debug(char*format,...){
+	TSRMLS_FETCH();
+	zval *_debug_flag = zend_read_static_property(SlightPHP_ce_ptr,"_debug",sizeof("_debug")-1,1 TSRMLS_CC);
 	convert_to_long(_debug_flag);
 	if(Z_LVAL_P(_debug_flag))
 	{
@@ -37,31 +38,31 @@ int debug(zval*_debug_flag,char*format,...){
 }
 
 
-int SlightPHP_load(zval*appDir,zval*zone,zval*class_name,zval * _debug_flag TSRMLS_DC){
+int SlightPHP_load(zval*appDir,zval*zone,zval*class_name TSRMLS_DC){
 	char*inc_filename;
 	int ret;
 	spprintf(&inc_filename,0,"%s%c%s%c%s.class.php",Z_STRVAL_P(appDir),DEFAULT_SLASH,Z_STRVAL_P(zone),DEFAULT_SLASH,Z_STRVAL_P(class_name));
 	zval file_name;
 	ZVAL_STRING(&file_name,inc_filename,1);
-	ret = SlightPHP_loadFile(&file_name , _debug_flag TSRMLS_CC);
+	ret = SlightPHP_loadFile(&file_name TSRMLS_CC);
 	efree(inc_filename);
 	return ret;
 }
-int SlightPHP_loadFile(zval *file_name,zval *_debug_flag TSRMLS_DC){
+int SlightPHP_loadFile(zval *file_name TSRMLS_DC){
 	int dummy = 1;
 	zend_file_handle file_handle;
 	int ret;
 	if(zend_stream_open(Z_STRVAL_P(file_name), &file_handle TSRMLS_CC)==SUCCESS){;
 		if (!file_handle.opened_path) {
-		//debug(_debug_flag,"LINE[%d]",__LINE__);
 			file_handle.opened_path = estrndup(Z_STRVAL_P(file_name), Z_STRLEN_P(file_name));
 		}
-//		debug(_debug_flag,"LINE[%d]",__LINE__);
 		return php_execute_simple_script(&file_handle,NULL TSRMLS_CC);
+	}else{
+		debug("file[%s] not exists",Z_STRVAL_P(file_name));
 	}
 	return FAILURE;
 }
-int SlightPHP_run(zval*zone,zval*class_name,zval*method,zval**return_value, int param_count,zval ** params[],zval*_debug_flag TSRMLS_DC){
+int SlightPHP_run(zval*zone,zval*class_name,zval*method,zval**return_value, int param_count,zval ** params[] TSRMLS_DC){
 	zval *rt;
 	zval *object;
 
@@ -81,7 +82,7 @@ int SlightPHP_run(zval*zone,zval*class_name,zval*method,zval**return_value, int 
 
 	zend_class_entry * ce = NULL, **pce;
 	if(zend_hash_find(EG(class_table), Z_STRVAL(real_classname_zval), Z_STRLEN(real_classname_zval)+1, (void **) &pce) ==FAILURE){
-		debug(_debug_flag,"class[%s] not exists",Z_STRVAL(real_classname_zval));
+		debug("class[%s] not exists",Z_STRVAL(real_classname_zval));
 		return FAILURE;
 	} else {
 		ce = *pce;
@@ -104,7 +105,7 @@ int SlightPHP_run(zval*zone,zval*class_name,zval*method,zval**return_value, int 
 			}else{
 			}
 		}else{
-			debug(_debug_flag,"method[%s] not exists in class[%s]",Z_STRVAL(real_method_zval),Z_STRVAL(real_classname_zval));
+			debug("method[%s] not exists in class[%s]",Z_STRVAL(real_method_zval),Z_STRVAL(real_classname_zval));
 			return FAILURE;
 		}
 		FREE_ZVAL(object);
@@ -112,7 +113,7 @@ int SlightPHP_run(zval*zone,zval*class_name,zval*method,zval**return_value, int 
 	return SUCCESS;
 }
 
-int preg_quote(zval *in_str,zval*out_str,zval * _debug_flag){
+int preg_quote(zval *in_str,zval*out_str){
 	if(Z_STRLEN_P(in_str)==0){
 		return 0;
 	}
