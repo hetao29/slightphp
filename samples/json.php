@@ -2,9 +2,14 @@
 require_once("../SlightPHP.php");
 
 $slight=new SlightPHP;
-//$slight->appDir="..";
-$slight->pluginsDir="../plugins";
-$slight->_debug=true;
+
+$slight->setDebug(true);
+$slight->setSplitFlag("-_");
+$slight->setDefaultZone("zone");
+$slight->setAppDir(".");
+$slight->setPluginsDir("../plugins");
+
+
 if($slight->loadPlugin("SJson")==false){
 	die("loadPlugin error\n");
 }

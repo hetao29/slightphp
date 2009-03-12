@@ -1,9 +1,11 @@
 <?php
 require_once("../SlightPHP.php");
 $slight=new SlightPHP;
-$slight->appDir="..";
-$slight->pluginsDir="../plugins";
-$slight->_debug=true;
+$slight->setDebug(true);
+$slight->setSplitFlag("-_");
+$slight->setDefaultZone("zone");
+$slight->setAppDir(".");
+$slight->setPluginsDir("../plugins");
 $slight->loadPlugin("SError");
 /*
  * 是否在前端显示，默认为true

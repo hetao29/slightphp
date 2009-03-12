@@ -2,10 +2,14 @@
 require_once("../SlightPHP.php");
 
 $slight=new SlightPHP;
-$slight->appDir="..";
-$slight->pluginsDir="../plugins";
-$slight->_debug=true;
-var_dump($slight->loadPlugin("Smarty"));
-$sm = new Smarty;
+$slight->setDebug(true);
+$slight->setSplitFlag("-_");
+$slight->setDefaultZone("zone");
+$slight->setAppDir(".");
+$slight->setPluginsDir("../plugins");
+
+
+var_dump($slight->loadPlugin("SSmarty"));
+$sm = new SSmarty;
 print_r($sm);
 ?>
