@@ -3614,8 +3614,8 @@ int
 main ()
 {
 
-#if PHP_VERSION_ID < 50100
-#error  this extension requires at least PHP version 5.1.0
+#if PHP_MAJOR_VERSION < 5
+#error  this extension requires at least PHP version 5.0
 #endif
 
   ;
@@ -3650,8 +3650,8 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-{ { echo "$as_me:$LINENO: error: need at least PHP 5.1.0" >&5
-echo "$as_me: error: need at least PHP 5.1.0" >&2;}
+{ { echo "$as_me:$LINENO: error: need at least PHP 5.0" >&5
+echo "$as_me: error: need at least PHP 5.0" >&2;}
    { (exit 1); exit 1; }; }
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
@@ -3675,7 +3675,7 @@ _ACEOF
   ac_extra=
 
   if test "$ext_shared" != "shared" && test "$ext_shared" != "yes" && test "" != "cli"; then
-    PHP_SLIGHTH_SHARED=no
+    PHP_SLIGHTPHP_SHARED=no
     
   
   case "" in
@@ -3816,7 +3816,7 @@ EOF
       ;;
     *netware*)
       suffix=nlm
-      link_cmd='$(LIBTOOL) --mode=link $(CC) $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS) $(LDFLAGS) -o $@ -shared -export-dynamic -avoid-version -prefer-pic -module -rpath $(phplibdir) $(EXTRA_LDFLAGS) $(shared_objects_SlightPHP) -L$(top_builddir)/netware -lphp5lib $(GHTH_SHARED_LIBADD)'
+      link_cmd='$(LIBTOOL) --mode=link $(CC) $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS) $(LDFLAGS) -o $@ -shared -export-dynamic -avoid-version -prefer-pic -module -rpath $(phplibdir) $(EXTRA_LDFLAGS) $(shared_objects_SlightPHP) -L$(top_builddir)/netware -lphp5lib $(GHTPHP_SHARED_LIBADD)'
       ;;
     *)
       suffix=la
