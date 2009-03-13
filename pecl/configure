@@ -3614,8 +3614,8 @@ int
 main ()
 {
 
-#if PHP_MAJOR_VERSION < 5
-#error  this extension requires at least PHP version 5.0
+#if PHP_MAJOR_VERSION < 5 || PHP_MINOR_VERSION < 2
+#error  this extension requires at least PHP version 5.2
 #endif
 
   ;
@@ -3650,8 +3650,8 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-{ { echo "$as_me:$LINENO: error: need at least PHP 5.0" >&5
-echo "$as_me: error: need at least PHP 5.0" >&2;}
+{ { echo "$as_me:$LINENO: error: need at least PHP 5.2" >&5
+echo "$as_me: error: need at least PHP 5.2" >&2;}
    { (exit 1); exit 1; }; }
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext

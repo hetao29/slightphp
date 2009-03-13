@@ -11,12 +11,12 @@ if test "$PHP_SLIGHTPHP" != "no"; then
 
   AC_MSG_CHECKING(PHP version)
   AC_TRY_COMPILE([#include <php_version.h>], [
-#if PHP_MAJOR_VERSION < 5
-#error  this extension requires at least PHP version 5.0
+#if PHP_MAJOR_VERSION < 5 || PHP_MINOR_VERSION < 2
+#error  this extension requires at least PHP version 5.2
 #endif
 ],
 [AC_MSG_RESULT(ok)],
-[AC_MSG_ERROR([need at least PHP 5.0])])
+[AC_MSG_ERROR([need at least PHP 5.2])])
 
   export CPPFLAGS="$OLD_CPPFLAGS"
 
