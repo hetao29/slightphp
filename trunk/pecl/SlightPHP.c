@@ -267,6 +267,45 @@ PHP_METHOD(SlightPHP, run)
 	array_init(path_array);
 
 	if (path){
+		//{{{
+		zval quotedFlag;
+		regex_t re;
+		char	*regex;
+		regmatch_t subs[1];
+		int err,size;
+		char *strp = Z_STRVAL_P(path);
+		char *endp = strp + Z_STRLEN_P(path);
+		zval *splitFlag = zend_read_static_property(SlightPHP_ce_ptr,"splitFlag",sizeof("splitFlag")-1,1 TSRMLS_CC);
+
+		if(preg_quote(splitFlag,&quotedFlag)>0){
+			spprintf(&regex,0,"[%s\\/]",Z_STRVAL(quotedFlag));
+		}else{
+			spprintf(&regex,0,"[\\/]");
+		}
+		err = regcomp(&re, regex, REG_ICASE);
+		if (err) {
+		}else{
+			while (!(err = regexec(&re, strp, 1, subs, 0))) {
+				if (subs[0].rm_so == 0 && subs[0].rm_eo) {
+					//ignore empty string 
+					strp += subs[0].rm_eo;
+				}else if (subs[0].rm_so == 0 && subs[0].rm_eo == 0) {
+				}else{
+						size = subs[0].rm_so;
+			            add_next_index_stringl(path_array, strp, size, 1);
+			            strp += size;
+			
+				}
+			}
+			if (!err || err == REG_NOMATCH) {
+				size = endp - strp;
+				if(size>0) add_next_index_stringl(path_array, strp, size, 1);
+			}
+			regfree(&re);
+		}
+		efree(regex);
+		//}}}
+		/*
 		zval quotedFlag;
 		char	*regex;
 		pcre_cache_entry    *pce;
@@ -285,6 +324,7 @@ PHP_METHOD(SlightPHP, run)
 		php_pcre_split_impl(pce, Z_STRVAL_P(path),Z_STRLEN_P(path),path_array, -1, 1 TSRMLS_CC);
 		
 		//}}}
+		*/
 		int n_elems = zend_hash_num_elements(Z_ARRVAL_P(path_array));
 		if(zend_hash_index_find(Z_ARRVAL_P(path_array), 0, (void **)&token) != FAILURE) {
 			zone = *token;
