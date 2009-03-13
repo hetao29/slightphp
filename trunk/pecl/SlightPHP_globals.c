@@ -52,14 +52,19 @@ int SlightPHP_loadFile(zval *file_name TSRMLS_DC){
 	int dummy = 1;
 	zend_file_handle file_handle;
 	int ret;
-	if(zend_stream_open(Z_STRVAL_P(file_name), &file_handle TSRMLS_CC)==SUCCESS){;
-		if (!file_handle.opened_path) {
-			file_handle.opened_path = estrndup(Z_STRVAL_P(file_name), Z_STRLEN_P(file_name));
+
+	zval filestat;
+	php_stat(Z_STRVAL_P(file_name),Z_STRLEN_P(file_name),FS_EXISTS,&filestat TSRMLS_CC);
+	convert_to_boolean(&filestat);
+	if(Z_LVAL(filestat)){
+		if(zend_stream_open(Z_STRVAL_P(file_name), &file_handle TSRMLS_CC)==SUCCESS){;
+			if (!file_handle.opened_path) {
+				file_handle.opened_path = estrndup(Z_STRVAL_P(file_name), Z_STRLEN_P(file_name));
+			}
+			return php_execute_simple_script(&file_handle,NULL TSRMLS_CC);
 		}
-		return php_execute_simple_script(&file_handle,NULL TSRMLS_CC);
-	}else{
-		debug("file[%s] not exists",Z_STRVAL_P(file_name));
 	}
+	debug("file[%s] not exists",Z_STRVAL_P(file_name));
 	return FAILURE;
 }
 int SlightPHP_run(zval*zone,zval*class_name,zval*method,zval**return_value, int param_count,zval ** params[] TSRMLS_DC){
