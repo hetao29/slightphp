@@ -27,7 +27,6 @@
 #include "php_globals.h"
 #include "php_streams.h"
 #include "ext/standard/info.h"
-#include "ext/pcre/php_pcre.h"
 
 #include "standard/php_string.h"
 #include "standard/basic_functions.h"
