@@ -74,7 +74,10 @@ class Db_Mysql extends DbObject{
 	 *
 	 */
 	public $error=array('code'=>0,'msg'=>"");
-
+	/**
+	 * @var array $globals
+	 */
+	static $globals;
 	/**
 	 * construct
 	 *
@@ -88,7 +91,7 @@ class Db_Mysql extends DbObject{
 			$this->$key = $value;
 		}
 		$this->key = "mysql:".$this->host.":".$this->user.":".$this->password;
-		$GLOBALS[$this->key]="";
+		Db_Mysql::$globals[$this->key]= "";
 		$this->__connect();
 	}
 	/**
@@ -342,26 +345,27 @@ class Db_Mysql extends DbObject{
 
 	}
 	function lastInsertId(){
-		return mysql_insert_id($GLOBALS[$this->key]);
+		return mysql_insert_id(Db_Mysql::$globals[$this->key]);
+		//return mysql_insert_id($GLOBALS[$this->key]);
 	}
 	function rowCount(){
-		return mysql_affected_rows($GLOBALS[$this->key]);
+		return mysql_affected_rows(Db_Mysql::$globals[$this->key]);
 	}
 
 
 	function __connect($forceReconnect=false){
-		if(empty($GLOBALS[$this->key]) || $forceReconnect){
-			if(!empty($GLOBALS[$this->key])){
-				mysql_close($GLOBALS[$this->key]);
-				unset($GLOBALS[$this->key]);
+		if(empty(Db_Mysql::$globals[$this->key]) || $forceReconnect){
+			if(!empty(Db_Mysql::$globals[$this->key])){
+				mysql_close(Db_Mysql::$globals[$this->key]);
+				unset(Db_Mysql::$globals[$this->key]);
 			}
-			$GLOBALS[$this->key] = mysql_connect($this->host,$this->user,$this->password,false,MYSQL_CLIENT_COMPRESS);
+			Db_Mysql::$globals[$this->key] = mysql_connect($this->host,$this->user,$this->password,false,MYSQL_CLIENT_COMPRESS);
 		}
-		if(!$GLOBALS[$this->key]){
+		if(!Db_Mysql::$globals[$this->key]){
 			die("connect database error");
 		}
 		if($this->database!=""){
-			mysql_select_db($this->database,$GLOBALS[$this->key]);
+			mysql_select_db($this->database,Db_Mysql::$globals[$this->key]);
 			if(defined("mysql_charset")){
 				$charset = "SET NAMES '".mysql_charset."'";
 				mysql_query($charset);
@@ -369,13 +373,13 @@ class Db_Mysql extends DbObject{
 		}
 	}
 	function __execute($sql){
-		if(empty($GLOBALS[$this->key]) || !mysql_ping($GLOBALS[$this->key])){
+		if(empty(Db_Mysql::$globals[$this->key]) || !mysql_ping(Db_Mysql::$globals[$this->key])){
 			$this->__connect($forceReconnect=true);
 		}
 		if(defined("DEBUG")){
 			echo "SQL:$sql\n";
 		}
-		$result = mysql_query($sql,$GLOBALS[$this->key]);
+		$result = mysql_query($sql,Db_Mysql::$globals[$this->key]);
 		if(!$result){
 			$this->error['code']=mysql_errno();
 			$this->error['msg']=mysql_error();
@@ -394,7 +398,7 @@ class Db_Mysql extends DbObject{
 				if(!is_numeric($k))
 				{
 					$it[]="`".$k."`";
-					$value[]="'".mysql_real_escape_string($v,$GLOBALS[$this->key])."'";
+					$value[]="'".mysql_real_escape_string($v,Db_Mysql::$globals[$this->key])."'";
 				}else{
 					$tmp=explode("=",$v);
 					if(isset($tmp[0]) and isset($tmp[1])){
@@ -422,7 +426,7 @@ class Db_Mysql extends DbObject{
 			{
 				if(!is_numeric($k))
 				{
-					$v1[]="`".$k."`"." = '".mysql_real_escape_string($v,$GLOBALS[$this->key])."'";
+					$v1[]="`".$k."`"." = '".mysql_real_escape_string($v,Db_Mysql::$globals[$this->key])."'";
 				}else{
 					$v1[]=($v);
 				}
