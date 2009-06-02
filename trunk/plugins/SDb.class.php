@@ -22,7 +22,7 @@
 require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."db/DbData.php");
 require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."db/DbObject.php");
 class SDb{
-	static $engines=array("mysql");
+	static $engines=array("mysql","pdo_mysql");
 	/**
 	 * @param string $engine enum("mysql");
 	 * @return DbObject
@@ -35,6 +35,10 @@ class SDb{
 		if($engine=="mysql" && extension_loaded("mysql")){
 			require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."db/Db_Mysql.php");
 			return new Db_Mysql;
+		}elseif($engine=="pdo_mysql"){
+			require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."db/Db_PDO.php");
+			return new Db_PDO("mysql");
+
 		}
 	}
 }
