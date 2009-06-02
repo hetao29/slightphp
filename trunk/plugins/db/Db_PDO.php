@@ -1,3 +1,4 @@
+
 <?php        
 /*
   +----------------------------------------------------------------------+
@@ -20,11 +21,11 @@
 */
 
 
-class Db_Mysql extends DbObject{
+class Db_PDO extends DbObject{
 	/**
 	 * 
 	 */
-	private $mysql;
+	//private $mysql;
 
 	/**
 	 *
@@ -69,7 +70,9 @@ class Db_Mysql extends DbObject{
 	/**
 	 *
 	 */
+	private $prefix;
 	private $countsql;
+	private $affectedRows=0;
 	/**
 	 *
 	 */
@@ -78,7 +81,8 @@ class Db_Mysql extends DbObject{
 	 * @var array $globals
 	 */
 	static $globals;
-	function __construct(){
+	function __construct($prefix="mysql"){
+		$this->prefix=$prefix;
 	}
 	/**
 	 * construct
@@ -92,8 +96,8 @@ class Db_Mysql extends DbObject{
 		foreach($params as $key=>$value){
 			$this->$key = $value;
 		}
-		$this->key = "mysql:".$this->host.":".$this->user.":".$this->password;
-		Db_Mysql::$globals[$this->key]= "";
+		$this->key = $this->prefix.":".$this->host.":".$this->user.":".$this->password;
+		Db_PDO::$globals[$this->key]= "";
 		$this->__connect();
 	}
 	/**
@@ -163,6 +167,7 @@ class Db_Mysql extends DbObject{
 	 * @return DbData object
 	 */
 	function select($table,$condition="",$item="*",$groupby="",$orderby="",$leftjoin=""){
+		//{{{$item
 		if($item==""){$item="*";}
 		if(is_array($table)){
 			for($i=0;$i<count($table);$i++)
@@ -176,20 +181,50 @@ class Db_Mysql extends DbObject{
 
 		if(is_array($item))
 		$item =@implode(" , ",$item);
+		//}}}
+		//{{{$condition
+		$condiStr = $this->__quote($condition,"AND",$bind);
+		/*
+		$bind=array();
+		$condiStr = "";
+		$split="AND";
+		if(is_array($condition)){
+			$v1=array();
+			foreach($condition as $k=>$v)
+			{
+				if(!is_numeric($k))
+				{
+					$v1[]="`$k`=:$k";
+					$bind[":$k"]=$v;
+				}else{
+					$v1[]=($v);
+				}
+			}
+			if(count($v1)>0)
+			{
+				$condiStr=implode(" ".$split." ",$v1);
 
-		$condiStr = $this->__quote($condition);
+			}
+		}else{
+			$condiStr=$condition;
+		}
+		*/
 		if($condiStr!=""){
 			$condiStr=" WHERE ".$condiStr;
 		}
+		//}}}
+		//{{{
 		$join="";
 		if(is_array($leftjoin)){
 			foreach ($leftjoin as $key=>$value){
 				$join.=" LEFT JOIN $key ON $value ";
 			}
 		}
-
+		//}}}
+		//{{{
 		$this->groupby  =$groupby!=""?$groupby:$this->groupby;
 		$this->orderby  =$orderby!=""?$orderby:$this->orderby;
+		
 		$orderby_sql="";
 		$orderby_sql_tmp = array();
 		if(is_array($orderby)){
@@ -204,6 +239,8 @@ class Db_Mysql extends DbObject{
 		if(count($orderby_sql_tmp)>0){
 			$orderby_sql=" ORDER BY ".implode(",",$orderby_sql_tmp);
 		}
+		//}}}
+
 		$limit="";
 		if($this->limit!=0){
 			$limit    =($this->page-1)*$this->limit;
@@ -211,7 +248,29 @@ class Db_Mysql extends DbObject{
 		}
 		$this->sql="SELECT $item FROM $table $join $condiStr $groupby $orderby_sql $limit";
 		$this->countsql="SELECT count(1) totalSize FROM $table $condiStr $groupby";
-		return $this->query($this->sql,$this->countsql);
+		$data = new DbData;
+		
+		$data->limit = $this->limit;
+		$start = microtime(true);
+
+
+		$data->limit = $this->limit;
+		$data->items = $this->query($this->sql,$bind);
+		$data->pageSize = count($data->items);
+		$end = microtime(true);
+		$data->totalSecond = $end-$start;
+
+		//}}}
+		
+
+		//{{{
+		if($this->limit !=0 and $this->count==true and $this->countsql!=""){
+			$result_count = $this->query($this->countsql,$bind);
+			$data->totalSize = $result_count[0]['totalSize'];
+			$data->totalPage = ceil($data->totalSize/$data->limit);
+		}
+		//}}}
+		return $data;
 	}
 	/**
 	 * 
@@ -247,14 +306,14 @@ class Db_Mysql extends DbObject{
 	 * update("table",array('name'=>'myName','password'=>'myPass'),array("password=$myPass"));
 	 */
 	function update($table,$condition="",$item=""){
-		$value = $this->__quote($item,",");
-		$condiStr = $this->__quote($condition);
+		$value = $this->__quote($item,",",$bind_v);
+		$condiStr = $this->__quote($condition,"AND",$bind_c);
 		if($condiStr!=""){
 			$condiStr=" WHERE ".$condiStr;
 		}
 		$this->sql="UPDATE $table SET $value $condiStr";
-		$this->execute($this->sql);
-		return $this->rowCount();
+		return $this->query($this->sql,$bind_v,$bind_c);
+		//return $this->rowCount();
 	}
 	/**
 	 * delete
@@ -267,12 +326,12 @@ class Db_Mysql extends DbObject{
 	 * delete("table",array('name'=>'myName','password'=>'myPass'),array("password=$myPass"));
 	 */
 	function delete($table,$condition=""){
-		$condiStr = $this->__quote($condition);
+		$condiStr = $this->__quote($condition,"AND",$bind);
 		if($condiStr!=""){
 			$condiStr=" WHERE ".$condiStr;
 		}
 		$this->sql="DELETE FROM  $table $condiStr";
-		$this->execute($this->sql);
+		return $this->query($this->sql,$bind);
 		return $this->rowCount();
 	}
 	/**
@@ -295,14 +354,14 @@ class Db_Mysql extends DbObject{
 			$command.=" DELAYED ";
 		}
 
-		$f = $this->__quote($item,",");
+		$f = $this->__quote($item,",",$bind_f);
 
 		$this->sql="$command INTO $table SET $f ";
-		$v = $this->__quote($update);
+		$v = $this->__quote($update,"AND",$bind_v);
 		if(!empty($v)){
 			$this->sql.="ON DUPLICATE KEY UPDATE ".implode(",",$v);
 		}
-		$r=$this->execute($this->sql);
+		$r=$this->query($this->sql,$bind_f,$bind_v);
 		if($this->lastInsertId ()>0){
 			return $this->lastInsertId ();
 		}else{
@@ -317,90 +376,75 @@ class Db_Mysql extends DbObject{
 	 * @return DbData object
 	 */
 	
-	function query($sql,$countsql="")
+	function query($sql,$bind1=array(),$bind2=array())
 	{
-		$data = new DbData;
-		$data->limit = $this->limit;
-		$start = microtime(true);
-		$result = $this->execute($sql);
-		$end = microtime(true);
-		$data->totalSecond = $end-$start;
-		if($result){
-			while($row=mysql_fetch_array($result,MYSQL_ASSOC)){
-				$tmp = array();
-				foreach($row as $key=>$value){
-					$tmp[$key]=stripslashes($value);
-				}
-				$data->items[]=$tmp;
-				$data->pageSize++;
-			}
-		}
-		if($this->limit !=0 and $this->count==true and $countsql!=""){
-			$result = $this->execute($countsql);
-			if($result){
-				$row = mysql_fetch_array($result,MYSQL_NUM );
-				$data->totalSize = $row[0];
-			}
-			$data->totalPage = ceil($data->totalSize/$data->limit);
-		}
-		return $data;
-
-	}
-	function lastInsertId(){
-		return mysql_insert_id(Db_Mysql::$globals[$this->key]);
-		//return mysql_insert_id($GLOBALS[$this->key]);
-	}
-	function rowCount(){
-		return mysql_affected_rows(Db_Mysql::$globals[$this->key]);
-	}
-
-
-	function __connect($forceReconnect=false){
-		if(empty(Db_Mysql::$globals[$this->key]) || $forceReconnect){
-			if(!empty(Db_Mysql::$globals[$this->key])){
-				mysql_close(Db_Mysql::$globals[$this->key]);
-				unset(Db_Mysql::$globals[$this->key]);
-			}
-			Db_Mysql::$globals[$this->key] = mysql_connect($this->host,$this->user,$this->password,false,MYSQL_CLIENT_COMPRESS);
-		}
-		if(!Db_Mysql::$globals[$this->key]){
-			die("connect database error");
-		}
-		if($this->database!=""){
-			mysql_select_db($this->database,Db_Mysql::$globals[$this->key]);
-			if(defined("mysql_charset")){
-				$charset = "SET NAMES '".mysql_charset."'";
-				mysql_query($charset);
-			}
-		}
-	}
-	function execute($sql){
-		if(empty(Db_Mysql::$globals[$this->key]) || !mysql_ping(Db_Mysql::$globals[$this->key])){
+		//{{{
+		if(empty(Db_PDO::$globals[$this->key])){
 			$this->__connect($forceReconnect=true);
 		}
 		if(defined("DEBUG")){
 			echo "SQL:$sql\n";
 		}
-		$result = mysql_query($sql,Db_Mysql::$globals[$this->key]);
-		if(!$result){
-			$this->error['code']=mysql_errno();
-			$this->error['msg']=mysql_error();
+		$stmt = Db_PDO::$globals[$this->key]->prepare($sql);
+		if(!$stmt){
 			
-			return false;
-		}else{
-			return $result;
+			$this->error['code']=Db_PDO::$globals[$this->key]->errorCode ();
+			$this->error['msg']=Db_PDO::$globals[$this->key]->errorInfo ();
 		}
+		if(!empty($bind1)){
+			foreach($bind1 as $k=>$v){
+				$stmt->bindParam($k,$v);
+			}
+		}
+		if(!empty($bind2)){
+			foreach($bind2 as $k=>$v){
+				$stmt->bindParam($k,$v);
+			}
+		}
+		if($stmt->execute ()){
+			$this->affectedRows = $stmt->rowCount();
+			return $stmt->fetchAll (PDO::FETCH_ASSOC );
+		}else{
+			$this->error['code']=Db_PDO::$globals[$this->key]->errorCode ();
+			$this->error['msg']=Db_PDO::$globals[$this->key]->errorInfo ();
+		}
+		return false;
+
+	}
+	function lastInsertId(){
+		return Db_PDO::$globals[$this->key]->lastInsertId ();
+	}
+	function rowCount(){
+		return $this->affectedRows;
 	}
 
-	function __quote($condition,$split="AND"){
+
+	function execute($sql){
+		return $this->query($sql);
+	}
+
+	function __connect($forceReconnect=false){
+		if(empty(Db_PDO::$globals[$this->key]) || $forceReconnect){
+			if(!empty(Db_PDO::$globals[$this->key])){
+				unset(Db_PDO::$globals[$this->key]);
+			}
+			Db_PDO::$globals[$this->key] = new PDO($this->prefix.":dbname=".$this->database.";host=".$this->host,$this->user,$this->password);
+		}
+		if(!Db_PDO::$globals[$this->key]){
+			die("connect database error");
+		}
+	}
+	function __quote($condition,$split="AND",&$bind){
 		$condiStr = "";
+		if(!is_array($bind)){$bind=array();}
 		if(is_array($condition)){
 			$v1=array();
 			foreach($condition as $k=>$v)
 			{
 				if(!is_numeric($k))
 				{
-					$v1[]="`".$k."`"." = '".mysql_real_escape_string($v,Db_Mysql::$globals[$this->key])."'";
+					$v1[]="`$k`=:$k";
+					$bind[":$k"]=$v;
 				}else{
 					$v1[]=($v);
 				}

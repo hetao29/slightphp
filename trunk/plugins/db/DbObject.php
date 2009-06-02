@@ -33,7 +33,7 @@ abstract class DbObject{
 	abstract function update($table,$condition="",$item="");
 	abstract function delete($table,$condition="");
 	abstract function insert($table,$item="",$isreplace=false,$isdelayed=false,$update=array());
-	abstract function query($sql,$countsql="");
+	abstract function execute($sql);
 
 }
 ?>
