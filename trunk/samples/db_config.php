@@ -1,8 +1,5 @@
 <?php
 require_once("../SlightPHP.php");
-
-
-
 SlightPHP::setDebug(true);
 SlightPHP::setSplitFlag("-_");
 SlightPHP::setPluginsDir("../plugins");	
