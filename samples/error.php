@@ -1,12 +1,10 @@
 <?php
 require_once("../SlightPHP.php");
-$slight=new SlightPHP;
-$slight->setDebug(true);
-$slight->setSplitFlag("-_");
-$slight->setDefaultZone("zone");
-$slight->setAppDir(".");
-$slight->setPluginsDir("../plugins");
-$slight->loadPlugin("SError");
+SlightPHP::setDebug(true);
+SlightPHP::setSplitFlag("-_");
+SlightPHP::setPluginsDir("../plugins");	
+SlightPHP::loadPlugin("SError");
+
 /*
  * 是否在前端显示，默认为true
  */

@@ -1,13 +1,9 @@
 <?php
 require_once("../SlightPHP.php");
-
-$slight=new SlightPHP;
-
-$slight->setDebug(true);
-$slight->setSplitFlag("-_");
-$slight->setDefaultZone("zone");
-$slight->setAppDir(".");
-$slight->setPluginsDir("../plugins");	
+SlightPHP::setDebug(true);
+SlightPHP::setSplitFlag("-_");
+SlightPHP::setPluginsDir("../plugins");	
+SlightPHP::loadPlugin("SDb");
 /*
 drop table if exists test;
 CREATE TABLE `test` (
@@ -17,7 +13,6 @@ CREATE TABLE `test` (
   KEY `name` (`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 */
-$slight->loadPlugin("SDb");
 $db = SDb::getDbEngine("pdo_mysql");
 if(!$db){
 	die("DbEngine not exits");
