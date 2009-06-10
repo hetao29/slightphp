@@ -33,6 +33,10 @@ class Db_PDO extends DbObject{
 	/**
 	 *
 	 */
+	public $port=3306;
+	/**
+	 *
+	 */
 	public $user;
 	/**
 	 *
@@ -427,7 +431,7 @@ class Db_PDO extends DbObject{
 			if(!empty(Db_PDO::$globals[$this->key])){
 				unset(Db_PDO::$globals[$this->key]);
 			}
-			Db_PDO::$globals[$this->key] = new PDO($this->prefix.":dbname=".$this->database.";host=".$this->host,$this->user,$this->password);
+			Db_PDO::$globals[$this->key] = new PDO($this->prefix.":dbname=".$this->database.";host=".$this->host.";port=".$this->port,$this->user,$this->password);
 		}
 		if(!Db_PDO::$globals[$this->key]){
 			die("connect database error");
