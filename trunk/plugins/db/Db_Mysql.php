@@ -33,6 +33,10 @@ class Db_Mysql extends DbObject{
 	/**
 	 *
 	 */
+	public $port=3306;
+	/**
+	 *
+	 */
 	public $user;
 	/**
 	 *
@@ -361,7 +365,7 @@ class Db_Mysql extends DbObject{
 				mysql_close(Db_Mysql::$globals[$this->key]);
 				unset(Db_Mysql::$globals[$this->key]);
 			}
-			Db_Mysql::$globals[$this->key] = mysql_connect($this->host,$this->user,$this->password,false,MYSQL_CLIENT_COMPRESS);
+			Db_Mysql::$globals[$this->key] = mysql_connect($this->host.":".$this->port,$this->user,$this->password,false,MYSQL_CLIENT_COMPRESS);
 		}
 		if(!Db_Mysql::$globals[$this->key]){
 			die("connect database error");

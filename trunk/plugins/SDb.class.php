@@ -56,7 +56,7 @@ class SDb{
 	 * @param string $type	main|query
 	 * @return array
 	 */
-	static function getConfig($zone,$type){
+	static function getConfig($zone,$type="main"){
 		if(!SDb::$_DbConfigFile){return;}
 
 
