@@ -91,6 +91,7 @@ class Db_Mysql extends DbObject{
 	 * @param string user
 	 * @param string password
 	 * @param string database
+	 * @param int port=3306
 	 */
 	function init($params=array()){
 		foreach($params as $key=>$value){
