@@ -28,5 +28,8 @@ class SUtil{
 		}
 		return $data[$key];
 	}
+	static function log($logFile,$data){
+		error_log("[".date("Y-m-d H:i:s")."]$data\r\n",3,$logFile);
+	}
 }
 ?>
