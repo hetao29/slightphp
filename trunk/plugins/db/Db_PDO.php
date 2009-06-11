@@ -188,31 +188,7 @@ class Db_PDO extends DbObject{
 		//}}}
 		//{{{$condition
 		$condiStr = $this->__quote($condition,"AND",$bind);
-		/*
-		$bind=array();
-		$condiStr = "";
-		$split="AND";
-		if(is_array($condition)){
-			$v1=array();
-			foreach($condition as $k=>$v)
-			{
-				if(!is_numeric($k))
-				{
-					$v1[]="`$k`=:$k";
-					$bind[":$k"]=$v;
-				}else{
-					$v1[]=($v);
-				}
-			}
-			if(count($v1)>0)
-			{
-				$condiStr=implode(" ".$split." ",$v1);
 
-			}
-		}else{
-			$condiStr=$condition;
-		}
-		*/
 		if($condiStr!=""){
 			$condiStr=" WHERE ".$condiStr;
 		}
@@ -368,6 +344,8 @@ class Db_PDO extends DbObject{
 		$r=$this->query($this->sql,$bind_f,$bind_v);
 		if($this->lastInsertId ()>0){
 			return $this->lastInsertId ();
+		}elseif($this->affectedRows >0){
+			return $this->affectedRows;
 		}else{
 			return $r;
 		}
@@ -388,6 +366,8 @@ class Db_PDO extends DbObject{
 		}
 		if(defined("DEBUG")){
 			echo "SQL:$sql\n";
+			print_r($bind1);
+			print_r($bind2);
 		}
 		$stmt = Db_PDO::$globals[$this->key]->prepare($sql);
 		if(!$stmt){
@@ -397,12 +377,12 @@ class Db_PDO extends DbObject{
 		}
 		if(!empty($bind1)){
 			foreach($bind1 as $k=>$v){
-				$stmt->bindParam($k,$v);
+				$stmt->bindValue($k,$v);
 			}
 		}
 		if(!empty($bind2)){
 			foreach($bind2 as $k=>$v){
-				$stmt->bindParam($k,$v);
+				$stmt->bindValue($k,$v);
 			}
 		}
 		if($stmt->execute ()){
