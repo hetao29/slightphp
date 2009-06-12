@@ -22,14 +22,44 @@
 
 class SUtil{
 
+	/**
+	 *
+	 */
 	static function getRequestValue(array $data,$key,$minLength,$maxLength){
 		if(empty($data[$key]) || strlen($data[$key])<$minLength || strlen($data[$key])>$maxLength){
 			return false;
 		}
 		return $data[$key];
 	}
+	/**
+	 *
+	 */
 	static function log($logFile,$data){
 		error_log("[".date("Y-m-d H:i:s")."]$data\r\n",3,$logFile);
+	}
+	/**
+	 *
+	 */
+	static function getIP($long=false) {
+		$cip = getenv('HTTP_CLIENT_IP');
+		$xip = getenv('HTTP_X_FORWARDED_FOR');
+		$rip = getenv('REMOTE_ADDR');
+		$srip = @$_SERVER['REMOTE_ADDR'];
+		if($cip && strcasecmp($cip, 'unknown')) {
+			$ip = $cip;
+		} elseif($xip && strcasecmp($xip, 'unknown')) {
+			$ip = $xip;
+		} elseif($rip && strcasecmp($rip, 'unknown')) {
+			$ip = $rip;
+		} elseif($srip && strcasecmp($srip, 'unknown')) {
+			$ip = $srip;
+		}
+		preg_match("/[\d\.]{7,15}/", $ip, $match);
+		$ip = $match[0] ? $match[0] : 'unknown';
+		if($long){
+			return sprintf("%u",ip2long($ip));
+		}
+		return $ip;
 	}
 }
 ?>
