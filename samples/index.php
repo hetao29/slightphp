@@ -25,8 +25,11 @@ SlightPHP::setPluginsDir("../plugins");
 //var_dump(SlightPHP::getPluginsDir());
 //var_dump(SlightPHP::loadFile("../plugins/SError.class.php"));
 //var_dump(SlightPHP::loadPlugin("SSmarty"));
-if(SlightPHP::run()===false){
+if(($r=SlightPHP::run())===false){
+	//redirect to 404
 	die("ERROR ENTRY");
+}else{
+	echo $r;
 }
 //}}}
 
