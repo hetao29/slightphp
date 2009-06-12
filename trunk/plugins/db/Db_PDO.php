@@ -168,7 +168,7 @@ class Db_PDO extends DbObject{
 	 * @param string $groupby 
 	 * @param string $orderby
 	 * @param string $leftjoin
-	 * @return DbData object
+	 * @return DbData object || Boolean false
 	 */
 	function select($table,$condition="",$item="*",$groupby="",$orderby="",$leftjoin=""){
 		//{{{$item
@@ -236,6 +236,10 @@ class Db_PDO extends DbObject{
 
 		$data->limit = $this->limit;
 		$data->items = $this->query($this->sql,$bind);
+		if($data->items === false){
+			//²éÑ¯Ê§°Ü
+			return false;
+		}
 		$data->pageSize = count($data->items);
 		$end = microtime(true);
 		$data->totalSecond = $end-$start;
@@ -355,7 +359,7 @@ class Db_PDO extends DbObject{
 	 * query
 	 *
 	 * @param string $sql
-	 * @return DbData object
+	 * @return Array $result  || Boolean false
 	 */
 	
 	function query($sql,$bind1=array(),$bind2=array())
@@ -370,10 +374,12 @@ class Db_PDO extends DbObject{
 			print_r($bind2);
 		}
 		$stmt = Db_PDO::$globals[$this->key]->prepare($sql);
+		
 		if(!$stmt){
 			
 			$this->error['code']=Db_PDO::$globals[$this->key]->errorCode ();
 			$this->error['msg']=Db_PDO::$globals[$this->key]->errorInfo ();
+			return false;
 		}
 		if(!empty($bind1)){
 			foreach($bind1 as $k=>$v){
@@ -389,8 +395,8 @@ class Db_PDO extends DbObject{
 			$this->affectedRows = $stmt->rowCount();
 			return $stmt->fetchAll (PDO::FETCH_ASSOC );
 		}else{
-			$this->error['code']=Db_PDO::$globals[$this->key]->errorCode ();
-			$this->error['msg']=Db_PDO::$globals[$this->key]->errorInfo ();
+			$this->error['code']=$stmt->errorCode ();
+			$this->error['msg']=$stmt->errorInfo ();
 		}
 		return false;
 
@@ -402,7 +408,11 @@ class Db_PDO extends DbObject{
 		return $this->affectedRows;
 	}
 
-
+	/**
+	 *
+	 * @param string $sql
+	 * @return array $data || Boolean false
+	 */
 	function execute($sql){
 		return $this->query($sql);
 	}

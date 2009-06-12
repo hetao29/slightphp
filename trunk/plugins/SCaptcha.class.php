@@ -28,7 +28,7 @@ class SCaptcha extends SimpleCaptcha{
 		$this->session_var = SCaptcha::$session_prefix ;
 		$this->minWordLength = 4;
 		$this->maxWordLength = 5;
-		$this->width = 150;
+		$this->width = 140;
 		$this->height = 50;
 		$this->Yamplitude = 6;
 		$this->Xamplitude = 4;
