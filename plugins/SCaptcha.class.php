@@ -46,7 +46,7 @@ class SCaptcha extends SimpleCaptcha{
 		}
 	}
 	static function del($captcha_code){
-		if(	empty($_SESSION[SCaptcha::$session_prefix . $captcha_code])){
+		if(	!empty($_SESSION[SCaptcha::$session_prefix . $captcha_code])){
 			unset ($_SESSION[SCaptcha::$session_prefix . $captcha_code]);
 		}
 	}
