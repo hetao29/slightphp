@@ -296,8 +296,11 @@ class Db_PDO extends DbObject{
 			$condiStr=" WHERE ".$condiStr;
 		}
 		$this->sql="UPDATE $table SET $value $condiStr";
-		return $this->query($this->sql,$bind_v,$bind_c);
-		//return $this->rowCount();
+		if($this->query($this->sql,$bind_v,$bind_c)!==false){
+			return $this->rowCount();
+		}else{
+			return false;
+		}
 	}
 	/**
 	 * delete
@@ -315,8 +318,11 @@ class Db_PDO extends DbObject{
 			$condiStr=" WHERE ".$condiStr;
 		}
 		$this->sql="DELETE FROM  $table $condiStr";
-		return $this->query($this->sql,$bind);
-		return $this->rowCount();
+		if($this->query($this->sql,$bind)!==false){
+			return $this->rowCount();
+		}else{
+			return false;
+		}
 	}
 	/**
 	 * insert
