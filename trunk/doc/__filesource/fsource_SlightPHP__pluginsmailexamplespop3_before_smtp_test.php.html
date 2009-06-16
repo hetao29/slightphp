@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>File Source for pop3_before_smtp_test.php</title>
+			<link rel="stylesheet" href="../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+						<h1>Source for file pop3_before_smtp_test.php</h1>
+<p>Documentation is available at <a href="../SlightPHP/_plugins---mail---examples---pop3_before_smtp_test.php.html">pop3_before_smtp_test.php</a></p>
+<div class="src-code">
+<div class="src-code"><ol><li><div class="src-line"><a name="a1"></a>&lt;html&gt;</div></li>
+<li><div class="src-line"><a name="a2"></a>&lt;head&gt;</div></li>
+<li><div class="src-line"><a name="a3"></a>&lt;title&gt;POP&nbsp;before&nbsp;SMTP&nbsp;Test&lt;/title&gt;</div></li>
+<li><div class="src-line"><a name="a4"></a>&lt;/head&gt;</div></li>
+<li><div class="src-line"><a name="a5"></a>&nbsp;</div></li>
+<li><div class="src-line"><a name="a6"></a>&lt;body&gt;</div></li>
+<li><div class="src-line"><a name="a7"></a>&nbsp;</div></li>
+<li><div class="src-line"><a name="a8"></a>&lt;pre&gt;</div></li>
+<li><div class="src-line"><a name="a9"></a><span class="src-php">&lt;?php</span></div></li>
+<li><div class="src-line"><a name="a10"></a>&nbsp;&nbsp;require&nbsp;<span class="src-str">'class.phpmailer.php'</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a11"></a>&nbsp;&nbsp;require&nbsp;<span class="src-str">'class.pop3.php'</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a12"></a>&nbsp;</div></li>
+<li><div class="src-line"><a name="a13"></a>&nbsp;&nbsp;<span class="src-var">$pop&nbsp;</span>=&nbsp;<span class="src-key">new&nbsp;</span><span class="src-id"><a href="../SlightPHP/POP3.html">POP3</a></span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a14"></a>&nbsp;&nbsp;<span class="src-var">$pop</span><span class="src-sym">-&gt;</span><span class="src-id">Authorise</span><span class="src-sym">(</span><span class="src-str">'pop3.example.com'</span><span class="src-sym">,&nbsp;</span><span class="src-num">110</span><span class="src-sym">,&nbsp;</span><span class="src-num">30</span><span class="src-sym">,&nbsp;</span><span class="src-str">'mailer'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'password'</span><span class="src-sym">,&nbsp;</span><span class="src-num">1</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a15"></a>&nbsp;</div></li>
+<li><div class="src-line"><a name="a16"></a>&nbsp;&nbsp;<span class="src-var">$mail&nbsp;</span>=&nbsp;<span class="src-key">new&nbsp;</span><span class="src-id"><a href="../SlightPHP/PHPMailer.html">PHPMailer</a></span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a17"></a>&nbsp;</div></li>
+<li><div class="src-line"><a name="a18"></a>&nbsp;&nbsp;<span class="src-var">$mail</span><span class="src-sym">-&gt;</span><span class="src-id">IsSMTP</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a19"></a>&nbsp;&nbsp;<span class="src-var">$mail</span><span class="src-sym">-&gt;</span><span class="src-id">SMTPDebug&nbsp;</span>=&nbsp;<span class="src-num">2</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a20"></a>&nbsp;&nbsp;<span class="src-var">$mail</span><span class="src-sym">-&gt;</span><span class="src-id">IsHTML</span><span class="src-sym">(</span><span class="src-id">false</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a21"></a>&nbsp;</div></li>
+<li><div class="src-line"><a name="a22"></a>&nbsp;&nbsp;<span class="src-var">$mail</span><span class="src-sym">-&gt;</span><span class="src-id">Host&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>=&nbsp;<span class="src-str">'relay.example.com'</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a23"></a>&nbsp;</div></li>
+<li><div class="src-line"><a name="a24"></a>&nbsp;&nbsp;<span class="src-var">$mail</span><span class="src-sym">-&gt;</span><span class="src-id">From&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>=&nbsp;<span class="src-str">'mailer@example.com'</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a25"></a>&nbsp;&nbsp;<span class="src-var">$mail</span><span class="src-sym">-&gt;</span><span class="src-id">FromName&nbsp;</span>=&nbsp;<span class="src-str">'Example&nbsp;Mailer'</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a26"></a>&nbsp;</div></li>
+<li><div class="src-line"><a name="a27"></a>&nbsp;&nbsp;<span class="src-var">$mail</span><span class="src-sym">-&gt;</span><span class="src-id">Subject&nbsp;&nbsp;</span>=&nbsp;&nbsp;<span class="src-str">'My&nbsp;subject'</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a28"></a>&nbsp;&nbsp;<span class="src-var">$mail</span><span class="src-sym">-&gt;</span><span class="src-id">Body&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>=&nbsp;&nbsp;<span class="src-str">'Hello&nbsp;world'</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a29"></a>&nbsp;&nbsp;<span class="src-var">$mail</span><span class="src-sym">-&gt;</span><span class="src-id">AddAddress</span><span class="src-sym">(</span><span class="src-str">'name@anydomain.com'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'First&nbsp;Last'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a30"></a>&nbsp;</div></li>
+<li><div class="src-line"><a name="a31"></a>&nbsp;&nbsp;<span class="src-key">if&nbsp;</span><span class="src-sym">(</span><span class="src-sym">!</span><span class="src-var">$mail</span><span class="src-sym">-&gt;</span><span class="src-id">Send</span><span class="src-sym">(</span><span class="src-sym">))</span></div></li>
+<li><div class="src-line"><a name="a32"></a>&nbsp;&nbsp;<span class="src-sym">{</span></div></li>
+<li><div class="src-line"><a name="a33"></a>&nbsp;&nbsp;&nbsp;&nbsp;echo&nbsp;<span class="src-var">$mail</span><span class="src-sym">-&gt;</span><span class="src-id">ErrorInfo</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a34"></a>&nbsp;&nbsp;<span class="src-sym">}</span></div></li>
+<li><div class="src-line"><a name="a35"></a><span class="src-php">?&gt;</span></div></li>
+<li><div class="src-line"><a name="a36"></a>&lt;/pre&gt;</div></li>
+<li><div class="src-line"><a name="a37"></a>&nbsp;</div></li>
+<li><div class="src-line"><a name="a38"></a>&lt;/body&gt;</div></li>
+<li><div class="src-line"><a name="a39"></a>&lt;/html&gt;</div></li>
+</ol></div>
+</div>
+	<p class="notes" id="credit">
+		Documentation generated on Tue, 16 Jun 2009 11:53:53 +0000 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.1</a>
+	</p>
+	</body>
+</html>

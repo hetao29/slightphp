@@ -23,7 +23,7 @@
 	<div class="info-box-body">
         		<!-- ========== Info from phpDoc block ========= -->
 		<p class="notes">
-			Located in <a class="field" href="_plugins---SDb.class.php.html">/plugins/SDb.class.php</a> (line <span class="field">24</span>)
+			Located in <a class="field" href="_plugins---SDb.class.php.html">/plugins/SDb.class.php</a> (line <span class="field"><a href="../__filesource/fsource_SlightPHP__pluginsSDb.class.php.html#a25">25</a></span>)
 		</p>
 		
 				
@@ -50,7 +50,19 @@
 					static <span class="var-type">mixed</span>
 					<a href="#$engines" title="details" class="var-name">$engines</a>
 				</div>
-																							</div>
+																<div class="var-title">
+					static <span class="var-type">mixed</span>
+					<a href="#$_DbConfigCache" title="details" class="var-name">$_DbConfigCache</a>
+				</div>
+																<div class="var-title">
+					static <span class="var-type">mixed</span>
+					<a href="#$_DbConfigFile" title="details" class="var-name">$_DbConfigFile</a>
+				</div>
+																<div class="var-title">
+					static <span class="var-type">mixed</span>
+					<a href="#$_DbdefaultZone" title="details" class="var-name">$_DbdefaultZone</a>
+				</div>
+																																															</div>
 		</div>
 	</div>
 
@@ -67,12 +79,27 @@
 		<div class="info-box-body">			
 			<div class="method-summary">
 												<div class="method-definition">
+					static 						<span class="method-result">array</span>
+										<a href="#getConfig" title="details" class="method-name">getConfig</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$zone</span>, [<span class="var-type">string</span>&nbsp;<span class="var-name">$type</span> = <span class="var-default">&quot;main&quot;</span>])
+									</div>
+																<div class="method-definition">
+					static 						<span class="method-result">void</span>
+										<a href="#getConfigFile" title="details" class="method-name">getConfigFile</a>
+										()
+									</div>
+																<div class="method-definition">
 					static 						<span class="method-result"><a href="../SlightPHP/DbObject.html">DbObject</a></span>
 										<a href="#getDbEngine" title="details" class="method-name">getDbEngine</a>
 											(<span class="var-type">string</span>&nbsp;<span class="var-name">$engine</span>)
 									</div>
+																<div class="method-definition">
+					static 						<span class="method-result">void</span>
+										<a href="#setConfigFile" title="details" class="method-name">setConfigFile</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$file</span>)
+									</div>
 								
-												</div>
+																																				</div>
 		</div>
 	</div>		
 
@@ -90,13 +117,67 @@
 					</div>
 		<div class="info-box-body">
 			<a name="var$engines" id="$engines"><!-- --></A>
-<div class="oddrow">
+<div class="evenrow">
 
 	<div class="var-header">
 		<span class="var-title">
 			static <span class="var-type">mixed</span>
 			<span class="var-name">$engines</span>
-			 = <span class="var-default">array(&quot;mysql&quot;)</span>			(line <span class="line-number">25</span>)
+			 = <span class="var-default">array(&quot;mysql&quot;,&quot;pdo_mysql&quot;)</span>			(line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__pluginsSDb.class.php.html#a26">26</a></span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+		
+		
+
+</div>
+<a name="var$_DbConfigCache" id="$_DbConfigCache"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			static <span class="var-type">mixed</span>
+			<span class="var-name">$_DbConfigCache</span>
+						(line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__pluginsSDb.class.php.html#a30">30</a></span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+		
+		
+
+</div>
+<a name="var$_DbConfigFile" id="$_DbConfigFile"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			static <span class="var-type">mixed</span>
+			<span class="var-name">$_DbConfigFile</span>
+						(line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__pluginsSDb.class.php.html#a28">28</a></span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+		
+		
+
+</div>
+<a name="var$_DbdefaultZone" id="$_DbdefaultZone"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			static <span class="var-type">mixed</span>
+			<span class="var-name">$_DbdefaultZone</span>
+			 = <span class="var-default">&quot;default&quot;</span>			(line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__pluginsSDb.class.php.html#a29">29</a></span>)
 		</span>
 	</div>
 
@@ -122,11 +203,61 @@
 		</div>
 		<div class="info-box-body">
 			<A NAME='method_detail'></A>
+<a name="methodgetConfig" id="getConfig"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method getConfig</span> (line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__pluginsSDb.class.php.html#a60">60</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">array</span>
+		<span class="method-name">
+			getConfig
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$zone</span>, [<span class="var-type">string</span>&nbsp;<span class="var-name">$type</span> = <span class="var-default">&quot;main&quot;</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$zone</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$type</span><span class="var-description">: main|query</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodgetConfigFile" id="getConfigFile"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method getConfigFile</span> (line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__pluginsSDb.class.php.html#a52">52</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">void</span>
+		<span class="method-name">
+			getConfigFile
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
 <a name="methodgetDbEngine" id="getDbEngine"><!-- --></a>
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">static method getDbEngine</span> (line <span class="line-number">30</span>)
+		<span class="method-title">static method getDbEngine</span> (line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__pluginsSDb.class.php.html#a35">35</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -148,6 +279,32 @@
 		
 			
 	</div>
+<a name="methodsetConfigFile" id="setConfigFile"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method setConfigFile</span> (line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__pluginsSDb.class.php.html#a49">49</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setConfigFile
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$file</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$file</span>			</li>
+				</ul>
+		
+			
+	</div>
 
 						
 		</div>
@@ -155,7 +312,7 @@
 
 
 	<p class="notes" id="credit">
-		Documentation generated on Fri, 27 Feb 2009 11:05:12 +0800 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.1</a>
+		Documentation generated on Tue, 16 Jun 2009 11:53:54 +0000 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.1</a>
 	</p>
 	</div></body>
 </html>

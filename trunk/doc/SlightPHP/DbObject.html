@@ -26,7 +26,7 @@
 				<li><span class="field">abstract:</span> </li>
 			</ul>
 		<p class="notes">
-			Located in <a class="field" href="_plugins---db---DbObject.php.html">/plugins/db/DbObject.php</a> (line <span class="field">24</span>)
+			Located in <a class="field" href="_plugins---db---DbObject.php.html">/plugins/db/DbObject.php</a> (line <span class="field"><a href="../__filesource/fsource_SlightPHP__pluginsdbDbObject.php.html#a24">24</a></span>)
 		</p>
 		
 				
@@ -56,6 +56,12 @@
 											
 										</td>
 				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../SlightPHP/Db_PDO.html">Db_PDO</a></td>
+					<td>
+											
+										</td>
+				</tr>
 							</table>
 		</div>
 	</div>
@@ -80,6 +86,11 @@
 									</div>
 																<div class="method-definition">
 											<span class="method-result">void</span>
+										<a href="#execute" title="details" class="method-name">execute</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$sql</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
 										<a href="#init" title="details" class="method-name">init</a>
 											([<span class="var-type"></span>&nbsp;<span class="var-name">$params</span> = <span class="var-default">array()</span>])
 									</div>
@@ -87,11 +98,6 @@
 											<span class="method-result">void</span>
 										<a href="#insert" title="details" class="method-name">insert</a>
 											(<span class="var-type"></span>&nbsp;<span class="var-name">$table</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$item</span> = <span class="var-default">&quot;&quot;</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$isreplace</span> = <span class="var-default">false</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$isdelayed</span> = <span class="var-default">false</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$update</span> = <span class="var-default">array()</span>])
-									</div>
-																<div class="method-definition">
-											<span class="method-result">void</span>
-										<a href="#query" title="details" class="method-name">query</a>
-											(<span class="var-type"></span>&nbsp;<span class="var-name">$sql</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$countsql</span> = <span class="var-default">&quot;&quot;</span>])
 									</div>
 																<div class="method-definition">
 											<span class="method-result">void</span>
@@ -151,10 +157,10 @@
 			<A NAME='method_detail'></A>
 
 <a name="methoddelete" id="delete"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">delete</span> (line <span class="line-number">34</span>)
+		<span class="method-title">delete</span> (line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__pluginsdbDbObject.php.html#a34">34</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -187,13 +193,55 @@
 				<a href="../SlightPHP/Db_Mysql.html#methoddelete">Db_Mysql::delete()</a>
 								: delete
 							</li>
+					<li>
+				<a href="../SlightPHP/Db_PDO.html#methoddelete">Db_PDO::delete()</a>
+								: delete
+							</li>
+				</ul>
+	</div>
+<a name="methodexecute" id="execute"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">execute</span> (line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__pluginsdbDbObject.php.html#a36">36</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">abstract:</span> </li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			execute
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$sql</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$sql</span>			</li>
+				</ul>
+		
+			
+			<hr class="separator" />
+		<div class="notes">Redefined in descendants as:</div>
+		<ul class="redefinitions">
+					<li>
+				<a href="../SlightPHP/Db_Mysql.html#methodexecute">Db_Mysql::execute()</a>
+							</li>
+					<li>
+				<a href="../SlightPHP/Db_PDO.html#methodexecute">Db_PDO::execute()</a>
+							</li>
 				</ul>
 	</div>
 <a name="methodinit" id="init"><!-- --></a>
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">init</span> (line <span class="line-number">25</span>)
+		<span class="method-title">init</span> (line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__pluginsdbDbObject.php.html#a25">25</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -223,13 +271,17 @@
 				<a href="../SlightPHP/Db_Mysql.html#methodinit">Db_Mysql::init()</a>
 								: construct
 							</li>
+					<li>
+				<a href="../SlightPHP/Db_PDO.html#methodinit">Db_PDO::init()</a>
+								: construct
+							</li>
 				</ul>
 	</div>
 <a name="methodinsert" id="insert"><!-- --></a>
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">insert</span> (line <span class="line-number">35</span>)
+		<span class="method-title">insert</span> (line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__pluginsdbDbObject.php.html#a35">35</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -271,52 +323,17 @@
 				<a href="../SlightPHP/Db_Mysql.html#methodinsert">Db_Mysql::insert()</a>
 								: insert
 							</li>
-				</ul>
-	</div>
-<a name="methodquery" id="query"><!-- --></a>
-<div class="evenrow">
-	
-	<div class="method-header">
-		<span class="method-title">query</span> (line <span class="line-number">36</span>)
-	</div> 
-	
-	<!-- ========== Info from phpDoc block ========= -->
-	<ul class="tags">
-				<li><span class="field">abstract:</span> </li>
-			</ul>
-	
-	<div class="method-signature">
-		<span class="method-result">void</span>
-		<span class="method-name">
-			query
-		</span>
-					(<span class="var-type"></span>&nbsp;<span class="var-name">$sql</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$countsql</span> = <span class="var-default">&quot;&quot;</span>])
-			</div>
-	
-			<ul class="parameters">
 					<li>
-				<span class="var-type"></span>
-				<span class="var-name">$sql</span>			</li>
-					<li>
-				<span class="var-type"></span>
-				<span class="var-name">$countsql</span>			</li>
-				</ul>
-		
-			
-			<hr class="separator" />
-		<div class="notes">Redefined in descendants as:</div>
-		<ul class="redefinitions">
-					<li>
-				<a href="../SlightPHP/Db_Mysql.html#methodquery">Db_Mysql::query()</a>
-								: query
+				<a href="../SlightPHP/Db_PDO.html#methodinsert">Db_PDO::insert()</a>
+								: insert
 							</li>
 				</ul>
 	</div>
 <a name="methodselect" id="select"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">select</span> (line <span class="line-number">31</span>)
+		<span class="method-title">select</span> (line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__pluginsdbDbObject.php.html#a31">31</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -361,13 +378,17 @@
 				<a href="../SlightPHP/Db_Mysql.html#methodselect">Db_Mysql::select()</a>
 								: select data from db
 							</li>
+					<li>
+				<a href="../SlightPHP/Db_PDO.html#methodselect">Db_PDO::select()</a>
+								: select data from db
+							</li>
 				</ul>
 	</div>
 <a name="methodselectOne" id="selectOne"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">selectOne</span> (line <span class="line-number">32</span>)
+		<span class="method-title">selectOne</span> (line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__pluginsdbDbObject.php.html#a32">32</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -411,13 +432,16 @@
 					<li>
 				<a href="../SlightPHP/Db_Mysql.html#methodselectOne">Db_Mysql::selectOne()</a>
 							</li>
+					<li>
+				<a href="../SlightPHP/Db_PDO.html#methodselectOne">Db_PDO::selectOne()</a>
+							</li>
 				</ul>
 	</div>
 <a name="methodsetCount" id="setCount"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">setCount</span> (line <span class="line-number">26</span>)
+		<span class="method-title">setCount</span> (line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__pluginsdbDbObject.php.html#a26">26</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -447,13 +471,17 @@
 				<a href="../SlightPHP/Db_Mysql.html#methodsetCount">Db_Mysql::setCount()</a>
 								: is count
 							</li>
+					<li>
+				<a href="../SlightPHP/Db_PDO.html#methodsetCount">Db_PDO::setCount()</a>
+								: is count
+							</li>
 				</ul>
 	</div>
 <a name="methodsetGroupby" id="setGroupby"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">setGroupby</span> (line <span class="line-number">29</span>)
+		<span class="method-title">setGroupby</span> (line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__pluginsdbDbObject.php.html#a29">29</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -483,13 +511,17 @@
 				<a href="../SlightPHP/Db_Mysql.html#methodsetGroupby">Db_Mysql::setGroupby()</a>
 								: group by sql
 							</li>
+					<li>
+				<a href="../SlightPHP/Db_PDO.html#methodsetGroupby">Db_PDO::setGroupby()</a>
+								: group by sql
+							</li>
 				</ul>
 	</div>
 <a name="methodsetLimit" id="setLimit"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">setLimit</span> (line <span class="line-number">28</span>)
+		<span class="method-title">setLimit</span> (line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__pluginsdbDbObject.php.html#a28">28</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -519,13 +551,17 @@
 				<a href="../SlightPHP/Db_Mysql.html#methodsetLimit">Db_Mysql::setLimit()</a>
 								: page size
 							</li>
+					<li>
+				<a href="../SlightPHP/Db_PDO.html#methodsetLimit">Db_PDO::setLimit()</a>
+								: page size
+							</li>
 				</ul>
 	</div>
 <a name="methodsetOrderby" id="setOrderby"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">setOrderby</span> (line <span class="line-number">30</span>)
+		<span class="method-title">setOrderby</span> (line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__pluginsdbDbObject.php.html#a30">30</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -555,13 +591,17 @@
 				<a href="../SlightPHP/Db_Mysql.html#methodsetOrderby">Db_Mysql::setOrderby()</a>
 								: order by sql
 							</li>
+					<li>
+				<a href="../SlightPHP/Db_PDO.html#methodsetOrderby">Db_PDO::setOrderby()</a>
+								: order by sql
+							</li>
 				</ul>
 	</div>
 <a name="methodsetPage" id="setPage"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">setPage</span> (line <span class="line-number">27</span>)
+		<span class="method-title">setPage</span> (line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__pluginsdbDbObject.php.html#a27">27</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -591,13 +631,17 @@
 				<a href="../SlightPHP/Db_Mysql.html#methodsetPage">Db_Mysql::setPage()</a>
 								: page number
 							</li>
+					<li>
+				<a href="../SlightPHP/Db_PDO.html#methodsetPage">Db_PDO::setPage()</a>
+								: page number
+							</li>
 				</ul>
 	</div>
 <a name="methodupdate" id="update"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">update</span> (line <span class="line-number">33</span>)
+		<span class="method-title">update</span> (line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__pluginsdbDbObject.php.html#a33">33</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -633,6 +677,10 @@
 				<a href="../SlightPHP/Db_Mysql.html#methodupdate">Db_Mysql::update()</a>
 								: update data
 							</li>
+					<li>
+				<a href="../SlightPHP/Db_PDO.html#methodupdate">Db_PDO::update()</a>
+								: update data
+							</li>
 				</ul>
 	</div>
 						
@@ -641,7 +689,7 @@
 
 
 	<p class="notes" id="credit">
-		Documentation generated on Fri, 27 Feb 2009 11:05:11 +0800 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.1</a>
+		Documentation generated on Tue, 16 Jun 2009 11:53:49 +0000 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.1</a>
 	</p>
 	</div></body>
 </html>
