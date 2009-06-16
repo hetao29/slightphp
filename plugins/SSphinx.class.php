@@ -34,7 +34,6 @@
 require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."sphinx/sphinxapi.php");
 class SSphinx extends SphinxClient{
 	private $_page=1;
-	//public var $__limit=1;
 
 	function setPage($page){
 		$this->_page = $page;
