@@ -40,7 +40,7 @@ class SLunar {
 	 * 在本年中的第几日，保留
 	 * @var int $days
 	 */
-	var $days;
+	//var $days;
 	/**
 	 * 是否是润年
 	 * @var boolean $isLeap
@@ -194,7 +194,7 @@ class SLunar {
 
 	function cyclical($num) {
 		$Gan = Array("甲","乙","丙","丁","戊","己","庚","辛","壬","癸");
-		$Zhi = Array("子(鼠)","丑(牛)","寅(虎)","卯(兔)","辰(龙)","巳(蛇)","午(马)","未(羊)","申(猴)","酉(鸡)","戌(狗)","亥(猪)");
+		$Zhi = Array("子（鼠）","丑（牛）","寅（虎）","卯（兔）","辰（龙）","巳（蛇）","午（马）","未（羊）","申（猴）","酉（鸡）","戌（狗）","亥（猪）");
 		return $Gan[$num%10].$Zhi[$num%12];
 	}
 	/**
@@ -202,7 +202,10 @@ class SLunar {
 	*/
 	function display() {
 		$nStr = array(' ','正','二','三','四','五','六','七','八','九','十','十一','腊');
-		$nl = sprintf("%s年\n%s%s月%s\n",$this->cyclical($this->yearCyl),($this->isLeap?"闰":""),$nStr[$this->month],$this->cDay($this->day));
+		if($this->yearCyl && $this->month && $this->day)
+		$nl = sprintf("%s年 %s%s月%s",$this->cyclical($this->yearCyl),($this->isLeap?"闰":""),$nStr[$this->month],$this->cDay($this->day));
+		else
+		$nl =null;
 		//echo sprintf("农历 %s%s月%s<br>",($this->isLeap?"闰":""),$nStr[$this->month],$this->cDay($this->day));
 		//echo sprintf("%s年 %s月 %s日",$this->cyclical($this->yearCyl),$this->cyclical($this->monCyl),$this->cyclical($this->dayCyl));
 		RETURN $nl;
