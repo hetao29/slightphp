@@ -28,6 +28,7 @@ class SThumbnail extends WMThumbnail{
 	 * 
 	 * @param $fileName
 	 */
+	var $image_type = 3;
 	public function genFile($fileName,$quality = 100) {
 		$image = parent::returnThumbnail();
 		$result = false;
