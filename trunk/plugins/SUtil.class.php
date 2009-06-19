@@ -61,6 +61,109 @@ class SUtil{
 		}
 		return $ip;
 	}
+	function get( $url,$cookie="",$returnHeader=true)
+	{
+		$url_info = parse_url($url);
+		if(empty($url_info['host']) || empty($url_info['scheme']) || !in_array($url_info['scheme'],array('http','https')) ){
+			return;
+		}
+		$host = $url_info['host'];
+		if(empty($url_info['path'])){
+			$url_info['path'] = "/";
+		}
+		$port = empty( $url_info['port'])?80:$url['port'];
+		if(!empty($url_info['query'])){
+			$urlquery  = ($url_info['path']."?".$url_info['query']);
+		}else{
+			$urlquery  = $url_info['path'];
+		}
+		if(!empty($cookie)){
+			$cookie_str = "\nCookie: ".$cookie."\n";
+		}else{
+			$cookie_str ="";
+		}
+		$data ="GET $urlquery HTTP/1.1\nAccept: */*\nUA-CPU: x86\nAccept-Language: zh-cn\nReferer: $url\nUA-CPU: x86\nUser-Agent: Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0; SLCC1; .NET CLR 2.0.50727; .NET CLR 3.0.04506)\nHost: $host\nConnection: Close$cookie_str\n\n";
+		$fp = fsockopen($host,$port);
+		if($fp){
+
+			fwrite($fp,$data);
+
+			if($returnHeader){
+				$results="";
+				while(!feof($fp)){
+					$line = fgets($fp,1024);
+					$results.=$line;
+				}
+				fclose($fp);
+				return $results;
+			}else{
+
+				$results = "";
+				$inheader = 1;
+				while(!feof($fp))
+				{
+						$line = fgets($fp,1024);
+						if ($inheader && ($line == "\n" || $line == "\r\n")){
+							$length = trim(fgets($fp,1024));
+							$inheader = 0;
+						}
+						elseif (!$inheader)
+						$results .= $line;
+				}
+				return trim($results);
+			}
+
+		}
+		return;
+	}
+	function post($urlstr, $data)
+	{
+		$url = parse_url( $urlstr );
+		if (!$url)
+		return false;
+
+		if (!isset($url['port']))
+		$url['port'] = "";
+
+		if (!isset($url['query']))
+		$url['query'] = "";
+
+		$encoded = "";
+		while (list($k,$v) = each($data))
+		{
+				$encoded .= ($encoded ? "&" : "");
+				$encoded .= rawurlencode($k)."=".rawurlencode($v);
+		}
+
+		$fp = fsockopen($url['host'], $url['port'] ? $url['port'] : 80);
+		if (!$fp)
+		return false;
+
+		fputs($fp, sprintf("POST %s%s%s HTTP/1.0\n", $url['path'], $url['query'] ? "?" : "", $url['query']));
+		fputs($fp, "Host: $url[host]\n");
+		fputs($fp, "Content-type: application/x-www-form-urlencoded\n");
+		fputs($fp, "Content-length: " . strlen($encoded) . "\n");
+		fputs($fp, "Connection: close\n\n");
+
+		fputs($fp, "$encoded\n");
+
+		$line = fgets($fp,1024);
+		if (!eregi("^HTTP/1\.. 200", $line))
+		return false;
+
+		$results = "";
+		$inheader = 1;
+		while(!feof($fp))
+		{
+				$line = fgets($fp,1024);
+				if ($inheader && ($line == "\n" || $line == "\r\n"))
+				$inheader = 0;
+				elseif (!$inheader)
+				$results .= $line;
+		}
+		fclose($fp);
+		return $results;
+	}
 	static function validEmail($email){
 		return preg_match('/^([a-z0-9])(([-a-z0-9._])*([a-z0-9]))*\@([a-z0-9])*(\.([a-z0-9])([-a-z0-9_-])([a-z0-9])+)*$/i',$email);
 	}
