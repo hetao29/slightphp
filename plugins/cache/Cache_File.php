@@ -83,7 +83,6 @@ class Cache_File extends CacheObject{
 		if(!empty($timeout)){
 			$timenow =time();
 			if($timeout ==-1 || $timenow < $timeout){
-				echo "cached\n";
 				$data = fread($fp,filesize($realFile));
 				flock($fp,LOCK_UN);
 				fclose($fp);
