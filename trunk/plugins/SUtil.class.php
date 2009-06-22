@@ -89,28 +89,29 @@ class SUtil{
 			fwrite($fp,$data);
 
 			if($returnHeader){
-				$results="";
-				while(!feof($fp)){
-					$line = fgets($fp,1024);
-					$results.=$line;
-				}
-				fclose($fp);
-				return $results;
+				return stream_get_contents($fp);
 			}else{
 
 				$results = "";
 				$inheader = 1;
+				$length = 0;
 				while(!feof($fp))
-				{
-						$line = fgets($fp,1024);
-						if ($inheader && ($line == "\n" || $line == "\r\n")){
-							$length = trim(fgets($fp,1024));
-							$inheader = 0;
+				{		
+						
+						if ($inheader){
+							if(($line = fgets($fp))===false){
+								break;
+							}
+							if(($line == "\n" || $line == "\r\n")){
+								$length = trim(fgets($fp));
+								$inheader = 0;
+							}
+							continue;
 						}
-						elseif (!$inheader)
-						$results .= $line;
+						$results = fread($fp,hexdec($length));
+						break;
 				}
-				return trim($results);
+				return ($results);
 			}
 
 		}
