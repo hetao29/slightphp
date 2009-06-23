@@ -91,29 +91,28 @@ class SUtil{
 			if($returnHeader){
 				return stream_get_contents($fp);
 			}else{
-
-				$results = "";
 				$inheader = 1;
 				$length = 0;
 				while(!feof($fp))
 				{		
 						
-						if ($inheader){
-							if(($line = fgets($fp))===false){
-								break;
-							}
-							if(($line == "\n" || $line == "\r\n")){
-								$length = trim(fgets($fp));
-								$inheader = 0;
-							}
-							continue;
+					if ($inheader){
+						if(($line = fgets($fp))===false){
+							break;
 						}
-						$results = fread($fp,hexdec($length));
-						break;
+						if(($line == "\n" || $line == "\r\n")){
+							$length = trim(fgets($fp));
+							$inheader = 0;
+						}
+						continue;
+					}
+					if($length == 0){
+						return stream_get_contents($fp);
+					}else{
+						return fread($fp,hexdec($length));
+					}
 				}
-				return ($results);
 			}
-
 		}
 		return;
 	}
