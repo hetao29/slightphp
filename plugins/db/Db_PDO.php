@@ -439,12 +439,17 @@ class Db_PDO extends DbObject{
 		if(!is_array($bind)){$bind=array();}
 		if(is_array($condition)){
 			$v1=array();
+			$i=1;
 			foreach($condition as $k=>$v)
 			{
 				if(!is_numeric($k))
 				{
-					$v1[]="`$k`=:$k";
-					$bind[":$k"]=$v;
+					if(strpos($k,".")>0){
+						$v1[]="$k = ?";
+					}else{
+						$v1[]="`$k` = ?";
+					}
+					$bind[$i++]=$v;
 				}else{
 					$v1[]=($v);
 				}
