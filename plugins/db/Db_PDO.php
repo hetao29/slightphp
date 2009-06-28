@@ -394,7 +394,7 @@ class Db_PDO extends DbObject{
 		}
 		if(!empty($bind2)){
 			foreach($bind2 as $k=>$v){
-				$stmt->bindValue($k,$v);
+				$stmt->bindValue($k + count($bind1),$v);
 			}
 		}
 		if($stmt->execute ()){
