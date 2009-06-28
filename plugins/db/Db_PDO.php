@@ -230,6 +230,7 @@ class Db_PDO extends DbObject{
 		$this->countsql="SELECT count(1) totalSize FROM $table $condiStr $groupby";
 		$data = new DbData;
 		
+		$data->page = $this->page;
 		$data->limit = $this->limit;
 		$start = microtime(true);
 
