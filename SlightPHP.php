@@ -238,7 +238,7 @@ final class SlightPHP{
 		}
 		$classInstance = new $classname;
 		if(!method_exists($classInstance,$method)){
-			SlightPHP::debug("method[$method] not exists in class[%classname]");
+			SlightPHP::debug("method[$method] not exists in class[$classname]");
 			return false;
 		}
 		return call_user_func(array(&$classInstance,$method),$PATH_ARRAY);
