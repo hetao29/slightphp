@@ -275,7 +275,7 @@ class Db_PDO extends DbObject{
 		$data=$this->select($table,$condition,$item,$groupby,$orderby,$leftjoin);
 		if(isset($data->items[0]))
 		return $data->items[0];
-		else return;
+		else return false;
 
 	}
 
