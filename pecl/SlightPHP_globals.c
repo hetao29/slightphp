@@ -41,7 +41,7 @@ int debug(char*format,...){
 int SlightPHP_load(zval*appDir,zval*zone,zval*class_name TSRMLS_DC){
 	char*inc_filename;
 	int ret;
-	spprintf(&inc_filename,0,"%s%c%s%c%s.class.php",Z_STRVAL_P(appDir),DEFAULT_SLASH,Z_STRVAL_P(zone),DEFAULT_SLASH,Z_STRVAL_P(class_name));
+	spprintf(&inc_filename,0,"%s%c%s%c%s.page.php",Z_STRVAL_P(appDir),DEFAULT_SLASH,Z_STRVAL_P(zone),DEFAULT_SLASH,Z_STRVAL_P(class_name));
 	zval file_name;
 	ZVAL_STRING(&file_name,inc_filename,1);
 	ret = SlightPHP_loadFile(&file_name TSRMLS_CC);
