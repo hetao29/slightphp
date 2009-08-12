@@ -1,6 +1,7 @@
 <?php
 class zone_smarty{
 	function pageEntry($inPath){
+		SlightPHP::loadPlugin("SSmarty");
 		$a = new SSmarty;
 		$a->template_dir = "zone/tpl";
 		$a->compile_dir = "zone/tpl";

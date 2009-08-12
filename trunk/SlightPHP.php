@@ -220,7 +220,7 @@ final class SlightPHP{
 
 
 		//}}}
-		$app_file = SlightPHP::$appDir . DIRECTORY_SEPARATOR . SlightPHP::$defaultZone . DIRECTORY_SEPARATOR . SlightPHP::$defaultClass . ".class.php";
+		$app_file = SlightPHP::$appDir . DIRECTORY_SEPARATOR . SlightPHP::$defaultZone . DIRECTORY_SEPARATOR . SlightPHP::$defaultClass . ".page.php";
 		if(!file_exists($app_file)){
 			SlightPHP::debug("file[$app_file] not exists");
 			return false;
