@@ -247,7 +247,8 @@ PHP_METHOD(SlightPHP, run)
 	zval *method=NULL;
 
 	zval **token;
-	zval *path=NULL;
+	zval *script_name=NULL;
+	zval *request_uri=NULL;
 	zval *server=NULL;
 	zval *path_array;
 
@@ -259,22 +260,33 @@ PHP_METHOD(SlightPHP, run)
 	if(!server){
 		RETURN_FALSE;
 	}
-	if(zend_hash_find(HASH_OF(server), "PATH_INFO", sizeof("PATH_INFO"), (void **) &token) == SUCCESS
+	if(zend_hash_find(HASH_OF(server), "SCRIPT_NAME", sizeof("SCRIPT_NAME"), (void **) &token) == SUCCESS
 	){
-		path = *token;
+		script_name = *token;
 	}
+	if(zend_hash_find(HASH_OF(server), "REQUEST_URI", sizeof("REQUEST_URI"), (void **) &token) == SUCCESS
+	){
+		request_uri = *token;
+	}
+	if(script_name && request_uri && Z_STRLEN_P(script_name)==Z_STRLEN_P(script_name)){
+		zval replace;
+		INIT_ZVAL(replace);
+		ZVAL_STRING(&replace, "", 0);
+		php_str_replace_in_subject(script_name,&replace,request_uri,1,NULL)
+	}
+
 	MAKE_STD_ZVAL(path_array);
 	array_init(path_array);
 
-	if (path){
+	if (request_uri){
 		//{{{
 		zval quotedFlag;
 		regex_t re;
 		char	*regex;
 		regmatch_t subs[1];
 		int err,size;
-		char *strp = Z_STRVAL_P(path);
-		char *endp = strp + Z_STRLEN_P(path);
+		char *strp = Z_STRVAL_P(request_uri);
+		char *endp = strp + Z_STRLEN_P(request_uri);
 		zval *splitFlag = zend_read_static_property(SlightPHP_ce_ptr,"splitFlag",sizeof("splitFlag")-1,1 TSRMLS_CC);
 
 		if(preg_quote(splitFlag,&quotedFlag)>0){
