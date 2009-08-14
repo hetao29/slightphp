@@ -197,9 +197,7 @@ final class SlightPHP{
 		//{{{
 		$splitFlag = preg_quote(SlightPHP::$splitFlag,"/");
 		$PATH_ARRAY = array();
-		if(!isset($_SERVER["PATH_INFO"]) && strlen($_SERVER["PATH_INFO"])>1){
-			$path_info = $_SERVER["PATH_INFO"];
-		}elseif($_SERVER["PHP_SELF"] != $_SERVER["SCRIPT_NAME"]){
+		if($_SERVER["PHP_SELF"] != $_SERVER["SCRIPT_NAME"]){
 			$path_info = str_replace($_SERVER["SCRIPT_NAME"],"",$_SERVER["PHP_SELF"]);
 		}else{
 			$path_info = $_SERVER["PHP_SELF"];
