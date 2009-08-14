@@ -198,12 +198,12 @@ final class SlightPHP{
 		$splitFlag = preg_quote(SlightPHP::$splitFlag,"/");
 		$PATH_ARRAY = array();
 		if($_SERVER["PHP_SELF"] != $_SERVER["SCRIPT_NAME"]){
-			$path_info_tmp = str_replace($_SERVER["SCRIPT_NAME"],"",$_SERVER["PHP_SELF"]);
+			$path_info = str_replace($_SERVER["SCRIPT_NAME"],"",$_SERVER["PHP_SELF"]);
 		}else{
-			$path_info_tmp = $_SERVER["PHP_SELF"];
+			$path_info = $_SERVER["PHP_SELF"];
 		}
 		
-		$PATH_ARRAY = preg_split("/[$splitFlag\/]/",$path_info_tmp,-1,PREG_SPLIT_NO_EMPTY);
+		$PATH_ARRAY = preg_split("/[$splitFlag\/]/",$path_info,-1,PREG_SPLIT_NO_EMPTY);
 
 		if(!empty($PATH_ARRAY[0])){
 			SlightPHP::$defaultZone=$PATH_ARRAY[0];
