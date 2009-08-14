@@ -272,7 +272,7 @@ PHP_METHOD(SlightPHP, run)
 		zval replace;
 		INIT_ZVAL(replace);
 		ZVAL_STRING(&replace, "", 0);
-		php_str_replace_in_subject(script_name,&replace,request_uri,1,NULL)
+		php_str_replace_in_subject(script_name,&replace,request_uri,1,NULL);
 	}
 
 	MAKE_STD_ZVAL(path_array);
