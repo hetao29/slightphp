@@ -13,5 +13,6 @@ TODO LIST:
 4.支持smarty(OK)
 5.支持ajax(OK)
 6.框架代码全改成utf8
+7.apache的REWRITE支持(OK)
 
 项目网站：http://www.slightphp.com
