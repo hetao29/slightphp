@@ -247,9 +247,7 @@ PHP_METHOD(SlightPHP, run)
 	zval *method=NULL;
 
 	zval **token;
-	zval *script_name=NULL;
-	zval *php_self=NULL;
-	zval *path_info=NULL;
+	zval *path=NULL;
 	zval *server=NULL;
 	zval *path_array;
 
@@ -261,41 +259,22 @@ PHP_METHOD(SlightPHP, run)
 	if(!server){
 		RETURN_FALSE;
 	}
-	if(zend_hash_find(HASH_OF(server), "SCRIPT_NAME", sizeof("SCRIPT_NAME"), (void **) &token) == SUCCESS
+	if(zend_hash_find(HASH_OF(server), "PATH_INFO", sizeof("PATH_INFO"), (void **) &token) == SUCCESS
 	){
-		script_name = *token;
+		path = *token;
 	}
-	if(zend_hash_find(HASH_OF(server), "PHP_SELF", sizeof("PHP_SELF"), (void **) &token) == SUCCESS
-	){
-		php_self= *token;
-	}
-	//_php_error_log(0,"1",NULL,NULL);
-	if(script_name && php_self){
-		if(Z_STRLEN_P(script_name)!=Z_STRLEN_P(php_self)){
-			zval replace;
-			INIT_ZVAL(replace);
-			ZVAL_STRING(&replace, "", 0);
-			MAKE_STD_ZVAL(path_info);
-			Z_STRVAL_P(path_info) = php_str_to_str(Z_STRVAL_P(php_self), Z_STRLEN_P(php_self),
-        	                                            Z_STRVAL_P(script_name), Z_STRLEN_P(script_name),
-        	                                            Z_STRVAL(replace), Z_STRLEN(replace), &Z_STRLEN_P(path_info));
-		}else{
-			path_info = php_self;
-		}
-	}
-
 	MAKE_STD_ZVAL(path_array);
 	array_init(path_array);
 
-	if (path_info){
+	if (path){
 		//{{{
 		zval quotedFlag;
 		regex_t re;
 		char	*regex;
 		regmatch_t subs[1];
 		int err,size;
-		char *strp = Z_STRVAL_P(path_info);
-		char *endp = strp + Z_STRLEN_P(path_info);
+		char *strp = Z_STRVAL_P(path);
+		char *endp = strp + Z_STRLEN_P(path);
 		zval *splitFlag = zend_read_static_property(SlightPHP_ce_ptr,"splitFlag",sizeof("splitFlag")-1,1 TSRMLS_CC);
 
 		if(preg_quote(splitFlag,&quotedFlag)>0){
