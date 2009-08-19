@@ -14,5 +14,6 @@ TODO LIST:
 5.支持ajax(OK)
 6.框架代码全改成utf8
 7.apache的REWRITE支持(OK)
+8.其它待加功能
 
 项目网站：http://www.slightphp.com
