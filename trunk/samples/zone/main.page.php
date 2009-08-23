@@ -1,5 +1,5 @@
 <?php
-class zone_default{
+class zone_main{
 	function pageEntry($inPath){
 		echo "Hello, SlightPHP";
 		/*
