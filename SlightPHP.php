@@ -197,21 +197,24 @@ final class SlightPHP{
 		if(!empty($path)){
 			$isPart = true;
 			$path_array = preg_split("/[$splitFlag\/]/",$path,-1,PREG_SPLIT_NO_EMPTY);
-			$zone	= !empty($path_array[0]) ? $path_array[0] : SlightPHP::$defaultZone ;
-			$page	= !empty($path_array[1]) ? $path_array[1] : SlightPHP::$defaultPage ;
-			$entry	= !empty($path_array[2]) ? $path_array[2] : SlightPHP::$defaultEntry ;
 		}else{
 			$isPart = false;
 			if(!empty($_SERVER["PATH_INFO"]))$path_array = preg_split("/[$splitFlag\/]/",$_SERVER["PATH_INFO"],-1,PREG_SPLIT_NO_EMPTY);
-			
-			$zone	= SlightPHP::$zone	= !empty($path_array[0]) ? $path_array[0] : SlightPHP::$defaultZone ;
-			$page	= SlightPHP::$page	= !empty($path_array[1]) ? $path_array[1] : SlightPHP::$defaultPage ;
-			$entry	= SlightPHP::$entry = !empty($path_array[2]) ? $path_array[2] : SlightPHP::$defaultEntry ;
 		}
 
-		if($isPart && $zone == SlightPHP::$zone && $page == SlightPHP::$page && $entry == SlightPHP::$entry){
-			SlightPHP::debug("part ignored [$path]");
-			return;
+		$zone	= !empty($path_array[0]) ? $path_array[0] : SlightPHP::$defaultZone ;
+		$page	= !empty($path_array[1]) ? $path_array[1] : SlightPHP::$defaultPage ;
+		$entry	= !empty($path_array[2]) ? $path_array[2] : SlightPHP::$defaultEntry ;
+
+		if(!$isPart){
+			SlightPHP::$zone	= $zone;
+			SlightPHP::$page	= $page;
+			SlightPHP::$entry	= $entry;
+		}else{
+			if($zone == SlightPHP::$zone && $page == SlightPHP::$page && $entry == SlightPHP::$entry){
+				SlightPHP::debug("part ignored [$path]");
+				return;
+			}
 		}
 
 		$app_file = SlightPHP::$appDir . DIRECTORY_SEPARATOR . $zone . DIRECTORY_SEPARATOR . $page . ".page.php";
