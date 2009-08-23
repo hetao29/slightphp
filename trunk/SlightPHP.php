@@ -40,7 +40,7 @@ final class SlightPHP{
 	 * @var string
 	 */
 	public static $page;
-	public static $defaultPage="page";
+	public static $defaultPage="main";
 	/**
 	 * @var string
 	 */
