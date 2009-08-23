@@ -202,7 +202,7 @@ final class SlightPHP{
 			$entry	= !empty($path_array[2]) ? $path_array[2] : SlightPHP::$defaultEntry ;
 		}else{
 			$isPart = false;
-			$path_array = preg_split("/[$splitFlag\/]/",$_SERVER["PATH_INFO"],-1,PREG_SPLIT_NO_EMPTY);
+			if(!empty($_SERVER["PATH_INFO"]))$path_array = preg_split("/[$splitFlag\/]/",$_SERVER["PATH_INFO"],-1,PREG_SPLIT_NO_EMPTY);
 			
 			$zone	= SlightPHP::$zone	= !empty($path_array[0]) ? $path_array[0] : SlightPHP::$defaultZone ;
 			$page	= SlightPHP::$page	= !empty($path_array[1]) ? $path_array[1] : SlightPHP::$defaultPage ;
