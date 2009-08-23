@@ -1,14 +1,14 @@
 <?php
-class zone_smarty{
+SlightPHP::loadPlugin("SGui");
+class zone_smarty extends SGui{
 	function pageEntry($inPath){
-		SlightPHP::loadPlugin("SSmarty");
-		$a = new SSmarty;
-		$a->template_dir = "zone/tpl";
-		$a->compile_dir = "zone/tpl";
-
-		$a->assign("key","value");
-		$a->assign("date",date("Y-m-d H:i:s"));
-		$a->display("smarty.test.tpl");
+		$params['key']="value";
+		$params['date'] = date("Y-m-d H:i:s");
+		return $this->render("smarty.test.tpl",$params);
+	}
+	function pagePart($inPath){
+		echo "PART";
+		return "!";
 	}
 }
 ?>

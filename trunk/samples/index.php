@@ -17,10 +17,8 @@ SlightPHP::setAppDir(".");
 //var_dump(SlightPHP::getAppDir());
 SlightPHP::setDefaultZone("zone");
 //var_dump(SlightPHP::getDefaultzone());
-SlightPHP::setDefaultClass("default");
-//var_dump(SlightPHP::getDefaultClass());
-SlightPHP::setDefaultMethod("entry");
-//var_dump(SlightPHP::getDefaultMethod("entry"));
+SlightPHP::setDefaultPage("default");
+SlightPHP::setDefaultEntry("entry");
 SlightPHP::setPluginsDir("../plugins");
 //var_dump(SlightPHP::getPluginsDir());
 //var_dump(SlightPHP::loadFile("../plugins/SError.class.php"));
@@ -32,16 +30,4 @@ if(($r=SlightPHP::run())===false){
 	echo $r;
 }
 //}}}
-
-
-/*
-$slight=new SlightPHP;
-$slight->setDefaultZone("zone");
-$slight->setAppDir(".");
-$slight->setPluginsDir("../plugins");
-$slight->loadPlugin("SError");
-if($slight->run()===false){
-	die("ERROR ENTRY");
-}
-*/
 ?>
