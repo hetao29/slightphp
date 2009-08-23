@@ -8,7 +8,9 @@ class zone_smarty extends SGui{
 	}
 	function pagePart($inPath){
 		echo "PART";
-		return "!";
+		$params['key']="value";
+		$params['date'] = date("Y-m-d H:i:s");
+		return $this->render("smarty.test.part.tpl",$params);
 	}
 }
 ?>
