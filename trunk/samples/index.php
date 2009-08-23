@@ -17,7 +17,7 @@ SlightPHP::setAppDir(".");
 //var_dump(SlightPHP::getAppDir());
 SlightPHP::setDefaultZone("zone");
 //var_dump(SlightPHP::getDefaultzone());
-SlightPHP::setDefaultPage("default");
+SlightPHP::setDefaultPage("main");
 SlightPHP::setDefaultEntry("entry");
 SlightPHP::setPluginsDir("../plugins");
 //var_dump(SlightPHP::getPluginsDir());
