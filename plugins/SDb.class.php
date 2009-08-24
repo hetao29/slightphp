@@ -67,7 +67,7 @@ class SDb{
 			return $cache[$zone][$type][$i];
 		}
 
-		$file_data = parse_ini_file(SDb::$_DbConfigFile,true);
+		$file_data = parse_ini_file(realpath(SDb::$_DbConfigFile),true);
 		if(isset($file_data[$zone])){
 				$db = $file_data[$zone];
 		}elseif(isset($file_data[SDb::$_DbdefaultZone])){

@@ -49,6 +49,10 @@ class Db_Mysql extends DbObject{
 	/**
 	 *
 	 */
+	public $charset;
+	/**
+	 *
+	 */
 	public $orderby;
 	/**
 	 *
@@ -369,13 +373,12 @@ class Db_Mysql extends DbObject{
 			Db_Mysql::$globals[$this->key] = mysql_connect($this->host.":".$this->port,$this->user,$this->password,false,MYSQL_CLIENT_COMPRESS);
 		}
 		if(!Db_Mysql::$globals[$this->key]){
-			die("connect database error");
+			die("connect database error:\n".var_export($this,true));
 		}
 		if($this->database!=""){
 			mysql_select_db($this->database,Db_Mysql::$globals[$this->key]);
-			if(defined("mysql_charset")){
-				$charset = "SET NAMES '".mysql_charset."'";
-				mysql_query($charset);
+			if(!empty($this->charset)){
+				mysql_query("SET NAMES ".$this->charset);
 			}
 		}
 	}
