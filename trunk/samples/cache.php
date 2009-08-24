@@ -1,10 +1,7 @@
 <?php
-require_once("../SlightPHP.php");
+require_once("global.php");
 SlightPHP::setDebug(true);
 SlightPHP::setSplitFlag("-_");
-SlightPHP::setPluginsDir("../plugins");	
-SlightPHP::loadPlugin("SCache");
-SlightPHP::loadPlugin("SError");
 
 
 //cacheengine = array("File","APC","MemCache");

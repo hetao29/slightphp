@@ -1,5 +1,4 @@
 <?php
-SlightPHP::loadPlugin("SGui");
 class zone_smarty extends SGui{
 	function pageEntry($inPath){
 		$params['key']="value";

@@ -8,7 +8,7 @@
  */
 /* use static */
 //{{{
-require_once("../SlightPHP.php");
+require_once("global.php");
 SlightPHP::setDebug(true);
 //var_dump(SlightPHP::getDebug());
 //SlightPHP::setSplitFlag("-_");
@@ -19,7 +19,6 @@ SlightPHP::setDefaultZone("zone");
 //var_dump(SlightPHP::getDefaultzone());
 SlightPHP::setDefaultPage("main");
 SlightPHP::setDefaultEntry("entry");
-SlightPHP::setPluginsDir("../plugins");
 //var_dump(SlightPHP::getPluginsDir());
 //var_dump(SlightPHP::loadFile("../plugins/SError.class.php"));
 //var_dump(SlightPHP::loadPlugin("SSmarty"));
