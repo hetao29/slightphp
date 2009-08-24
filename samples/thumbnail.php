@@ -1,7 +1,5 @@
 <?php
-require_once("../SlightPHP.php");
-SlightPHP::setPluginsDir("../plugins");
-SlightPHP::loadPlugin("SThumbnail");
+require_once("global.php");
 
 $thumbnail = new SThumbnail('thumbnail/sampleimage.jpg', 100); //
 

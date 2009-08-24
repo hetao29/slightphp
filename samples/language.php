@@ -1,11 +1,7 @@
 <?php
-require_once("../SlightPHP.php");
+require_once("global.php");
 SlightPHP::setDebug(true);
 SlightPHP::setSplitFlag("-_");
-SlightPHP::setPluginsDir("../plugins");	
-
-SlightPHP::loadPlugin("SLanguage");
-
 
 Slanguage::setLanguageDir("./language");
 

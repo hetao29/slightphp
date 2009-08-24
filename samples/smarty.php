@@ -1,5 +1,5 @@
 <?php
-require_once("../SlightPHP.php");
+require_once("global.php");
 SlightPHP::setDebug(true);
 //var_dump(SlightPHP::getDebug());
 SlightPHP::setSplitFlag("-_");
@@ -8,16 +8,11 @@ SlightPHP::setAppDir(".");
 //var_dump(SlightPHP::getAppDir());
 SlightPHP::setDefaultZone("zone");
 //var_dump(SlightPHP::getDefaultzone());
-SlightPHP::setDefaultClass("smarty");
+SlightPHP::setDefaultPage("smarty");
 //var_dump(SlightPHP::getDefaultClass());
-SlightPHP::setDefaultMethod("entry");
+SlightPHP::setDefaultEntry("entry");
 //var_dump(SlightPHP::getDefaultMethod("entry"));
-SlightPHP::setPluginsDir("../plugins");
-//var_dump(SlightPHP::getPluginsDir());
-//var_dump(SlightPHP::loadFile("../plugins/SError.class.php"));
-SlightPHP::loadPlugin("SSmarty");
-SlightPHP::loadPlugin("SError");
-SlightPHP::loadPlugin("SJson");
+
 
 if(($r=SlightPHP::run())===false){
 	//redirect to 404

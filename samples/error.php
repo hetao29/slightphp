@@ -1,9 +1,7 @@
 <?php
-require_once("../SlightPHP.php");
+require_once("global.php");
 SlightPHP::setDebug(true);
 SlightPHP::setSplitFlag("-_");
-SlightPHP::setPluginsDir("../plugins");	
-SlightPHP::loadPlugin("SError");
 
 /*
  * 是否在前端显示，默认为true
