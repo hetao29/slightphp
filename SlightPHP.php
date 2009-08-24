@@ -26,10 +26,7 @@ final class SlightPHP{
 	 * @var string
 	 */
 	public static $appDir=".";
-	/**
-	 * @var string
-	 */
-	public static $pluginsDir="plugins";
+
 	/**
 	 * @var string
 	 */
@@ -148,23 +145,6 @@ final class SlightPHP{
 		return SlightPHP::$appDir;
 	}
 	/**
-	 * pluginsDir set && get
-	 * @param string $dir
-	 * @return boolean
-	 */
-	public static function setPluginsDir($dir){
-		SlightPHP::$pluginsDir = $dir;
-		return true;
-	}
-	/**
-	 * pluginsDir get
-	 * 
-	 * @return string
-	 */
-	public static function getPluginsDir(){
-		return SlightPHP::$pluginsDir;
-	}
-	/**
 	 * debug status set
 	 *
 	 * @param boolean $debug
@@ -222,7 +202,7 @@ final class SlightPHP{
 			SlightPHP::debug("file[$app_file] not exists");
 			return false;
 		}else{
-			SlightPHP::loadFile($app_file);
+			require_once($app_file);
 		}
 		$method = "Page".$entry;
 		$classname = $zone ."_". $page;
@@ -239,35 +219,6 @@ final class SlightPHP{
 		return call_user_func(array(&$classInstance,$method),$path_array);
 
 	}
-
-	/**
-	 * loadFile,like require_once
-	 *
-	 * @param string $filePath
-	 * @return boolean
-	 */
-	public static function loadFile($filePath){
-		if(file_exists($filePath)){
-			require_once($filePath);
-			return true;
-		}else{
-			SlightPHP::debug("file[$filePath] not exists");
-			return false;
-		}
-	}
-	/**
-	 * loadPlugin in $pluginsDir 
-	 *
-	 * @param string $pluginName
-	 * @return boolean
-	 */
-	public static function loadPlugin($pluginName){
-		$app_file = SlightPHP::$pluginsDir. DIRECTORY_SEPARATOR . $pluginName. ".class.php";
-		return SlightPHP::loadFile($app_file);
-
-	}
-
-
 
 	/**
 	 * @var boolean
