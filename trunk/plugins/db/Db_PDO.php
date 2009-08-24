@@ -49,6 +49,10 @@ class Db_PDO extends DbObject{
 	/**
 	 *
 	 */
+	public $charset;
+	/**
+	 *
+	 */
 	public $orderby;
 	/**
 	 *
@@ -429,10 +433,14 @@ class Db_PDO extends DbObject{
 			if(!empty(Db_PDO::$globals[$this->key])){
 				unset(Db_PDO::$globals[$this->key]);
 			}
+			try{
 			Db_PDO::$globals[$this->key] = new PDO($this->prefix.":dbname=".$this->database.";host=".$this->host.";port=".$this->port,$this->user,$this->password);
+			}catch(Exception $e){
+				die("connect database error:\n".var_export($this,true));
+			}
 		}
-		if(!Db_PDO::$globals[$this->key]){
-			die("connect database error");
+		if(!empty($this->charset)){
+			$this->execute("SET NAMES ".$this->charset);
 		}
 	}
 	function __quote($condition,$split="AND",&$bind){
