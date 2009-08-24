@@ -1,42 +1,38 @@
-srcdir = /data/www/pecl
-builddir = /data/www/pecl
-top_srcdir = /data/www/pecl
-top_builddir = /data/www/pecl
+srcdir = /home/hetal/V05/NovAjax/testcase/slightphp/pecl
+builddir = /home/hetal/V05/NovAjax/testcase/slightphp/pecl
+top_srcdir = /home/hetal/V05/NovAjax/testcase/slightphp/pecl
+top_builddir = /home/hetal/V05/NovAjax/testcase/slightphp/pecl
 EGREP = grep -E
 SED = /bin/sed
 CONFIGURE_COMMAND = './configure'
-CONFIGURE_OPTIONS =
 SHLIB_SUFFIX_NAME = so
 SHLIB_DL_SUFFIX_NAME = so
-ZEND_EXT_TYPE = zend_extension
 RE2C = exit 0;
 AWK = gawk
 SLIGHTPHP_SHARED_LIBADD =
 shared_objects_SlightPHP = SlightPHP.lo
 PHP_PECL_EXTENSION = SlightPHP
 PHP_MODULES = $(phplibdir)/SlightPHP.la
-PHP_ZEND_EX =
-all_targets = $(PHP_MODULES) $(PHP_ZEND_EX)
+all_targets = $(PHP_MODULES)
 install_targets = install-modules install-headers
-prefix = /data/php
+prefix = /usr
 exec_prefix = $(prefix)
 libdir = ${exec_prefix}/lib
-prefix = /data/php
-phplibdir = /data/www/pecl/modules
-phpincludedir = /data/php/include/php
+prefix = /usr
+phplibdir = /home/hetal/V05/NovAjax/testcase/slightphp/pecl/modules
+phpincludedir = /usr/include/php
 CC = gcc
 CFLAGS = -g -O2
 CFLAGS_CLEAN = $(CFLAGS)
 CPP = gcc -E
-CPPFLAGS = -I/data/php/include/php -DHAVE_CONFIG_H
-CXX =
-CXXFLAGS =
-CXXFLAGS_CLEAN = $(CXXFLAGS)
-EXTENSION_DIR = /data/php/lib/php/extensions/no-debug-zts-20060613
-PHP_EXECUTABLE = /data/php/bin/php
+CPPFLAGS = -DHAVE_CONFIG_H
+CXX = g++
+CXXFLAGS = -g -O2
+EXTENSION_DIR = /usr/lib64/php/modules
+PHP_EXECUTABLE = /usr/bin/php
 EXTRA_LDFLAGS =
 EXTRA_LIBS =
-INCLUDES = -I/data/php/include/php -I/data/php/include/php/main -I/data/php/include/php/TSRM -I/data/php/include/php/Zend -I/data/php/include/php/ext -I/data/php/include/php/ext/date/lib
+INCLUDES = -I/usr/include/php -I/usr/include/php/main -I/usr/include/php/TSRM -I/usr/include/php/Zend -I/usr/include/php/ext
 LFLAGS =
 LDFLAGS =
 SHARED_LIBTOOL =
@@ -53,27 +49,27 @@ COMMON_FLAGS = $(DEFS) $(INCLUDES) $(EXTRA_INCLUDES) $(CPPFLAGS) $(PHP_FRAMEWORK
 all: $(all_targets) 
 	@echo
 	@echo "Build complete."
-	@echo "Don't forget to run 'make test'."
+	@echo "(It is safe to ignore warnings about tempnam and tmpnam)."
 	@echo
 	
-build-modules: $(PHP_MODULES) $(PHP_ZEND_EX)
+build-modules: $(PHP_MODULES)
 
-libphp$(PHP_MAJOR_VERSION).la: $(PHP_GLOBAL_OBJS) $(PHP_SAPI_OBJS)
+libphp5.la: $(PHP_GLOBAL_OBJS) $(PHP_SAPI_OBJS)
 	$(LIBTOOL) --mode=link $(CC) $(CFLAGS) $(EXTRA_CFLAGS) -rpath $(phptempdir) $(EXTRA_LDFLAGS) $(LDFLAGS) $(PHP_RPATHS) $(PHP_GLOBAL_OBJS) $(PHP_SAPI_OBJS) $(EXTRA_LIBS) $(ZEND_EXTRA_LIBS) -o $@
-	-@$(LIBTOOL) --silent --mode=install cp $@ $(phptempdir)/$@ >/dev/null 2>&1
+	-@$(LIBTOOL) --silent --mode=install cp libphp5.la $(phptempdir)/libphp5.la >/dev/null 2>&1
 
-libs/libphp$(PHP_MAJOR_VERSION).bundle: $(PHP_GLOBAL_OBJS) $(PHP_SAPI_OBJS)
-	$(CC) $(MH_BUNDLE_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS) $(LDFLAGS) $(EXTRA_LDFLAGS) $(PHP_GLOBAL_OBJS:.lo=.o) $(PHP_SAPI_OBJS:.lo=.o) $(PHP_FRAMEWORKS) $(EXTRA_LIBS) $(ZEND_EXTRA_LIBS) -o $@ && cp $@ libs/libphp$(PHP_MAJOR_VERSION).so
+libs/libphp5.bundle: $(PHP_GLOBAL_OBJS) $(PHP_SAPI_OBJS)
+	$(CC) $(MH_BUNDLE_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS) $(LDFLAGS) $(EXTRA_LDFLAGS) $(PHP_GLOBAL_OBJS:.lo=.o) $(PHP_SAPI_OBJS:.lo=.o) $(PHP_FRAMEWORKS) $(EXTRA_LIBS) $(ZEND_EXTRA_LIBS) -o $@ && cp $@ libs/libphp5.so
 
 install: $(all_targets) $(install_targets)
 
 install-sapi: $(OVERALL_TARGET)
 	@echo "Installing PHP SAPI module:       $(PHP_SAPI)"
 	-@$(mkinstalldirs) $(INSTALL_ROOT)$(bindir)
-	-@if test ! -r $(phptempdir)/libphp$(PHP_MAJOR_VERSION).$(SHLIB_DL_SUFFIX_NAME); then \
+	-@if test ! -r $(phptempdir)/libphp5.$(SHLIB_DL_SUFFIX_NAME); then \
 		for i in 0.0.0 0.0 0; do \
-			if test -r $(phptempdir)/libphp$(PHP_MAJOR_VERSION).$(SHLIB_DL_SUFFIX_NAME).$$i; then \
-				$(LN_S) $(phptempdir)/libphp$(PHP_MAJOR_VERSION).$(SHLIB_DL_SUFFIX_NAME).$$i $(phptempdir)/libphp$(PHP_MAJOR_VERSION).$(SHLIB_DL_SUFFIX_NAME); \
+			if test -r $(phptempdir)/libphp5.$(SHLIB_DL_SUFFIX_NAME).$$i; then \
+				$(LN_S) $(phptempdir)/libphp5.$(SHLIB_DL_SUFFIX_NAME).$$i $(phptempdir)/libphp5.$(SHLIB_DL_SUFFIX_NAME); \
 				break; \
 			fi; \
 		done; \
@@ -111,63 +107,40 @@ install-headers:
 			fi \
 		done; \
 	fi
+	
+install-su: install-pear
 
-PHP_TEST_SETTINGS = -d 'open_basedir=' -d 'output_buffering=0' -d 'memory_limit=-1'
-PHP_TEST_SHARED_EXTENSIONS =  ` \
-	if test "x$(PHP_MODULES)" != "x"; then \
-		for i in $(PHP_MODULES)""; do \
-			. $$i; $(top_srcdir)/build/shtool echo -n -- " -d extension=$$dlname"; \
-		done; \
-	fi; \
-	if test "x$(PHP_ZEND_EX)" != "x"; then \
-		for i in $(PHP_ZEND_EX)""; do \
-			. $$i; $(top_srcdir)/build/shtool echo -n -- " -d $(ZEND_EXT_TYPE)=$(top_builddir)/modules/$$dlname"; \
-		done; \
-	fi`
-
-test: all
+test: all 
 	-@if test ! -z "$(PHP_EXECUTABLE)" && test -x "$(PHP_EXECUTABLE)"; then \
 		TEST_PHP_EXECUTABLE=$(PHP_EXECUTABLE) \
 		TEST_PHP_SRCDIR=$(top_srcdir) \
 		CC="$(CC)" \
-			$(PHP_EXECUTABLE) $(PHP_TEST_SETTINGS) $(top_srcdir)/run-tests.php -d extension_dir=modules/ $(PHP_TEST_SHARED_EXTENSIONS) tests/; \
+			$(PHP_EXECUTABLE) -d 'open_basedir=' -d 'safe_mode=0' -d 'output_buffering=0' -d 'memory_limit=-1' $(top_srcdir)/run-tests.php -d 'extension_dir=modules/' -d `( . $(PHP_MODULES) ; echo extension=$$dlname)` tests/; \
 	elif test ! -z "$(SAPI_CLI_PATH)" && test -x "$(SAPI_CLI_PATH)"; then \
-		INI_FILE=`$(top_builddir)/$(SAPI_CLI_PATH) -d 'display_errors=stderr' -r 'echo php_ini_loaded_file();' 2> /dev/null`; \
-		if test "$$INI_FILE"; then \
-			$(EGREP) -v '^(zend_)?extension(_debug)?(_ts)?[\t\ ]*=' "$$INI_FILE" > $(top_builddir)/tmp-php.ini; \
-		else \
-			echo > $(top_builddir)/tmp-php.ini; \
-		fi; \
-		INI_SCANNED_PATH=`$(top_builddir)/$(SAPI_CLI_PATH) -d 'display_errors=stderr' -r '$$a = explode(",\n", trim(php_ini_scanned_files())); echo $$a[0];' 2> /dev/null`; \
-		if test "$$INI_SCANNED_PATH"; then \
-			INI_SCANNED_PATH=`$(top_srcdir)/build/shtool path -d $$INI_SCANNED_PATH`; \
-			$(EGREP) -h -v '^(zend_)?extension(_debug)?(_ts)?[\t\ ]*=' "$$INI_SCANNED_PATH"/*.ini >> $(top_builddir)/tmp-php.ini; \
-		fi; \
 		TEST_PHP_EXECUTABLE=$(top_builddir)/$(SAPI_CLI_PATH) \
 		TEST_PHP_SRCDIR=$(top_srcdir) \
 		CC="$(CC)" \
-			$(top_builddir)/$(SAPI_CLI_PATH) -n -c $(top_builddir)/tmp-php.ini $(PHP_TEST_SETTINGS) $(top_srcdir)/run-tests.php -n -c $(top_builddir)/tmp-php.ini -d extension_dir=$(top_builddir)/modules/ $(PHP_TEST_SHARED_EXTENSIONS) $(TESTS); \
+			$(top_builddir)/$(SAPI_CLI_PATH) -d 'open_basedir=' -d 'safe_mode=0' -d 'output_buffering=0' -d 'memory_limit=-1' $(top_srcdir)/run-tests.php $(TESTS); \
 	else \
 		echo "ERROR: Cannot run tests without CLI sapi."; \
 	fi
 
 clean:
-	find . -name \*.gcno -o -name \*.gcda | xargs rm -f
 	find . -name \*.lo -o -name \*.o | xargs rm -f
 	find . -name \*.la -o -name \*.a | xargs rm -f 
 	find . -name \*.so | xargs rm -f
 	find . -name .libs -a -type d|xargs rm -rf
-	rm -f libphp$(PHP_MAJOR_VERSION).la $(SAPI_CLI_PATH) $(OVERALL_TARGET) modules/* libs/*
+	rm -f libphp5.la $(SAPI_CLI_PATH) $(OVERALL_TARGET) modules/* libs/*
 
 distclean: clean
-	rm -f config.cache config.log config.status Makefile.objects Makefile.fragments libtool main/php_config.h stamp-h php5.spec sapi/apache/libphp$(PHP_MAJOR_VERSION).module buildmk.stamp
+	rm -f config.cache config.log config.status Makefile.objects Makefile.fragments libtool main/php_config.h stamp-h php5.spec sapi/apache/libphp5.module buildmk.stamp
 	$(EGREP) define'.*include/php' $(top_srcdir)/configure | $(SED) 's/.*>//'|xargs rm -f
 	find . -name Makefile | xargs rm -f
 
 .PHONY: all clean install distclean test
 .NOEXPORT:
-SlightPHP.lo: /data/www/pecl/SlightPHP.c
-	$(LIBTOOL) --mode=compile $(CC)  -I. -I/data/www/pecl $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)  -c /data/www/pecl/SlightPHP.c -o SlightPHP.lo 
+SlightPHP.lo: /home/hetal/V05/NovAjax/testcase/slightphp/pecl/SlightPHP.c
+	$(LIBTOOL) --mode=compile $(CC)  -I. -I/home/hetal/V05/NovAjax/testcase/slightphp/pecl $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)  -c /home/hetal/V05/NovAjax/testcase/slightphp/pecl/SlightPHP.c -o SlightPHP.lo 
 $(phplibdir)/SlightPHP.la: ./SlightPHP.la
 	$(LIBTOOL) --mode=install cp ./SlightPHP.la $(phplibdir)
 
