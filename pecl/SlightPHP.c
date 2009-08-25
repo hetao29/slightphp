@@ -560,12 +560,12 @@ PHP_RSHUTDOWN_FUNCTION(SlightPHP)
 /* {{{ PHP_MINFO_FUNCTION */
 PHP_MINFO_FUNCTION(SlightPHP)
 {
-	php_info_print_box_start(0);
-	php_printf("<p>SlightPHP Framework</p>\n");
-	php_printf("<p>Version 0.9 stable (r132) (2009-08-25)</p>\n");
-	php_printf("<p><b>Authors:</b></p>\n");
-	php_printf("<p>Hetal &lt;admin@slightphp.com&gt; (lead)</p>\n");
-	php_info_print_box_end();
+	php_info_print_table_start();
+	php_info_print_table_colspan_header(2,"SlightPHP Framework");
+	php_info_print_table_row(2, "Version", "0.9 stable (r135) (2009-08-25)" );
+	php_info_print_table_row(2, "Authors", "admin@slightphp.com, hetao@hetao.name" );
+	php_info_print_table_row(2, "Supports", "http://www.slightphp.com" );
+	php_info_print_table_end();
 	/* add your stuff here */
 
 }
