@@ -562,7 +562,7 @@ PHP_MINFO_FUNCTION(SlightPHP)
 {
 	php_info_print_box_start(0);
 	php_printf("<p>SlightPHP Framework</p>\n");
-	php_printf("<p>Version 0.1stable (2009-02-24)</p>\n");
+	php_printf("<p>Version 0.9 stable (r132) (2009-08-25)</p>\n");
 	php_printf("<p><b>Authors:</b></p>\n");
 	php_printf("<p>Hetal &lt;admin@slightphp.com&gt; (lead)</p>\n");
 	php_info_print_box_end();
