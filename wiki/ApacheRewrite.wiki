@@ -1,5 +1,5 @@
-#summary One-sentence summary of this page.
 #labels Featured,Phase-Requirements,Phase-Support,Phase-QA
+#apache rewrite route examples.
 
 = Apache Rewrite 例子 =
 
