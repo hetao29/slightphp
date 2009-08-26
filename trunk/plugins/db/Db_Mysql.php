@@ -406,7 +406,7 @@ class Db_Mysql extends DbObject{
 			{
 				if(!is_numeric($k))
 				{
-					$v1[]="`".$k."`"." = '".mysql_real_escape_string($v,Db_Mysql::$globals[$this->key])."'";
+					$v1[]="`".$k."`"." = '".mysql_escape_string($v)."'";
 				}else{
 					$v1[]=($v);
 				}
