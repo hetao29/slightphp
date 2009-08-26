@@ -105,8 +105,7 @@ class Db_PDO extends DbObject{
 			$this->$key = $value;
 		}
 		$this->key = $this->prefix.":".$this->host.":".$this->user.":".$this->password;
-		Db_PDO::$globals[$this->key]= "";
-		$this->__connect();
+		if(!isset(Db_PDO::$globals[$this->key])) Db_PDO::$globals[$this->key] = "";
 	}
 	/**
 	 * is count 

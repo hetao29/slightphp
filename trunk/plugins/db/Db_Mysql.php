@@ -102,8 +102,7 @@ class Db_Mysql extends DbObject{
 			$this->$key = $value;
 		}
 		$this->key = "mysql:".$this->host.":".$this->user.":".$this->password;
-		Db_Mysql::$globals[$this->key]= "";
-		$this->__connect();
+		if(!isset(Db_Mysql::$globals[$this->key])) Db_Mysql::$globals[$this->key] = "";
 	}
 	/**
 	 * is count 
