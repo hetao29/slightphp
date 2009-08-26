@@ -356,7 +356,6 @@ class Db_Mysql extends DbObject{
 	}
 	function lastInsertId(){
 		return mysql_insert_id(Db_Mysql::$globals[$this->key]);
-		//return mysql_insert_id($GLOBALS[$this->key]);
 	}
 	function rowCount(){
 		return mysql_affected_rows(Db_Mysql::$globals[$this->key]);
@@ -369,7 +368,7 @@ class Db_Mysql extends DbObject{
 				mysql_close(Db_Mysql::$globals[$this->key]);
 				unset(Db_Mysql::$globals[$this->key]);
 			}
-			Db_Mysql::$globals[$this->key] = mysql_connect($this->host.":".$this->port,$this->user,$this->password,false,MYSQL_CLIENT_COMPRESS);
+			Db_Mysql::$globals[$this->key] = mysql_connect($this->host.":".$this->port,$this->user,$this->password);
 		}
 		if(!Db_Mysql::$globals[$this->key]){
 			die("connect database error:\n".var_export($this,true));
@@ -382,7 +381,7 @@ class Db_Mysql extends DbObject{
 		}
 	}
 	function execute($sql){
-		if(empty(Db_Mysql::$globals[$this->key]) || !mysql_ping(Db_Mysql::$globals[$this->key])){
+		if(empty(Db_Mysql::$globals[$this->key])){
 			$this->__connect($forceReconnect=true);
 		}
 		if(defined("DEBUG")){
