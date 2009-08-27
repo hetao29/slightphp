@@ -1,0 +1,3 @@
+﻿SlightPHP Authors (http://www.slightphp.com):
+
+Hetal (hetao@hetao.name)
