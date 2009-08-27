@@ -1,0 +1,1159 @@
+<?xml version="1.0" encoding="utf8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs For Class Thumbnail</title>
+			<link rel="stylesheet" href="../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=utf8'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="class-name">Class Thumbnail</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+							<a href="#sec-descendents">Descendents</a>
+			|											<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+						|											<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+						
+											<a href="#sec-const-summary">Constants</a> (<a href="#sec-consts">details</a>)
+						
+			</div>
+	<div class="info-box-body">
+        		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Creates a thumbnail from a source image with GD2 functions</p>
+<p class="description"><p>Tested with Apache 2.2 and PHP 5.2.  Last change: 2008-04-06</p></p>
+	<ul class="tags">
+				<li><span class="field">author:</span> Michael Wimmer &lt;<a href="mailto:flaimo@gmail.com">flaimo@gmail.com</a>&gt;</li>
+				<li><span class="field">version:</span> 2.001</li>
+				<li><span class="field">copyright:</span> Michael Wimmer</li>
+				<li><span class="field">link:</span> <a href="http://code.google.com/p/flaimo-php">http://code.google.com/p/flaimo-php</a></li>
+				<li><span class="field">access:</span> public</li>
+				<li><span class="field">example:</span> example not found</li>
+			</ul>
+		<p class="notes">
+			Located in <a class="field" href="_plugins---thumbnail---class.Thumbnail.inc.php.html">/plugins/thumbnail/class.Thumbnail.inc.php</a> (line <span class="field"><a href="../__filesource/fsource_Thumbnail__pluginsthumbnailclass.Thumbnail.inc.php.html#a32">32</a></span>)
+		</p>
+		
+				
+		<pre></pre>
+	
+			</div>
+</div>
+
+	<a name="sec-descendents"></a>
+	<div class="info-box">
+		<div class="info-box-title">Direct descendents</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+			<span class="disabled">Descendents</span>
+			|												<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+								|															<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+															<a href="#sec-const-summary">Constants</a> (<a href="#sec-consts">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+			<table cellpadding="2" cellspacing="0" class="class-table">
+				<tr>
+					<th class="class-table-header">Class</th>
+					<th class="class-table-header">Description</th>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../Thumbnail/WMThumbnail.html">WMThumbnail</a></td>
+					<td>
+											Creates a thumbnail from a source image, put a watermark/logo on it and caches it for a given time
+										</td>
+				</tr>
+							</table>
+		</div>
+	</div>
+
+	<a name="sec-const-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Class Constant Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+							<a href="#sec-descendents">Descendants</a> |
+						<span class="disabled">Constants</span> (<a href="#sec-consts">details</a>)
+												<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+				 
+				|
+										| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+			<div class="const-summary">
+								<div class="const-title">
+					<img src="../media/images/Constant.png" alt=" " />
+					<a href="#VERSION" title="details" class="const-name">VERSION</a> = 					<span class="var-type"> '2.001'</span>
+
+				</div>
+							</div>
+		</div>
+	</div>
+
+	<a name="sec-var-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Variable Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+							<a href="#sec-descendents">Descendents</a> |
+						<span class="disabled">Vars</span> (<a href="#sec-vars">details</a>)
+							| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+															<a href="#sec-const-summary">Constants</a> (<a href="#sec-consts">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+			<div class="var-summary">
+																																																																																																																								<div class="var-title">
+					<span class="var-type">array</span>
+					<a href="#$formats" title="details" class="var-name">$formats</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">resource</span>
+					<a href="#$image" title="details" class="var-name">$image</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">int</span>
+					<a href="#$image_height" title="details" class="var-name">$image_height</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">string</span>
+					<a href="#$image_path" title="details" class="var-name">$image_path</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">int</span>
+					<a href="#$image_type" title="details" class="var-name">$image_type</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">int</span>
+					<a href="#$image_width" title="details" class="var-name">$image_width</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">boolean</span>
+					<a href="#$quality_thumb" title="details" class="var-name">$quality_thumb</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">resource</span>
+					<a href="#$thumbnail" title="details" class="var-name">$thumbnail</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">int</span>
+					<a href="#$thumbnail_height" title="details" class="var-name">$thumbnail_height</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">int</span>
+					<a href="#$thumbnail_type" title="details" class="var-name">$thumbnail_type</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">int</span>
+					<a href="#$thumbnail_width" title="details" class="var-name">$thumbnail_width</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">int</span>
+					<a href="#$thumb_max_height" title="details" class="var-name">$thumb_max_height</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">int</span>
+					<a href="#$thumb_max_width" title="details" class="var-name">$thumb_max_width</a>
+				</div>
+											</div>
+		</div>
+	</div>
+
+	<a name="sec-method-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Method Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+							<a href="#sec-descendents">Descendents</a> |
+															<a href="#sec-const-summary">Constants</a> (<a href="#sec-consts">details</a>)
+							
+															<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+				 
+				|
+						<span class="disabled">Methods</span> (<a href="#sec-methods">details</a>)
+		</div>
+		<div class="info-box-body">			
+			<div class="method-summary">
+																																																																																																																												
+												<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#__construct" title="details" class="method-name">__construct</a>
+											([<span class="var-type">string</span>&nbsp;<span class="var-name">$file</span> = <span class="var-default">''</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#createThumbnail" title="details" class="method-name">createThumbnail</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">int</span>
+										<a href="#getPictureName" title="details" class="method-name">getPictureName</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">int</span>
+										<a href="#getThumbHeight" title="details" class="method-name">getThumbHeight</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">int</span>
+										<a href="#getThumbWidth" title="details" class="method-name">getThumbWidth</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#outputThumbnail" title="details" class="method-name">outputThumbnail</a>
+											([<span class="var-type">string</span>&nbsp;<span class="var-name">$format</span> = <span class="var-default">'png'</span>], [<span class="var-type">int</span>&nbsp;<span class="var-name">$quality</span> = <span class="var-default">75</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#readSourceImage" title="details" class="method-name">readSourceImage</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#readSourceImageData" title="details" class="method-name">readSourceImageData</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">mixed</span>
+										<a href="#returnThumbnail" title="details" class="method-name">returnThumbnail</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">boolean</span>
+										<a href="#setMaxHeight" title="details" class="method-name">setMaxHeight</a>
+											([<span class="var-type">int</span>&nbsp;<span class="var-name">$height</span> = <span class="var-default">0</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">boolean</span>
+										<a href="#setMaxSize" title="details" class="method-name">setMaxSize</a>
+											([<span class="var-type">int</span>&nbsp;<span class="var-name">$width</span> = <span class="var-default">0</span>], [<span class="var-type">int</span>&nbsp;<span class="var-name">$height</span> = <span class="var-default">0</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">boolean</span>
+										<a href="#setMaxWidth" title="details" class="method-name">setMaxWidth</a>
+											([<span class="var-type">int</span>&nbsp;<span class="var-name">$width</span> = <span class="var-default">0</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setOutputFormat" title="details" class="method-name">setOutputFormat</a>
+											([<span class="var-type">string</span>&nbsp;<span class="var-name">$format</span> = <span class="var-default">'png'</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setQualityOutput" title="details" class="method-name">setQualityOutput</a>
+											([<span class="var-type">boolean</span>&nbsp;<span class="var-name">$boolean</span> = <span class="var-default">TRUE</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setThumbnailSize" title="details" class="method-name">setThumbnailSize</a>
+										()
+									</div>
+								</div>
+		</div>
+	</div>		
+
+	<a name="sec-vars"></a>
+	<div class="info-box">
+		<div class="info-box-title">Variables</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+							<a href="#sec-descendents">Descendents</a> |
+										<a href="#sec-var-summary">Vars</a> (<span class="disabled">details</span>)
+						
+			
+												<a href="#sec-const-summary">Constants</a> (<a href="#sec-consts">details</a>)
+							
+										| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+			<a name="var$formats" id="$formats"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">array</span>
+			<span class="var-name">$formats</span>
+			 = <span class="var-default">array('gif' =&gt; 1, 'jpg' =&gt; 2, 'png' =&gt; 3, 'wbmp' =&gt; 15,<br />						 'string' =&gt; 999)</span>			(line <span class="line-number"><a href="../__filesource/fsource_Thumbnail__pluginsthumbnailclass.Thumbnail.inc.php.html#a43">43</a></span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">possible image formats</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+				<li><span class="field">usedby:</span> <a href="../Thumbnail/WMThumbnail.html#methodreadWMImageData">WMThumbnail::readWMImageData()</a></li>
+				<li><span class="field">usedby:</span> <a href="../Thumbnail/Thumbnail.html#methodsetOutputFormat">Thumbnail::setOutputFormat()</a></li>
+				<li><span class="field">usedby:</span> <a href="../Thumbnail/Thumbnail.html#methodreadSourceImageData">Thumbnail::readSourceImageData()</a></li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$image" id="$image"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">resource</span>
+			<span class="var-name">$image</span>
+						(line <span class="line-number"><a href="../__filesource/fsource_Thumbnail__pluginsthumbnailclass.Thumbnail.inc.php.html#a111">111</a></span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+				<li><span class="field">usedby:</span> <a href="../Thumbnail/Thumbnail.html#methodcreateThumbnail">Thumbnail::createThumbnail()</a></li>
+				<li><span class="field">usedby:</span> <a href="../Thumbnail/Thumbnail.html#methodreadSourceImage">Thumbnail::readSourceImage()</a></li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$image_height" id="$image_height"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">int</span>
+			<span class="var-name">$image_height</span>
+						(line <span class="line-number"><a href="../__filesource/fsource_Thumbnail__pluginsthumbnailclass.Thumbnail.inc.php.html#a82">82</a></span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+				<li><span class="field">usedby:</span> <a href="../Thumbnail/Thumbnail.html#methodcreateThumbnail">Thumbnail::createThumbnail()</a></li>
+				<li><span class="field">usedby:</span> <a href="../Thumbnail/Thumbnail.html#methodsetThumbnailSize">Thumbnail::setThumbnailSize()</a></li>
+				<li><span class="field">usedby:</span> <a href="../Thumbnail/Thumbnail.html#methodreadSourceImageData">Thumbnail::readSourceImageData()</a></li>
+				<li><span class="field">usedby:</span> <a href="../Thumbnail/Thumbnail.html#methodsetMaxHeight">Thumbnail::setMaxHeight()</a></li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$image_path" id="$image_path"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">string</span>
+			<span class="var-name">$image_path</span>
+						(line <span class="line-number"><a href="../__filesource/fsource_Thumbnail__pluginsthumbnailclass.Thumbnail.inc.php.html#a72">72</a></span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">path/filename of imagefile</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+				<li><span class="field">usedby:</span> <a href="../Thumbnail/Thumbnail.html#methodreadSourceImage">Thumbnail::readSourceImage()</a></li>
+				<li><span class="field">usedby:</span> <a href="../Thumbnail/Thumbnail.html#method__construct">Thumbnail::__construct()</a></li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$image_type" id="$image_type"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">int</span>
+			<span class="var-name">$image_type</span>
+						(line <span class="line-number"><a href="../__filesource/fsource_Thumbnail__pluginsthumbnailclass.Thumbnail.inc.php.html#a89">89</a></span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">image format of source</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+				<li><span class="field">usedby:</span> <a href="../Thumbnail/Thumbnail.html#methodreadSourceImage">Thumbnail::readSourceImage()</a></li>
+				<li><span class="field">usedby:</span> <a href="../Thumbnail/Thumbnail.html#methodreadSourceImageData">Thumbnail::readSourceImageData()</a></li>
+			</ul>
+	
+	
+		
+			<hr class="separator" />
+		<div class="notes">Redefined in descendants as:</div>
+		<ul class="redefinitions">
+					<li>
+				<a href="../Thumbnail/SThumbnail.html#var$image_type">SThumbnail::$image_type</a>
+								: 生成文件
+							</li>
+				</ul>
+		
+
+</div>
+<a name="var$image_width" id="$image_width"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">int</span>
+			<span class="var-name">$image_width</span>
+						(line <span class="line-number"><a href="../__filesource/fsource_Thumbnail__pluginsthumbnailclass.Thumbnail.inc.php.html#a77">77</a></span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+				<li><span class="field">usedby:</span> <a href="../Thumbnail/Thumbnail.html#methodcreateThumbnail">Thumbnail::createThumbnail()</a></li>
+				<li><span class="field">usedby:</span> <a href="../Thumbnail/Thumbnail.html#methodsetThumbnailSize">Thumbnail::setThumbnailSize()</a></li>
+				<li><span class="field">usedby:</span> <a href="../Thumbnail/Thumbnail.html#methodreadSourceImageData">Thumbnail::readSourceImageData()</a></li>
+				<li><span class="field">usedby:</span> <a href="../Thumbnail/Thumbnail.html#methodsetMaxWidth">Thumbnail::setMaxWidth()</a></li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$quality_thumb" id="$quality_thumb"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">boolean</span>
+			<span class="var-name">$quality_thumb</span>
+			 = <span class="var-default"> TRUE</span>			(line <span class="line-number"><a href="../__filesource/fsource_Thumbnail__pluginsthumbnailclass.Thumbnail.inc.php.html#a65">65</a></span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">quality or speed when generating the thumbnail</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+				<li><span class="field">usedby:</span> <a href="../Thumbnail/Thumbnail.html#methodcreateThumbnail">Thumbnail::createThumbnail()</a></li>
+				<li><span class="field">usedby:</span> <a href="../Thumbnail/Thumbnail.html#methodsetQualityOutput">Thumbnail::setQualityOutput()</a></li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$thumbnail" id="$thumbnail"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">resource</span>
+			<span class="var-name">$thumbnail</span>
+						(line <span class="line-number"><a href="../__filesource/fsource_Thumbnail__pluginsthumbnailclass.Thumbnail.inc.php.html#a116">116</a></span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+				<li><span class="field">usedby:</span> <a href="../Thumbnail/WMThumbnail.html#methodcreateThumbnail">WMThumbnail::createThumbnail()</a></li>
+				<li><span class="field">usedby:</span> <a href="../Thumbnail/Thumbnail.html#methodreturnThumbnail">Thumbnail::returnThumbnail()</a></li>
+				<li><span class="field">usedby:</span> <a href="../Thumbnail/Thumbnail.html#methodoutputThumbnail">Thumbnail::outputThumbnail()</a></li>
+				<li><span class="field">usedby:</span> <a href="../Thumbnail/Thumbnail.html#methodcreateThumbnail">Thumbnail::createThumbnail()</a></li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$thumbnail_height" id="$thumbnail_height"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">int</span>
+			<span class="var-name">$thumbnail_height</span>
+						(line <span class="line-number"><a href="../__filesource/fsource_Thumbnail__pluginsthumbnailclass.Thumbnail.inc.php.html#a94">94</a></span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+				<li><span class="field">usedby:</span> <a href="../Thumbnail/WMThumbnail.html#methodcreateThumbnail">WMThumbnail::createThumbnail()</a></li>
+				<li><span class="field">usedby:</span> <a href="../Thumbnail/Thumbnail.html#methodcreateThumbnail">Thumbnail::createThumbnail()</a></li>
+				<li><span class="field">usedby:</span> <a href="../Thumbnail/Thumbnail.html#methodgetThumbHeight">Thumbnail::getThumbHeight()</a></li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$thumbnail_type" id="$thumbnail_type"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">int</span>
+			<span class="var-name">$thumbnail_type</span>
+			 = <span class="var-default"> 3</span>			(line <span class="line-number"><a href="../__filesource/fsource_Thumbnail__pluginsthumbnailclass.Thumbnail.inc.php.html#a106">106</a></span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">image format of the thumbnail</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+				<li><span class="field">usedby:</span> <a href="../Thumbnail/Thumbnail.html#methodoutputThumbnail">Thumbnail::outputThumbnail()</a></li>
+				<li><span class="field">usedby:</span> <a href="../Thumbnail/Thumbnail.html#methodsetOutputFormat">Thumbnail::setOutputFormat()</a></li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$thumbnail_width" id="$thumbnail_width"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">int</span>
+			<span class="var-name">$thumbnail_width</span>
+						(line <span class="line-number"><a href="../__filesource/fsource_Thumbnail__pluginsthumbnailclass.Thumbnail.inc.php.html#a99">99</a></span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+				<li><span class="field">usedby:</span> <a href="../Thumbnail/WMThumbnail.html#methodcreateThumbnail">WMThumbnail::createThumbnail()</a></li>
+				<li><span class="field">usedby:</span> <a href="../Thumbnail/Thumbnail.html#methodgetPictureName">Thumbnail::getPictureName()</a></li>
+				<li><span class="field">usedby:</span> <a href="../Thumbnail/Thumbnail.html#methodgetThumbWidth">Thumbnail::getThumbWidth()</a></li>
+				<li><span class="field">usedby:</span> <a href="../Thumbnail/Thumbnail.html#methodcreateThumbnail">Thumbnail::createThumbnail()</a></li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$thumb_max_height" id="$thumb_max_height"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">int</span>
+			<span class="var-name">$thumb_max_height</span>
+			 = <span class="var-default"> 100</span>			(line <span class="line-number"><a href="../__filesource/fsource_Thumbnail__pluginsthumbnailclass.Thumbnail.inc.php.html#a51">51</a></span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">maximal height of the generated thumbnail</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+				<li><span class="field">usedby:</span> <a href="../Thumbnail/Thumbnail.html#methodsetThumbnailSize">Thumbnail::setThumbnailSize()</a></li>
+				<li><span class="field">usedby:</span> <a href="../Thumbnail/Thumbnail.html#methodsetMaxHeight">Thumbnail::setMaxHeight()</a></li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$thumb_max_width" id="$thumb_max_width"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">int</span>
+			<span class="var-name">$thumb_max_width</span>
+			 = <span class="var-default"> 100</span>			(line <span class="line-number"><a href="../__filesource/fsource_Thumbnail__pluginsthumbnailclass.Thumbnail.inc.php.html#a58">58</a></span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">maximal width of the generated thumbnail</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+				<li><span class="field">usedby:</span> <a href="../Thumbnail/Thumbnail.html#methodsetThumbnailSize">Thumbnail::setThumbnailSize()</a></li>
+				<li><span class="field">usedby:</span> <a href="../Thumbnail/Thumbnail.html#methodsetMaxWidth">Thumbnail::setMaxWidth()</a></li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+						
+		</div>
+	</div>
+	
+	<a name="sec-methods"></a>
+	<div class="info-box">
+		<div class="info-box-title">Methods</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+							<a href="#sec-descendents">Descendents</a> |
+															<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+																			<a href="#sec-const-summary">Constants</a> (<a href="#sec-consts">details</a>)
+							
+										<a href="#sec-method-summary">Methods</a> (<span class="disabled">details</span>)
+						
+		</div>
+		<div class="info-box-body">
+			<A NAME='method_detail'></A>
+
+<a name="method__construct" id="__construct"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">Constructor __construct</span> (line <span class="line-number"><a href="../__filesource/fsource_Thumbnail__pluginsthumbnailclass.Thumbnail.inc.php.html#a132">132</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Constructor</p>
+	<ul class="tags">
+				<li><span class="field">uses:</span> <a href="../Thumbnail/Thumbnail.html#var$image_path">Thumbnail::$image_path</a></li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			__construct
+		</span>
+					([<span class="var-type">string</span>&nbsp;<span class="var-name">$file</span> = <span class="var-default">''</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$file</span><span class="var-description">: path/filename of picture or stream from a DB field</span>			</li>
+				</ul>
+		
+			
+			<hr class="separator" />
+		<div class="notes">Redefined in descendants as:</div>
+		<ul class="redefinitions">
+					<li>
+				<a href="../Thumbnail/WMThumbnail.html#method__construct">WMThumbnail::__construct()</a>
+								: Constructor
+							</li>
+				</ul>
+	</div>
+<a name="methodcreateThumbnail" id="createThumbnail"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">createThumbnail</span> (line <span class="line-number"><a href="../__filesource/fsource_Thumbnail__pluginsthumbnailclass.Thumbnail.inc.php.html#a343">343</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">creates the thumbnail and saves it to a variable</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+				<li><span class="field">uses:</span> <a href="../Thumbnail/Thumbnail.html#methodsetThumbnailSize">Thumbnail::setThumbnailSize()</a></li>
+				<li><span class="field">usedby:</span> <a href="../Thumbnail/WMThumbnail.html#methodcreateThumbnail">WMThumbnail::createThumbnail()</a></li>
+				<li><span class="field">usedby:</span> <a href="../Thumbnail/Thumbnail.html#methodoutputThumbnail">Thumbnail::outputThumbnail()</a></li>
+				<li><span class="field">usedby:</span> <a href="../Thumbnail/Thumbnail.html#methodreturnThumbnail">Thumbnail::returnThumbnail()</a></li>
+				<li><span class="field">uses:</span> <a href="../Thumbnail/Thumbnail.html#methodreadSourceImage">Thumbnail::readSourceImage()</a></li>
+				<li><span class="field">uses:</span> <a href="../Thumbnail/Thumbnail.html#var$thumbnail_width">Thumbnail::$thumbnail_width</a></li>
+				<li><span class="field">uses:</span> <a href="../Thumbnail/Thumbnail.html#var$image_width">Thumbnail::$image_width</a></li>
+				<li><span class="field">uses:</span> <a href="../Thumbnail/Thumbnail.html#var$image_height">Thumbnail::$image_height</a></li>
+				<li><span class="field">uses:</span> <a href="../Thumbnail/Thumbnail.html#var$quality_thumb">Thumbnail::$quality_thumb</a></li>
+				<li><span class="field">uses:</span> <a href="../Thumbnail/Thumbnail.html#var$thumbnail">Thumbnail::$thumbnail</a></li>
+				<li><span class="field">uses:</span> <a href="../Thumbnail/Thumbnail.html#var$thumbnail_height">Thumbnail::$thumbnail_height</a></li>
+				<li><span class="field">uses:</span> <a href="../Thumbnail/Thumbnail.html#var$image">Thumbnail::$image</a></li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			createThumbnail
+		</span>
+				()
+			</div>
+	
+		
+			
+			<hr class="separator" />
+		<div class="notes">Redefined in descendants as:</div>
+		<ul class="redefinitions">
+					<li>
+				<a href="../Thumbnail/WMThumbnail.html#methodcreateThumbnail">WMThumbnail::createThumbnail()</a>
+								: creates the thumbnail and saves it to a variable
+							</li>
+				</ul>
+	</div>
+<a name="methodgetPictureName" id="getPictureName"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">getPictureName</span> (line <span class="line-number"><a href="../__filesource/fsource_Thumbnail__pluginsthumbnailclass.Thumbnail.inc.php.html#a446">446</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">returns the width of the thumbnail</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+				<li><span class="field">uses:</span> <a href="../Thumbnail/Thumbnail.html#var$thumbnail_width">Thumbnail::$thumbnail_width</a></li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">int</span>
+		<span class="method-name">
+			getPictureName
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetThumbHeight" id="getThumbHeight"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">getThumbHeight</span> (line <span class="line-number"><a href="../__filesource/fsource_Thumbnail__pluginsthumbnailclass.Thumbnail.inc.php.html#a424">424</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">returns the height of the thumbnail</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+				<li><span class="field">uses:</span> <a href="../Thumbnail/Thumbnail.html#var$thumbnail_height">Thumbnail::$thumbnail_height</a></li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">int</span>
+		<span class="method-name">
+			getThumbHeight
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetThumbWidth" id="getThumbWidth"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">getThumbWidth</span> (line <span class="line-number"><a href="../__filesource/fsource_Thumbnail__pluginsthumbnailclass.Thumbnail.inc.php.html#a435">435</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">returns the width of the thumbnail</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+				<li><span class="field">uses:</span> <a href="../Thumbnail/Thumbnail.html#var$thumbnail_width">Thumbnail::$thumbnail_width</a></li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">int</span>
+		<span class="method-name">
+			getThumbWidth
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodoutputThumbnail" id="outputThumbnail"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">outputThumbnail</span> (line <span class="line-number"><a href="../__filesource/fsource_Thumbnail__pluginsthumbnailclass.Thumbnail.inc.php.html#a374">374</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">outputs the thumbnail to the browser</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+				<li><span class="field">uses:</span> <a href="../Thumbnail/Thumbnail.html#methodsetOutputFormat">Thumbnail::setOutputFormat()</a></li>
+				<li><span class="field">uses:</span> <a href="../Thumbnail/Thumbnail.html#methodcreateThumbnail">Thumbnail::createThumbnail()</a></li>
+				<li><span class="field">uses:</span> <a href="../Thumbnail/Thumbnail.html#var$thumbnail_type">Thumbnail::$thumbnail_type</a></li>
+				<li><span class="field">uses:</span> <a href="../Thumbnail/Thumbnail.html#var$thumbnail">Thumbnail::$thumbnail</a></li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			outputThumbnail
+		</span>
+					([<span class="var-type">string</span>&nbsp;<span class="var-name">$format</span> = <span class="var-default">'png'</span>], [<span class="var-type">int</span>&nbsp;<span class="var-name">$quality</span> = <span class="var-default">75</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$format</span>			</li>
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$quality</span>			</li>
+				</ul>
+		
+			
+			<hr class="separator" />
+		<div class="notes">Redefined in descendants as:</div>
+		<ul class="redefinitions">
+					<li>
+				<a href="../Thumbnail/WMThumbnail.html#methodoutputThumbnail">WMThumbnail::outputThumbnail()</a>
+								: outputs the thumbnail to the browser
+							</li>
+				</ul>
+	</div>
+<a name="methodreadSourceImage" id="readSourceImage"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">readSourceImage</span> (line <span class="line-number"><a href="../__filesource/fsource_Thumbnail__pluginsthumbnailclass.Thumbnail.inc.php.html#a269">269</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">reads the source image into a variable</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+				<li><span class="field">usedby:</span> <a href="../Thumbnail/Thumbnail.html#methodcreateThumbnail">Thumbnail::createThumbnail()</a></li>
+				<li><span class="field">uses:</span> <a href="../Thumbnail/Thumbnail.html#methodreadSourceImageData">Thumbnail::readSourceImageData()</a></li>
+				<li><span class="field">uses:</span> <a href="../Thumbnail/Thumbnail.html#var$image_type">Thumbnail::$image_type</a></li>
+				<li><span class="field">uses:</span> <a href="../Thumbnail/Thumbnail.html#var$image_path">Thumbnail::$image_path</a></li>
+				<li><span class="field">uses:</span> <a href="../Thumbnail/Thumbnail.html#var$image">Thumbnail::$image</a></li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			readSourceImage
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodreadSourceImageData" id="readSourceImageData"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">readSourceImageData</span> (line <span class="line-number"><a href="../__filesource/fsource_Thumbnail__pluginsthumbnailclass.Thumbnail.inc.php.html#a232">232</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">reads metadata of the source image</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+				<li><span class="field">usedby:</span> <a href="../Thumbnail/Thumbnail.html#methodsetMaxWidth">Thumbnail::setMaxWidth()</a></li>
+				<li><span class="field">usedby:</span> <a href="../Thumbnail/Thumbnail.html#methodreadSourceImage">Thumbnail::readSourceImage()</a></li>
+				<li><span class="field">usedby:</span> <a href="../Thumbnail/Thumbnail.html#methodsetThumbnailSize">Thumbnail::setThumbnailSize()</a></li>
+				<li><span class="field">usedby:</span> <a href="../Thumbnail/Thumbnail.html#methodsetMaxHeight">Thumbnail::setMaxHeight()</a></li>
+				<li><span class="field">uses:</span> <a href="../Thumbnail/Thumbnail.html#var$formats">Thumbnail::$formats</a></li>
+				<li><span class="field">uses:</span> <a href="../Thumbnail/Thumbnail.html#var$image_type">Thumbnail::$image_type</a></li>
+				<li><span class="field">uses:</span> <a href="../Thumbnail/Thumbnail.html#var$image_width">Thumbnail::$image_width</a></li>
+				<li><span class="field">uses:</span> <a href="../Thumbnail/Thumbnail.html#var$image_height">Thumbnail::$image_height</a></li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			readSourceImageData
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodreturnThumbnail" id="returnThumbnail"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">returnThumbnail</span> (line <span class="line-number"><a href="../__filesource/fsource_Thumbnail__pluginsthumbnailclass.Thumbnail.inc.php.html#a412">412</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">returns the variable with the thumbnail image</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+				<li><span class="field">uses:</span> <a href="../Thumbnail/Thumbnail.html#methodsetOutputFormat">Thumbnail::setOutputFormat()</a></li>
+				<li><span class="field">uses:</span> <a href="../Thumbnail/Thumbnail.html#methodcreateThumbnail">Thumbnail::createThumbnail()</a></li>
+				<li><span class="field">uses:</span> <a href="../Thumbnail/Thumbnail.html#var$thumbnail">Thumbnail::$thumbnail</a></li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">mixed</span>
+		<span class="method-name">
+			returnThumbnail
+		</span>
+				()
+			</div>
+	
+		
+			
+			<hr class="separator" />
+		<div class="notes">Redefined in descendants as:</div>
+		<ul class="redefinitions">
+					<li>
+				<a href="../Thumbnail/WMThumbnail.html#methodreturnThumbnail">WMThumbnail::returnThumbnail()</a>
+								: returns the variable with the thumbnail image
+							</li>
+				</ul>
+	</div>
+<a name="methodsetMaxHeight" id="setMaxHeight"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">setMaxHeight</span> (line <span class="line-number"><a href="../__filesource/fsource_Thumbnail__pluginsthumbnailclass.Thumbnail.inc.php.html#a163">163</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">sets the max. height of the thumbnail</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+				<li><span class="field">usedby:</span> <a href="../Thumbnail/Thumbnail.html#methodsetMaxSize">Thumbnail::setMaxSize()</a></li>
+				<li><span class="field">uses:</span> <a href="../Thumbnail/Thumbnail.html#methodreadSourceImageData">Thumbnail::readSourceImageData()</a></li>
+				<li><span class="field">uses:</span> <a href="../Thumbnail/Thumbnail.html#var$thumb_max_height">Thumbnail::$thumb_max_height</a></li>
+				<li><span class="field">uses:</span> <a href="../Thumbnail/Thumbnail.html#var$image_height">Thumbnail::$image_height</a></li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">boolean</span>
+		<span class="method-name">
+			setMaxHeight
+		</span>
+					([<span class="var-type">int</span>&nbsp;<span class="var-name">$height</span> = <span class="var-default">0</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$height</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsetMaxSize" id="setMaxSize"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">setMaxSize</span> (line <span class="line-number"><a href="../__filesource/fsource_Thumbnail__pluginsthumbnailclass.Thumbnail.inc.php.html#a203">203</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">sets the max. width and height of the thumbnail</p>
+<p class="description"><p>passes values to the functions setMaxHeight() and setMaxWidth()</p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+				<li><span class="field">uses:</span> <a href="../Thumbnail/Thumbnail.html#methodsetMaxWidth">Thumbnail::setMaxWidth()</a></li>
+				<li><span class="field">uses:</span> <a href="../Thumbnail/Thumbnail.html#methodsetMaxHeight">Thumbnail::setMaxHeight()</a></li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">boolean</span>
+		<span class="method-name">
+			setMaxSize
+		</span>
+					([<span class="var-type">int</span>&nbsp;<span class="var-name">$width</span> = <span class="var-default">0</span>], [<span class="var-type">int</span>&nbsp;<span class="var-name">$height</span> = <span class="var-default">0</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$width</span>			</li>
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$height</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsetMaxWidth" id="setMaxWidth"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">setMaxWidth</span> (line <span class="line-number"><a href="../__filesource/fsource_Thumbnail__pluginsthumbnailclass.Thumbnail.inc.php.html#a182">182</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">sets the max. width of the thumbnail</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+				<li><span class="field">usedby:</span> <a href="../Thumbnail/Thumbnail.html#methodsetMaxSize">Thumbnail::setMaxSize()</a></li>
+				<li><span class="field">uses:</span> <a href="../Thumbnail/Thumbnail.html#methodreadSourceImageData">Thumbnail::readSourceImageData()</a></li>
+				<li><span class="field">uses:</span> <a href="../Thumbnail/Thumbnail.html#var$thumb_max_width">Thumbnail::$thumb_max_width</a></li>
+				<li><span class="field">uses:</span> <a href="../Thumbnail/Thumbnail.html#var$image_width">Thumbnail::$image_width</a></li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">boolean</span>
+		<span class="method-name">
+			setMaxWidth
+		</span>
+					([<span class="var-type">int</span>&nbsp;<span class="var-name">$width</span> = <span class="var-default">0</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$width</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsetOutputFormat" id="setOutputFormat"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">setOutputFormat</span> (line <span class="line-number"><a href="../__filesource/fsource_Thumbnail__pluginsthumbnailclass.Thumbnail.inc.php.html#a148">148</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">sets the output type of the thumbnail</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+				<li><span class="field">usedby:</span> <a href="../Thumbnail/Thumbnail.html#methodreturnThumbnail">Thumbnail::returnThumbnail()</a></li>
+				<li><span class="field">usedby:</span> <a href="../Thumbnail/Thumbnail.html#methodoutputThumbnail">Thumbnail::outputThumbnail()</a></li>
+				<li><span class="field">uses:</span> <a href="../Thumbnail/Thumbnail.html#var$formats">Thumbnail::$formats</a></li>
+				<li><span class="field">uses:</span> <a href="../Thumbnail/Thumbnail.html#var$thumbnail_type">Thumbnail::$thumbnail_type</a></li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setOutputFormat
+		</span>
+					([<span class="var-type">string</span>&nbsp;<span class="var-name">$format</span> = <span class="var-default">'png'</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$format</span><span class="var-description">: gif, jpg, png, wbmp</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsetQualityOutput" id="setQualityOutput"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">setQualityOutput</span> (line <span class="line-number"><a href="../__filesource/fsource_Thumbnail__pluginsthumbnailclass.Thumbnail.inc.php.html#a219">219</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">whether to create thumbs fast or with good quality</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+				<li><span class="field">uses:</span> <a href="../Thumbnail/Thumbnail.html#var$quality_thumb">Thumbnail::$quality_thumb</a></li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setQualityOutput
+		</span>
+					([<span class="var-type">boolean</span>&nbsp;<span class="var-name">$boolean</span> = <span class="var-default">TRUE</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">boolean</span>
+				<span class="var-name">$boolean</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsetThumbnailSize" id="setThumbnailSize"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">setThumbnailSize</span> (line <span class="line-number"><a href="../__filesource/fsource_Thumbnail__pluginsthumbnailclass.Thumbnail.inc.php.html#a303">303</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">sets the actual width and height of the thumbnail based on the source image size and the max limits for the thumbnail</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+				<li><span class="field">usedby:</span> <a href="../Thumbnail/Thumbnail.html#methodcreateThumbnail">Thumbnail::createThumbnail()</a></li>
+				<li><span class="field">uses:</span> <a href="../Thumbnail/Thumbnail.html#methodreadSourceImageData">Thumbnail::readSourceImageData()</a></li>
+				<li><span class="field">uses:</span> <a href="../Thumbnail/Thumbnail.html#var$thumb_max_width">Thumbnail::$thumb_max_width</a></li>
+				<li><span class="field">uses:</span> <a href="../Thumbnail/Thumbnail.html#var$image_width">Thumbnail::$image_width</a></li>
+				<li><span class="field">uses:</span> <a href="../Thumbnail/Thumbnail.html#var$thumb_max_height">Thumbnail::$thumb_max_height</a></li>
+				<li><span class="field">uses:</span> <a href="../Thumbnail/Thumbnail.html#var$image_height">Thumbnail::$image_height</a></li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setThumbnailSize
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+						
+		</div>
+	</div>
+
+	<a name="sec-consts"></a>
+	<div class="info-box">
+		<div class="info-box-title">Class Constants</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+							<a href="#sec-descendents">Descendants</a> |
+										<a href="#sec-var-summary">Constants</a> (<span class="disabled">details</span>)
+						
+			
+												<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+														| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+			<a name="constVERSION" id="VERSION"><!-- --></A>
+<div class="oddrow">
+
+	<div class="const-header">
+		<img src="../media/images/Variable.png" />
+		<span class="const-title">
+			<span class="const-name">VERSION</span>
+			 = <span class="const-default"> '2.001'</span>
+			(line <span class="line-number"><a href="../__filesource/fsource_Thumbnail__pluginsthumbnailclass.Thumbnail.inc.php.html#a118">118</a></span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+						
+		</div>
+	</div>
+
+	<p class="notes" id="credit">
+		Documentation generated on Thu, 27 Aug 2009 01:45:15 +0000 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.1</a>
+	</p>
+	</div></body>
+</html>
