@@ -3,13 +3,13 @@
   <html xmlns="http://www.w3.org/1999/xhtml">
 		<head>
 			<!-- template designed by Marco Von Ballmoos -->
-			<title>Docs For Class SCache</title>
+			<title>Docs For Class SLog</title>
 			<link rel="stylesheet" href="../media/stylesheet.css" />
 			<meta http-equiv='Content-Type' content='text/html; charset=utf8'/>
 		</head>
 		<body>
 			<div class="page-body">			
-<h2 class="class-name">Class SCache</h2>
+<h2 class="class-name">Class SLog</h2>
 
 <a name="sec-description"></a>
 <div class="info-box">
@@ -23,7 +23,7 @@
 	<div class="info-box-body">
         		<!-- ========== Info from phpDoc block ========= -->
 		<p class="notes">
-			Located in <a class="field" href="_plugins---SCache.class.php.html">/plugins/SCache.class.php</a> (line <span class="field"><a href="../__filesource/fsource_SlightPHP__pluginsSCache.class.php.html#a18">18</a></span>)
+			Located in <a class="field" href="_plugins---SLog.class.php.html">/plugins/SLog.class.php</a> (line <span class="field"><a href="../__filesource/fsource_SlightPHP__pluginsSLog.class.php.html#a17">17</a></span>)
 		</p>
 		
 				
@@ -48,9 +48,17 @@
 			<div class="var-summary">
 												<div class="var-title">
 					static <span class="var-type">mixed</span>
-					<a href="#$engines" title="details" class="var-name">$engines</a>
+					<a href="#$CONSOLE" title="details" class="var-name">$CONSOLE</a>
 				</div>
-																							</div>
+																<div class="var-title">
+					static <span class="var-type">mixed</span>
+					<a href="#$LOG" title="details" class="var-name">$LOG</a>
+				</div>
+																<div class="var-title">
+					static <span class="var-type">mixed</span>
+					<a href="#$LOGFILE" title="details" class="var-name">$LOGFILE</a>
+				</div>
+																																							</div>
 		</div>
 	</div>
 
@@ -67,9 +75,9 @@
 		<div class="info-box-body">			
 			<div class="method-summary">
 												<div class="method-definition">
-					static 						<span class="method-result"><a href="../SlightPHP/CacheObject.html">CacheObject</a></span>
-										<a href="#getCacheEngine" title="details" class="method-name">getCacheEngine</a>
-											(<span class="var-type">string</span>&nbsp;<span class="var-name">$engine</span>)
+					static 						<span class="method-result">void</span>
+										<a href="#write" title="details" class="method-name">write</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$info</span>)
 									</div>
 								
 												</div>
@@ -89,14 +97,50 @@
 							
 					</div>
 		<div class="info-box-body">
-			<a name="var$engines" id="$engines"><!-- --></A>
+			<a name="var$CONSOLE" id="$CONSOLE"><!-- --></A>
 <div class="oddrow">
 
 	<div class="var-header">
 		<span class="var-title">
 			static <span class="var-type">mixed</span>
-			<span class="var-name">$engines</span>
-			 = <span class="var-default">array(&quot;file&quot;,&quot;apc&quot;,&quot;memcache&quot;,&quot;memcached&quot;)</span>			(line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__pluginsSCache.class.php.html#a19">19</a></span>)
+			<span class="var-name">$CONSOLE</span>
+			 = <span class="var-default">true</span>			(line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__pluginsSLog.class.php.html#a21">21</a></span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+		
+		
+
+</div>
+<a name="var$LOG" id="$LOG"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			static <span class="var-type">mixed</span>
+			<span class="var-name">$LOG</span>
+			 = <span class="var-default">false</span>			(line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__pluginsSLog.class.php.html#a25">25</a></span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+		
+		
+
+</div>
+<a name="var$LOGFILE" id="$LOGFILE"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			static <span class="var-type">mixed</span>
+			<span class="var-name">$LOGFILE</span>
+			 = <span class="var-default">&quot;&quot;</span>			(line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__pluginsSLog.class.php.html#a29">29</a></span>)
 		</span>
 	</div>
 
@@ -122,28 +166,33 @@
 		</div>
 		<div class="info-box-body">
 			<A NAME='method_detail'></A>
-<a name="methodgetCacheEngine" id="getCacheEngine"><!-- --></a>
+<a name="methodwrite" id="write"><!-- --></a>
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">static method getCacheEngine</span> (line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__pluginsSCache.class.php.html#a24">24</a></span>)
+		<span class="method-title">static method write</span> (line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__pluginsSLog.class.php.html#a35">35</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">params mix $info</p>
+<p class="description"><p>return boolean</p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
 	
 	<div class="method-signature">
 	    static
-		<span class="method-result"><a href="../SlightPHP/CacheObject.html">CacheObject</a></span>
+		<span class="method-result">void</span>
 		<span class="method-name">
-			getCacheEngine
+			write
 		</span>
-					(<span class="var-type">string</span>&nbsp;<span class="var-name">$engine</span>)
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$info</span>)
 			</div>
 	
 			<ul class="parameters">
 					<li>
-				<span class="var-type">string</span>
-				<span class="var-name">$engine</span><span class="var-description">: enum(&quot;file&quot;,&quot;apc&quot;,&quot;memcache&quot;,&quot;memcached&quot;)</span>			</li>
+				<span class="var-type"></span>
+				<span class="var-name">$info</span>			</li>
 				</ul>
 		
 			
@@ -155,7 +204,7 @@
 
 
 	<p class="notes" id="credit">
-		Documentation generated on Thu, 27 Aug 2009 10:41:55 +0000 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.1</a>
+		Documentation generated on Thu, 27 Aug 2009 10:42:15 +0000 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.1</a>
 	</p>
 	</div></body>
 </html>
