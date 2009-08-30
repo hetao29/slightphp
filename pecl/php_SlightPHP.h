@@ -210,6 +210,25 @@ ZEND_END_ARG_INFO()
 #endif
 
 
+PHP_METHOD(SlightPHP, setZoneAlias);
+#if (PHP_MAJOR_VERSION >= 5)
+ZEND_BEGIN_ARG_INFO_EX(SlightPHP__setZoneAlias_arg, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, 1)
+  ZEND_ARG_INFO(0, zone)
+  ZEND_ARG_INFO(0, alias)
+ZEND_END_ARG_INFO()
+#else /* PHP 4.x */
+#define SlightPHP__setZoneAlias_arg NULL
+#endif
+
+
+PHP_METHOD(SlightPHP, getZoneAlias);
+#if (PHP_MAJOR_VERSION >= 5)
+ZEND_BEGIN_ARG_INFO_EX(SlightPHP__getZoneAlias_args, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, 0)
+  ZEND_ARG_INFO(0, zone)
+ZEND_END_ARG_INFO()
+#else /* PHP 4.x */
+#define SlightPHP__getZoneAlias_args NULL
+#endif
 
 
 
