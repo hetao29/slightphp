@@ -48,15 +48,18 @@ final class SlightPHP{
 	 *
 	 * @var array
 	 */
-	public static $zoneAlias=array();
+	public static $zoneAlias;
+
 	/**
-	 *
+	 *@param string $zone
+	 *@param string $alias
 	 */
 	public static function setZoneAlias($zone,$alias){
 		SlightPHP::$zoneAlias[$zone]=$alias;
+		return true;
 	}
 	/**
-	 *
+	 *@param string $zone
 	 */
 	public static function getZoneAlias($zone){
 		return isset(SlightPHP::$zoneAlias[$zone]) ? SlightPHP::$zoneAlias[$zone] : false;
@@ -197,7 +200,7 @@ final class SlightPHP{
 		$page	= !empty($path_array[1]) ? $path_array[1] : SlightPHP::$defaultPage ;
 		$entry	= !empty($path_array[2]) ? $path_array[2] : SlightPHP::$defaultEntry ;
 
-		if(($key = array_search($zone,SlightPHP::$zoneAlias))!==false){
+		if(SlightPHP::$zoneAlias && ($key = array_search($zone,SlightPHP::$zoneAlias))!==false){
 			$zone = $key;
 		}
 		if(!$isPart){
