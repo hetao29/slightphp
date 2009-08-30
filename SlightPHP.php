@@ -197,11 +197,8 @@ final class SlightPHP{
 		$page	= !empty($path_array[1]) ? $path_array[1] : SlightPHP::$defaultPage ;
 		$entry	= !empty($path_array[2]) ? $path_array[2] : SlightPHP::$defaultEntry ;
 
-		foreach(SlightPHP::$zoneAlias as $key => $value){
-			if($value == $zone){
-				$zone = $key;
-				break;
-			}
+		if(($key = array_search($zone,SlightPHP::$zoneAlias))!==false){
+			$zone = $key;
 		}
 		if(!$isPart){
 			SlightPHP::$zone	= $zone;
