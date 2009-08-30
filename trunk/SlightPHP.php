@@ -59,7 +59,7 @@ final class SlightPHP{
 	 *
 	 */
 	public static function getZoneAlias($zone){
-		return isset(SlightPHP::$zoneAlias[$zone]) ? SlightPHP::$zoneAlias[$zone] : "";
+		return isset(SlightPHP::$zoneAlias[$zone]) ? SlightPHP::$zoneAlias[$zone] : false;
 	}
 	
 	/**
