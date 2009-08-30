@@ -153,6 +153,41 @@ PHP_METHOD(SlightPHP, getSplitFlag)
 }
 
 
+PHP_METHOD(SlightPHP, setZoneAlias)
+{
+	char *zone, *alias;
+	int zone_len, alias_len;
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ss", &zone, &zone_len, &alias ,&alias_len) == FAILURE) {
+			RETURN_FALSE;
+	}
+	zval *zoneAlias = zend_read_static_property(SlightPHP_ce_ptr,"zoneAlias",sizeof("zoneAlias")-1,1 TSRMLS_CC);
+	if(!zoneAlias){ RETURN_FALSE; }
+
+	if(Z_TYPE_P(zoneAlias)!=IS_ARRAY){
+		array_init(zoneAlias);
+	}
+	add_assoc_string(zoneAlias,zone,alias,1);
+	zend_update_static_property(SlightPHP_ce_ptr,"zoneAlias",sizeof("zoneAlias")-1,zoneAlias TSRMLS_CC);
+	RETURN_TRUE;
+}
+
+PHP_METHOD(SlightPHP, getZoneAlias)
+{
+	char * zone= NULL;
+	int zone_len;
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &zone, &zone_len) == FAILURE) {
+			RETURN_FALSE;
+	}
+	zval *zoneAlias = zend_read_static_property(SlightPHP_ce_ptr,"zoneAlias",sizeof("zoneAlias")-1,1 TSRMLS_CC);
+	if(!zoneAlias || Z_TYPE_P(zoneAlias)!=IS_ARRAY){ RETURN_FALSE; }
+	zval **token;
+	if(zend_hash_find(Z_ARRVAL_P(zoneAlias),zone, zone_len+1, (void**)&token) == SUCCESS) {
+		*return_value = **token;
+		zval_copy_ctor(return_value);
+	}else{
+		RETURN_FALSE;
+	}
+}
 
 PHP_METHOD(SlightPHP, setDebug)
 {
@@ -347,6 +382,25 @@ PHP_METHOD(SlightPHP, run)
 		entry = zend_read_static_property(SlightPHP_ce_ptr,"defaultEntry",sizeof("defaultEntry")-1,1 TSRMLS_CC);
 		zend_hash_next_index_insert(Z_ARRVAL_P(path_array),&entry,sizeof(zval*),NULL);
 	}
+	//{{{
+	zval *zoneAlias = zend_read_static_property(SlightPHP_ce_ptr,"zoneAlias",sizeof("zoneAlias")-1,1 TSRMLS_CC);
+	if(zoneAlias && Z_TYPE_P(zoneAlias)==IS_ARRAY){
+		char *string_key;uint str_key_len;ulong num_key;
+		HashPosition pos;
+		zval **entry;
+		zend_hash_internal_pointer_reset_ex(Z_ARRVAL_P(zoneAlias), &pos);
+		while (zend_hash_get_current_data_ex(Z_ARRVAL_P(zoneAlias), (void **)&entry, &pos) == SUCCESS) {
+			if(strcmp(Z_STRVAL_PP(entry) ,Z_STRVAL_P(zone))==0){
+				switch (zend_hash_get_current_key_ex(Z_ARRVAL_P(zoneAlias), &string_key, &str_key_len, &num_key, 0, &pos)) {
+					case HASH_KEY_IS_STRING:
+						ZVAL_STRING(zone,string_key,1);
+						break;
+				}
+			}
+			zend_hash_move_forward_ex(Z_ARRVAL_P(zoneAlias), &pos);
+		}
+	}
+	//}}}
 	if(!isPart){
 		zend_update_static_property(SlightPHP_ce_ptr,"zone",sizeof("zone")-1,zone TSRMLS_CC);
 		zend_update_static_property(SlightPHP_ce_ptr,"page",sizeof("page")-1,page TSRMLS_CC);
@@ -412,6 +466,8 @@ static zend_function_entry SlightPHP_methods[] = {
 	PHP_ME(SlightPHP, setSplitFlag, SlightPHP__setSplitFlag_arg, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
 	PHP_ME(SlightPHP, getSplitFlag, NULL, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
 
+	PHP_ME(SlightPHP, setZoneAlias, SlightPHP__setZoneAlias_arg, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
+	PHP_ME(SlightPHP, getZoneAlias, NULL, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
 	//PHP_ME(SlightPHP, loadFile, SlightPHP__loadFile_args, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
 	//PHP_ME(SlightPHP, loadPlugin, SlightPHP__loadPlugin_args, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
 	PHP_ME(SlightPHP, __construct, NULL, /**/ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
@@ -465,6 +521,11 @@ static void class_init_SlightPHP(TSRMLS_D)
 
 	zend_declare_property_string(SlightPHP_ce_ptr, 
 		"splitFlag", 9, "/", 
+		ZEND_ACC_STATIC|ZEND_ACC_PUBLIC TSRMLS_CC);
+
+
+	zend_declare_property_null(SlightPHP_ce_ptr, 
+		"zoneAlias", sizeof("zoneAlias")-1,
 		ZEND_ACC_STATIC|ZEND_ACC_PUBLIC TSRMLS_CC);
 
 	zend_declare_property_long(SlightPHP_ce_ptr, 
