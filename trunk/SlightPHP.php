@@ -43,6 +43,24 @@ final class SlightPHP{
 	 */
 	public static $splitFlag="/";
 
+	/**
+	 * zoneAlias
+	 *
+	 * @var array
+	 */
+	public static $zoneAlias=array();
+	/**
+	 *
+	 */
+	public static function setZoneAlias($zone,$alias){
+		SlightPHP::$zoneAlias[$zone]=$alias;
+	}
+	/**
+	 *
+	 */
+	public static function getZoneAlias($zone){
+		return isset(SlightPHP::$zoneAlias[$zone]) ? SlightPHP::$zoneAlias[$zone] : "";
+	}
 	
 	/**
 	 * defaultZone set
@@ -179,6 +197,12 @@ final class SlightPHP{
 		$page	= !empty($path_array[1]) ? $path_array[1] : SlightPHP::$defaultPage ;
 		$entry	= !empty($path_array[2]) ? $path_array[2] : SlightPHP::$defaultEntry ;
 
+		foreach(SlightPHP::$zoneAlias as $key => $value){
+			if($value == $zone){
+				$zone = $key;
+				break;
+			}
+		}
 		if(!$isPart){
 			SlightPHP::$zone	= $zone;
 			SlightPHP::$page	= $page;
