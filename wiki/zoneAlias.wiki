@@ -9,7 +9,7 @@
 
 http://myhost/index.php/myzone
 
-加上SlightPHP::setZoneAlias("myzone","m")就可以用这样的方式了
+加上SlightPHP::setZoneAlias("myzone","z")就可以用这样的方式了
 
 http://myhost/index.php/z
 
