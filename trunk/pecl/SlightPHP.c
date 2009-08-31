@@ -387,10 +387,10 @@ PHP_METHOD(SlightPHP, run)
 	if(zoneAlias && Z_TYPE_P(zoneAlias)==IS_ARRAY){
 		char *string_key;uint str_key_len;ulong num_key;
 		HashPosition pos;
-		zval **entry;
+		zval **entry2;
 		zend_hash_internal_pointer_reset_ex(Z_ARRVAL_P(zoneAlias), &pos);
-		while (zend_hash_get_current_data_ex(Z_ARRVAL_P(zoneAlias), (void **)&entry, &pos) == SUCCESS) {
-			if(strcmp(Z_STRVAL_PP(entry) ,Z_STRVAL_P(zone))==0){
+		while (zend_hash_get_current_data_ex(Z_ARRVAL_P(zoneAlias), (void **)&entry2, &pos) == SUCCESS) {
+			if(strcmp(Z_STRVAL_PP(entry2) ,Z_STRVAL_P(zone))==0){
 				switch (zend_hash_get_current_key_ex(Z_ARRVAL_P(zoneAlias), &string_key, &str_key_len, &num_key, 0, &pos)) {
 					case HASH_KEY_IS_STRING:
 						ZVAL_STRING(zone,string_key,1);
