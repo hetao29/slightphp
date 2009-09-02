@@ -51,15 +51,15 @@
 					<a href="#$appDir" title="details" class="var-name">$appDir</a>
 				</div>
 																<div class="var-title">
-					static <span class="var-type">mixed</span>
+					static <span class="var-type">string</span>
 					<a href="#$defaultEntry" title="details" class="var-name">$defaultEntry</a>
 				</div>
 																<div class="var-title">
-					static <span class="var-type">mixed</span>
+					static <span class="var-type">string</span>
 					<a href="#$defaultPage" title="details" class="var-name">$defaultPage</a>
 				</div>
 																<div class="var-title">
-					static <span class="var-type">mixed</span>
+					static <span class="var-type">string</span>
 					<a href="#$defaultZone" title="details" class="var-name">$defaultZone</a>
 				</div>
 																<div class="var-title">
@@ -79,10 +79,14 @@
 					<a href="#$zone" title="details" class="var-name">$zone</a>
 				</div>
 																<div class="var-title">
+					static <span class="var-type">array</span>
+					<a href="#$zoneAlias" title="details" class="var-name">$zoneAlias</a>
+				</div>
+																<div class="var-title">
 					static <span class="var-type">boolean</span>
 					<a href="#$_debug" title="details" class="var-name">$_debug</a>
 				</div>
-																																																																																							</div>
+																																																																																															</div>
 		</div>
 	</div>
 
@@ -129,9 +133,14 @@
 										()
 									</div>
 																<div class="method-definition">
+					static 						<span class="method-result">string</span>
+										<a href="#getZoneAlias" title="details" class="method-name">getZoneAlias</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$zone</span>)
+									</div>
+																<div class="method-definition">
 					static 						<span class="method-result">boolean</span>
 										<a href="#run" title="details" class="method-name">run</a>
-											([<span class="var-type"></span>&nbsp;<span class="var-name">$path</span> = <span class="var-default">&quot;&quot;</span>])
+											([<span class="var-type">string</span>&nbsp;<span class="var-name">$path</span> = <span class="var-default">&quot;&quot;</span>])
 									</div>
 																<div class="method-definition">
 					static 						<span class="method-result">boolean</span>
@@ -146,12 +155,12 @@
 																<div class="method-definition">
 					static 						<span class="method-result">boolean</span>
 										<a href="#setDefaultEntry" title="details" class="method-name">setDefaultEntry</a>
-											(<span class="var-type"></span>&nbsp;<span class="var-name">$entry</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$method</span>)
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$entry</span>)
 									</div>
 																<div class="method-definition">
 					static 						<span class="method-result">boolean</span>
 										<a href="#setDefaultPage" title="details" class="method-name">setDefaultPage</a>
-											(<span class="var-type"></span>&nbsp;<span class="var-name">$page</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$class</span>)
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$page</span>)
 									</div>
 																<div class="method-definition">
 					static 						<span class="method-result">boolean</span>
@@ -163,8 +172,13 @@
 										<a href="#setSplitFlag" title="details" class="method-name">setSplitFlag</a>
 											(<span class="var-type">string</span>&nbsp;<span class="var-name">$flag</span>)
 									</div>
+																<div class="method-definition">
+					static 						<span class="method-result">boolean</span>
+										<a href="#setZoneAlias" title="details" class="method-name">setZoneAlias</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$zone</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$alias</span>)
+									</div>
 								
-																																																																																																												</div>
+																																																																																																																												</div>
 		</div>
 	</div>		
 
@@ -207,9 +221,9 @@
 
 	<div class="var-header">
 		<span class="var-title">
-			static <span class="var-type">mixed</span>
+			static <span class="var-type">string</span>
 			<span class="var-name">$defaultEntry</span>
-			 = <span class="var-default">&quot;entry&quot;</span>			(line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__SlightPHP.php.html#a38">38</a></span>)
+			 = <span class="var-default">&quot;entry&quot;</span>			(line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__SlightPHP.php.html#a50">50</a></span>)
 		</span>
 	</div>
 
@@ -228,9 +242,9 @@
 
 	<div class="var-header">
 		<span class="var-title">
-			static <span class="var-type">mixed</span>
+			static <span class="var-type">string</span>
 			<span class="var-name">$defaultPage</span>
-			 = <span class="var-default">&quot;page&quot;</span>			(line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__SlightPHP.php.html#a33">33</a></span>)
+			 = <span class="var-default">&quot;page&quot;</span>			(line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__SlightPHP.php.html#a41">41</a></span>)
 		</span>
 	</div>
 
@@ -249,9 +263,9 @@
 
 	<div class="var-header">
 		<span class="var-title">
-			static <span class="var-type">mixed</span>
+			static <span class="var-type">string</span>
 			<span class="var-name">$defaultZone</span>
-			 = <span class="var-default">&quot;zone&quot;</span>			(line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__SlightPHP.php.html#a27">27</a></span>)
+			 = <span class="var-default">&quot;zone&quot;</span>			(line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__SlightPHP.php.html#a31">31</a></span>)
 		</span>
 	</div>
 
@@ -272,11 +286,12 @@
 		<span class="var-title">
 			static <span class="var-type">string</span>
 			<span class="var-name">$entry</span>
-						(line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__SlightPHP.php.html#a37">37</a></span>)
+						(line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__SlightPHP.php.html#a46">46</a></span>)
 		</span>
 	</div>
 
 	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">current entry</p>
 	<ul class="tags">
 				<li><span class="field">access:</span> public</li>
 			</ul>
@@ -293,11 +308,12 @@
 		<span class="var-title">
 			static <span class="var-type">string</span>
 			<span class="var-name">$page</span>
-						(line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__SlightPHP.php.html#a32">32</a></span>)
+						(line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__SlightPHP.php.html#a37">37</a></span>)
 		</span>
 	</div>
 
 	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">current page</p>
 	<ul class="tags">
 				<li><span class="field">access:</span> public</li>
 			</ul>
@@ -314,7 +330,7 @@
 		<span class="var-title">
 			static <span class="var-type">string</span>
 			<span class="var-name">$splitFlag</span>
-			 = <span class="var-default">&quot;/&quot;</span>			(line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__SlightPHP.php.html#a44">44</a></span>)
+			 = <span class="var-default">&quot;/&quot;</span>			(line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__SlightPHP.php.html#a56">56</a></span>)
 		</span>
 	</div>
 
@@ -336,11 +352,34 @@
 		<span class="var-title">
 			static <span class="var-type">string</span>
 			<span class="var-name">$zone</span>
-						(line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__SlightPHP.php.html#a26">26</a></span>)
+						(line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__SlightPHP.php.html#a27">27</a></span>)
 		</span>
 	</div>
 
 	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">current zone</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$zoneAlias" id="$zoneAlias"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			static <span class="var-type">array</span>
+			<span class="var-name">$zoneAlias</span>
+						(line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__SlightPHP.php.html#a63">63</a></span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">zoneAlias</p>
 	<ul class="tags">
 				<li><span class="field">access:</span> public</li>
 			</ul>
@@ -351,13 +390,13 @@
 
 </div>
 <a name="var$_debug" id="$_debug"><!-- --></A>
-<div class="oddrow">
+<div class="evenrow">
 
 	<div class="var-header">
 		<span class="var-title">
 			static <span class="var-type">boolean</span>
 			<span class="var-name">$_debug</span>
-						(line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__SlightPHP.php.html#a219">219</a></span>)
+						(line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__SlightPHP.php.html#a257">257</a></span>)
 		</span>
 	</div>
 
@@ -387,10 +426,10 @@
 		<div class="info-box-body">
 			<A NAME='method_detail'></A>
 <a name="methodgetAppDir" id="getAppDir"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">static method getAppDir</span> (line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__SlightPHP.php.html#a137">137</a></span>)
+		<span class="method-title">static method getAppDir</span> (line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__SlightPHP.php.html#a172">172</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -412,10 +451,10 @@
 			
 	</div>
 <a name="methodgetDebug" id="getDebug"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">static method getDebug</span> (line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__SlightPHP.php.html#a155">155</a></span>)
+		<span class="method-title">static method getDebug</span> (line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__SlightPHP.php.html#a190">190</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -437,10 +476,10 @@
 			
 	</div>
 <a name="methodgetDefaultEntry" id="getDefaultEntry"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">static method getDefaultEntry</span> (line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__SlightPHP.php.html#a100">100</a></span>)
+		<span class="method-title">static method getDefaultEntry</span> (line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__SlightPHP.php.html#a135">135</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -462,10 +501,10 @@
 			
 	</div>
 <a name="methodgetDefaultPage" id="getDefaultPage"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">static method getDefaultPage</span> (line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__SlightPHP.php.html#a82">82</a></span>)
+		<span class="method-title">static method getDefaultPage</span> (line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__SlightPHP.php.html#a117">117</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -487,10 +526,10 @@
 			
 	</div>
 <a name="methodgetDefaultZone" id="getDefaultZone"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">static method getDefaultZone</span> (line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__SlightPHP.php.html#a64">64</a></span>)
+		<span class="method-title">static method getDefaultZone</span> (line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__SlightPHP.php.html#a99">99</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -512,10 +551,10 @@
 			
 	</div>
 <a name="methodgetSplitFlag" id="getSplitFlag"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">static method getSplitFlag</span> (line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__SlightPHP.php.html#a118">118</a></span>)
+		<span class="method-title">static method getSplitFlag</span> (line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__SlightPHP.php.html#a153">153</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -536,11 +575,41 @@
 		
 			
 	</div>
+<a name="methodgetZoneAlias" id="getZoneAlias"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method getZoneAlias</span> (line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__SlightPHP.php.html#a78">78</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">return:</span> | boolean</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">string</span>
+		<span class="method-name">
+			getZoneAlias
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$zone</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$zone</span>			</li>
+				</ul>
+		
+			
+	</div>
 <a name="methodrun" id="run"><!-- --></a>
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">static method run</span> (line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__SlightPHP.php.html#a166">166</a></span>)
+		<span class="method-title">static method run</span> (line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__SlightPHP.php.html#a201">201</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -555,12 +624,12 @@
 		<span class="method-name">
 			run
 		</span>
-					([<span class="var-type"></span>&nbsp;<span class="var-name">$path</span> = <span class="var-default">&quot;&quot;</span>])
+					([<span class="var-type">string</span>&nbsp;<span class="var-name">$path</span> = <span class="var-default">&quot;&quot;</span>])
 			</div>
 	
 			<ul class="parameters">
 					<li>
-				<span class="var-type"></span>
+				<span class="var-type">string</span>
 				<span class="var-name">$path</span>			</li>
 				</ul>
 		
@@ -570,7 +639,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">static method setAppDir</span> (line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__SlightPHP.php.html#a128">128</a></span>)
+		<span class="method-title">static method setAppDir</span> (line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__SlightPHP.php.html#a163">163</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -600,7 +669,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">static method setDebug</span> (line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__SlightPHP.php.html#a146">146</a></span>)
+		<span class="method-title">static method setDebug</span> (line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__SlightPHP.php.html#a181">181</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -630,7 +699,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">static method setDefaultEntry</span> (line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__SlightPHP.php.html#a91">91</a></span>)
+		<span class="method-title">static method setDefaultEntry</span> (line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__SlightPHP.php.html#a126">126</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -645,15 +714,12 @@
 		<span class="method-name">
 			setDefaultEntry
 		</span>
-					(<span class="var-type"></span>&nbsp;<span class="var-name">$entry</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$method</span>)
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$entry</span>)
 			</div>
 	
 			<ul class="parameters">
 					<li>
 				<span class="var-type">string</span>
-				<span class="var-name">$method</span>			</li>
-					<li>
-				<span class="var-type"></span>
 				<span class="var-name">$entry</span>			</li>
 				</ul>
 		
@@ -663,7 +729,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">static method setDefaultPage</span> (line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__SlightPHP.php.html#a73">73</a></span>)
+		<span class="method-title">static method setDefaultPage</span> (line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__SlightPHP.php.html#a108">108</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -678,15 +744,12 @@
 		<span class="method-name">
 			setDefaultPage
 		</span>
-					(<span class="var-type"></span>&nbsp;<span class="var-name">$page</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$class</span>)
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$page</span>)
 			</div>
 	
 			<ul class="parameters">
 					<li>
 				<span class="var-type">string</span>
-				<span class="var-name">$class</span>			</li>
-					<li>
-				<span class="var-type"></span>
 				<span class="var-name">$page</span>			</li>
 				</ul>
 		
@@ -696,7 +759,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">static method setDefaultZone</span> (line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__SlightPHP.php.html#a54">54</a></span>)
+		<span class="method-title">static method setDefaultZone</span> (line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__SlightPHP.php.html#a89">89</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -726,7 +789,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">static method setSplitFlag</span> (line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__SlightPHP.php.html#a109">109</a></span>)
+		<span class="method-title">static method setSplitFlag</span> (line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__SlightPHP.php.html#a144">144</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -752,6 +815,38 @@
 		
 			
 	</div>
+<a name="methodsetZoneAlias" id="setZoneAlias"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method setZoneAlias</span> (line <span class="line-number"><a href="../__filesource/fsource_SlightPHP__SlightPHP.php.html#a70">70</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">boolean</span>
+		<span class="method-name">
+			setZoneAlias
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$zone</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$alias</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$zone</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$alias</span>			</li>
+				</ul>
+		
+			
+	</div>
 
 						
 		</div>
@@ -759,7 +854,7 @@
 
 
 	<p class="notes" id="credit">
-		Documentation generated on Thu, 27 Aug 2009 10:42:14 +0000 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.1</a>
+		Documentation generated on Wed, 02 Sep 2009 04:07:04 +0000 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.1</a>
 	</p>
 	</div></body>
 </html>

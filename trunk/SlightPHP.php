@@ -21,20 +21,32 @@ final class SlightPHP{
 	public static $appDir=".";
 
 	/**
+	 * current zone
 	 * @var string
 	 */
 	public static $zone;
+	/**
+	 * @var string
+	 */
 	public static $defaultZone="zone";
 	
 	/**
+	 * current page
 	 * @var string
 	 */
 	public static $page;
-	public static $defaultPage="page";
 	/**
 	 * @var string
 	 */
+	public static $defaultPage="page";
+	/**
+	 * current entry
+	 * @var string
+	 */
 	public static $entry;
+	/**
+	 * @var string
+	 */
 	public static $defaultEntry="entry";
 	/**
 	 * split flag of zone,classs,method
@@ -51,15 +63,17 @@ final class SlightPHP{
 	public static $zoneAlias;
 
 	/**
-	 *@param string $zone
-	 *@param string $alias
+	 * @param string $zone
+	 * @param string $alias
+	 * @return boolean
 	 */
 	public static function setZoneAlias($zone,$alias){
 		SlightPHP::$zoneAlias[$zone]=$alias;
 		return true;
 	}
 	/**
-	 *@param string $zone
+	 * @param string $zone
+	 * @return string | boolean
 	 */
 	public static function getZoneAlias($zone){
 		return isset(SlightPHP::$zoneAlias[$zone]) ? SlightPHP::$zoneAlias[$zone] : false;
@@ -88,7 +102,7 @@ final class SlightPHP{
 	/**
 	 * defaultClass set
 	 * 
-	 * @param string $class
+	 * @param string $page
 	 * @return boolean
 	 */
 	public static function setDefaultPage($page){
@@ -106,7 +120,7 @@ final class SlightPHP{
 	/**
 	 * defaultMethod set
 	 * 
-	 * @param string $method
+	 * @param string $entry
 	 * @return boolean
 	 */
 	public static function setDefaultEntry($entry){
@@ -180,7 +194,7 @@ final class SlightPHP{
 	/**
 	 * main method!
 	 *
-	 * @param
+	 * @param string $path
 	 * @return boolean
 	 */
 
