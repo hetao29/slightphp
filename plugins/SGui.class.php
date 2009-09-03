@@ -15,6 +15,9 @@
 }}}*/
 
 require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."smarty/Smarty.class.php");
+/**
+ * @package SlightPHP
+ */
 class SGui extends Smarty{
 	public function SGui(){
 		parent::__construct();

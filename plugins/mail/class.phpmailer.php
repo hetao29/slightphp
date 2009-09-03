@@ -1,5 +1,5 @@
 <?php
-/*~ class.phpmailer.php
+/** class.phpmailer.php
 .---------------------------------------------------------------------------.
 |  Software: PHPMailer - PHP email class                                    |
 |   Version: 2.2.1                                                          |
@@ -23,6 +23,7 @@
 | - Technology Consulting                                                   |
 | - Oursourcing (highly qualified programmers and graphic designers)        |
 '---------------------------------------------------------------------------'
+*/
 
 /**
  * PHPMailer - PHP email transport class
@@ -31,7 +32,6 @@
  * @author Andy Prevost
  * @copyright 2004 - 2008 Andy Prevost
  */
-
 class PHPMailer {
 
   /////////////////////////////////////////////////

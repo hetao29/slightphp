@@ -13,7 +13,10 @@
 | Supports: http://www.slightphp.com                                    |
 +-----------------------------------------------------------------------+
 }}}*/
-
+/**
+ * @package SlightPHP
+ * @subpackage SCache
+ */
 
 abstract class CacheObject{
 	abstract function init($params=array());

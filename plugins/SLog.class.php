@@ -13,7 +13,9 @@
 | Supports: http://www.slightphp.com                                    |
 +-----------------------------------------------------------------------+
 }}}*/
-
+/**
+ * @package SlightPHP
+ */
 class SLog{
 	/**
 	 * 

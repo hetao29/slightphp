@@ -14,7 +14,10 @@
 +-----------------------------------------------------------------------+
 }}}*/
 
-
+/**
+ * @package SlightPHP
+ * @subpackage SCache
+ */
 class Cache_MemCache extends CacheObject{
 	/**
 	 * @var string host

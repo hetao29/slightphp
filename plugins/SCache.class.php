@@ -15,6 +15,9 @@
 }}}*/
 
 require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."cache/CacheObject.php");
+/**
+ * @package SlightPHP
+ */
 class SCache{
 	static $engines=array("file","apc","memcache","memcached");
 	/**

@@ -1,4 +1,4 @@
-<?php        
+<?php
 /*{{{LICENSE
 +-----------------------------------------------------------------------+
 | SlightPHP Framework                                                   |
@@ -14,7 +14,10 @@
 +-----------------------------------------------------------------------+
 }}}*/
 
-
+/**
+ * @package SlightPHP
+ * @subpackage SDb
+ */
 class Db_PDO extends DbObject{
 	/**
 	 * 
@@ -284,7 +287,7 @@ class Db_PDO extends DbObject{
 	 * @param string,array $condition
 	 * @param array $item
 	 * @param int $limit
-	 * @package int
+	 * @return int
 	 * update("table",array('name'=>'myName','password'=>'myPass'),array('id'=>1));
 	 * update("table",array('name'=>'myName','password'=>'myPass'),array("password=$myPass"));
 	 */

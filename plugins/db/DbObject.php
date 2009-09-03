@@ -14,7 +14,10 @@
 +-----------------------------------------------------------------------+
 }}}*/
 
-
+/**
+ * @package SlightPHP
+ * @subpackage SDb
+ */
 abstract class DbObject{
 	abstract function init($params=array());
 	abstract function setCount($count);

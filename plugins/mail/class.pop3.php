@@ -1,5 +1,5 @@
 <?php
-/*~ class.pop3.php
+/** class.pop3.php
 .---------------------------------------------------------------------------.
 |  Software: PHPMailer - PHP email class                                    |
 |   Version: 2.2.1                                                          |
@@ -23,6 +23,7 @@
 | - Technology Consulting                                                   |
 | - Oursourcing (highly qualified programmers and graphic designers)        |
 '---------------------------------------------------------------------------'
+*/
 
 /**
  * POP Before SMTP Authentication Class
