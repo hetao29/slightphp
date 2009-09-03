@@ -1,5 +1,5 @@
 <?php
-/*~ class.smtp.php
+/** class.smtp.php
 .---------------------------------------------------------------------------.
 |  Software: PHPMailer - PHP email class                                    |
 |   Version: 2.2.1                                                          |
@@ -23,7 +23,7 @@
 | - Technology Consulting                                                   |
 | - Oursourcing (highly qualified programmers and graphic designers)        |
 '---------------------------------------------------------------------------'
-
+*/
 /**
  * SMTP is rfc 821 compliant and implements all the rfc 821 SMTP
  * commands except TURN which will always return a not implemented

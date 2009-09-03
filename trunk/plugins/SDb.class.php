@@ -16,7 +16,9 @@
 
 require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."db/DbData.php");
 require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."db/DbObject.php");
-
+/**
+ * @package SlightPHP
+ */
 class SDb{
 	static $engines=array("mysql","pdo_mysql");
 

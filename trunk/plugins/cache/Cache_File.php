@@ -13,7 +13,10 @@
 | Supports: http://www.slightphp.com                                    |
 +-----------------------------------------------------------------------+
 }}}*/
-
+/**
+ * @package SlightPHP
+ * @subpackage SCache
+ */
 class Cache_File extends CacheObject{
 	/**
 	 * @var string $dir cache dir

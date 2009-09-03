@@ -15,7 +15,9 @@
 }}}*/
 
 if(extension_loaded("json")):
-
+	/**
+	 * @package SlightPHP
+	 */
 	class SJson{
 	   /**
 		* encode object to json
@@ -153,6 +155,9 @@ define('SERVICES_JSON_LOOSE_TYPE', 16);
  * $input = file_get_contents('php://input', 1000000);
  * $value = $json->decode($input);
  * </code>
+ */
+ /**
+ * @package SlightPHP
  */
 class SJson
 {

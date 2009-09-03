@@ -17,6 +17,9 @@
 
 
 require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."thumbnail/class.WMThumbnail.inc.php");
+/**
+ * @package SlightPHP
+ */
 class SThumbnail extends WMThumbnail{
 	/**
 	 * 生成文件

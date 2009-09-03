@@ -14,8 +14,11 @@
 +-----------------------------------------------------------------------+
 }}}*/
 
-
 require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."sphinx/sphinxapi.php");
+
+/**
+ * @package SlightPHP
+ */
 class SSphinx extends SphinxClient{
 	private $_page=1;
 

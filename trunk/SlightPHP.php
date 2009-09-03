@@ -13,7 +13,9 @@
 | Supports: http://www.slightphp.com                                    |
 +-----------------------------------------------------------------------+
 }}}*/
-
+/**
+ * @package SlightPHP
+ */
 final class SlightPHP{
 	/**
 	 * @var string

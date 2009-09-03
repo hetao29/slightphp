@@ -1,4 +1,7 @@
 <?php
+/**
+ * @package SphinxClient
+ */
 
 //
 // $Id: sphinxapi.php 1418 2008-08-28 15:30:05Z shodan $
@@ -151,7 +154,6 @@ function sphUnpack64 ( $v )
 	// well, let me know if you *really* need this
 	die ( "INTERNAL ERROR: unpacking more than 15-digit numeric on 32-bit PHP is not implemented yet (contact support)" );
 }
-
 
 /// sphinx searchd client class
 class SphinxClient
