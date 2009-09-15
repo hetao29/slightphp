@@ -1252,14 +1252,14 @@ class Smarty
             if ($this->_is_compiled($resource_name, $_smarty_compile_path)
                     || $this->_compile_resource($resource_name, $_smarty_compile_path))
             {
-                include($_smarty_compile_path);
+                include(realpath($_smarty_compile_path));
             }
         } else {
             ob_start();
             if ($this->_is_compiled($resource_name, $_smarty_compile_path)
                     || $this->_compile_resource($resource_name, $_smarty_compile_path))
             {
-                include($_smarty_compile_path);
+                include(realpath($_smarty_compile_path));
             }
             $_smarty_results = ob_get_contents();
             ob_end_clean();
@@ -1865,7 +1865,7 @@ class Smarty
         if ($this->_is_compiled($params['smarty_include_tpl_file'], $_smarty_compile_path)
             || $this->_compile_resource($params['smarty_include_tpl_file'], $_smarty_compile_path))
         {
-            include($_smarty_compile_path);
+            include(realpath($_smarty_compile_path));
         }
 
         // pop the local vars off the front of the stack
@@ -1919,7 +1919,7 @@ class Smarty
         if ($once) {
             return include_once($filename);
         } else {
-            return include($filename);
+            return include(realpath($filename));
         }
     }
 
