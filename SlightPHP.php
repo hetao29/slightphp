@@ -235,7 +235,7 @@ final class SlightPHP{
 			SlightPHP::debug("file[$app_file] not exists");
 			return false;
 		}else{
-			require_once($app_file);
+			require_once(realpath($app_file));
 		}
 		$method = "Page".$entry;
 		$classname = $zone ."_". $page;
