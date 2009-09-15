@@ -29,6 +29,6 @@
 
 int debug(char*format,...);
 int SlightPHP_load(zval*appDir,zval*zone,zval*class_name TSRMLS_DC);
-int SlightPHP_loadFile(zval *file_name TSRMLS_DC);
+int SlightPHP_loadFile(char*file_name TSRMLS_DC);
 int SlightPHP_run (zval*zone,zval*class_name,zval*method,zval**return_value ,int param_count,zval **params[] TSRMLS_DC);
 int preg_quote(zval *in_str,zval*out_str);
