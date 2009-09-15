@@ -36,21 +36,32 @@ int debug(char*format,...){
 int SlightPHP_load(zval*appDir,zval*zone,zval*class_name TSRMLS_DC){
 	char*inc_filename;
 	int ret;
-	spprintf(&inc_filename,0,"%s%c%s%c%s.page.php",Z_STRVAL_P(appDir),DEFAULT_SLASH,Z_STRVAL_P(zone),DEFAULT_SLASH,Z_STRVAL_P(class_name));
+	spprintf(&inc_filename,0,"%s%c%s%c%s.page.php",
+					Z_STRVAL_P(appDir),
+					DEFAULT_SLASH,
+					Z_STRVAL_P(zone),
+					DEFAULT_SLASH,
+					Z_STRVAL_P(class_name)
+			);
 	zval file_name;
 	ZVAL_STRING(&file_name,inc_filename,1);
-	ret = SlightPHP_loadFile(&file_name TSRMLS_CC);
 	efree(inc_filename);
-	return ret;
+
+	char resolved_path_buff[MAXPATHLEN];
+	if (VCWD_REALPATH(Z_STRVAL(file_name), resolved_path_buff)) {
+		ret = SlightPHP_loadFile((char*)&resolved_path_buff TSRMLS_CC);
+		return ret;
+	}
+	return FAILURE;
 }
-int SlightPHP_loadFile(zval *file_name TSRMLS_DC){
+int SlightPHP_loadFile(char*file_name TSRMLS_DC){
 	int dummy = 1;
 	zend_file_handle file_handle;
 	int ret;
 
-	if(zend_stream_open(Z_STRVAL_P(file_name), &file_handle TSRMLS_CC)==SUCCESS){;
+	if(zend_stream_open(file_name, &file_handle TSRMLS_CC)==SUCCESS){;
 		if (!file_handle.opened_path) {
-			file_handle.opened_path = estrndup(Z_STRVAL_P(file_name), Z_STRLEN_P(file_name));
+			file_handle.opened_path = estrndup(file_name, strlen(file_name));
 		}
 		if(file_handle.opened_path) {
 			if(zend_hash_exists(&EG(included_files),file_handle.opened_path, strlen(file_handle.opened_path)+1)){
@@ -60,7 +71,7 @@ int SlightPHP_loadFile(zval *file_name TSRMLS_DC){
 			}
     	}
 	}
-	debug("file[%s] not exists",Z_STRVAL_P(file_name));
+	debug("file[%s] not exists",file_name);
 	return FAILURE;
 }
 int SlightPHP_run(zval*zone,zval*class_name,zval*method,zval**return_value, int param_count,zval ** params[] TSRMLS_DC){
