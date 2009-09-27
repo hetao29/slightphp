@@ -164,5 +164,18 @@ class SUtil{
 	static function validEmail($email){
 		return preg_match('/^([a-z0-9])(([-a-z0-9._])*([a-z0-9]))*\@([a-z0-9])*(\.([a-z0-9])([-a-z0-9_-])([a-z0-9])+)*$/i',$email);
 	}
+	/**
+	 * get substr support chinese
+	 * return $str
+	 */
+	static function getSubStr($str,$length,$postfix='...',$encoding='UTF-8') {
+		$realLen = mb_strwidth($str,$encoding);
+		if(!is_numeric($length) or $length*2>=$realLen) {
+			return htmlspecialchars($str, ENT_QUOTES,$encoding);
+		}
+        $str = mb_strimwidth($str,0,$length*2,$postfix,$encoding);
+		return htmlspecialchars($str, ENT_QUOTES,$encoding);
+	}
+	
 }
 ?>

@@ -29,7 +29,9 @@ function smarty_modifier_truncate($string, $length = 80, $etc = '...',
 {
     if ($length == 0)
         return '';
-
+	// support chinese
+	return SUtil::getSubStr($string,$length,$etc,'UTF-8');
+	
     if (strlen($string) > $length) {
         $length -= min($length, strlen($etc));
         if (!$break_words && !$middle) {
