@@ -37,5 +37,12 @@ class SGui extends Smarty{
 		return $this->fetch($tpl);
 		
 	}
+	/**
+	 * 302 redirect
+	 */
+	public function redirect($url) {
+		header('Location:'.$url);
+		exit;
+	}
 }
 ?>
