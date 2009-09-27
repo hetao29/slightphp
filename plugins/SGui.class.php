@@ -26,8 +26,8 @@ class SGui extends Smarty{
 		$this->compile_dir	= SlightPHP::$appDir.DIRECTORY_SEPARATOR."templates_c";
 		$this->template_dir = SlightPHP::$appDir.DIRECTORY_SEPARATOR."templates";
 
-		$this->left_delimiter = "{{{";
-		$this->right_delimiter = "}}}";
+		//$this->left_delimiter = "{{{";
+		//$this->right_delimiter = "}}}";
 
 	}
 	public function render($tpl,$parames=array()){
