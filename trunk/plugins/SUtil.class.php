@@ -20,11 +20,15 @@
 class SUtil{
 
 	/**
-	 *
+	 * Get Request Value
+	 * @param array $data ($_GET,$_POST)
+	 * @param string $key
+	 * @param bool $isnum true|false
 	 */
-	static function getRequestValue(array $data,$key,$minLength,$maxLength){
-		if(empty($data[$key]) || strlen($data[$key])<$minLength || strlen($data[$key])>$maxLength){
-			return false;
+	static function getRequestValue(array $data,$key,$isnum=false,$default=null,$minLength=0,$maxLength=100){
+		if(!isset($data[$key]) || empty($data[$key]) || ($isnum && !is_numeric($data[$key])) ||
+			strlen($data[$key])<$minLength || strlen($data[$key])>$maxLength) {
+			return $default;
 		}
 		return $data[$key];
 	}
