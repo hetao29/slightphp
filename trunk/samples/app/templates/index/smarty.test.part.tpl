@@ -1,0 +1,3 @@
+Smarty test part<br />
+key:{$key} </br>
+Welcome...
