@@ -8,25 +8,24 @@
  */
 /* use static */
 //{{{
+
 require_once("global.php");
+
+/*echo error info*/
 SlightPHP::setDebug(true);
-//var_dump(SlightPHP::getDebug());
-//SlightPHP::setSplitFlag("-_");
-//var_dump(SlightPHP::getSplitFlag());
-SlightPHP::setAppDir(".");
-//var_dump(SlightPHP::getAppDir());
-SlightPHP::setDefaultZone("zone");
-//var_dump(SlightPHP::getDefaultzone());
+
+SlightPHP::setAppDir("app");
+SlightPHP::setDefaultZone("index");
 SlightPHP::setDefaultPage("main");
 SlightPHP::setDefaultEntry("entry");
-//var_dump(SlightPHP::getPluginsDir());
-//var_dump(SlightPHP::loadFile("../plugins/SError.class.php"));
-//var_dump(SlightPHP::loadPlugin("SSmarty"));
+
+SDb::setConfigFile("db.config.php");
+
+SlightPHP::setSplitFlag("-_.");
+
 if(($r=SlightPHP::run())===false){
-	//redirect to 404
-	die("ERROR ENTRY");
+	die("404 error");
 }else{
 	echo $r;
 }
-//}}}
 ?>
