@@ -1,17 +1,17 @@
-/*
-   +----------------------------------------------------------------------+
-   | This source file is subject to version 3.0 of the PHP license,       |
-   | that is bundled with this package in the file LICENSE, and is        |
-   | available through the world-wide-web at the following url:           |
-   | http://www.php.net/license/3_0.txt.                                  |
-   | If you did not receive a copy of the PHP license and are unable to   |
-   | obtain it through the world-wide-web, please send a note to          |
-   | license@php.net so we can mail you a copy immediately.               |
-   +----------------------------------------------------------------------+
-   | Authors: Hetal <admin@slightphp.com>                                 |
-   +----------------------------------------------------------------------+
-*/
-
+/*{{{LICENSE
++-----------------------------------------------------------------------+
+| SlightPHP Framework                                                   |
++-----------------------------------------------------------------------+
+| This program is free software; you can redistribute it and/or modify  |
+| it under the terms of the GNU General Public License as published by  |
+| the Free Software Foundation. You should have received a copy of the  |
+| GNU General Public License along with this program.  If not, see      |
+| http://www.gnu.org/licenses/.                                         |
+| Copyright (C) 2008-2009. All Rights Reserved.                         |
++-----------------------------------------------------------------------+
+| Supports: http://www.slightphp.com                                    |
++-----------------------------------------------------------------------+
+}}}*/
 /* $ Id: $ */ 
 
 #ifndef PHP_SLIGHTPHP_H
