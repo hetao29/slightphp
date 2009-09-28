@@ -14,27 +14,31 @@
 +-----------------------------------------------------------------------+
 }}}*/
 
-require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."smarty/Smarty.class.php");
 /**
  * @package SlightPHP
  */
-class SGui extends Smarty{
-	public function SGui(){
-		parent::__construct();
-
-		array_push($this->plugins_dir,"plugins_slightphp");
-		$this->compile_dir	= SlightPHP::$appDir.DIRECTORY_SEPARATOR."templates_c";
-		$this->template_dir = SlightPHP::$appDir.DIRECTORY_SEPARATOR."templates";
-
-		//$this->left_delimiter = "{{{";
-		//$this->right_delimiter = "}}}";
-
+class SGui{
+	
+	/**
+	 * get smarty engine
+	 */
+	private function getSmartyEngine() {
+		require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."smarty/Smarty.class.php");
+		$smarty = new Smarty();
+		array_push($smarty->plugins_dir,"plugins_slightphp");
+		$smarty->compile_dir	= SlightPHP::$appDir.DIRECTORY_SEPARATOR."templates_c";
+		$smarty->template_dir = SlightPHP::$appDir.DIRECTORY_SEPARATOR."templates";
+		return $smarty;
 	}
+	/**
+	 * render a .tpl
+	 */
 	public function render($tpl,$parames=array()){
+		$smarty = $this->getSmartyEngine();
 		foreach($parames as $key=>$value){
-			$this->assign($key,$value);
+			$smarty->assign($key,$value);
 		}
-		return $this->fetch($tpl);
+		return $smarty->fetch($tpl);
 		
 	}
 	/**
