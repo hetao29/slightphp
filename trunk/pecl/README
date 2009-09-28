@@ -1,21 +1,4 @@
-This is a standalone PHP extension created using CodeGen_PECL 1.1.2
-
-HACKING
-=======
-
-There are two ways to modify an extension created using CodeGen_PECL:
-
-1) you can modify the generated code as with any other PHP extension
-  
-2) you can add custom code to the CodeGen_PECL XML source and re-run pecl-gen
-
-The 2nd approach may look a bit complicated but you have be aware that any
-manual changes to the generated code will be lost if you ever change the
-XML specs and re-run PECL-Gen. All changes done before have to be applied
-to the newly generated code again.
-Adding code snippets to the XML source itself on the other hand may be a 
-bit more complicated but this way your custom code will always be in the
-generated code no matter how often you rerun CodeGen_PECL.
+This is a standalone PHP extension
 
 
 BUILDING ON UNIX etc.
