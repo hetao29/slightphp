@@ -1,3 +1,3 @@
 Smarty test part<br />
-key:{{{$key}}} </br>
+key:{$key} </br>
 Welcome...
