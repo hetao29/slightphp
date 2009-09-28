@@ -72,7 +72,7 @@ class SUtil{
 		if(empty($url_info['path'])){
 			$url_info['path'] = "/";
 		}
-		$port = empty( $url_info['port'])?80:$url['port'];
+		$port = empty( $url_info['port'])?80:$url_info['port'];
 		if(!empty($url_info['query'])){
 			$urlquery  = ($url_info['path']."?".$url_info['query']);
 		}else{
