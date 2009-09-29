@@ -51,6 +51,8 @@ int SlightPHP_load(zval*appDir,zval*zone,zval*class_name TSRMLS_DC){
 	if (VCWD_REALPATH(Z_STRVAL(file_name), resolved_path_buff)) {
 		ret = SlightPHP_loadFile((char*)&resolved_path_buff TSRMLS_CC);
 		return ret;
+	}else{
+		debug("file[%s] not exists",Z_STRVAL(file_name));
 	}
 	return FAILURE;
 }
@@ -71,7 +73,6 @@ int SlightPHP_loadFile(char*file_name TSRMLS_DC){
 			}
     	}
 	}
-	debug("file[%s] not exists",file_name);
 	return FAILURE;
 }
 int SlightPHP_run(zval*zone,zval*class_name,zval*method,zval**return_value, int param_count,zval ** params[] TSRMLS_DC){
@@ -112,12 +113,9 @@ int SlightPHP_run(zval*zone,zval*class_name,zval*method,zval**return_value, int 
 			if(rt) zval_dtor(rt);
 		}
 
-		if(zend_hash_exists(&Z_OBJCE_P(object)->function_table, Z_STRVAL(real_method_zval), Z_STRLEN(real_method_zval)+1)){
-			if(call_user_function_ex(&Z_OBJCE_P(object)->function_table, &object, &real_method_zval, return_value, param_count, params, 0,NULL TSRMLS_CC)!=SUCCESS){
-			}else{
-			}
-		}else{
+		if(call_user_function_ex(&Z_OBJCE_P(object)->function_table, &object, &real_method_zval, return_value, param_count, params, 0,NULL TSRMLS_CC)!=SUCCESS){
 			debug("method[%s] not exists in class[%s]",Z_STRVAL(real_method_zval),Z_STRVAL(real_classname_zval));
+		}else{
 			return FAILURE;
 		}
 		FREE_ZVAL(object);
