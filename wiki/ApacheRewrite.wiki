@@ -9,7 +9,9 @@
 {{{
 RewriteEngine   on
 RewriteCond   %{THE_REQUEST} !^(.*)/assets(.*)$
-RewriteRule   ^(/.*)$ /index.php [E=PATH_INFO:$1,L] 
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php/$1 [L]
 }}}
 
 这样就可以这样直接访问了：
