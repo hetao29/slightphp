@@ -19,7 +19,7 @@ SlightPHP::setDefaultZone("index");
 SlightPHP::setDefaultPage("main");
 SlightPHP::setDefaultEntry("entry");
 
-SDb::setConfigFile("db.config.php");
+SDb::setConfigFile(SlightPHP::$appDir . "/db.config.php");
 
 SlightPHP::setSplitFlag("-_.");
 
