@@ -39,7 +39,7 @@ class SHttp{
 						"User-Agent: Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)\r\n" .
 						"Referer: $url\r\n" .
 						"Connection: Close\r\n" .
-						"Cookie: ".http_build_query($cookies)."\r\n"
+						"Cookie: ".str_replace("&",";",http_build_query($cookies))."\r\n"
 			)
 		);
 		$url .= empty($params)?"":"?".http_build_query($params);
@@ -71,7 +71,7 @@ class SHttp{
 						"User-Agent: Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)\r\n" .
 						"Referer: $url\r\n" .
 						"Connection: Close\r\n" .
-						"Cookie: ".http_build_query($cookies)."\r\n" .
+						"Cookie: ".str_replace("&",";",http_build_query($cookies))."\r\n".
 						"Content-type: application/x-www-form-urlencoded\r\n" . 
 						"Content-length: ".strlen($content)."\r\n",
 						'content' => $content
