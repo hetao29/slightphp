@@ -25,9 +25,9 @@ class SUtil{
 	 * @param string $key
 	 * @param bool $isnum true|false
 	 */
-	static function getRequestValue(array $data,$key,$isnum=false,$default=null,$minLength=0,$maxLength=100){
+	static function getRequestValue(array $data,$key,$isnum=false,$default=null,$minLength=0,$maxLength=0){
 		if(!isset($data[$key]) || empty($data[$key]) || ($isnum && !is_numeric($data[$key])) ||
-			strlen($data[$key])<$minLength || strlen($data[$key])>$maxLength) {
+			strlen($data[$key])<$minLength || ($maxLength!=0 && strlen($data[$key])>$maxLength)) {
 			return $default;
 		}
 		return $data[$key];
