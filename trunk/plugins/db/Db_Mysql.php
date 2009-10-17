@@ -216,7 +216,7 @@ class Db_Mysql extends DbObject{
 			$limit ="LIMIT $limit,$this->limit";
 		}
 		$this->sql="SELECT $item FROM $table $join $condiStr $groupby $orderby_sql $limit";
-		$this->countsql="SELECT count(1) totalSize FROM $table $condiStr $groupby";
+		$this->countsql="SELECT count(1) totalSize FROM $table $join $condiStr $groupby";
 		return $this->query($this->sql,$this->countsql);
 	}
 	/**
