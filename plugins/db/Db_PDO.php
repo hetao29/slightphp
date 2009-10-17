@@ -228,7 +228,7 @@ class Db_PDO extends DbObject{
 			$limit ="LIMIT $limit,$this->limit";
 		}
 		$this->sql="SELECT $item FROM $table $join $condiStr $groupby $orderby_sql $limit";
-		$this->countsql="SELECT count(1) totalSize FROM $table $condiStr $groupby";
+		$this->countsql="SELECT count(1) totalSize FROM $table $join $condiStr $groupby";
 		$data = new DbData;
 		
 		$data->page = $this->page;
