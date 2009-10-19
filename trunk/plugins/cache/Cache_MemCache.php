@@ -39,6 +39,10 @@ class Cache_MemCache extends CacheObject{
 	 * @var array $globals
 	 */
 	static $globals;
+	
+	function __construct($params=array()) {
+		$this->init($params);
+	}
 	/**
 	 * init
 	 *
