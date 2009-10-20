@@ -52,6 +52,7 @@ class SCache{
 			require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."cache/Cache_File.php");
 			return new Cache_File;
 		}
+		return false;
 	}
 	
 	static function setConfigFile($file){
