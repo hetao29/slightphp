@@ -38,8 +38,8 @@ class SHttp{
 						"Accept-Language: zh-cn\r\n" .
 						"User-Agent: Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)\r\n" .
 						"Referer: $url\r\n" .
-						"Connection: Close\r\n" .
-						"Cookie: ".str_replace("&",";",http_build_query($cookies))."\r\n"
+						(!empty($cookies)?"Cookie: ".self::cookie_build($cookies)."\r\n":"").
+						"Connection: Close\r\n" ,
 			)
 		);
 		$url .= empty($params)?"":"?".http_build_query($params);
@@ -71,14 +71,13 @@ class SHttp{
 						"User-Agent: Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)\r\n" .
 						"Referer: $url\r\n" .
 						"Connection: Close\r\n" .
-						"Cookie: ".str_replace("&",";",http_build_query($cookies))."\r\n".
+						(!empty($cookies)?"Cookie: ".self::cookie_build($cookies)."\r\n":"").
 						"Content-type: application/x-www-form-urlencoded\r\n" . 
 						"Content-length: ".strlen($content)."\r\n",
 						'content' => $content
 			)
 
 		);
-
 		$context = stream_context_create($opts);
 		$result =  file_get_contents($url,false,$context);
 		if($returnHeader){
@@ -88,5 +87,45 @@ class SHttp{
 		}
 
 	}
+	function cookie_parse( $header ) {
+			$cookies = array();
+			foreach( $header as $line ) {
+					if( preg_match( '/^Set-Cookie: /i', $line ) ) {
+							$line = preg_replace( '/^Set-Cookie: /i', '', trim( $line ) );
+							$csplit = explode( ';', $line );
+							$cdata = array();
+							foreach( $csplit as $data ) {
+									$cinfo = explode( '=', $data );
+									if(count($cinfo)<2)continue;
+									$cinfo[0] = trim( $cinfo[0] );
+									if( $cinfo[0] == 'expires' ) $cinfo[1] = strtotime( $cinfo[1] );
+									if( $cinfo[0] == 'secure' ) $cinfo[1] = "true";
+									if( in_array( $cinfo[0], array( 'domain', 'expires', 'path', 'secure', 'comment' ) ) ) {
+											$cdata[trim( $cinfo[0] )] = $cinfo[1];
+									}
+									else {
+											$cdata['value']['key'] = $cinfo[0];
+											$cdata['value']['value'] = $cinfo[1];
+									}
+							}
+							$cookies[] = $cdata;
+					}
+			}
+			return $cookies;
+	}
+
+	function cookie_build( $data ) {
+			if( is_array( $data ) ) {
+					$cookie = '';
+					foreach( $data as $d ) {
+							$cookie[] = $d['value']['key'].'='.$d['value']['value'];
+					}
+					if( count( $cookie ) > 0 ) {
+							return trim( implode( '; ', $cookie ) );
+					}
+			}
+			return false;
+	}
+
 }
 ?>
