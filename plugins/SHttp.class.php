@@ -90,25 +90,32 @@ class SHttp{
 	function cookie_parse( $header ) {
 			$cookies = array();
 			foreach( $header as $line ) {
-					if( preg_match( '/^Set-Cookie: /i', $line ) ) {
-							$line = preg_replace( '/^Set-Cookie: /i', '', trim( $line ) );
-							$csplit = explode( ';', $line );
-							$cdata = array();
-							foreach( $csplit as $data ) {
-									$cinfo = explode( '=', $data ,2);
-									if(count($cinfo)<2)continue;
-									$cinfo[0] = trim( $cinfo[0] );
-									if( strtolower($cinfo[0]) == 'expires' ) $cinfo[1] = strtotime( $cinfo[1] );
-									if( strtolower($cinfo[0]) == 'secure' ) $cinfo[1] = "true";
-									if( in_array( strtolower($cinfo[0]), array( 'domain', 'expires', 'path', 'secure', 'comment' ) ) ) {
-											$cdata[trim( $cinfo[0] )] = $cinfo[1];
-									}
-									else {
-											$cdata['value']['key'] = $cinfo[0];
-											$cdata['value']['value'] = $cinfo[1];
-									}
-							}
-							$cookies[] = $cdata;
+					if(	preg_match_all ("/Set-Cookie: (.+?)=(.+?);/i", $line, $_match,PREG_SET_ORDER)){
+						$cdata=array();
+						$key = $_match[0][1];
+						$value =$_match[0][2];
+						$csplit = explode( ';', substr($line,strpos($line,$value)+strlen($value)) );
+						foreach( $csplit as $data ) {
+								$cinfo = explode( '=', $data ,2);
+								if(count($cinfo)<2)continue;
+
+								$key2 =  trim($cinfo[0]);
+								$value2 = $cinfo[1];
+								if($key==$key2)continue;
+								
+								if( in_array( strtolower($key2), array( 'domain', 'expires', 'path', 'secure', 'comment' ) ) ) {
+									$key2 = strtolower($key2);
+										
+									if( $key2 == 'expires' ) $value2 = strtotime( $value2 );
+									if( $key2 == 'secure' ) $value2 = "true";
+								}
+								$cdata[$key2]=$value2;
+								
+						}
+						$cdata['value']['key'] = $key;
+						$cdata['value']['value'] = $value;
+
+						$cookies[$key] = $cdata;
 					}
 			}
 			return $cookies;
@@ -118,7 +125,8 @@ class SHttp{
 			if( is_array( $data ) ) {
 					$cookie = '';
 					foreach( $data as $d ) {
-							$cookie[] = $d['value']['key'].'='.$d['value']['value'];
+						if(!empty($d['expires']) && $d['expires']<time()){continue;}
+						$cookie[] = $d['value']['key'].'='.$d['value']['value'];
 					}
 					if( count( $cookie ) > 0 ) {
 							return trim( implode( '; ', $cookie ) );
