@@ -95,12 +95,12 @@ class SHttp{
 							$csplit = explode( ';', $line );
 							$cdata = array();
 							foreach( $csplit as $data ) {
-									$cinfo = explode( '=', $data );
+									$cinfo = explode( '=', $data ,2);
 									if(count($cinfo)<2)continue;
 									$cinfo[0] = trim( $cinfo[0] );
-									if( $cinfo[0] == 'expires' ) $cinfo[1] = strtotime( $cinfo[1] );
-									if( $cinfo[0] == 'secure' ) $cinfo[1] = "true";
-									if( in_array( $cinfo[0], array( 'domain', 'expires', 'path', 'secure', 'comment' ) ) ) {
+									if( strtolower($cinfo[0]) == 'expires' ) $cinfo[1] = strtotime( $cinfo[1] );
+									if( strtolower($cinfo[0]) == 'secure' ) $cinfo[1] = "true";
+									if( in_array( strtolower($cinfo[0]), array( 'domain', 'expires', 'path', 'secure', 'comment' ) ) ) {
 											$cdata[trim( $cinfo[0] )] = $cinfo[1];
 									}
 									else {
