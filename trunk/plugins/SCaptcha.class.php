@@ -33,6 +33,7 @@ class SCaptcha extends SimpleCaptcha{
 		$this->scale=3;
 		$this->blur = true;
 		$this->imageFormat="png";
+		$this->transprent=false;
 	}
 	static function check($captcha_code){
 		if(	empty($_SESSION[SCaptcha::$session_prefix . $captcha_code]) ||

@@ -56,7 +56,7 @@ class SimpleCaptcha {
 
     /** Min word length (for non-dictionary random text generation) */
     public $minWordLength = 5;
-
+	public $transprent=false;
     /**
      * Max word length (for non-dictionary random text generation)
      * 
@@ -203,14 +203,15 @@ class SimpleCaptcha {
         }
 
         $this->im = imagecreatetruecolor($this->width*$this->scale, $this->height*$this->scale);
-
+	
         // Background color
-        $this->GdBgColor = imagecolorallocate($this->im,
+        $this->GdBgColor = imagecolorallocatealpha ($this->im,
             $this->backgroundColor[0],
             $this->backgroundColor[1],
-            $this->backgroundColor[2]
+            $this->backgroundColor[2],0
         );
-        imagefilledrectangle($this->im, 0, 0, $this->width*$this->scale, $this->height*$this->scale, $this->GdBgColor);
+		imagefill($this->im,0,0,$this->GdBgColor);
+      //  imagefilledrectangle($this->im, 0, 0, $this->width*$this->scale, $this->height*$this->scale, $this->GdBgColor);
 
         // Foreground color
         $color           = $this->colors[mt_rand(0, sizeof($this->colors)-1)];
@@ -419,6 +420,7 @@ class SimpleCaptcha {
      * File generation
      */
     protected function WriteImage() {
+		if($this->transprent)imagecolortransparent($this->im,   $this->GdBgColor);
         if ($this->imageFormat == 'png') {
             header("Content-type: image/png");
             imagepng($this->im);
