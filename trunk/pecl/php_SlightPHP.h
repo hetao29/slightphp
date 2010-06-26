@@ -26,6 +26,7 @@ extern "C" {
 #endif
 
 #include <php.h>
+#include <regex.h>
 
 #ifdef HAVE_SLIGHTPHP
 
