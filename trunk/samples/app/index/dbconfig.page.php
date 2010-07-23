@@ -16,7 +16,7 @@ class index_dbconfig{
 		 * 第一步 设置配置文件
 		 * 配置说明文档请参看 db.ini 里的注释
 		 */
-		SDb::setConfigFile(SlightPHP::$appDir."index/db.ini.php");
+		SDb::setConfigFile(SlightPHP::$appDir."/index/db.ini.php");
 		
 		/**
 		 * 第二步 获取配置
