@@ -23,16 +23,16 @@
 </ul>
 <b>插件测试：</b>
 <ul class="test" style="border: 1px solid #A7D6E0;padding:10px;">
-	<li><a href="index.db" target="_blank">SDb (数据库)测试</a></li>
-	<li><a href="index.dbconfig" target="_blank">SDb (数据库配置文件)测试</a></li>
-	<li><a href="index.error" target="_blank">SError 测试</a></li>
-	<li><a href="index.cache" target="_blank">SCache 测试</a></li>
-	<li><a href="index.smarty" target="_blank">SGui 测试</a></li>
-	<li><a href="index.captcha" target="_blank">SCaptcha (验证码)测试</a></li>
-	<li><a href="index.json" target="_blank">SJson (json)测试</a></li>
-	<li><a href="index.thumbnail" target="_blank">SThumbnail (缩略图)测试</a></li>
-	<li><a href="index.sphinx" target="_blank">SPhinx 测试</a></li>
-	<li><a href="index.language" target="_blank">SLanguage 国际化测试</a></li>
+	<li><a href="index.smarty" target="_blank">SGui (模板smarty)</a></li>
+	<li><a href="index.db" target="_blank">SDb (数据库)</a></li>
+	<li><a href="index.dbconfig" target="_blank">SDb (数据库配置文件)</a></li>
+	<li><a href="index.error" target="_blank">SError 可视化错误显示</a></li>
+	<li><a href="index.cache" target="_blank">SCache 缓存</a></li>
+	<li><a href="index.captcha" target="_blank">SCaptcha (验证码)</a></li>
+	<li><a href="index.json" target="_blank">SJson (json)</a></li>
+	<li><a href="index.thumbnail" target="_blank">SThumbnail (缩略图)</a></li>
+	<li><a href="index.sphinx" target="_blank">SSPhinx</a></li>
+	<li><a href="index.language" target="_blank">SLanguage 国际化</a></li>
 </ul>
 <div clsss="footer">
 	<b><a href="http://code.google.com/p/slightphp/" target="_blank">官方网站</a></b>
