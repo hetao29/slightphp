@@ -79,14 +79,21 @@ class SError{
 		$index=0;
 		if($arrLen>0){
 			for($i=$arrLen-1;$i>0;$i--){
-				$text.=($index++)."\t".$backtrace[$i]['file']."(".$backtrace[$i]['line'].")\t".(!empty($backtrace[$i]['class'])?$backtrace[$i]['class']:"").'::'.(!empty($backtrace[$i]['function'])?$backtrace[$i]['function']:"")."()\r\n";
+				$text.=($index++)."\t".
+					@$backtrace[$i]['file']."(".@$backtrace[$i]['line'].")\t".
+					(empty($backtrace[$i]['class'])?"":$backtrace[$i]['class'].'::').
+					@$backtrace[$i]['function']."()\r\n";
 			}
 		}
 		$i=0;
 		if(!empty($backtrace[$i]['args']) &&!empty($backtrace[$i]['args'][0]) &&!empty($backtrace[$i]['args'][1])){
 			//error
 			$errorCode = $backtrace[$i]['args'][0];
-			$text.=($index++)."\t".$backtrace[$i]['args'][2]."(".$backtrace[$i]['line'].")\t".SError::$error_type[$errorCode].':'.(!empty($backtrace[$i]['args'])?$backtrace[$i]['args'][1]:"")."\r\n";
+			$text.=($index++)."\t".
+				@$backtrace[$i]['args'][2]."(".
+				@$backtrace[$i]['line'].")\t".
+				SError::$error_type[$errorCode].':'.
+				(!empty($backtrace[$i]['args'])?$backtrace[$i]['args'][1]:"")."\r\n";
 		}elseif($e){
 			$text.=($index++)."\t".$e->getFile()."(".$e->getLine().")\t".$e->getCode().":".$e->getMessage()."\t\r\n";
 		}
@@ -101,17 +108,21 @@ class SError{
 		$index=0;
 		if($arrLen>0){
 			for($i=$arrLen-1;$i>0;$i--){
-				$html.='<tr style="background-color: #cccccc; color: #000000;"><td>'.($index++).'</td><td>'.$backtrace[$i]['file'].'</td><td>'.$backtrace[$i]['line'].'</td><td>'.(!empty($backtrace[$i]['class'])?$backtrace[$i]['class']:"").'::'.(!empty($backtrace[$i]['function'])?$backtrace[$i]['function']:"").'(';
+				$html.='<tr style="background-color: #cccccc; color: #000000;"><td>'.($index++).'</td><td>'.
+					@$backtrace[$i]['file'].'</td><td>'.
+					@$backtrace[$i]['line'].'</td><td>'.
+					(empty($backtrace[$i]['class'])?"":$backtrace[$i]['class'].'::').
+					@$backtrace[$i]['function'].'(';
 				if(!empty($backtrace[$i]['args'])){
 					$tmpK=array();	
 					foreach($backtrace[$i]['args'] as $value){
 						if(is_object($value)){
 							$tmpK[]=get_class ($value );
-						}else{
+						}elseif(is_array($value)){
 							$tmpK[]=$value;
 						}
 					}
-					$html.=implode(",",$tmpK);
+					$html.=@implode(",",$tmpK);
 						
 				}
 				$html.=')<td></td></tr>';
