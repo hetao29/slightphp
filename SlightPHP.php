@@ -157,6 +157,7 @@ final class SlightPHP{
 	}
 	/**
 	 * appDir set && get
+	 * IMPORTANT: you must set absolute path if you use extension mode(extension=SlightPHP.so)
 	 *
 	 * @param string $dir
 	 * @return boolean

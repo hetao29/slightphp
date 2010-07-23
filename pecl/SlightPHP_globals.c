@@ -94,28 +94,30 @@ int SlightPHP_run(zval*zone,zval*class_name,zval*method,zval**return_value, int 
 	efree(real_method);
 
 	zend_class_entry * ce = NULL, **pce;
-	if(zend_hash_find(EG(class_table), Z_STRVAL(real_classname_zval), Z_STRLEN(real_classname_zval)+1, (void **) &pce) ==FAILURE){
+	if(zend_hash_find(EG(class_table),Z_STRVAL(real_classname_zval),Z_STRLEN(real_classname_zval)+1,(void **)&pce)==FAILURE){
 		debug("class[%s] not exists",Z_STRVAL(real_classname_zval));
 		return FAILURE;
 	} else {
 		ce = *pce;
 		MAKE_STD_ZVAL(object);
 		object_init_ex(object,ce);
+		zval tmp_method;
 
 		if (ce->constructor) {
-			zval tmp_method;
 		    	ZVAL_STRING(&tmp_method, ce->constructor->common.function_name, 0);
 
 		    	if(call_user_function_ex(NULL, &object, &tmp_method, &rt, 0, NULL, 0,NULL TSRMLS_CC)!=SUCCESS){
 				FREE_ZVAL(object);
-				return FAILURE;
 			}
-			if(rt) zval_dtor(rt);
 		}
 
-		if(call_user_function_ex(&Z_OBJCE_P(object)->function_table, &object, &real_method_zval, return_value, param_count, params, 0,NULL TSRMLS_CC)!=SUCCESS){
+		int r=call_user_function_ex(
+				&Z_OBJCE_P(object)->function_table, &object, 
+				&real_method_zval, return_value, param_count, params, 0,NULL TSRMLS_CC
+			);
+		if(rt) zval_dtor(rt);
+		if(r!=SUCCESS){
 			debug("method[%s] not exists in class[%s]",Z_STRVAL(real_method_zval),Z_STRVAL(real_classname_zval));
-		}else{
 			return FAILURE;
 		}
 		FREE_ZVAL(object);
