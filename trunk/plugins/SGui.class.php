@@ -18,13 +18,21 @@
  * @package SlightPHP
  */
 class SGui{
+	static private $smarty;
+	static public function &smarty()
+	{
+	    if (!isset(self::$smarty)) {
+	        self::$smarty = new Smarty();
+	    }
+	    return self::$smarty;
+	}
 	
 	/**
 	 * get smarty engine
 	 */
 	private function getSmartyEngine() {
 		require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."smarty/Smarty.class.php");
-		$smarty = new Smarty();
+		$smarty = self::smarty();
 		array_push($smarty->plugins_dir,"plugins_slightphp");
 		$smarty->compile_dir	= SlightPHP::$appDir.DIRECTORY_SEPARATOR."templates_c";
 		$smarty->template_dir = SlightPHP::$appDir.DIRECTORY_SEPARATOR."templates";
