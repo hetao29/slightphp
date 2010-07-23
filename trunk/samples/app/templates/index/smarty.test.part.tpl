@@ -1,3 +1,3 @@
-Smarty test part<br />
+<br/>
+<b>This is a part</b><br />
 key:{$key} </br>
-Welcome...
