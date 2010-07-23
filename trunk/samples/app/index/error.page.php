@@ -1,8 +1,4 @@
 <?php
-require_once("global.php");
-SlightPHP::setDebug(true);
-SlightPHP::setSplitFlag("-_");
-
 /*
  * 是否在前端显示，默认为true
  */

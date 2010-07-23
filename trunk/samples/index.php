@@ -14,12 +14,12 @@ require_once("global.php");
 /*echo error info*/
 SlightPHP::setDebug(true);
 
-SlightPHP::setAppDir("app");
+SlightPHP::setAppDir("/data/www/SlightPHP/samples/app/");
 SlightPHP::setDefaultZone("index");
 SlightPHP::setDefaultPage("main");
 SlightPHP::setDefaultEntry("entry");
 
-SDb::setConfigFile(SlightPHP::$appDir . "/db.config.php");
+SDb::setConfigFile(SlightPHP::$appDir . "/index/db.ini.php");
 
 SlightPHP::setSplitFlag("-_.");
 

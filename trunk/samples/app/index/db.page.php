@@ -1,7 +1,4 @@
 <?php
-require_once("global.php");
-SlightPHP::setDebug(true);
-SlightPHP::setSplitFlag("-_");
 /*
 drop table if exists test;
 CREATE TABLE `test` (
@@ -11,7 +8,7 @@ CREATE TABLE `test` (
   KEY `name` (`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 */
-$db = SDb::getDbEngine("pdo_mysql");
+$db = SDb::getDbEngine("mysql");
 if(!$db){
 	die("DbEngine not exits");
 }
@@ -23,19 +20,13 @@ $db->init(array(
 );
 //插入记录
 print_r($db->insert($table = "test",$items=array("name"=>"testName","password"=>"testPassword")));
-exit;
 //检索一个
-//print_r($db->selectOne($table = "test",$condition=array(),$items=array("name")));
+print_r($db->selectOne($table = "test",$condition=array(),$items=array("name")));
 //按条件检索一个
 print_r($db->selectOne($table = "test",$condition=array("id"=>1),$items=array("*")));
 //搜索全部
-$db->setLimit(2);
-$db->setCount(true);
-print_r($db->select($table = "test",$condition=array("id=2","password"=>"testPassword"),$items=array("*")));
-$db->update($table="test",$condition=array("id=2"),$updates=array("password"=>"xx"));
-$db->delete($table="test",$condition=array("id=2"));
-//$db->update($table="test",$condition=array("id=2"),$updates=array("password=xxx"));
-exit;
+$db->setLimit(-1);
+print_r($db->select($table = "test",$condition=array(),$items=array("*")));
 //按页检索
 $db->setPage(2);
 $db->setLimit(5);
