@@ -26,13 +26,13 @@
 	<li><a href="index.smarty" target="_blank">SGui (模板smarty)</a></li>
 	<li><a href="index.db" target="_blank">SDb (数据库)</a></li>
 	<li><a href="index.dbconfig" target="_blank">SDb (数据库配置文件)</a></li>
-	<li><a href="index.error" target="_blank">SError 可视化错误显示</a></li>
-	<li><a href="index.cache" target="_blank">SCache 缓存</a></li>
+	<li><a href="index.error" target="_blank">SError (可视化错误显示)</a></li>
+	<li><a href="index.cache" target="_blank">SCache (缓存)</a></li>
 	<li><a href="index.captcha" target="_blank">SCaptcha (验证码)</a></li>
 	<li><a href="index.json" target="_blank">SJson (json)</a></li>
 	<li><a href="index.thumbnail" target="_blank">SThumbnail (缩略图)</a></li>
 	<li><a href="index.sphinx" target="_blank">SSPhinx</a></li>
-	<li><a href="index.language" target="_blank">SLanguage 国际化</a></li>
+	<li><a href="index.language" target="_blank">SLanguage (国际化)</a></li>
 </ul>
 <div clsss="footer">
 	<b><a href="http://code.google.com/p/slightphp/" target="_blank">官方网站</a></b>
