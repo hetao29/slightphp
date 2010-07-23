@@ -1,7 +1,7 @@
 <?php
 class index_thumbnail{
 	function pageEntry($inPath){
-		$path=SlightPHP::$appDir."index/";
+		$path=SlightPHP::$appDir."/index/";
 		$a = new SError;
 		$thumbnail = new SThumbnail($path.'thumbnail/sampleimage.jpg', 100); //
 		

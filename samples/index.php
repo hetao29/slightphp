@@ -22,7 +22,7 @@ SlightPHP::setDefaultEntry("entry");
 SDb::setConfigFile(SlightPHP::$appDir . "/index/db.ini.php");
 
 SlightPHP::setSplitFlag("-_.");
-
+SError::$CONSOLE= true;
 if(($r=SlightPHP::run())===false){
 	die("404 error");
 }else{
