@@ -14,7 +14,7 @@ require_once("global.php");
 /*echo error info*/
 SlightPHP::setDebug(true);
 
-SlightPHP::setAppDir("/data/www/SlightPHP/samples/app/");
+SlightPHP::setAppDir("app");
 SlightPHP::setDefaultZone("index");
 SlightPHP::setDefaultPage("main");
 SlightPHP::setDefaultEntry("entry");
