@@ -1,0 +1,23 @@
+#summary One-sentence summary of this page.
+
+= Introduction =
+
+cd pecl
+
+phpize
+./configure
+make
+make install
+
+然后在php.ini中加载这个
+extension=SlightPHP.so
+
+就可以了
+
+
+= Details =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
