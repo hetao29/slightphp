@@ -17,36 +17,26 @@
 /**
  * @package SlightPHP
  */
-class SGui{
-	static private $smarty;
-	static public function &smarty()
-	{
-	    if (!isset(self::$smarty)) {
-	        self::$smarty = new Smarty();
-	    }
-	    return self::$smarty;
-	}
-	
-	/**
-	 * get smarty engine
-	 */
-	private function getSmartyEngine() {
-		require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."smarty/Smarty.class.php");
-		$smarty = self::smarty();
-		array_push($smarty->plugins_dir,"plugins_slightphp");
-		$smarty->compile_dir	= SlightPHP::$appDir.DIRECTORY_SEPARATOR."templates_c";
-		$smarty->template_dir = SlightPHP::$appDir.DIRECTORY_SEPARATOR."templates";
-		return $smarty;
+require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."smarty/Smarty.class.php");
+class SGui extends Smarty{
+	var $PLUGINS_DIR_ADDED=false;
+	public function __construct(){
 	}
 	/**
 	 * render a .tpl
 	 */
 	public function render($tpl,$parames=array()){
-		$smarty = $this->getSmartyEngine();
-		foreach($parames as $key=>$value){
-			$smarty->assign($key,$value);
+		if(!$this->PLUGINS_DIR_ADDED){
+			$plugins_dir = dirname(__FILE__).DIRECTORY_SEPARATOR."smarty/plugins_slightphp/";
+			array_push($this->plugins_dir,$plugins_dir);
+			$this->PLUGINS_DIR_ADDED=true;
 		}
-		return $smarty->fetch($tpl);
+		$this->compile_dir	= SlightPHP::$appDir.DIRECTORY_SEPARATOR."templates_c";
+		$this->template_dir 	= SlightPHP::$appDir.DIRECTORY_SEPARATOR."templates";
+		foreach($parames as $key=>$value){
+			$this->assign($key,$value);
+		}
+		return $this->fetch($tpl);
 		
 	}
 	/**
