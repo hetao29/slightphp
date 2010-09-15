@@ -180,9 +180,9 @@ class Db_Mysql extends DbObject{
 			$table=trim($table);
 		}
 
-		if(is_array($item))
-		$item =@implode(" , ",$item);
-
+		if(is_array($item)&&!empty($item)){
+			$item ="`".@implode("` , `",$item)."`";
+		}
 		$condiStr = $this->__quote($condition);
 		if($condiStr!=""){
 			$condiStr=" WHERE ".$condiStr;

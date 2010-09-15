@@ -184,8 +184,9 @@ class Db_PDO extends DbObject{
 			$table=trim($table);
 		}
 
-		if(is_array($item))
-		$item =@implode(" , ",$item);
+		if(is_array($item)&&!empty($item)){
+			$item ="`".@implode("` , `",$item)."`";
+		}
 		//}}}
 		//{{{$condition
 		$condiStr = $this->__quote($condition,"AND",$bind);
