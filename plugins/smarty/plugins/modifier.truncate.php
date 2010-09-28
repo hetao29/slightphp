@@ -31,7 +31,7 @@ function smarty_modifier_truncate($string, $length = 80, $etc = '...',
         return '';
 	if(function_exists("mb_detect_encoding")){
 		$encoding = mb_detect_encoding($string);
-		$width = mb_strwidth($string,$encoding);
+		//$width = mb_strwidth($string,$encoding);
 		return mb_strimwidth($string,0,$length,$etc,$encoding);
 	}
 
