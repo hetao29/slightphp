@@ -29,6 +29,11 @@ function smarty_modifier_truncate($string, $length = 80, $etc = '...',
 {
     if ($length == 0)
         return '';
+	if(function_exists("mb_detect_encoding")){
+		$encoding = mb_detect_encoding($string);
+		$width = mb_strwidth($string,$encoding);
+		return mb_strimwidth($string,0,$length,$etc,$encoding);
+	}
 
     if (strlen($string) > $length) {
         $length -= min($length, strlen($etc));
