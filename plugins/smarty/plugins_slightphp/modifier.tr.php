@@ -18,7 +18,7 @@
  * @param string
  * @return string
  */
-function smarty_modifier_tr($string,$zone)
+function smarty_modifier_tr($string,$zone="main")
 {
 	return SLanguage::tr($string,$zone);
 }
