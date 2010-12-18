@@ -1,0 +1,12 @@
+#summary One-sentence summary of this page.
+
+= Introduction =
+
+No input file specified.
+
+= Details =
+
+change .htaccess file:
+
+#RewriteRule   ^(.*)$ index.php/$1 [L]
+RewriteRule   .$ index.php/$1 [L]
