@@ -350,9 +350,9 @@ class Db_PDO extends DbObject{
 		$f = $this->__quote($item,",",$bind_f);
 
 		$this->sql="$command INTO $table SET $f ";
-		$v = $this->__quote($update,"AND",$bind_v);
+		$v = $this->__quote($update,",",$bind_v);
 		if(!empty($v)){
-			$this->sql.="ON DUPLICATE KEY UPDATE ".implode(",",$v);
+			$this->sql.="ON DUPLICATE KEY UPDATE $v";
 		}
 		$r=$this->query($this->sql,$bind_f,$bind_v);
 		if($this->lastInsertId ()>0){

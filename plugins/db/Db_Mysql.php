@@ -287,6 +287,7 @@ class Db_Mysql extends DbObject{
 	 * @param $table
 	 * @param array $item 
 	 * @param array $update ,egarray("key"=>value,"key2"=>value2")
+	 * this param may be BUG
 		 insert into zone_user_online values(2,'','','','',now(),now()) on duplicate key update onlineactivetime=CURRENT_TIMESTAMP;
 	 * @return int InsertID
 	 */
@@ -306,7 +307,7 @@ class Db_Mysql extends DbObject{
 		$this->sql="$command INTO $table SET $f ";
 		$v = $this->__quote($update);
 		if(!empty($v)){
-			$this->sql.="ON DUPLICATE KEY UPDATE ".implode(",",$v);
+			$this->sql.="ON DUPLICATE KEY UPDATE $v";
 		}
 		$r=$this->execute($this->sql);
 		if($this->lastInsertId ()>0){
