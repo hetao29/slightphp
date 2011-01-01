@@ -310,11 +310,12 @@ class Db_Mysql extends DbObject{
 			$this->sql.="ON DUPLICATE KEY UPDATE $v";
 		}
 		$r=$this->execute($this->sql);
-		if($this->lastInsertId ()>0){
-			return $this->lastInsertId ();
-		}else{
-			return $r;
+		if($r!==false){
+			if($this->lastInsertId ()>0){
+				return $this->lastInsertId ();
+			}
 		}
+		return $r;
 	}
 
 	/**
