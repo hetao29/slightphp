@@ -355,13 +355,14 @@ class Db_PDO extends DbObject{
 			$this->sql.="ON DUPLICATE KEY UPDATE $v";
 		}
 		$r=$this->query($this->sql,$bind_f,$bind_v);
-		if($this->lastInsertId ()>0){
-			return $this->lastInsertId ();
-		}elseif($this->affectedRows >0){
-			return $this->affectedRows;
-		}else{
-			return $r;
+		if($r!==false){
+			if($this->lastInsertId ()>0){
+				return $this->lastInsertId ();
+			}elseif($this->affectedRows >0){
+				return $this->affectedRows;
+			}
 		}
+		return $r;
 	}
 
 	/**
