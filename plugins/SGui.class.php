@@ -17,7 +17,11 @@
 /**
  * @package SlightPHP
  */
-require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."smarty/Smarty.class.php");
+if(version_compare(PHP_VERSION,"5.2",">=")){
+	require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."smarty3/Smarty.class.php");
+}else{
+	require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."smarty/Smarty.class.php");
+}
 class SGui extends Smarty{
 	var $PLUGINS_DIR_ADDED=false;
 	public function __construct(){
@@ -27,7 +31,10 @@ class SGui extends Smarty{
 	 */
 	public function render($tpl,$parames=array()){
 		if(!$this->PLUGINS_DIR_ADDED){
-			$plugins_dir = dirname(__FILE__).DIRECTORY_SEPARATOR."smarty/plugins_slightphp/";
+			$this->plugins_dir=array();
+			$plugins_dir = SMARTY_DIR."/plugins_slightphp/";
+			array_push($this->plugins_dir,$plugins_dir);
+			$plugins_dir = SMARTY_DIR."/plugins/";
 			array_push($this->plugins_dir,$plugins_dir);
 			$this->PLUGINS_DIR_ADDED=true;
 		}
