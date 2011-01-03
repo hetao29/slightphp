@@ -33,7 +33,7 @@ class SLanguage{
 				$l=explode(";",$_SERVER['HTTP_ACCEPT_LANGUAGE']);
 				$t=explode(',',$l[0]);
 				foreach($t as $locale){
-					SLanguage::$defaultLocale[$locale] = $locale;
+					SLanguage::$defaultLocale[$locale] = strtolower($locale);
 				}
 			}
 		}
