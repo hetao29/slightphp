@@ -1,11 +1,13 @@
 <?php
-require_once("../SlightPHP.php");
-define("PLUGINS_DIR","../plugins");
+define("PLUGINS_DIR",dirname(__FILE__)."/../plugins");
 function __autoload($class){
 	if($class{0}=="S"){
-		require_once(PLUGINS_DIR."/$class.class.php");
+		$file = PLUGINS_DIR."/$class.class.php";
 	}else{
-		require_once(SlightPHP::$appDir."/".str_replace("_","/",$class).".class.php");
+		$file = SlightPHP::$appDir."/".str_replace("_","/",$class).".class.php";
 	}
+	if(file_exists($file)) return require_once($file);
 }
+spl_autoload_register('__autoload');
+require_once("../SlightPHP.php");
 ?>
