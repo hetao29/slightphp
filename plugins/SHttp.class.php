@@ -38,8 +38,7 @@ class SHttp{
 						"Accept-Language: zh-cn\r\n" .
 						"User-Agent: Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)\r\n" .
 						"Referer: $url\r\n" .
-						(!empty($cookies)?"Cookie: ".self::cookie_build($cookies)."\r\n":"").
-						"Connection: Close\r\n" ,
+						(!empty($cookies)?"Cookie: ".self::cookie_build($cookies)."\r\n":"")
 			)
 		);
 		$url .= empty($params)?"":"?".http_build_query($params);
