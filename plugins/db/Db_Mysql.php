@@ -371,7 +371,11 @@ class Db_Mysql extends DbObject{
 			Db_Mysql::$globals[$this->key] = mysql_connect($this->host.":".$this->port,$this->user,$this->password);
 		}
 		if(!Db_Mysql::$globals[$this->key]){
-			die("connect database error:\n".var_export($this,true));
+			if(defined("DEBUG")){
+				die("connect database error:\n".var_export($this,true));
+			}else{
+				die("connect database error:");
+			}
 		}
 		if($this->database!=""){
 			mysql_select_db($this->database,Db_Mysql::$globals[$this->key]);

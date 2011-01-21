@@ -435,7 +435,11 @@ class Db_PDO extends DbObject{
 			try{
 			Db_PDO::$globals[$this->key] = new PDO($this->prefix.":dbname=".$this->database.";host=".$this->host.";port=".$this->port,$this->user,$this->password);
 			}catch(Exception $e){
-				die("connect database error:\n".var_export($this,true));
+				if(defined("DEBUG")){
+					die("connect database error:\n".var_export($this,true));
+				}else{
+					die("connect database error:");
+				}
 			}
 		}
 		if(!empty($this->charset)){
