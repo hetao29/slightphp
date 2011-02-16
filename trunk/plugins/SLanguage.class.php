@@ -41,7 +41,7 @@ class SLanguage{
 		if(SLanguage::$locale){
 			$locales[SLanguage::$locale] = SLanguage::$locale;
 		}
-		$locales = array_reverse ($locales);
+		$locales = @array_reverse ($locales);
 
 		foreach($locales as $locale){
 			
