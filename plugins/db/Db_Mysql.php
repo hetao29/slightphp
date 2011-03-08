@@ -394,7 +394,6 @@ class Db_Mysql extends DbObject{
 		//{{{reset 
 		$this->setPage(1);
 		$this->setLimit(0);
-		$this->setCount(false);
 		$this->setGroupby("");
 		$this->setOrderby("");
 		//}}}
