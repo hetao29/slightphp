@@ -401,6 +401,13 @@ class Db_PDO extends DbObject{
 				$stmt->bindValue($k + count($bind1),$v);
 			}
 		}
+		//{{{reset 
+		$this->setPage(1);
+		$this->setLimit(0);
+		$this->setCount(false);
+		$this->setGroupby("");
+		$this->setOrderby("");
+		//}}}
 		if($stmt->execute ()){
 			$this->affectedRows = $stmt->rowCount();
 			return $stmt->fetchAll (PDO::FETCH_ASSOC );
