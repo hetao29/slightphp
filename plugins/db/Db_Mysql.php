@@ -351,6 +351,13 @@ class Db_Mysql extends DbObject{
 			}
 			$data->totalPage = ceil($data->totalSize/$data->limit);
 		}
+		//{{{reset 
+		$this->setPage(1);
+		$this->setLimit(0);
+		$this->setCount(false);
+		$this->setGroupby("");
+		$this->setOrderby("");
+		//}}}
 		return $data;
 
 	}
@@ -391,12 +398,6 @@ class Db_Mysql extends DbObject{
 		if(defined("DEBUG")){
 			echo "SQL:$sql\n";
 		}
-		//{{{reset 
-		$this->setPage(1);
-		$this->setLimit(0);
-		$this->setGroupby("");
-		$this->setOrderby("");
-		//}}}
 		$result = mysql_query($sql,Db_Mysql::$globals[$this->key]);
 		if(!$result){
 			$this->error['code']=mysql_errno();
