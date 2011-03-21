@@ -1,0 +1,11 @@
+#nginx rewrite route examples.
+
+= Nginx Rewrite 例子 =
+
+if (!-e $request_filename) {
+	rewrite  ^/(.*)$ index.php/$1  last;
+	break;
+}
+
+= 运行环境 =
+  * slightphp 130以上
