@@ -4,7 +4,7 @@ class index_language{
 		SLanguage::setLanguageDir(SlightPHP::$appDir."/../locale");
 		SLanguage::setLocale("en");
 		echo SLanguage::tr("name","main");
-		SLanguage::setLocale("zh-CN");
+		SLanguage::setLocale("zh-cn");
 		echo SLanguage::tr("name","main");
 	}
 }

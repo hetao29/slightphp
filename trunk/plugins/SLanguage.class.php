@@ -28,7 +28,8 @@ class SLanguage{
 	static $_languageCache;
 	static public function tr($source,$zone="main"){
 		$locales = array();
-		if(!SLanguage::$defaultLocale){
+		if(empty(SLanguage::$defaultLocale)){
+			//auto detec
 			if(!empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])){
 				$l=explode(";",$_SERVER['HTTP_ACCEPT_LANGUAGE']);
 				$t=explode(',',$l[0]);
@@ -36,11 +37,14 @@ class SLanguage{
 					SLanguage::$defaultLocale[$locale] = strtolower($locale);
 				}
 			}
+		}else{
+			$locales = SLanguage::$defaultLocale;
 		}
-		$locales = SLanguage::$defaultLocale;
 		if(SLanguage::$locale){
 			$locales[SLanguage::$locale] = SLanguage::$locale;
 		}
+		if(empty($locales) || !is_array($locales))return $source;
+
 		$locales = @array_reverse ($locales);
 
 		foreach($locales as $locale){
@@ -58,8 +62,6 @@ class SLanguage{
 			}
 		}
 		return $source;
-	
-		
 	}
 	static public function setLanguageDir($dir){
 		SLanguage::$languageDir = $dir;

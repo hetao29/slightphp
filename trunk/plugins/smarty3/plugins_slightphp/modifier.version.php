@@ -18,11 +18,8 @@
  * @param string
  * @return string
  */
-if(!defined("ASSETS_VERSION")){
-	define("ASSETS_VERSION","1.0");
-}
-function smarty_modifier_version($string)
+function smarty_modifier_version($string,$version="1.0")
 {
-    return $string."?".ASSETS_VERSION;
+    return $string."?".$version;
 }
 ?>
