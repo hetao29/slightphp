@@ -9,6 +9,7 @@ CREATE TABLE `test` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 */
 $db = SDb::getDbEngine("mysql");
+$db = SDb::getDbEngine("pdo_mysql");
 if(!$db){
 	die("DbEngine not exits");
 }
