@@ -37,9 +37,8 @@ class SLanguage{
 					SLanguage::$defaultLocale[$locale] = strtolower($locale);
 				}
 			}
-		}else{
-			$locales = SLanguage::$defaultLocale;
 		}
+		$locales = SLanguage::$defaultLocale;
 		if(SLanguage::$locale){
 			$locales[SLanguage::$locale] = SLanguage::$locale;
 		}
