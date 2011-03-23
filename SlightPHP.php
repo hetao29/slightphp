@@ -207,11 +207,15 @@ final class SlightPHP{
 		$path_array = array();
 		if(!empty($path)){
 			$isPart = true;
-			$path_array = preg_split("/[$splitFlag\/]/",$path,-1,PREG_SPLIT_NO_EMPTY);
+			if($path{0}=="/")$path=substr($path,1);
+			$path_array = preg_split("/[$splitFlag\/]/",$path,-1);
 		}else{
 			$isPart = false;
 			$url    = !empty($_SERVER['REDIRECT_SCRIPT_URL'])?$_SERVER['REDIRECT_SCRIPT_URL']:(!empty($_SERVER["PATH_INFO"])?$_SERVER["PATH_INFO"]:"");
-			if(!empty($url))$path_array = preg_split("/[$splitFlag\/]/",$url,-1,PREG_SPLIT_NO_EMPTY);
+			if(!empty($url)){
+				if($url{0}=="/")$url=substr($url,1);
+				$path_array = preg_split("/[$splitFlag\/]/",$url,-1);
+			}
 		}
 
 		$zone	= !empty($path_array[0]) ? $path_array[0] : SlightPHP::$defaultZone ;
