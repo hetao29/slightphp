@@ -287,6 +287,7 @@ class Thumbnail {
 					$this->image = imagecreatefromstring($this->image_path);
 					break;
 		    } // end switch
+			imagesavealpha($this->image,true);
 		} // end if
 	} // end function
 
@@ -347,6 +348,8 @@ class Thumbnail {
 		if (!isset($this->thumbnail)) {
 			$this->thumbnail = imagecreatetruecolor($this->thumbnail_width,
 													$this->thumbnail_height);
+			imagealphablending($this->thumbnail,false);
+			imagesavealpha($this->thumbnail,true);
 
 			if ($this->quality_thumb === TRUE) {
 				imagecopyresampled($this->thumbnail, $this->image, 0, 0, 0, 0,

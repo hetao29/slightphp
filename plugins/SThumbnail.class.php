@@ -30,7 +30,7 @@ class SThumbnail extends WMThumbnail{
 	public function genFile($fileName,$quality = 100) {
 		$image = parent::returnThumbnail();
 		$result = false;
-	    if (strlen(trim($image)) > 0) {
+	    if (!empty($image)){
 		    switch ($this->image_type) {
 		        case 1:
 		        	$result = imagegif($image, $fileName);
