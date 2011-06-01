@@ -250,14 +250,14 @@ final class SlightPHP{
 			SlightPHP::debug("class[$classname] not exists");
 			return false;
 		}
-		$classInstance = new $classname;
+		$path_array[0] = $zone;
+		$path_array[1] = $page;
+		$path_array[2] = $entry;
+		$classInstance = new $classname($path_array);
 		if(!method_exists($classInstance,$method)){
 			SlightPHP::debug("method[$method] not exists in class[$classname]");
 			return false;
 		}
-		$path_array[0] = $zone;
-		$path_array[1] = $page;
-		$path_array[2] = $entry;
 		return call_user_func(array(&$classInstance,$method),$path_array);
 
 	}
