@@ -42,9 +42,9 @@ class SLog{
 			}else{
 					$info_text = $info;
 			}
-			$info_text = "[".date("Y-m-d H:i:s")."] ".$info_text."\r\n";
+			$info_text = "[".date("Y-m-d H:i:s")."] ".$info_text;
 			if(!empty(SLog::$LOGFILE)){
-				error_log($info_text,3,SLog::$LOGFILE);
+				error_log($info_text."\r\n",3,SLog::$LOGFILE);
 			}else error_log($info_text);
 			if(SLog::$CONSOLE)		echo "<!--\n".$info_text."\n-->";
 	}
