@@ -75,7 +75,7 @@ int SlightPHP_loadFile(char*file_name TSRMLS_DC){
 		}
 		return FAILURE;
 }
-int SlightPHP_run(zval*zone,zval*class_name,zval*method,zval**return_value, int param_count,zval ** params[] TSRMLS_DC){
+int SlightPHP_run(zval*zone,zval*class_name,zval*method,zval*return_value, int param_count,zval * params[] TSRMLS_DC){
 		zval *object;
 
 		char *real_classname;
