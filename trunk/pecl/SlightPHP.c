@@ -428,8 +428,8 @@ PHP_METHOD(SlightPHP, run)
 
 		zval *appDir = zend_read_static_property(SlightPHP_ce_ptr,"appDir",sizeof("appDir")-1,1 TSRMLS_CC);
 
-		zval **params[1];
-		params[0]=&path_array;
+		zval *params[1];
+		params[0]=path_array;
 
 
 		if(SlightPHP_load(appDir,zone,page TSRMLS_CC) == SUCCESS){
