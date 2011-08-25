@@ -289,8 +289,9 @@ PHP_METHOD(SlightPHP, run)
 	zval *entry=NULL;
 
 	zval **token;
-	//zval *path=NULL;
 	zval *server=NULL;
+	zval *get=NULL;
+	zval *post=NULL;
 	zval *path_array;
 
 	//{{{
@@ -308,8 +309,14 @@ PHP_METHOD(SlightPHP, run)
 		if(!server){
 			RETURN_FALSE;
 		}
-		if(zend_hash_find(HASH_OF(server), "PATH_INFO", sizeof("PATH_INFO"), (void **) &token) == SUCCESS
-		){
+		zend_is_auto_global("_REQUEST", sizeof("_REQUEST")-1 TSRMLS_CC);
+		get= PG(http_globals)[TRACK_VARS_GET];
+		post= PG(http_globals)[TRACK_VARS_POST];
+		if(get &&  zend_hash_find(HASH_OF(get), "PATH_INFO", sizeof("PATH_INFO"), (void **) &token) == SUCCESS){
+			path = *token;
+		}else if(post &&  zend_hash_find(HASH_OF(post), "PATH_INFO", sizeof("PATH_INFO"), (void **) &token) == SUCCESS){
+			path = *token;
+		}else if(zend_hash_find(HASH_OF(server), "PATH_INFO", sizeof("PATH_INFO"), (void **) &token) == SUCCESS){
 			path = *token;
 		}
 	}
@@ -418,7 +425,6 @@ PHP_METHOD(SlightPHP, run)
 		}
 	}
 
-	zval *tmp_result=NULL;
 
 	zval *appDir = zend_read_static_property(SlightPHP_ce_ptr,"appDir",sizeof("appDir")-1,1 TSRMLS_CC);
 	
@@ -427,18 +433,12 @@ PHP_METHOD(SlightPHP, run)
 
 
 	if(SlightPHP_load(appDir,zone,page TSRMLS_CC) == SUCCESS){
-		if(SlightPHP_run(zone,page,entry,&tmp_result,1,params TSRMLS_CC)==SUCCESS){
+		if(SlightPHP_run(zone,page,entry,&return_value,1,params TSRMLS_CC)==SUCCESS){
+		return;
 		};
 	}
 	FREE_ZVAL(path_array);
-
-	if(tmp_result){
-		*return_value = *tmp_result;
-		zval_copy_ctor(return_value);
-		zval_ptr_dtor(&tmp_result);
-	}else{
-		RETURN_FALSE;
-	}
+	RETURN_FALSE;
 }
 /* }}} run */
 
