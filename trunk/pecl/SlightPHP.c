@@ -289,9 +289,6 @@ PHP_METHOD(SlightPHP, run)
 		zval *entry=NULL;
 
 		zval **token;
-		zval *server=NULL;
-		zval *get=NULL;
-		zval *post=NULL;
 		zval *path_array;
 
 		//{{{
@@ -305,18 +302,11 @@ PHP_METHOD(SlightPHP, run)
 		}else{
 				isPart = 0;
 				zend_is_auto_global("_SERVER", sizeof("_SERVER") - 1 TSRMLS_CC);
-				server = PG(http_globals)[TRACK_VARS_SERVER];
-				if(!server){
-						RETURN_FALSE;
-				}
-				//zend_is_auto_global("_REQUEST", sizeof("_REQUEST")-1 TSRMLS_CC);
-				get= PG(http_globals)[TRACK_VARS_GET];
-				post= PG(http_globals)[TRACK_VARS_POST];
-				if(get &&  zend_hash_find(HASH_OF(get), "PATH_INFO", sizeof("PATH_INFO"), (void **) &token) == SUCCESS){
+				if(zend_hash_find(Z_ARRVAL_P(PG(http_globals)[TRACK_VARS_GET]), "PATH_INFO", sizeof("PATH_INFO"), (void **) &token) == SUCCESS){
 						path = *token;
-				}else if(post &&  zend_hash_find(HASH_OF(post), "PATH_INFO", sizeof("PATH_INFO"), (void **) &token) == SUCCESS){
+				}else if(zend_hash_find(Z_ARRVAL_P(PG(http_globals)[TRACK_VARS_POST]), "PATH_INFO", sizeof("PATH_INFO"), (void **) &token) == SUCCESS){
 						path = *token;
-				}else if(zend_hash_find(HASH_OF(server), "PATH_INFO", sizeof("PATH_INFO"), (void **) &token) == SUCCESS){
+				}else if(zend_hash_find(Z_ARRVAL_P(PG(http_globals)[TRACK_VARS_SERVER]), "PATH_INFO", sizeof("PATH_INFO"), (void **) &token) == SUCCESS){
 						path = *token;
 				}
 		}
@@ -406,7 +396,10 @@ PHP_METHOD(SlightPHP, run)
 						}
 						zend_hash_move_forward_ex(Z_ARRVAL_P(zoneAlias), &pos);
 				}
+				if(entry2)zval_ptr_dtor(entry2);
+				if(string_key)efree(string_key);
 		}
+		//if(zoneAlias)FREE_ZVAL(zoneAlias);
 		//}}}
 		if(!isPart){
 				zend_update_static_property(SlightPHP_ce_ptr,"zone",sizeof("zone")-1,zone TSRMLS_CC);
@@ -434,10 +427,11 @@ PHP_METHOD(SlightPHP, run)
 
 		if(SlightPHP_load(appDir,zone,page TSRMLS_CC) == SUCCESS){
 				if(SlightPHP_run(zone,page,entry,return_value,1,params TSRMLS_CC)==SUCCESS){
+						if(path_array)FREE_ZVAL(path_array);
 						RETURN_ZVAL(return_value,1,0);
 				};
 		}
-		FREE_ZVAL(path_array);
+		if(path_array)FREE_ZVAL(path_array);
 		RETURN_FALSE;
 }
 /* }}} run */

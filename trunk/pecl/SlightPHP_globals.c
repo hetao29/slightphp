@@ -117,6 +117,7 @@ int SlightPHP_run(zval*zone,zval*class_name,zval*method,zval*return_value, int p
 				int r=0;
 				r=call_user_function(NULL, &object, &real_method_zval, return_value, param_count, params TSRMLS_CC);
 				zval_ptr_dtor(&object);
+				zval_ptr_dtor(pce);
 				if(r!=SUCCESS){
 						debug("method[%s] not exists in class[%s]",Z_STRVAL(real_method_zval),Z_STRVAL(real_classname_zval));
 						return FAILURE;
