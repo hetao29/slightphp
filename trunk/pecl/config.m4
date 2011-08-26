@@ -7,13 +7,13 @@ dnl without editing.
 
 dnl If your extension references something external, use with:
 
-PHP_ARG_WITH(slightphp, for slightphp support,
-[  --with-slightphp             Include slightphp support])
+dnl PHP_ARG_WITH(slightphp, for slightphp support,
+dnl [  --with-slightphp             Include slightphp support])
 
 dnl Otherwise use enable:
 
 PHP_ARG_ENABLE(slightphp, whether to enable slightphp support,
-[  --enable-slightphp           Enable slightphp support])
+[  --enable-slightphp           Enable slightphp support],yes)
 
 if test "$PHP_SLIGHTPHP" != "no"; then
   dnl Write more examples of tests here...
@@ -55,7 +55,8 @@ if test "$PHP_SLIGHTPHP" != "no"; then
   dnl   -L$SLIGHTPHP_DIR/lib -lm -ldl
   dnl ])
   dnl
-  dnl PHP_SUBST(SLIGHTPHP_SHARED_LIBADD)
+  PHP_SUBST(SLIGHTPHP_SHARED_LIBADD)
+  AC_DEFINE(HAVE_SLIGHTPHP,1,[ ])
 
   PHP_NEW_EXTENSION(slightphp, slightphp.c, $ext_shared)
 fi

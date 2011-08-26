@@ -24,6 +24,7 @@
 #include "ext/standard/info.h"
 #include "php_slightphp.h"
 
+#if HAVE_SLIGHTPHP
 
 typedef struct _op_item{
 		time_t op_mtime;
@@ -631,6 +632,7 @@ PHP_MINFO_FUNCTION(slightphp)
 		/* add your stuff here */
 
 }
+#endif
 /* }}} */
 
 
