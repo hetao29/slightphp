@@ -20,7 +20,7 @@
 #endif
 
 #include "php.h"
-#include "php_ini.h"
+#include <regex.h>
 #include "ext/standard/info.h"
 #include "php_slightphp.h"
 

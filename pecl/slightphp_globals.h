@@ -16,17 +16,6 @@
 	#include "config.h"
 #endif
 
-#include "php.h"
-#include "php_ini.h"
-#include "php_main.h"
-#include "php_globals.h"
-#include "php_streams.h"
-#include "ext/standard/info.h"
-
-#include "standard/php_string.h"
-#include "standard/basic_functions.h"
-
-
 int debug(char*format,...);
 int slightphp_load(zval*appDir,zval*zone,zval*class_name TSRMLS_DC);
 int slightphp_loadFile(char*file_name TSRMLS_DC);

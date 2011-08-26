@@ -30,18 +30,6 @@ extern zend_module_entry slightphp_module_entry;
 #include "TSRM.h"
 #endif
 
-
-#include <php.h>
-#include <regex.h>
-
-
-#include <php_ini.h>
-#include <SAPI.h>
-#include <ext/standard/info.h>
-#include <Zend/zend_extensions.h>
-
-
-
 PHP_MINIT_FUNCTION(slightphp);
 PHP_MSHUTDOWN_FUNCTION(slightphp);
 PHP_RINIT_FUNCTION(slightphp);
