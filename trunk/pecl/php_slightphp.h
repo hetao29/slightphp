@@ -52,7 +52,7 @@ PHP_MINFO_FUNCTION(slightphp);
 
 
 PHP_METHOD(slightphp, setAppDir);
-#if PHP_MINOR_VERSION>2
+#if PHP_MINOR_VERSION<=2
 static 
 #endif
 ZEND_BEGIN_ARG_INFO_EX(slightphp__setAppDir_args, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, 1)
@@ -60,14 +60,14 @@ ZEND_BEGIN_ARG_INFO_EX(slightphp__setAppDir_args, ZEND_SEND_BY_VAL, ZEND_RETURN_
 ZEND_END_ARG_INFO()
 
 PHP_METHOD(slightphp, getAppDir);
-#if PHP_MINOR_VERSION>2
+#if PHP_MINOR_VERSION<=2
 static 
 #endif
 ZEND_BEGIN_ARG_INFO_EX(slightphp__getAppDir_args, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, 0)
 ZEND_END_ARG_INFO()
 
 PHP_METHOD(slightphp, setDefaultZone);
-#if PHP_MINOR_VERSION>2
+#if PHP_MINOR_VERSION<=2
 static  
 #endif
 ZEND_BEGIN_ARG_INFO_EX(slightphp__setDefaultZone_arg, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, 1)
@@ -76,7 +76,7 @@ ZEND_END_ARG_INFO()
 
 
 PHP_METHOD(slightphp, getDefaultZone);
-#if PHP_MINOR_VERSION>2
+#if PHP_MINOR_VERSION<=2
 static  
 #endif
 ZEND_BEGIN_ARG_INFO_EX(slightphp__getDefaultZone_args, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, 0)
@@ -84,7 +84,7 @@ ZEND_END_ARG_INFO()
 
 
 PHP_METHOD(slightphp, setDebug);
-#if PHP_MINOR_VERSION>2
+#if PHP_MINOR_VERSION<=2
 static  
 #endif
 ZEND_BEGIN_ARG_INFO_EX(slightphp__setDebug_arg, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, 1)
@@ -93,7 +93,7 @@ ZEND_END_ARG_INFO()
 
 
 PHP_METHOD(slightphp, getDebug);
-#if PHP_MINOR_VERSION>2
+#if PHP_MINOR_VERSION<=2
 static  
 #endif
 ZEND_BEGIN_ARG_INFO_EX(slightphp__getDebug_args, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, 0)
@@ -101,7 +101,7 @@ ZEND_END_ARG_INFO()
 
 
 PHP_METHOD(slightphp, setDefaultPage);
-#if PHP_MINOR_VERSION>2
+#if PHP_MINOR_VERSION<=2
 static  
 #endif
 ZEND_BEGIN_ARG_INFO_EX(slightphp__setDefaultPage_arg, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, 1)
@@ -110,7 +110,7 @@ ZEND_END_ARG_INFO()
 
 
 PHP_METHOD(slightphp, getDefaultPage);
-#if PHP_MINOR_VERSION>2
+#if PHP_MINOR_VERSION<=2
 static  
 #endif
 ZEND_BEGIN_ARG_INFO_EX(slightphp__getDefaultPage_args, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, 0)
@@ -120,7 +120,7 @@ ZEND_END_ARG_INFO()
 
 
 PHP_METHOD(slightphp, setDefaultEntry);
-#if PHP_MINOR_VERSION>2
+#if PHP_MINOR_VERSION<=2
 static  
 #endif
 ZEND_BEGIN_ARG_INFO_EX(slightphp__setDefaultEntry_arg, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, 1)
@@ -129,7 +129,7 @@ ZEND_END_ARG_INFO()
 
 
 PHP_METHOD(slightphp, getDefaultEntry);
-#if PHP_MINOR_VERSION>2
+#if PHP_MINOR_VERSION<=2
 static  
 #endif
 ZEND_BEGIN_ARG_INFO_EX(slightphp__getDefaultEntry_args, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, 0)
@@ -138,7 +138,7 @@ ZEND_END_ARG_INFO()
 
 
 PHP_METHOD(slightphp, setSplitFlag);
-#if PHP_MINOR_VERSION>2
+#if PHP_MINOR_VERSION<=2
 static  
 #endif
 ZEND_BEGIN_ARG_INFO_EX(slightphp__setSplitFlag_arg, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, 1)
@@ -146,7 +146,7 @@ ZEND_BEGIN_ARG_INFO_EX(slightphp__setSplitFlag_arg, ZEND_SEND_BY_VAL, ZEND_RETUR
 ZEND_END_ARG_INFO()
 
 PHP_METHOD(slightphp, getSplitFlag);
-#if PHP_MINOR_VERSION>2
+#if PHP_MINOR_VERSION<=2
 static  
 #endif
 ZEND_BEGIN_ARG_INFO_EX(slightphp__getSplitFlag_args, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, 0)
@@ -154,7 +154,7 @@ ZEND_END_ARG_INFO()
 
 
 PHP_METHOD(slightphp, setZoneAlias);
-#if PHP_MINOR_VERSION>2
+#if PHP_MINOR_VERSION<=2
 static  
 #endif
 ZEND_BEGIN_ARG_INFO_EX(slightphp__setZoneAlias_arg, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, 1)
@@ -163,19 +163,22 @@ ZEND_BEGIN_ARG_INFO_EX(slightphp__setZoneAlias_arg, ZEND_SEND_BY_VAL, ZEND_RETUR
 ZEND_END_ARG_INFO()
 
 PHP_METHOD(slightphp, getZoneAlias);
-static ZEND_BEGIN_ARG_INFO_EX(slightphp__getZoneAlias_args, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, 0)
+#if PHP_MINOR_VERSION<=2
+static
+#endif
+ZEND_BEGIN_ARG_INFO_EX(slightphp__getZoneAlias_args, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, 0)
   ZEND_ARG_INFO(0, zone)
 ZEND_END_ARG_INFO()
 
 PHP_METHOD(slightphp, __construct);
-#if PHP_MINOR_VERSION>2
+#if PHP_MINOR_VERSION<=2
 static  
 #endif
 ZEND_BEGIN_ARG_INFO_EX(slightphp____construct_args, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, 0)
 ZEND_END_ARG_INFO()
 
 PHP_METHOD(slightphp, run);
-#if PHP_MINOR_VERSION>2
+#if PHP_MINOR_VERSION<=2
 static  
 #endif
 ZEND_BEGIN_ARG_INFO_EX(slightphp__run_args, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, 0)
