@@ -16,16 +16,8 @@ To compile your new extension, you will have to execute the following steps:
 BUILDING ON WINDOWS
 ===================
 
-The extension provides the VisualStudio V6 project file 
+https://wiki.php.net/internals/windows/stepbystepbuild
 
-  SlightPHP.dsp
-To compile the extension you open this file using VisualStudio,
-select the apropriate configuration for your installation
-(either "Release_TS" or "Debug_TS") and create "php_SlightPHP.dll"
-
-After successfull compilation you have to copy the newly
-created "SlightPHP.dll" to the PHP
-extension directory (default: C:\PHP\extensions).
 
 
 TESTING
@@ -33,17 +25,17 @@ TESTING
 
 You can now load the extension using a php.ini directive
 
-  extension="SlightPHP.[so|dll]"
+  extension="slightphp.[so|dll]"
 
 or load it at runtime using the dl() function
 
-  dl("SlightPHP.[so|dll]");
+  dl("slightphp.[so|dll]");
 
 The extension should now be available, you can test this
 using the extension_loaded() function:
 
-  if (extension_loaded("SlightPHP"))
-    echo "SlightPHP loaded :)";
+  if (extension_loaded("slightphp"))
+    echo "slightphp loaded :)";
   else
     echo "something is wrong :(";
 
