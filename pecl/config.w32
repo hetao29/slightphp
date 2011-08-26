@@ -2,7 +2,7 @@
 // vim:ft=javascript
 
 // If your extension references something external, use ARG_WITH
-ARG_WITH("slightphp", "for slightphp support", "no");
+// ARG_WITH("slightphp", "for slightphp support", "no");
 
 // Otherwise, use ARG_ENABLE
 ARG_ENABLE("slightphp", "enable slightphp support", "no");

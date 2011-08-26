@@ -55,8 +55,7 @@ if test "$PHP_SLIGHTPHP" != "no"; then
   dnl   -L$SLIGHTPHP_DIR/lib -lm -ldl
   dnl ])
   dnl
-  PHP_SUBST(SLIGHTPHP_SHARED_LIBADD)
-  AC_DEFINE(HAVE_SLIGHTPHP,1,[ ])
+  dnl PHP_SUBST(SLIGHTPHP_SHARED_LIBADD)
 
   PHP_NEW_EXTENSION(slightphp, slightphp.c, $ext_shared)
 fi
