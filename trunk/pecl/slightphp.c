@@ -566,7 +566,7 @@ zend_module_entry slightphp_module_entry = {
 		STANDARD_MODULE_HEADER,
 #endif
 
-		"slightphp",
+		"SlightPHP",
 		slightphp_functions,
 		PHP_MINIT(slightphp),     /* Replace with NULL if there is nothing to do at php startup   */ 
 		PHP_MSHUTDOWN(slightphp), /* Replace with NULL if there is nothing to do at php shutdown  */
@@ -623,7 +623,7 @@ PHP_RSHUTDOWN_FUNCTION(slightphp)
 PHP_MINFO_FUNCTION(slightphp)
 {
 		php_info_print_table_start();
-		php_info_print_table_colspan_header(2,"slightphp Framework");
+		php_info_print_table_colspan_header(2,"SlightPHP Framework");
 		php_info_print_table_row(2, "Version", "1.0 stable (r260) (2011-08-25)" );
 		php_info_print_table_row(2, "Authors", "admin@slightphp.com, hetao@hetao.name" );
 		php_info_print_table_row(2, "Supports", "http://code.google.com/p/slightphp/" );
