@@ -1,6 +1,6 @@
 /*{{{LICENSE
   +-----------------------------------------------------------------------+
-  | SlightPHP Framework                                                   |
+  | slightphp Framework                                                   |
   +-----------------------------------------------------------------------+
   | This program is free software; you can redistribute it and/or modify  |
   | it under the terms of the GNU General Public License as published by  |
@@ -14,7 +14,7 @@
   }}}*/
 int debug(char*format,...){
 		TSRMLS_FETCH();
-		zval *_debug_flag = zend_read_static_property(SlightPHP_ce_ptr,"_debug",sizeof("_debug")-1,1 TSRMLS_CC);
+		zval *_debug_flag = zend_read_static_property(slightphp_ce_ptr,"_debug",sizeof("_debug")-1,1 TSRMLS_CC);
 		convert_to_long(_debug_flag);
 		if(Z_LVAL_P(_debug_flag))
 		{
@@ -33,7 +33,7 @@ int debug(char*format,...){
 }
 
 
-int SlightPHP_load(zval*appDir,zval*zone,zval*class_name TSRMLS_DC){
+int slightphp_load(zval*appDir,zval*zone,zval*class_name TSRMLS_DC){
 		char*inc_filename;
 		int ret;
 		spprintf(&inc_filename,0,"%s%c%s%c%s.page.php",
@@ -49,14 +49,14 @@ int SlightPHP_load(zval*appDir,zval*zone,zval*class_name TSRMLS_DC){
 
 		char resolved_path_buff[MAXPATHLEN];
 		if (VCWD_REALPATH(Z_STRVAL(file_name), resolved_path_buff)) {
-				ret = SlightPHP_loadFile((char*)&resolved_path_buff TSRMLS_CC);
+				ret = slightphp_loadFile((char*)&resolved_path_buff TSRMLS_CC);
 				return ret;
 		}else{
 				debug("file[%s] not exists",Z_STRVAL(file_name));
 		}
 		return FAILURE;
 }
-int SlightPHP_loadFile(char*file_name TSRMLS_DC){
+int slightphp_loadFile(char*file_name TSRMLS_DC){
 		int dummy = 1;
 		zend_file_handle file_handle;
 		int ret;
@@ -75,7 +75,7 @@ int SlightPHP_loadFile(char*file_name TSRMLS_DC){
 		}
 		return FAILURE;
 }
-int SlightPHP_run(zval*zone,zval*class_name,zval*method,zval*return_value, int param_count,zval * params[] TSRMLS_DC){
+int slightphp_run(zval*zone,zval*class_name,zval*method,zval*return_value, int param_count,zval * params[] TSRMLS_DC){
 		zval *object;
 
 		char *real_classname;
