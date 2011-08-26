@@ -1,10 +1,14 @@
-// $Id: config.w32,v 1.0 2011/08/26 15:33:02 rrichards Exp $
+// $Id$
 // vim:ft=javascript
 
-ARG_ENABLE("slightphp", "SlightPHP Framework support", "yes");
+// If your extension references something external, use ARG_WITH
+ARG_WITH("slightphp", "for slightphp support", "no");
 
-if (PHP_SLIGHTPHP!= "no") {
-    EXTENSION('slightphp', 'SlightPHP.c', PHP_JSON_SHARED, "");
-    ADD_SOURCES(configure_module_dirname, "SlightPHP.c SlightPHP_globals.c", "slightphp");
+// Otherwise, use ARG_ENABLE
+ARG_ENABLE("slightphp", "enable slightphp support", "no");
+
+if (PHP_SLIGHTPHP != "no") {
+    EXTENSION('slightphp', 'slightphp.c', PHP_JSON_SHARED, "");
+    ADD_SOURCES(configure_module_dirname, "slightphp.c slightphp_globals.c", "slightphp");
 }
 

@@ -1,6 +1,6 @@
 /*{{{LICENSE
   +-----------------------------------------------------------------------+
-  | SlightPHP Framework                                                   |
+  | slightphp Framework                                                   |
   +-----------------------------------------------------------------------+
   | This program is free software; you can redistribute it and/or modify  |
   | it under the terms of the GNU General Public License as published by  |
@@ -15,9 +15,15 @@
 
 /* $ Id: $ */ 
 
-#include "php_SlightPHP.h"
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
-#if HAVE_SLIGHTPHP
+#include "php.h"
+#include "php_ini.h"
+#include "ext/standard/info.h"
+#include "php_slightphp.h"
+
 
 typedef struct _op_item{
 		time_t op_mtime;
@@ -25,25 +31,25 @@ typedef struct _op_item{
 }op_item;
 /* {{{ Class definitions */
 
-/* {{{ Class SlightPHP */
+/* {{{ Class slightphp */
 
-static zend_class_entry * SlightPHP_ce_ptr = NULL;
-#include "SlightPHP_globals.h"
-#include "SlightPHP_globals.c"
+static zend_class_entry * slightphp_ce_ptr = NULL;
+#include "slightphp_globals.h"
+#include "slightphp_globals.c"
 
 /* {{{ Methods */
 
 
 /* {{{ proto void setAppDir(mixed appDir)
  */
-PHP_METHOD(SlightPHP, setAppDir)
+PHP_METHOD(slightphp, setAppDir)
 {
 		char* appDir;
 		int appDir_len;
 		if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &appDir,&appDir_len) == FAILURE) {
 				RETURN_FALSE;
 		}
-		zend_update_static_property_string(SlightPHP_ce_ptr, "appDir", sizeof("appDir")-1, appDir TSRMLS_CC);
+		zend_update_static_property_string(slightphp_ce_ptr, "appDir", sizeof("appDir")-1, appDir TSRMLS_CC);
 		RETURN_TRUE;
 }
 /* }}} setAppDir */
@@ -52,15 +58,15 @@ PHP_METHOD(SlightPHP, setAppDir)
 
 /* {{{ proto mixed getAppDir()
  */
-PHP_METHOD(SlightPHP, getAppDir)
+PHP_METHOD(slightphp, getAppDir)
 {
-		zval *data = zend_read_static_property(SlightPHP_ce_ptr,"appDir",sizeof("appDir")-1,1 TSRMLS_CC);
+		zval *data = zend_read_static_property(slightphp_ce_ptr,"appDir",sizeof("appDir")-1,1 TSRMLS_CC);
 		RETURN_ZVAL(data,1,0);
 }
 /* }}} getAppDir */
 
 /*
-   PHP_METHOD(SlightPHP, setPluginsDir)
+   PHP_METHOD(slightphp, setPluginsDir)
    {
    char * pluginsDir = NULL;
    int pluginsDir_len;
@@ -69,116 +75,116 @@ PHP_METHOD(SlightPHP, getAppDir)
    }
 //if (Z_TYPE_P(pluginsDir)!= IS_STRING){ RETURN_FALSE; }
 
-zend_update_static_property_string(SlightPHP_ce_ptr, "pluginsDir", sizeof("pluginsDir")-1, pluginsDir TSRMLS_CC);
+zend_update_static_property_string(slightphp_ce_ptr, "pluginsDir", sizeof("pluginsDir")-1, pluginsDir TSRMLS_CC);
 RETURN_TRUE;
 }
-PHP_METHOD(SlightPHP, getPluginsDir)
+PHP_METHOD(slightphp, getPluginsDir)
 {
-zval *data = zend_read_static_property(SlightPHP_ce_ptr,"pluginsDir",sizeof("pluginsDir")-1,1 TSRMLS_CC);
+zval *data = zend_read_static_property(slightphp_ce_ptr,"pluginsDir",sizeof("pluginsDir")-1,1 TSRMLS_CC);
 RETURN_ZVAL(data,1,0);
 }
  */
 
 
-PHP_METHOD(SlightPHP, setDefaultZone)
+PHP_METHOD(slightphp, setDefaultZone)
 {
 		char* defaultZone= NULL;
 		int defaultZone_len;
 		if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &defaultZone,&defaultZone_len) == FAILURE) {
 				RETURN_FALSE;
 		}
-		zend_update_static_property_string(SlightPHP_ce_ptr, "defaultZone", sizeof("defaultZone")-1, defaultZone TSRMLS_CC);
+		zend_update_static_property_string(slightphp_ce_ptr, "defaultZone", sizeof("defaultZone")-1, defaultZone TSRMLS_CC);
 		RETURN_TRUE;
 }
-PHP_METHOD(SlightPHP, getDefaultZone)
+PHP_METHOD(slightphp, getDefaultZone)
 {
-		zval *data = zend_read_static_property(SlightPHP_ce_ptr,"defaultZone",sizeof("defaultZone")-1,1 TSRMLS_CC);
+		zval *data = zend_read_static_property(slightphp_ce_ptr,"defaultZone",sizeof("defaultZone")-1,1 TSRMLS_CC);
 		RETURN_ZVAL(data,1,0);
 }
 
 
 
 
-PHP_METHOD(SlightPHP, setDefaultPage)
+PHP_METHOD(slightphp, setDefaultPage)
 {
 		char * defaultPage= NULL;
 		int defaultPage_len;
 		if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &defaultPage,&defaultPage_len) == FAILURE) {
 				RETURN_FALSE;
 		}
-		zend_update_static_property_string(SlightPHP_ce_ptr, "defaultPage", sizeof("defaultPage")-1, defaultPage TSRMLS_CC);
+		zend_update_static_property_string(slightphp_ce_ptr, "defaultPage", sizeof("defaultPage")-1, defaultPage TSRMLS_CC);
 		RETURN_TRUE;
 }
-PHP_METHOD(SlightPHP, getDefaultPage)
+PHP_METHOD(slightphp, getDefaultPage)
 {
-		zval *data = zend_read_static_property(SlightPHP_ce_ptr,"defaultPage",sizeof("defaultPage")-1,1 TSRMLS_CC);
+		zval *data = zend_read_static_property(slightphp_ce_ptr,"defaultPage",sizeof("defaultPage")-1,1 TSRMLS_CC);
 		RETURN_ZVAL(data,1,0);
 }
 
 
 
 
-PHP_METHOD(SlightPHP, setDefaultEntry)
+PHP_METHOD(slightphp, setDefaultEntry)
 {
 		char * defaultEntry= NULL;
 		int defaultEntry_len;
 		if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &defaultEntry,&defaultEntry_len) == FAILURE) {
 				RETURN_FALSE;
 		}
-		zend_update_static_property_string(SlightPHP_ce_ptr, "defaultEntry", sizeof("defaultEntry")-1, defaultEntry TSRMLS_CC);
+		zend_update_static_property_string(slightphp_ce_ptr, "defaultEntry", sizeof("defaultEntry")-1, defaultEntry TSRMLS_CC);
 		RETURN_TRUE;
 }
-PHP_METHOD(SlightPHP, getDefaultEntry)
+PHP_METHOD(slightphp, getDefaultEntry)
 {
-		zval *data = zend_read_static_property(SlightPHP_ce_ptr,"defaultEntry",sizeof("defaultEntry")-1,1 TSRMLS_CC);
+		zval *data = zend_read_static_property(slightphp_ce_ptr,"defaultEntry",sizeof("defaultEntry")-1,1 TSRMLS_CC);
 		RETURN_ZVAL(data,1,0);
 }
 
 
 
-PHP_METHOD(SlightPHP, setSplitFlag)
+PHP_METHOD(slightphp, setSplitFlag)
 {
 		char * splitFlag = NULL;
 		int splitFlag_len;
 		if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &splitFlag, &splitFlag_len) == FAILURE) {
 				RETURN_FALSE;
 		}
-		zend_update_static_property_string(SlightPHP_ce_ptr, "splitFlag", sizeof("splitFlag")-1, splitFlag TSRMLS_CC);
+		zend_update_static_property_string(slightphp_ce_ptr, "splitFlag", sizeof("splitFlag")-1, splitFlag TSRMLS_CC);
 		RETURN_TRUE;
 }
-PHP_METHOD(SlightPHP, getSplitFlag)
+PHP_METHOD(slightphp, getSplitFlag)
 {
-		zval *data = zend_read_static_property(SlightPHP_ce_ptr,"splitFlag",sizeof("splitFlag")-1,1 TSRMLS_CC);
+		zval *data = zend_read_static_property(slightphp_ce_ptr,"splitFlag",sizeof("splitFlag")-1,1 TSRMLS_CC);
 		RETURN_ZVAL(data,1,0);
 }
 
 
-PHP_METHOD(SlightPHP, setZoneAlias)
+PHP_METHOD(slightphp, setZoneAlias)
 {
 		char *zone, *alias;
 		int zone_len, alias_len;
 		if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ss", &zone, &zone_len, &alias ,&alias_len) == FAILURE) {
 				RETURN_FALSE;
 		}
-		zval *zoneAlias = zend_read_static_property(SlightPHP_ce_ptr,"zoneAlias",sizeof("zoneAlias")-1,1 TSRMLS_CC);
+		zval *zoneAlias = zend_read_static_property(slightphp_ce_ptr,"zoneAlias",sizeof("zoneAlias")-1,1 TSRMLS_CC);
 		if(!zoneAlias){ RETURN_FALSE; }
 
 		if(Z_TYPE_P(zoneAlias)!=IS_ARRAY){
 				array_init(zoneAlias);
 		}
 		add_assoc_string(zoneAlias,zone,alias,1);
-		zend_update_static_property(SlightPHP_ce_ptr,"zoneAlias",sizeof("zoneAlias")-1,zoneAlias TSRMLS_CC);
+		zend_update_static_property(slightphp_ce_ptr,"zoneAlias",sizeof("zoneAlias")-1,zoneAlias TSRMLS_CC);
 		RETURN_TRUE;
 }
 
-PHP_METHOD(SlightPHP, getZoneAlias)
+PHP_METHOD(slightphp, getZoneAlias)
 {
 		char * zone= NULL;
 		int zone_len;
 		if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &zone, &zone_len) == FAILURE) {
 				RETURN_FALSE;
 		}
-		zval *zoneAlias = zend_read_static_property(SlightPHP_ce_ptr,"zoneAlias",sizeof("zoneAlias")-1,1 TSRMLS_CC);
+		zval *zoneAlias = zend_read_static_property(slightphp_ce_ptr,"zoneAlias",sizeof("zoneAlias")-1,1 TSRMLS_CC);
 		if(!zoneAlias || Z_TYPE_P(zoneAlias)!=IS_ARRAY){ RETURN_FALSE; }
 		zval **token;
 		if(zend_hash_find(Z_ARRVAL_P(zoneAlias),zone, zone_len+1, (void**)&token) == SUCCESS) {
@@ -189,18 +195,18 @@ PHP_METHOD(SlightPHP, getZoneAlias)
 		}
 }
 
-PHP_METHOD(SlightPHP, setDebug)
+PHP_METHOD(slightphp, setDebug)
 {
 		int _debug;
 		if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &_debug) == FAILURE) {
 				RETURN_FALSE;
 		}
-		zend_update_static_property_long(SlightPHP_ce_ptr, "_debug", sizeof("_debug")-1, _debug TSRMLS_CC);
+		zend_update_static_property_long(slightphp_ce_ptr, "_debug", sizeof("_debug")-1, _debug TSRMLS_CC);
 		RETURN_TRUE;
 }
-PHP_METHOD(SlightPHP, getDebug)
+PHP_METHOD(slightphp, getDebug)
 {
-		zval *data = zend_read_static_property(SlightPHP_ce_ptr,"_debug",sizeof("_debug")-1,1 TSRMLS_CC);
+		zval *data = zend_read_static_property(slightphp_ce_ptr,"_debug",sizeof("_debug")-1,1 TSRMLS_CC);
 		convert_to_long(data);
 		RETURN_BOOL(Z_LVAL_P(data));
 }
@@ -209,7 +215,7 @@ PHP_METHOD(SlightPHP, getDebug)
 /* {{{ proto int loadFile(mixed filepath)
  */
 /*
-   PHP_METHOD(SlightPHP, loadFile)
+   PHP_METHOD(slightphp, loadFile)
    {
    zval * filepath = NULL;
    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "z/", &filepath) == FAILURE) {
@@ -219,7 +225,7 @@ PHP_METHOD(SlightPHP, getDebug)
    RETURN_FALSE;
    }
 
-   if(SlightPHP_loadFile(filepath TSRMLS_CC)==SUCCESS){
+   if(slightphp_loadFile(filepath TSRMLS_CC)==SUCCESS){
    RETURN_TRUE;
    }else{
    RETURN_FALSE;
@@ -233,7 +239,7 @@ PHP_METHOD(SlightPHP, getDebug)
 /* {{{ proto int loadPlugin(mixed pluginName)
  */
 /*
-   PHP_METHOD(SlightPHP, loadPlugin)
+   PHP_METHOD(slightphp, loadPlugin)
    {
 //zval * pluginName = NULL;
 char * pluginName = NULL;
@@ -242,12 +248,12 @@ if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &pluginName,&pluginNam
 RETURN_FALSE;
 }	
 
-zval *pluginsDir = zend_read_static_property(SlightPHP_ce_ptr,"pluginsDir",sizeof("pluginsDir")-1,1 TSRMLS_CC);
+zval *pluginsDir = zend_read_static_property(slightphp_ce_ptr,"pluginsDir",sizeof("pluginsDir")-1,1 TSRMLS_CC);
 char*inc_filename;
 spprintf(&inc_filename,0,"%s%c%s.class.php",Z_STRVAL_P(pluginsDir),DEFAULT_SLASH,pluginName);
 zval file_name;
 ZVAL_STRING(&file_name,inc_filename,1);
-if(SlightPHP_loadFile(&file_name TSRMLS_CC)==SUCCESS){;
+if(slightphp_loadFile(&file_name TSRMLS_CC)==SUCCESS){;
 efree(inc_filename);
 RETURN_TRUE;
 }else{
@@ -262,7 +268,7 @@ RETURN_FALSE;
 
 /* {{{ proto void __construct([mixed version])
  */
-PHP_METHOD(SlightPHP, __construct)
+PHP_METHOD(slightphp, __construct)
 {
 		zend_class_entry * _this_ce;
 		zval * _this_zval;
@@ -282,7 +288,7 @@ PHP_METHOD(SlightPHP, __construct)
 
 /* {{{ proto void run()
  */
-PHP_METHOD(SlightPHP, run)
+PHP_METHOD(slightphp, run)
 {
 		zval *zone=NULL;
 		zval *page=NULL;
@@ -325,7 +331,7 @@ PHP_METHOD(SlightPHP, run)
 				int err,size;
 				char *strp = Z_STRVAL_P(path);
 				char *endp = strp + Z_STRLEN_P(path);
-				zval *splitFlag = zend_read_static_property(SlightPHP_ce_ptr,"splitFlag",sizeof("splitFlag")-1,1 TSRMLS_CC);
+				zval *splitFlag = zend_read_static_property(slightphp_ce_ptr,"splitFlag",sizeof("splitFlag")-1,1 TSRMLS_CC);
 
 				if(preg_quote(splitFlag,&quotedFlag)>0){
 						spprintf(&regex,0,"[%s\\/]",Z_STRVAL(quotedFlag));
@@ -368,19 +374,19 @@ PHP_METHOD(SlightPHP, run)
 
 		}
 		if(!zone){
-				zone = zend_read_static_property(SlightPHP_ce_ptr,"defaultZone",sizeof("defaultZone")-1,1 TSRMLS_CC);
+				zone = zend_read_static_property(slightphp_ce_ptr,"defaultZone",sizeof("defaultZone")-1,1 TSRMLS_CC);
 				zend_hash_next_index_insert(Z_ARRVAL_P(path_array),&zone,sizeof(zval*),NULL);
 		}
 		if(!page){
-				page = zend_read_static_property(SlightPHP_ce_ptr,"defaultPage",sizeof("defaultPage")-1,1 TSRMLS_CC);
+				page = zend_read_static_property(slightphp_ce_ptr,"defaultPage",sizeof("defaultPage")-1,1 TSRMLS_CC);
 				zend_hash_next_index_insert(Z_ARRVAL_P(path_array),&page,sizeof(zval*),NULL);
 		}
 		if(!entry){
-				entry = zend_read_static_property(SlightPHP_ce_ptr,"defaultEntry",sizeof("defaultEntry")-1,1 TSRMLS_CC);
+				entry = zend_read_static_property(slightphp_ce_ptr,"defaultEntry",sizeof("defaultEntry")-1,1 TSRMLS_CC);
 				zend_hash_next_index_insert(Z_ARRVAL_P(path_array),&entry,sizeof(zval*),NULL);
 		}
 		//{{{
-		zval *zoneAlias = zend_read_static_property(SlightPHP_ce_ptr,"zoneAlias",sizeof("zoneAlias")-1,1 TSRMLS_CC);
+		zval *zoneAlias = zend_read_static_property(slightphp_ce_ptr,"zoneAlias",sizeof("zoneAlias")-1,1 TSRMLS_CC);
 		if(zoneAlias && Z_TYPE_P(zoneAlias)==IS_ARRAY){
 				char *string_key;uint str_key_len;ulong num_key;
 				HashPosition pos;
@@ -402,16 +408,16 @@ PHP_METHOD(SlightPHP, run)
 		//if(zoneAlias)FREE_ZVAL(zoneAlias);
 		//}}}
 		if(!isPart){
-				zend_update_static_property(SlightPHP_ce_ptr,"zone",sizeof("zone")-1,zone TSRMLS_CC);
-				zend_update_static_property(SlightPHP_ce_ptr,"page",sizeof("page")-1,page TSRMLS_CC);
-				zend_update_static_property(SlightPHP_ce_ptr,"entry",sizeof("entry")-1,entry TSRMLS_CC);
+				zend_update_static_property(slightphp_ce_ptr,"zone",sizeof("zone")-1,zone TSRMLS_CC);
+				zend_update_static_property(slightphp_ce_ptr,"page",sizeof("page")-1,page TSRMLS_CC);
+				zend_update_static_property(slightphp_ce_ptr,"entry",sizeof("entry")-1,entry TSRMLS_CC);
 		}else{
 				if(
-								strcmp(Z_STRVAL_P(zone),Z_STRVAL_P(zend_read_static_property(SlightPHP_ce_ptr,"zone",sizeof("zone")-1,1 TSRMLS_CC)))==0 
+								strcmp(Z_STRVAL_P(zone),Z_STRVAL_P(zend_read_static_property(slightphp_ce_ptr,"zone",sizeof("zone")-1,1 TSRMLS_CC)))==0 
 								&&
-								strcmp(Z_STRVAL_P(page),Z_STRVAL_P(zend_read_static_property(SlightPHP_ce_ptr,"page",sizeof("page")-1,1 TSRMLS_CC)))==0 
+								strcmp(Z_STRVAL_P(page),Z_STRVAL_P(zend_read_static_property(slightphp_ce_ptr,"page",sizeof("page")-1,1 TSRMLS_CC)))==0 
 								&&
-								strcmp(Z_STRVAL_P(entry),Z_STRVAL_P(zend_read_static_property(SlightPHP_ce_ptr,"entry",sizeof("entry")-1,1 TSRMLS_CC)))==0 
+								strcmp(Z_STRVAL_P(entry),Z_STRVAL_P(zend_read_static_property(slightphp_ce_ptr,"entry",sizeof("entry")-1,1 TSRMLS_CC)))==0 
 				  ){
 						debug("part ignored [%s]",Z_STRVAL_P(path));
 						return;
@@ -419,14 +425,14 @@ PHP_METHOD(SlightPHP, run)
 		}
 
 
-		zval *appDir = zend_read_static_property(SlightPHP_ce_ptr,"appDir",sizeof("appDir")-1,1 TSRMLS_CC);
+		zval *appDir = zend_read_static_property(slightphp_ce_ptr,"appDir",sizeof("appDir")-1,1 TSRMLS_CC);
 
 		zval *params[1];
 		params[0]=path_array;
 
 
-		if(SlightPHP_load(appDir,zone,page TSRMLS_CC) == SUCCESS){
-				if(SlightPHP_run(zone,page,entry,return_value,1,params TSRMLS_CC)==SUCCESS){
+		if(slightphp_load(appDir,zone,page TSRMLS_CC) == SUCCESS){
+				if(slightphp_run(zone,page,entry,return_value,1,params TSRMLS_CC)==SUCCESS){
 						if(path_array)FREE_ZVAL(path_array);
 						RETURN_ZVAL(return_value,1,0);
 				};
@@ -437,92 +443,92 @@ PHP_METHOD(SlightPHP, run)
 /* }}} run */
 
 
-static zend_function_entry SlightPHP_methods[] = {
+static zend_function_entry slightphp_methods[] = {
 
-		PHP_ME(SlightPHP, setAppDir, SlightPHP__setAppDir_args, /**/ZEND_ACC_STATIC|ZEND_ACC_PUBLIC)
-				PHP_ME(SlightPHP, getAppDir, NULL, /**/ZEND_ACC_STATIC|ZEND_ACC_PUBLIC)
+		PHP_ME(slightphp, setAppDir, slightphp__setAppDir_args, /**/ZEND_ACC_STATIC|ZEND_ACC_PUBLIC)
+				PHP_ME(slightphp, getAppDir, NULL, /**/ZEND_ACC_STATIC|ZEND_ACC_PUBLIC)
 
-				//PHP_ME(SlightPHP, setPluginsDir, SlightPHP__setPluginsDir_arg, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
-				//PHP_ME(SlightPHP, getPluginsDir, NULL, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
+				//PHP_ME(slightphp, setPluginsDir, slightphp__setPluginsDir_arg, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
+				//PHP_ME(slightphp, getPluginsDir, NULL, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
 
-				PHP_ME(SlightPHP, setDefaultZone , SlightPHP__setDefaultZone_arg, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
-				PHP_ME(SlightPHP, getDefaultZone, NULL, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
+				PHP_ME(slightphp, setDefaultZone , slightphp__setDefaultZone_arg, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
+				PHP_ME(slightphp, getDefaultZone, NULL, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
 
-				PHP_ME(SlightPHP, setDefaultPage, SlightPHP__setDefaultPage_arg, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
-				PHP_ME(SlightPHP, getDefaultPage, NULL, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
+				PHP_ME(slightphp, setDefaultPage, slightphp__setDefaultPage_arg, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
+				PHP_ME(slightphp, getDefaultPage, NULL, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
 
-				PHP_ME(SlightPHP, setDefaultEntry, SlightPHP__setDefaultEntry_arg, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
-				PHP_ME(SlightPHP, getDefaultEntry, NULL, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
+				PHP_ME(slightphp, setDefaultEntry, slightphp__setDefaultEntry_arg, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
+				PHP_ME(slightphp, getDefaultEntry, NULL, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
 
-				PHP_ME(SlightPHP, setDebug, SlightPHP__setDebug_arg, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
-				PHP_ME(SlightPHP, getDebug, NULL, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
+				PHP_ME(slightphp, setDebug, slightphp__setDebug_arg, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
+				PHP_ME(slightphp, getDebug, NULL, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
 
-				PHP_ME(SlightPHP, setSplitFlag, SlightPHP__setSplitFlag_arg, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
-				PHP_ME(SlightPHP, getSplitFlag, NULL, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
+				PHP_ME(slightphp, setSplitFlag, slightphp__setSplitFlag_arg, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
+				PHP_ME(slightphp, getSplitFlag, NULL, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
 
-				PHP_ME(SlightPHP, setZoneAlias, SlightPHP__setZoneAlias_arg, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
-				PHP_ME(SlightPHP, getZoneAlias, NULL, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
-				//PHP_ME(SlightPHP, loadFile, SlightPHP__loadFile_args, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
-				//PHP_ME(SlightPHP, loadPlugin, SlightPHP__loadPlugin_args, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
-				PHP_ME(SlightPHP, __construct, NULL, /**/ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
-				PHP_ME(SlightPHP, run, NULL, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+				PHP_ME(slightphp, setZoneAlias, slightphp__setZoneAlias_arg, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
+				PHP_ME(slightphp, getZoneAlias, NULL, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
+				//PHP_ME(slightphp, loadFile, slightphp__loadFile_args, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
+				//PHP_ME(slightphp, loadPlugin, slightphp__loadPlugin_args, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
+				PHP_ME(slightphp, __construct, NULL, /**/ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
+				PHP_ME(slightphp, run, NULL, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
 				{ NULL, NULL, NULL }
 };
 
 /* }}} Methods */
 
-static void class_init_SlightPHP(TSRMLS_D)
+static void class_init_slightphp(TSRMLS_D)
 {
 		zend_class_entry ce;
 
-		INIT_CLASS_ENTRY(ce, "SlightPHP", SlightPHP_methods);
-		SlightPHP_ce_ptr = zend_register_internal_class(&ce TSRMLS_CC);
-		SlightPHP_ce_ptr->ce_flags |= ZEND_ACC_FINAL_CLASS;
+		INIT_CLASS_ENTRY(ce, "slightphp", slightphp_methods);
+		slightphp_ce_ptr = zend_register_internal_class(&ce TSRMLS_CC);
+		slightphp_ce_ptr->ce_flags |= ZEND_ACC_FINAL_CLASS;
 
 		/* {{{ Property registration */
 
-		zend_declare_property_string(SlightPHP_ce_ptr, 
+		zend_declare_property_string(slightphp_ce_ptr, 
 						"appDir", 6, ".", 
 						ZEND_ACC_STATIC|ZEND_ACC_PUBLIC TSRMLS_CC);
 
-		//zend_declare_property_string(SlightPHP_ce_ptr, 
+		//zend_declare_property_string(slightphp_ce_ptr, 
 		//	"pluginsDir", 10, "plugins", 
 		//	ZEND_ACC_STATIC|ZEND_ACC_PUBLIC TSRMLS_CC);
 
-		zend_declare_property_string(SlightPHP_ce_ptr, 
+		zend_declare_property_string(slightphp_ce_ptr, 
 						"defaultZone", 11, "zone", 
 						ZEND_ACC_STATIC|ZEND_ACC_PUBLIC TSRMLS_CC);
 
-		zend_declare_property_string(SlightPHP_ce_ptr, 
+		zend_declare_property_string(slightphp_ce_ptr, 
 						"zone", sizeof("zone")-1, "", 
 						ZEND_ACC_STATIC|ZEND_ACC_PUBLIC TSRMLS_CC);
 
-		zend_declare_property_string(SlightPHP_ce_ptr, 
+		zend_declare_property_string(slightphp_ce_ptr, 
 						"page", sizeof("page")-1, "", 
 						ZEND_ACC_STATIC|ZEND_ACC_PUBLIC TSRMLS_CC);
 
-		zend_declare_property_string(SlightPHP_ce_ptr, 
+		zend_declare_property_string(slightphp_ce_ptr, 
 						"entry", sizeof("entry")-1, "", 
 						ZEND_ACC_STATIC|ZEND_ACC_PUBLIC TSRMLS_CC);
 
-		zend_declare_property_string(SlightPHP_ce_ptr, 
+		zend_declare_property_string(slightphp_ce_ptr, 
 						"defaultPage", sizeof("defaultPage")-1, "page", 
 						ZEND_ACC_STATIC|ZEND_ACC_PUBLIC TSRMLS_CC);
 
-		zend_declare_property_string(SlightPHP_ce_ptr, 
+		zend_declare_property_string(slightphp_ce_ptr, 
 						"defaultEntry", sizeof("defaultEntry")-1, "entry", 
 						ZEND_ACC_STATIC|ZEND_ACC_PUBLIC TSRMLS_CC);
 
-		zend_declare_property_string(SlightPHP_ce_ptr, 
+		zend_declare_property_string(slightphp_ce_ptr, 
 						"splitFlag", 9, "/", 
 						ZEND_ACC_STATIC|ZEND_ACC_PUBLIC TSRMLS_CC);
 
 
-		zend_declare_property_null(SlightPHP_ce_ptr, 
+		zend_declare_property_null(slightphp_ce_ptr, 
 						"zoneAlias", sizeof("zoneAlias")-1,
 						ZEND_ACC_STATIC|ZEND_ACC_PUBLIC TSRMLS_CC);
 
-		zend_declare_property_long(SlightPHP_ce_ptr, 
+		zend_declare_property_long(slightphp_ce_ptr, 
 						"_debug", 6, 0, 
 						ZEND_ACC_STATIC|ZEND_ACC_PUBLIC TSRMLS_CC);
 
@@ -530,12 +536,12 @@ static void class_init_SlightPHP(TSRMLS_D)
 
 }
 
-/* }}} Class SlightPHP */
+/* }}} Class slightphp */
 
 /* }}} Class definitions*/
 
-/* {{{ SlightPHP_functions[] */
-function_entry SlightPHP_functions[] = {
+/* {{{ slightphp_functions[] */
+function_entry slightphp_functions[] = {
 		{ NULL, NULL, NULL }
 };
 /* }}} */
@@ -543,52 +549,52 @@ function_entry SlightPHP_functions[] = {
 /* {{{ cross-extension dependencies */
 
 #if ZEND_EXTENSION_API_NO >= 220050617
-static zend_module_dep SlightPHP_deps[] = {
+static zend_module_dep slightphp_deps[] = {
 		ZEND_MOD_OPTIONAL("apc")
 		{NULL, NULL, NULL, 0}
 };
 #endif
 /* }}} */
 
-/* {{{ SlightPHP_module_entry
+/* {{{ slightphp_module_entry
  */
-zend_module_entry SlightPHP_module_entry = {
+zend_module_entry slightphp_module_entry = {
 #if ZEND_EXTENSION_API_NO >= 220050617
 		STANDARD_MODULE_HEADER_EX, NULL,
-		SlightPHP_deps,
+		slightphp_deps,
 #else
 		STANDARD_MODULE_HEADER,
 #endif
 
-		"SlightPHP",
-		SlightPHP_functions,
-		PHP_MINIT(SlightPHP),     /* Replace with NULL if there is nothing to do at php startup   */ 
-		PHP_MSHUTDOWN(SlightPHP), /* Replace with NULL if there is nothing to do at php shutdown  */
-		PHP_RINIT(SlightPHP),     /* Replace with NULL if there is nothing to do at request start */
-		PHP_RSHUTDOWN(SlightPHP), /* Replace with NULL if there is nothing to do at request end   */
-		PHP_MINFO(SlightPHP),
+		"slightphp",
+		slightphp_functions,
+		PHP_MINIT(slightphp),     /* Replace with NULL if there is nothing to do at php startup   */ 
+		PHP_MSHUTDOWN(slightphp), /* Replace with NULL if there is nothing to do at php shutdown  */
+		PHP_RINIT(slightphp),     /* Replace with NULL if there is nothing to do at request start */
+		PHP_RSHUTDOWN(slightphp), /* Replace with NULL if there is nothing to do at request end   */
+		PHP_MINFO(slightphp),
 		"0.1", 
 		STANDARD_MODULE_PROPERTIES
 };
 /* }}} */
 
 #ifdef COMPILE_DL_SLIGHTPHP
-ZEND_GET_MODULE(SlightPHP)
+ZEND_GET_MODULE(slightphp)
 #endif
 
 
 		/* {{{ PHP_MINIT_FUNCTION */
-PHP_MINIT_FUNCTION(SlightPHP)
+PHP_MINIT_FUNCTION(slightphp)
 {
-		REGISTER_STRINGL_CONSTANT("SlightPHP_VERSION", "0.2", 3, CONST_PERSISTENT | CONST_CS);
-		class_init_SlightPHP(TSRMLS_C);
+		REGISTER_STRINGL_CONSTANT("slightphp_VERSION", "0.2", 3, CONST_PERSISTENT | CONST_CS);
+		class_init_slightphp(TSRMLS_C);
 		return SUCCESS;
 }
 /* }}} */
 
 
 /* {{{ PHP_MSHUTDOWN_FUNCTION */
-PHP_MSHUTDOWN_FUNCTION(SlightPHP)
+PHP_MSHUTDOWN_FUNCTION(slightphp)
 {
 		return SUCCESS;
 }
@@ -596,7 +602,7 @@ PHP_MSHUTDOWN_FUNCTION(SlightPHP)
 
 
 /* {{{ PHP_RINIT_FUNCTION */
-PHP_RINIT_FUNCTION(SlightPHP)
+PHP_RINIT_FUNCTION(slightphp)
 {
 
 		return SUCCESS;
@@ -605,7 +611,7 @@ PHP_RINIT_FUNCTION(SlightPHP)
 
 
 /* {{{ PHP_RSHUTDOWN_FUNCTION */
-PHP_RSHUTDOWN_FUNCTION(SlightPHP)
+PHP_RSHUTDOWN_FUNCTION(slightphp)
 {
 
 		return SUCCESS;
@@ -614,10 +620,10 @@ PHP_RSHUTDOWN_FUNCTION(SlightPHP)
 
 
 /* {{{ PHP_MINFO_FUNCTION */
-PHP_MINFO_FUNCTION(SlightPHP)
+PHP_MINFO_FUNCTION(slightphp)
 {
 		php_info_print_table_start();
-		php_info_print_table_colspan_header(2,"SlightPHP Framework");
+		php_info_print_table_colspan_header(2,"slightphp Framework");
 		php_info_print_table_row(2, "Version", "1.0 stable (r260) (2011-08-25)" );
 		php_info_print_table_row(2, "Authors", "admin@slightphp.com, hetao@hetao.name" );
 		php_info_print_table_row(2, "Supports", "http://code.google.com/p/slightphp/" );
@@ -627,7 +633,6 @@ PHP_MINFO_FUNCTION(SlightPHP)
 }
 /* }}} */
 
-#endif /* HAVE_SLIGHTPHP */
 
 
 /*
