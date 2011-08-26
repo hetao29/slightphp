@@ -28,7 +28,7 @@ extern "C" {
 #include <php.h>
 #include <regex.h>
 
-#ifdef HAVE_SLIGHTPHP
+#if HAVE_SLIGHTPHP
 
 #include <php_ini.h>
 #include <SAPI.h>
@@ -42,7 +42,7 @@ extern "C" {
 #endif
 
 extern zend_module_entry SlightPHP_module_entry;
-#define phpext_SlightPHP_ptr &SlightPHP_module_entry
+#define phpext_slightphp_ptr &SlightPHP_module_entry
 
 #ifdef PHP_WIN32
 #define PHP_SLIGHTPHP_API __declspec(dllexport)
