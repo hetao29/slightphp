@@ -6,26 +6,23 @@
  * http://localhost/samples/index.php/zone-default-entry-a-b-c.html
  *
  */
-/* use static */
-//{{{
-
 require_once("global.php");
 
-/*echo error info*/
-SlightPHP::setDebug(true);
+define("APP_ROOT",WWW_ROOT."/app");
 
-SlightPHP::setAppDir("app");
+SlightPHP::setDebug(true);
+SlightPHP::setAppDir(APP_ROOT);
 SlightPHP::setDefaultZone("index");
 SlightPHP::setDefaultPage("main");
 SlightPHP::setDefaultEntry("entry");
-
-SDb::setConfigFile(SlightPHP::$appDir . "/index/db.ini.php");
-
 SlightPHP::setSplitFlag("-_.");
+
+SDb::setConfigFile(APP_ROOT. "/index/db.ini.php");
+
 #SError::$CONSOLE= true;
 if(($r=SlightPHP::run())===false){
-	die("404 error");
+	echo("404 error");
 }else{
-	echo $r;
+	echo($r);
 }
 ?>
