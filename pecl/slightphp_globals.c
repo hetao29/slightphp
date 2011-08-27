@@ -97,25 +97,22 @@ int slightphp_run(zval*zone,zval*class_name,zval*method,zval*return_value, int p
 				debug("class[%s] not exists",Z_STRVAL(real_classname_zval));
 				return FAILURE;
 		} else {
+
 				ce = *pce;
 				MAKE_STD_ZVAL(object);
 				object_init_ex(object,ce);
-
-				if (zend_hash_exists(&Z_OBJCE_P(object)->function_table, ZEND_CONSTRUCTOR_FUNC_NAME, sizeof(ZEND_CONSTRUCTOR_FUNC_NAME))) {
-						zval c_ret, constructor;
-
-						INIT_ZVAL(c_ret);
-						INIT_ZVAL(constructor);
-
-						ZVAL_STRING(&constructor, ZEND_CONSTRUCTOR_FUNC_NAME, 1);
-						if (call_user_function(NULL, &object, &constructor, &c_ret, 0, NULL TSRMLS_CC) == FAILURE) {
+				zval c_ret;
+				INIT_ZVAL(c_ret);
+        		if (ce->constructor) {
+						zval tmp_method;
+        		        ZVAL_STRING(&tmp_method, ce->constructor->common.function_name, 1);
+        		        if(call_user_function(NULL, &object, &tmp_method, &c_ret, 0, NULL TSRMLS_CC)!=SUCCESS){
 								php_error_docref(NULL TSRMLS_CC, E_ERROR, "Error calling constructor");
-						}
-						zval_dtor(&constructor);
-						zval_dtor(&c_ret);
-				}
-				int r=0;
-				r=call_user_function(NULL, &object, &real_method_zval, return_value, param_count, params TSRMLS_CC);
+        		    	}           
+						zval_dtor(&tmp_method);
+        		}   
+				zval_dtor(&c_ret);
+				int r=call_user_function(NULL, &object, &real_method_zval, return_value, param_count, params TSRMLS_CC);
 				zval_ptr_dtor(&object);
 				if(r!=SUCCESS){
 						debug("method[%s] not exists in class[%s]",Z_STRVAL(real_method_zval),Z_STRVAL(real_classname_zval));
