@@ -624,7 +624,7 @@ PHP_MINFO_FUNCTION(slightphp)
 {
 		php_info_print_table_start();
 		php_info_print_table_colspan_header(2,"SlightPHP Framework");
-		php_info_print_table_row(2, "Version", "1.0 stable (r260) (2011-08-25)" );
+		php_info_print_table_row(2, "Version", "1.0 stable (r272) (2011-08-29)" );
 		php_info_print_table_row(2, "Authors", "admin@slightphp.com, hetao@hetao.name" );
 		php_info_print_table_row(2, "Supports", "http://code.google.com/p/slightphp/" );
 		php_info_print_table_end();
