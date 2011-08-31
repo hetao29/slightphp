@@ -67,9 +67,12 @@ int slightphp_loadFile(char*file_name TSRMLS_DC){
 				}
 				if(file_handle.opened_path) {
 						if(zend_hash_exists(&EG(included_files),file_handle.opened_path, strlen(file_handle.opened_path)+1)){
+								zend_destroy_file_handle(&file_handle TSRMLS_CC);
 								return SUCCESS;
 						}else{
-								return zend_execute_scripts(ZEND_REQUIRE_ONCE TSRMLS_CC, NULL, 1, &file_handle);
+								ret = zend_execute_scripts(ZEND_REQUIRE_ONCE TSRMLS_CC, NULL, 1, &file_handle);
+								zend_destroy_file_handle(&file_handle TSRMLS_CC);
+								return ret;
 						}
 				}
 		}
