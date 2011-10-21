@@ -102,7 +102,7 @@ class Db_PDO extends DbObject{
 		foreach($params as $key=>$value){
 			$this->$key = $value;
 		}
-		$this->key = $this->prefix.":".$this->host.":".$this->user.":".$this->password;
+		$this->key = $this->prefix.":".$this->host.":".$this->user.":".$this->password.":".$this->database;
 		if(!isset(Db_PDO::$globals[$this->key])) Db_PDO::$globals[$this->key] = "";
 	}
 	/**

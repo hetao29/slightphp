@@ -99,7 +99,7 @@ class Db_Mysql extends DbObject{
 		foreach($params as $key=>$value){
 			$this->$key = $value;
 		}
-		$this->key = "mysql:".$this->host.":".$this->user.":".$this->password;
+		$this->key = "mysql:".$this->host.":".$this->user.":".$this->password.":".$this->database;
 		if(!isset(Db_Mysql::$globals[$this->key])) Db_Mysql::$globals[$this->key] = "";
 	}
 	/**
