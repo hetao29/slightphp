@@ -236,8 +236,14 @@ class Db_PDO extends DbObject{
 		$data->limit = $this->limit;
 		$start = microtime(true);
 
+		//{{{
+		if($this->limit !=0 and $this->count==true and $this->countsql!=""){
+			$result_count = $this->query($this->countsql,$bind);
+			$data->totalSize = $result_count[0]['totalSize'];
+			$data->totalPage = ceil($data->totalSize/$data->limit);
+		}
+		//}}}
 
-		$data->limit = $this->limit;
 		$data->items = $this->query($this->sql,$bind);
 		if($data->items === false){
 			//²éÑ¯Ê§°Ü
@@ -250,13 +256,6 @@ class Db_PDO extends DbObject{
 		//}}}
 		
 
-		//{{{
-		if($this->limit !=0 and $this->count==true and $this->countsql!=""){
-			$result_count = $this->query($this->countsql,$bind);
-			$data->totalSize = $result_count[0]['totalSize'];
-			$data->totalPage = ceil($data->totalSize/$data->limit);
-		}
-		//}}}
 		return $data;
 	}
 	/**
