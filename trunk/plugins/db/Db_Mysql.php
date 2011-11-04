@@ -375,7 +375,7 @@ class Db_Mysql extends DbObject{
 				mysql_close(Db_Mysql::$globals[$this->key]);
 				unset(Db_Mysql::$globals[$this->key]);
 			}
-			Db_Mysql::$globals[$this->key] = mysql_connect($this->host.":".$this->port,$this->user,$this->password);
+			Db_Mysql::$globals[$this->key] = mysql_connect($this->host.":".$this->port,$this->user,$this->password,true);
 		}
 		if(!Db_Mysql::$globals[$this->key]){
 			if(defined("DEBUG")){
