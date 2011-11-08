@@ -1,11 +1,77 @@
 #labels Featured,database
 #SDb 数据库插件
 
-= Introduction =
+= 主要特性 =
 
-简单引用例子
+ * 支持多种数据底层驱动，如mysql,mysqli,pdo系列
+ * 支持读写，主从分离
+ * 支持ORM，与外键查询与更新
+ * 简单高效，耦合性低，可以很方便移植
 
 
+= 1.数据库连接与初始化 =
+{{{
+$db = new SDb();
+$db->init(
+  array("host"=>"localhost","user"=>"root","password"=>"","charset"=>"utf8","engine"=>"mysql")
+);
+}}}
+ * charset 就是字符集，可以是utf8,gbk,gb2312等数据库支持的字符集
+ * engine  是数据库驱动引擎，有这么多（ "mysql","mysqli","pdo_mysql","pdo_sqlite","pdo_cubrid","pdo_dblib","pdo_firebird","pdo_ibm","pdo_informix","pdo_sqlsrv","pdo_oci","pdo_odbc","pdo_pgsql","pdo_4d"），默认是用的"mysql"
+
+
+= 2.数据查询 =
+数据查询主要提供2种：
+ * 1.是select，这是查询多条
+{{{
+DbObject select($table,$condition="",$item="",$groupby="",$orderby="",$leftjoin="");
+}}}
+参数：
+    # $table 可以是array|string，如 $table="user",或者，$table=array("user","user_profile");
+    # $conditon 检索条件，可以为3种格式：
+{{{
+$condition="user_id=32";
+$condition=array("user_id=32");
+$condition=array("user_id>32","user_id<30");
+$condition=array("user_id"=>32);
+}}}
+    # $item是要取回的字段名，默认是所有，可以为如下格式：
+{{{
+$item="*";
+$item=array("*");
+$item=array("userid","username");
+$item=array("user.id","profile.profileid");
+}}}
+    # $groupby 是要GROUP的要求，可以为如下格式:
+{{{
+$groupby = array("userid"=>"desc","user_register_time"=>"asc","username='myname'");
+$groupby = "group by userid ";
+$groupby = "group by userid,username";
+}}}
+    $ orderby 是要排序的字段，可以为如下格式:
+{{{
+$orderby = array("userid"=>"desc","user_register_time"=>"asc");
+$orderby = "order by userid desc";
+}}}
+    $ leftjoin 是要LEFT JOIN的字段，可以为如下格式:
+{{{
+$orderby = array("key"=>"v","key2"=>"v2");
+}}}
+ * 2.是selectOne,这是查询一条
+array selectOne($table,$condition="",$item="",$groupby="",$orderby="",$leftjoin="");
+
+ * 3.实例
+{{{
+//取一个用户记录
+$user = $db->selectOne("user",array("user_id"=>1));
+//取10个
+$db->setLimit(10);
+//取第2页
+$db->setPage(2);
+//算出总数
+$db->setCount(true);
+$users= $db->select("user",array("userid>30");
+}}}
 = Details =
 {{{
 /*
