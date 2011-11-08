@@ -27,35 +27,69 @@ $db->init(
 DbObject select($table,$condition="",$item="",$groupby="",$orderby="",$leftjoin="");
 }}}
 参数：
-    # $table 可以是array|string，如 $table="user",或者，$table=array("user","user_profile");
+    # $table 可以是array|string|object，如:
+{{{
+//字符串
+$table="user";
+$table="user as a,profile as b";
+//数组
+$table=array("user","user_profile");
+//对像
+$table=new stdclass;
+$table->t1="user";
+$table->ts="profile";
+}}}
     # $conditon 检索条件，可以为3种格式：
 {{{
+//字符串
 $condition="user_id=32";
+//数组
 $condition=array("user_id=32");
 $condition=array("user_id>32","user_id<30");
 $condition=array("user_id"=>32);
+//对像
+$condition=new stdclass;
+$condition->user_id=32;
 }}}
     # $item是要取回的字段名，默认是所有，可以为如下格式：
 {{{
+//字符串
 $item="*";
+$item="userid,username";
+//数组
 $item=array("*");
 $item=array("userid","username");
 $item=array("user.id","profile.profileid");
+//对像
+$item=new stdclass;
+$item->item1 = "userid";
+$item->item2 = "username";
 }}}
     # $groupby 是要GROUP的要求，可以为如下格式:
 {{{
-$groupby = array("userid"=>"desc","user_register_time"=>"asc","username='myname'");
+//字符串
 $groupby = "group by userid ";
 $groupby = "group by userid,username";
 }}}
     $ orderby 是要排序的字段，可以为如下格式:
 {{{
-$orderby = array("userid"=>"desc","user_register_time"=>"asc");
+//字符串
 $orderby = "order by userid desc";
+//数组
+$orderby = array("userid"=>"desc","user_register_time"=>"asc");
+//对像
+$orderby = new stdclass;
+$orderby->userid="desc";
+$orderby->user_register_time="asc";
 }}}
     $ leftjoin 是要LEFT JOIN的字段，可以为如下格式:
 {{{
+//数组
 $orderby = array("key"=>"v","key2"=>"v2");
+//对像
+$leftjoin = new stdclass;
+$leftjoin->key="v";
+$leftjoin->key2="v2";
 }}}
  * 2.是selectOne,这是查询一条
 array selectOne($table,$condition="",$item="",$groupby="",$orderby="",$leftjoin="");
@@ -72,6 +106,49 @@ $db->setPage(2);
 $db->setCount(true);
 $users= $db->select("user",array("userid>30");
 }}}
+
+= 数据更新 = 
+ * update方法
+{{{
+boolean|int update($table,$condition="",$item="");
+}}}
+  # $table 与上面参数形式一样
+  # $condition 修改的条件，和上面的一样
+  # $item 要修改的字段，和上面的定义一样
+ * 实例
+{{{
+//把用户ID为1的用户，更新nickname为xxxx
+$db->update("user",array("id"=>1),array("nickname"=>"xxxx"));
+//多表联合更新
+$db->update(array("user","profile") , array("user.id"=>1,"user.id=profile.userid"),array("profile.comment"=>"我的注释"));
+}}}
+
+= 数据插入 =
+ * insert 方法
+{{{
+int insert($table,$item="",$isreplace=false,$isdelayed=false,$update=array());
+}}}
+   # $table，要插入的表，和上面的定义一样
+   # $item,要插入的字段，和上面的定义一样
+   # $isreplace,碰到重复字段，是否用替换模式，用replace代替insert
+   # $isdelayed，是否延迟插入
+   # $update 和$item的格式一样，碰到重复时要更新字
+
+ * 实例
+{{{
+//增加一个用户
+$db->insert("user",array("username"=>"lili","password"=>"pjf(@EF"));
+//增加一个用户，当重复时，更新其密码
+$db->insert("user",array("username"=>"lili","password"=>"pjf(@EF"),true);
+//增加一个用户，当重重复时，更新操作时间
+$db->insert("user",array("username"=>"lili","password"=>"pjf(@EF"),false,false,array("logintime"=>time());
+}}}
+
+= 其它技巧=
+ * 分页
+
+ * 调试
+ * 其它
 = Details =
 {{{
 /*
