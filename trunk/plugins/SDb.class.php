@@ -212,11 +212,9 @@ class SDb extends Db{
 						foreach($this->_fields as $k=>$v){
 								if(!is_object($v))$condition[$k]=$v;
 						}
-						print_r($condition);
 						if(count($condition)>1){
 								//当只有修改2个以上字段时才更新
 								$r = parent::insert($this->table_name,$condition,false,false,$condition);
-								var_dump($r);
 						}
 						//更新外键信息
 						foreach($this->foreign_keys as $k=>$v){
@@ -239,7 +237,6 @@ class SDb extends Db{
 														//把外键条件加入进去
 														$items->$filed_name = $this->_fields->$k;
 														$r = parent::insert($tbl_name,$items,false,false,$items);
-														var_dump($r);
 												}
 										}
 								}
