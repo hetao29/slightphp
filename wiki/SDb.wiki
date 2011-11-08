@@ -173,7 +173,7 @@ int|boolean execute($sql);
 ;default 是默认的数据库配置，如果没有找到你获取的zone，比如要在这个文件里找SDb::getConfig("friends")，
 ;由于friends没有配置，就读取default里的
 [default]
-main    =   host:localhost1,user:root,database:db1,password:pw2,charset:utf8
+main    =   host:localhost1,user:root,database:db1,password:pw2,charset:utf8,engine:mysqli
 main1   =   host:localhost2,user:root,database:db2,password:pw2,charset:latin1
 query3  =   host:localhost3,user:root,database:db3,password:pw2
 
@@ -195,11 +195,15 @@ main    =   host:localhost4,user:root,database:db1,password:pw2
 }}}
  * 实例
 {{{
-$config = SDb::getConfig("friends");
-$config = SDb::getConfig("blog");
-$config = SDb::getConfig("blog","main");
-$config = SDb::getConfig("blog","query");
+//设置配置文件地址
+SDb::setConfigFile($filePath="ini.php");
+//多种获取方式
+$config = SDb::getConfig("friends");//这里会返回[default]配置
+$config = SDb::getConfig("blog");   //blog主库
+$config = SDb::getConfig("blog","main"); //blog主库
+$config = SDb::getConfig("blog","query"); //由于没有配置从库，所以返回主库
 $db = new SDb;
+//结合SDb，初始化数据库
 $db->init($config);
 }}}
 
