@@ -132,7 +132,7 @@ class SDb extends Db{
 		 */
 		public function listAll($condition,$foreign_info=false){
 				$result = parent::select($this->table_name,$condition);
-				if($result){
+				if(!empty($result->items)){
 						foreach($result->items as &$r){
 								//获取外键信息
 								if($foreign_info){
