@@ -144,43 +144,37 @@ $db->insert("user",array("username"=>"lili","password"=>"pjf(@EF"),true);
 $db->insert("user",array("username"=>"lili","password"=>"pjf(@EF"),false,false,array("logintime"=>time());
 }}}
 
+
+= 删除 =
+{{{
+boolean delete($table,$condition="");
+}}}
+
+= 执行原始SQL = 
+{{{
+int|boolean execute($sql);
+}}}
+
 = 其它技巧=
  * 分页
-
- * 调试
- * 其它
-= Details =
 {{{
-/*
-drop table if exists test;
-CREATE TABLE `test` (
-  `id` int not null primary key auto_increment,
-  `name` varchar(30) default NULL,
-  `password` varchar(30) default NULL,
-  KEY `name` (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-*/
-//得到数据库引擎
-$db = SDb::getDbEngine("pdo");
-//$db = SDb::getDbEngine("mysql");
-//设置连接参数
-$db->init(array(
-    "host"=>"localhost",
-    "user"=>"root",
-    "password"=>"",
-    "database"=>"test")
-);
-//读一条数据
-$row = $db->selectOne($table = "test",$condition=array("id"=>1),$items=array("*"));
-//读多条数据
-$rows = $db->select($table = "test",$condition=array("id>1"),$items=array("*"));
-//插入数据
-$result = $db->insert($table = "test",$items=array("name"=>"testName","password"=>"testPassword"));
-
-//更新
-$result = $db->update($table ="test",$condition=array("id"=>1);$updates=array("name"=>"testNameUpdated"));
-//删除
-$result = $db->delete($table="test",$condition=array("id"=>1));
-
-
+setLimit($limit);
+setPage($page);
+setCount($count)
 }}}
+
+ * 调试与SQL显示
+{{{
+//只要在代码执行前加上
+define("DEBUG",true);
+}}}
+ * 其它
+{{{
+setOrderby($orderby);
+setGroupby($groupby);
+}}}
+
+
+= [ORM ORM 操作技巧]=
+
+= [ORM 外键操作]=
