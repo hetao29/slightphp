@@ -128,8 +128,7 @@ class Db extends DbObject{
 		 *
 		 * @param boolean count
 		 */
-		function setCount($count)
-		{
+		function setCount($count){
 				if($count==true){
 						$this->count=true;
 				}else{
@@ -141,8 +140,7 @@ class Db extends DbObject{
 		 *
 		 * @param int page 
 		 */
-		function setPage($page)
-		{
+		function setPage($page){
 				if(!is_numeric($page) || $page<1){$page=1;}
 				$this->page=$page;
 		}
@@ -151,8 +149,7 @@ class Db extends DbObject{
 		 *
 		 * @param int limit ,0 is all
 		 */
-		function setLimit($limit)
-		{
+		function setLimit($limit){
 				if(!is_numeric($limit) || $limit<0){$limit=0;}
 				$this->limit=$limit;
 		}
@@ -163,8 +160,7 @@ class Db extends DbObject{
 		 * eg:	setGroupby("groupby MusicID");
 		 *      setGroupby("groupby MusicID,MusicName");
 		 */
-		function setGroupby($groupby)
-		{
+		function setGroupby($groupby){
 				$this->groupby=$groupby;
 		}
 		/**
@@ -173,8 +169,7 @@ class Db extends DbObject{
 		 * @param string orderby
 		 * eg:	setOrderby("order by MusicID Desc");
 		 */
-		function setOrderby($orderby)
-		{
+		function setOrderby($orderby){
 				$this->orderby=$orderby;
 		}
 
@@ -207,12 +202,19 @@ class Db extends DbObject{
 						$item  = $this->__array2string($item);
 				}
 				//GROUPBY
-				$this->groupby  =$groupby!=""?$groupby:$this->groupby;
+				$groupby  = !empty($groupby) ? $groupby:$this->groupby;
+				if(!empty($groupby)){
+						$groupby = $this->__array2string($groupby);
+				}
 				//LEFTJOIN
 				$join="";
-				if(is_array($leftjoin) || is_object($leftjoin)){
-						foreach ($leftjoin as $key=>$value){
-								$join.=" LEFT JOIN $key ON $value ";
+				if(!empty($leftjoin)){
+						if(is_array($leftjoin) || is_object($leftjoin)){
+								foreach ($leftjoin as $key=>$value){
+										$join.=" LEFT JOIN $key ON $value ";
+								}
+						}else{
+								$join=" LEFT JOIN $join";
 						}
 				}
 				//{{{ ORDERBY
@@ -309,6 +311,7 @@ class Db extends DbObject{
 		 * update("table",array('name'=>'myName','password'=>'myPass'),array("password=$myPass"));
 		 */
 		function update($table,$condition="",$item=""){
+				$table = $this->__array2string($table);
 				$value = $this->__quote($item,",",$bind_v);
 				$condiStr = $this->__quote($condition,"AND",$bind_c);
 				if($condiStr!=""){
@@ -332,6 +335,7 @@ class Db extends DbObject{
 		 * delete("table",array('name'=>'myName','password'=>'myPass'),array("password=$myPass"));
 		 */
 		function delete($table,$condition=""){
+				$table = $this->__array2string($table);
 				$condiStr = $this->__quote($condition,"AND",$bind);
 				if($condiStr!=""){
 						$condiStr=" WHERE ".$condiStr;
@@ -349,6 +353,7 @@ class Db extends DbObject{
 		* @return int InsertID
 		 */
 		function insert($table,$item="",$isreplace=false,$isdelayed=false,$update=array()){
+				$table = $this->__array2string($table);
 				if($isreplace==true){
 						$command="REPLACE";
 				}else{
@@ -567,8 +572,7 @@ class Db extends DbObject{
 										$v1[]=($v);
 								}
 						}
-						if(count($v1)>0)
-						{
+						if(count($v1)>0){
 								$condiStr=implode(" ".$split." ",$v1);
 
 						}
