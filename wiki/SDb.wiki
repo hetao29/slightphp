@@ -1,5 +1,5 @@
 #labels Featured,database
-#SDb 数据库插件
+#SDb 数据库插件-基本操作
 
 = 主要特性 =
 
@@ -155,6 +155,7 @@ boolean delete($table,$condition="");
 int|boolean execute($sql);
 }}}
 
+= [SDbConfig SDb数据库配置文件]==
 = 其它技巧=
  * 分页
 {{{
