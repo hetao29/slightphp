@@ -252,13 +252,3 @@ class SDb extends Db{
 				$this->foreign_keys = $keys;
 		}
 }
-class User extends SDb{
-		public function __construct(){
-				parent::__construct("user");
-				//外键设置举例
-				$foreign_keys =array(
-						"user_name"=>"user_profile.username",
-				);
-				parent::setForeignKey($foreign_keys);
-		}
-}
