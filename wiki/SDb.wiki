@@ -434,7 +434,6 @@ $user->setForeignKey($foreign_keys);
 $user->id="6";
 $user->password="xx";
 //设置外键内容
-$user->user_profile=new stdclass;//这一行，请务必加上，不然某些PHP版本无法更新
 $user->user_profile->address="a2";
 if($user->set()!==false){
  echo "SET OK";
