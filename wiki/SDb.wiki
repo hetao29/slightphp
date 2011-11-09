@@ -37,9 +37,22 @@ CREATE TABLE `user_profile` (
 {{{
 $db = new SDb();
 $db->init(
-  array("host"=>"localhost","user"=>"root","password"=>"","charset"=>"utf8","engine"=>"mysql")
+  array(
+ "host"=>"localhost",
+ "user"=>"root",
+ "database"=>"test",
+ "password"=>"",
+ "port"=>3306,
+ "charset"=>"utf8",
+ "engine"=>"mysql"
+)
 );
 }}}
+ * host 主机名
+ * user 数据库用户名
+ * database 数据库名
+ * password 数据库密码
+ * port 端口号，默认3306
  * charset 就是字符集，可以是utf8,gbk,gb2312等数据库支持的字符集
  * engine  是数据库驱动引擎，有这么多
 （ 
