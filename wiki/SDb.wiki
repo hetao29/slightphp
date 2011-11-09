@@ -173,11 +173,11 @@ $left->user_profile="user_profile.user_id=user.id";
 $db->select(array("user"),"","","","",$left);
 }}}
     # 返回值
-如果为false,你可以打印出 $db->error信息
+如果为false,你可以打印出 $db->error()信息
 {{{
 $result = $db->select(array("user"),"","","","",$left);
 if($result===false)｛
-   print_r($db->error);
+   print_r($db->error());
 ｝
 }}}
  * 2.是selectOne,这是查询一条
@@ -229,14 +229,14 @@ int|boolean|Array execute($sql);
 }}}
 
   # $sql 原始SQL
-  # 返回值，如果为false就失败了，错误请看$db->error信息，如果是更新，删除之类，返回删除的记录数，如果是查询之类的，返回查询结果
+  # 返回值，如果为false就失败了，错误请看$db->error()信息，如果是更新，删除之类，返回删除的记录数，如果是查询之类的，返回查询结果
   * 实例
 {{{
 print_r (  $db->execute("show databases") );
 print_r (  $db->execute("select * from user") );
 var_dump(  $db->execute("set names utf8") );
 if(!  $db->execute("select * from userx") ){
-        print_r($db->error);
+        print_r($db->error());
 };
 }}}
 
@@ -308,7 +308,7 @@ setCount($count)
 define("DEBUG",true);
 //或者，如果结果为false，打印错误信息
 if(($r = $db->select("user",array("id_xx"=>1)))===false){
-        print_r($db->error);
+        print_r($db->error());
 }
 /*
 Array
