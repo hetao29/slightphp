@@ -92,14 +92,14 @@ class Db{
 		/**
 		 * construct
 		 *
-		 * @param array params
-		 * @param string p.host
-		 * @param string p.user
-		 * @param string p.password
-		 * @param string p.database
-		 * @param string p.charset
-		 * @param string p.engine
-		 * @param int p.port=3306
+		 * @param array $params
+		 * @param string $params.host
+		 * @param string $params.user
+		 * @param string $params.password
+		 * @param string $params.database
+		 * @param string $params.charset
+		 * @param string $params.engine
+		 * @param int $param.port=3306
 		 */
 		public function init($params=array()){
 				foreach($params as $key=>$value){
