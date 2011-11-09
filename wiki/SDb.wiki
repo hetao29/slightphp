@@ -323,4 +323,72 @@ Array
 
 = [ORM ORM 操作技巧]=
 
+ * get方法
+{{{
+boolean|array get($foreign_info=false);
+}}}
+   # $foreign_info是否包含外键信息
+   # 返回值如果false，表明没有数据
+ * 实例
+{{{
+
+$config =   array(
+                "host"=>"localhost",
+                "user"=>"root",
+                "password"=>"",
+                "database"=>"test");
+$user = new SDb("user",$config);
+$user->id=1;
+if($user->get()){
+ echo $user->name;
+}
+
+}}}
+
+ * set方法
+{{{
+boolean set();
+}}}
+   # $foreign_info是否包含外键信息
+   # 返回值如果false，设置失败，否则返回插入/更新的主键ID
+ * 实例
+{{{
+
+
+$user = new SDb("user",$config);
+$user->name="lili_3";
+$user->email="lili_3@lili.com";
+if($user->set()){
+
+}
+
+}}}
+
+ * getAll()方法,是get(true)的别外
+{{{
+boolean|array getAll()
+}}}
+ * reset方法，重置所有条件
+{{{
+void reset();
+}}}
+ * listALl()方法，读取一个列表
+{{{
+listAll($condition,$foreign_info=false)
+}}}
+  # $condition，条件，参数形式参看上面的定义
+  # $foreign_info 外键信息
+ * 实例
+{{{
+
+$user->listAll("id>0");
+
+$user->listAll( array("id>0"),array("id<10"));;
+
+}}}
+ * setForeignKey设置关联外键，详细使用方法见下面
+{{{
+setForeignKey($keys = array());
+}}}
+
 = [ORM ORM 外键操作]=
