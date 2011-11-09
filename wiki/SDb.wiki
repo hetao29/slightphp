@@ -230,12 +230,13 @@ if(!  $db->execute("select * from userx") ){
 = [SDbConfig SDb数据库配置文件]==
  * 配置文件模板样例
 {{{
-;配置一共有5个字段，分别用","分割，用":"连接，如果有空格，空格不会被忽略
+;配置一共有7个字段，分别用","分割，用":"连接，如果有空格，空格不会被忽略
 
 ;host 主机IP，或者主机名
 ;user 用户名
 ;database 数据库名
 ;password 密码
+;port 端口号
 ;charset  数据库字符集
 ;engine 数据库驱动引擎，如mysql,mysqli等，详见上面
 ;数据库配置有2种，一种是主库(main)，一种是查询库(query)
