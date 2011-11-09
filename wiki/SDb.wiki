@@ -240,7 +240,7 @@ if(!  $db->execute("select * from userx") ){
 };
 }}}
 
-= [SDbConfig SDb数据库配置文件]==
+= SDb数据库配置文件==
  * 配置文件模板样例
 {{{
 ;配置一共有7个字段，分别用","分割，用":"连接，如果有空格，空格不会被忽略
@@ -321,7 +321,7 @@ Array
 
 
 
-= [ORM ORM 操作技巧]=
+= ORM 方法介绍=
 
  * get方法
 {{{
@@ -391,4 +391,68 @@ $user->listAll( array("id>0"),array("id<10"));;
 setForeignKey($keys = array());
 }}}
 
-= [ORM ORM 外键操作]=
+= ORM 外键操作=
+ * 外键的定义，为了更好的兼容所有的engine，我们使用的是配置方法，手工定义外键，格式如下：
+{{{
+//这个表明，字段id和 user_profile里的user_id是外键关系
+$foreign_keys = array("id"=>" user_profile.user_id");
+}}}
+ * 外键的设置
+{{{
+$user = new SDb("user",$config);
+$foreign_keys = array("id"=>" user_profile . user_id");
+$user->setForeignKey($foreign_keys);
+$user->id="1";
+print_r($user->getAll());
+print_r($user->get(true));
+/*如果外键有值的话，应该会打印出如下信息：
+
+Array
+(
+    [id] => 6
+    [name] => lili_4
+    [email] => lili_3@lili.com
+    [password] => 
+    [status] => 1
+    [user_profile] => Array
+        (
+            [user_id] => 6
+            [address] => a
+            [phone] => b
+            [mobile] => c
+        )
+
+)
+*/
+}}}
+ * 如果你设置了外键的话，可以同步更新外键的信息，如
+{{{
+$user = new SDb("user",$config);
+//设置外键信息
+$foreign_keys = array("id"=>" user_profile . user_id");
+$user->setForeignKey($foreign_keys);
+$user->id="6";
+$user->password="xx";
+//设置外键内容
+$user->user_profile=new stdclass;//这一行，请务必加上，不然某些PHP版本无法更新
+$user->user_profile->address="a2";
+if($user->set()!==false){
+ echo "SET OK";
+};
+}}}
+ * 如果你自己觉得设置很麻烦，你可以封装你自己的类，如
+{{{
+class User extends SDb{
+        function __construct(){
+                $config =   array(
+                        "host"=>"web.db.youku.com",
+                        "user"=>"root",
+                        "password"=>"yhnji-db-yoqoo",
+                        "database"=>"test",
+                        "engine"=>"mysql");
+                parent::__construct("user",$config);
+                $foreign_keys = array("id"=>" user_profile . user_id");
+                parent::setForeignKey($foreign_keys);
+        }
+}
+}}}
