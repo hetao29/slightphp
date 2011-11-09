@@ -113,7 +113,6 @@ class SDb extends Db{
 		 * $user->id=1;
 		 * $user->name="XX";
 		 * $user->nickname="nickname";
-		 * $user->profile = new stdclass; //重要
 		 * $user->profile->address="my address";
 		 * $user->profile->comment="comment";
 		 */
