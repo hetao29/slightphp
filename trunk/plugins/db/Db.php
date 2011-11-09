@@ -18,7 +18,7 @@
  * @package SlightPHP
  * @subpackage SDb
  */
-class Db extends DbObject{
+class Db{
 		/**
 		 * 
 		 */
@@ -59,17 +59,6 @@ class Db extends DbObject{
 		/**
 		 *
 		 */
-		public $orderby;
-		/**
-		 *
-		 */
-		public $groupby;
-		/**
-		 *
-		 */
-		/**
-		 *
-		 */
 		public $count=true;
 		/**
 		 *
@@ -82,19 +71,15 @@ class Db extends DbObject{
 		/**
 		 *
 		 */
-		private $affectedRows=0;
-		/**
-		 *
-		 */
 		public $error=array('code'=>0,'msg'=>"");
 		/**
 		 * @var array $globals
 		 */
 		static $globals;
 		function __construct($engine="mysql"){
-				$this->setEngine($engine);
+				$this->__setEngine($engine);
 		}
-		function setEngine($engine){
+		private function __setEngine($engine){
 				if(in_array($engine,$this->_allow_engines)){
 						$this->engine=$engine;
 				}else{
@@ -110,17 +95,18 @@ class Db extends DbObject{
 		 * @param string p.password
 		 * @param string p.database
 		 * @param string p.charset
+		 * @param string p.engine
 		 * @param int p.port=3306
 		 */
-		function init($params=array()){
+		public function init($params=array()){
 				foreach($params as $key=>$value){
 						if(in_array($key,array("host","user","password","port","database","charset"))){
 								$this->$key = $value;
 						}elseif(in_array($key,array("engine"))){
-								$this->setEngine($value);
+								$this->__setEngine($value);
 						}
 				}
-				$this->_key = $this->engine.":".$this->host.":".$this->user.":".$this->password.":".$this->database;
+				$this->_key = $this->engine.":".$this->host.":".$this->user.":".$this->password.":".$this->database.":".$this->port;
 				if(!isset(Db::$globals[$this->_key])) Db::$globals[$this->_key] = "";
 		}
 		/**
@@ -128,7 +114,7 @@ class Db extends DbObject{
 		 *
 		 * @param boolean count
 		 */
-		function setCount($count){
+		public function setCount($count){
 				if($count==true){
 						$this->count=true;
 				}else{
@@ -140,7 +126,7 @@ class Db extends DbObject{
 		 *
 		 * @param int page 
 		 */
-		function setPage($page){
+		public function setPage($page){
 				if(!is_numeric($page) || $page<1){$page=1;}
 				$this->page=$page;
 		}
@@ -149,46 +135,24 @@ class Db extends DbObject{
 		 *
 		 * @param int limit ,0 is all
 		 */
-		function setLimit($limit){
+		public function setLimit($limit){
 				if(!is_numeric($limit) || $limit<0){$limit=0;}
 				$this->limit=$limit;
 		}
 		/**
-		 * group by sql
-		 *
-		 * @param string groupby 
-		 * eg:	setGroupby("groupby MusicID");
-		 *      setGroupby("groupby MusicID,MusicName");
-		 */
-		function setGroupby($groupby){
-				$this->groupby=$groupby;
-		}
-		/**
-		 * order by sql
-		 *
-		 * @param string orderby
-		 * eg:	setOrderby("order by MusicID Desc");
-		 */
-		function setOrderby($orderby){
-				$this->orderby=$orderby;
-		}
-
-		/**
 		 * select data from db
 		 *
-		 * @param mixed $table 
-		 * @param array $condition
-		 * @param array $item 
-		 * @param string $groupby 
-		 * @param string|array $orderby
-		 * 	$orderby = "ORDER BY ID DESC" 
-		 * 	$orderby = array("ID"=>DESC","TIME"=>"DESC");
-		 * @param array $leftjoin
+		 * @param string|array|object $table 
+		 * @param string|array|object $condition
+		 * @param string|array|object $item 
+		 * @param string|array|object $groupby 
+		 * @param string|array|object $orderby
+		 * @param string|array|object $leftjoin
 		 * @return DbData object || Boolean false
 		 */
-		function select($table,$condition="",$item="",$groupby="",$orderby="",$leftjoin=""){
+		public function select($table,$condition="",$item="",$groupby="",$orderby="",$leftjoin=""){
 				//TABLE
-				$table = $this->__array2string($table);
+				$table = $this->__array2string($table,true);
 				//condition
 				$condiStr = $this->__quote($condition,"AND",$bind);
 
@@ -199,12 +163,11 @@ class Db extends DbObject{
 				if(empty($item)){
 						$item="*";
 				}else{
-						$item  = $this->__array2string($item);
+						$item  = $this->__array2string($item,true);
 				}
 				//GROUPBY
-				$groupby  = !empty($groupby) ? $groupby:$this->groupby;
 				if(!empty($groupby)){
-						$groupby = $this->__array2string($groupby);
+						$groupby = "GROUP BY ".$this->__array2string($groupby);
 				}
 				//LEFTJOIN
 				$join="";
@@ -214,25 +177,30 @@ class Db extends DbObject{
 										$join.=" LEFT JOIN $key ON $value ";
 								}
 						}else{
-								$join=" LEFT JOIN $join";
+								$join=" LEFT JOIN $leftjoin";
 						}
 				}
 				//{{{ ORDERBY
-
 				$orderby_sql="";
-				if(is_array($orderby) || is_object($orderby)){
-						$orderby_sql_tmp = array();
-						foreach($orderby as $key=>$value){
-								if(!is_numeric($key)){
-										$orderby_sql_tmp[]=$key." ".$value;
+				if(!empty($orderby )){
+						//$orderby_sql = "ORDER BY ".$this->__array2string($orderby);
+						if(is_array($orderby) || is_object($orderby)){
+								$orderby_sql_tmp = array();
+								foreach($orderby as $key=>$value){
+										if(!is_numeric($key)){
+												$orderby_sql_tmp[]="`".$key."` ".$value;
+										}else{
+												$orderby_sql_tmp[]="`".$value."`";
+										}
+								}
+								if(count($orderby_sql_tmp)>0){
+										$orderby_sql=" ORDER BY ".implode(",",$orderby_sql_tmp);
 								}
 						}
-						if(count($orderby_sql_tmp)>0){
-								$orderby_sql=" ORDER BY ".implode(",",$orderby_sql_tmp);
-						}
-				}else{
-						$orderby_sql = $orderby!=""?$orderby:$this->orderby;
 				}
+
+				/*
+				 */
 				//}}}
 
 				$limit_sql = "";
@@ -241,21 +209,19 @@ class Db extends DbObject{
 						$limit_sql ="LIMIT $limit,$this->limit";
 				}
 				$sql="SELECT $item FROM $table $join $condiStr $groupby $orderby_sql $limit_sql";
-				$data = new DbData;
-
-				$data->page = $this->page;
-				$data->limit = $this->limit;
 				$start = microtime(true);
 
-				$result = false;
-
-				$data->items = $this->query($sql,$bind);
-				if($data->items){
+				$result = $this->__query($sql,$bind);
+				if($result){
+						$data = new DbData;
+						$data->page = $this->page;
+						$data->limit = $this->limit;
+						$data->items= $result;
 						$data->pageSize = count($data->items);
 						//{{{
 						if($this->count==true){
 								$countsql="SELECT count(1) totalSize FROM $table $join $condiStr $groupby";
-								$result_count = $this->query($countsql,$bind);
+								$result_count = $this->__query($countsql,$bind);
 								$data->totalSize = $result_count[0]['totalSize'];
 								if($this->limit>0){
 										$data->totalPage = ceil($data->totalSize/$data->limit);
@@ -272,45 +238,31 @@ class Db extends DbObject{
 				$this->setPage(1);
 				$this->setLimit(0);
 				$this->setCount(false);
-				$this->setGroupby("");
-				$this->setOrderby("");
 				//}}}
-				return $data;
+				return $result;
 		}
 		/**
-		 * 
+		 * select one from select result 
 		 *
-		 * @param mixed $table
-		 * @param array $condition
-		 * @param array $item 
-		 * @param string $groupby
-		 * @param string $orderby
-		 * @param string $leftjoin
-		 * @return array item
 		 */
-		function selectOne($table,$condition="",$item="",$groupby="",$orderby="",$leftjoin="")
-		{
+		public function selectOne($table,$condition="",$item="",$groupby="",$orderby="",$leftjoin=""){
 				$this->setLimit(1);
 				$this->setCount(false);
 				$data=$this->select($table,$condition,$item,$groupby,$orderby,$leftjoin);
 				if(isset($data->items[0]))
 						return $data->items[0];
 				else return false;
-
 		}
 
 		/**
 		 * update data
 		 *
-		 * @param mixed $table
-		 * @param string,array $condition
-		 * @param array $item
-		 * @param int $limit
-		 * @return int
-		 * update("table",array('name'=>'myName','password'=>'myPass'),array('id'=>1));
-		 * update("table",array('name'=>'myName','password'=>'myPass'),array("password=$myPass"));
+		 * @param string|array|object $table
+		 * @param string|array|object $condition
+		 * @param string|array|object $item
+		 * @return int|boolean
 		 */
-		function update($table,$condition="",$item=""){
+		public function update($table,$condition="",$item=""){
 				$table = $this->__array2string($table);
 				$value = $this->__quote($item,",",$bind_v);
 				$condiStr = $this->__quote($condition,"AND",$bind_c);
@@ -318,41 +270,35 @@ class Db extends DbObject{
 						$condiStr=" WHERE ".$condiStr;
 				}
 				$sql="UPDATE $table SET $value $condiStr";
-				if($this->query($sql,$bind_v,$bind_c)!==false){
-						return $this->rowCount();
-				}else{
-						return false;
-				}
+				return $this->__query($sql,$bind_v,$bind_c);
 		}
 		/**
 		 * delete
 		 *
-		 * @param mixed table
-		 * @param string,array $condition
-		 * @param int $limit
-		 * @return int
-		 * delete("table",array('name'=>'myName','password'=>'myPass'),array('id'=>1));
-		 * delete("table",array('name'=>'myName','password'=>'myPass'),array("password=$myPass"));
+		 * @param string|array|object $table
+		 * @param string|array|object $condition
+		 * @return int|boolean
 		 */
-		function delete($table,$condition=""){
+		public function delete($table,$condition=""){
 				$table = $this->__array2string($table);
 				$condiStr = $this->__quote($condition,"AND",$bind);
 				if($condiStr!=""){
 						$condiStr=" WHERE ".$condiStr;
 				}
 				$sql="DELETE FROM  $table $condiStr";
-				return $this->query($sql,$bind);
+				return $this->__query($sql,$bind);
 		}
 		/**
 		 * insert
 		 * 
-		 * @param $table
-		 * @param array $item 
-		 * @param array $update ,egarray("key"=>value,"key2"=>value2")
-		 insert into zone_user_online values(2,'','','','',now(),now()) on duplicate key update onlineactivetime=CURRENT_TIMESTAMP;
-		* @return int InsertID
+		 * @param string|array|object $table
+		 * @param string|array|object $item 
+		 * @param boolean $isreplace
+		 * @param boolean $isdelayed
+		 * @param string|array|object $update
+		 * @return int|boolean int(lastInsertId or affectedRows)
 		 */
-		function insert($table,$item="",$isreplace=false,$isdelayed=false,$update=array()){
+		public function insert($table,$item="",$isreplace=false,$isdelayed=false,$update=array()){
 				$table = $this->__array2string($table);
 				if($isreplace==true){
 						$command="REPLACE";
@@ -370,7 +316,7 @@ class Db extends DbObject{
 				if(!empty($v)){
 						$sql.="ON DUPLICATE KEY UPDATE $v";
 				}
-				return $this->query($sql,$bind_f,$bind_v);
+				return $this->__query($sql,$bind_f,$bind_v);
 		}
 
 		/**
@@ -380,7 +326,7 @@ class Db extends DbObject{
 		 * @return Array $result  || Boolean false
 		 */
 
-		function query($sql,$bind1=array(),$bind2=array()){
+		private function __query($sql,$bind1=array(),$bind2=array()){
 				//{{{
 				//SQL MODE 默认为DELETE，INSERT，REPLACE 或 UPDATE,不需要返回值
 				$sql_mode = 1;//1.更新模式 2.查询模式 3.插入模式
@@ -419,9 +365,8 @@ class Db extends DbObject{
 						}
 						$result = mysql_query($sql,Db::$globals[$this->_key]);
 						if(!$result){
-								$this->error['code']=mysql_errno();
-								$this->error['msg']=mysql_error();
-
+								$this->error['code']=mysql_errno(Db::$globals[$this->_key]);
+								$this->error['msg']=mysql_error(Db::$globals[$this->_key]);
 						}elseif($sql_mode==2){//查询模式
 								$data=array();
 								while($row=mysql_fetch_array($result,MYSQL_ASSOC)){ $data[]=$row; }
@@ -473,7 +418,6 @@ class Db extends DbObject{
 						if(!$stmt){
 								$this->error['code']=Db::$globals[$this->_key]->errorCode ();
 								$this->error['msg']=Db::$globals[$this->_key]->errorInfo ();
-								return false;
 						}
 						if(!empty($bind1)){
 								foreach($bind1 as $k=>$v){
@@ -497,17 +441,19 @@ class Db extends DbObject{
 								$this->error['code']=$stmt->errorCode ();
 								$this->error['msg']=$stmt->errorInfo ();
 						}
-						return false;
 				}
-
+				if(defined("DEBUG")){
+						print_r($this->error);
+				}
+				return false;
 		}
 		/**
 		 *
 		 * @param string $sql
-		 * @return array $data || Boolean false
+		 * @return boolean|int|array
 		 */
-		function execute($sql){
-				return $this->query($sql);
+		public function execute($sql){
+				return $this->__query($sql);
 		}
 
 		private function __connect($forceReconnect=false){
@@ -528,7 +474,7 @@ class Db extends DbObject{
 										mysql_select_db($this->database,Db::$globals[$this->_key]);
 								}
 						}elseif($this->engine=="mysqli"){
-								Db::$globals[$this->_key] = new mysqli($this->host,$this->user,$this->password,$this->database);
+								Db::$globals[$this->_key] = new mysqli($this->host,$this->user,$this->password,$this->database,$this->port);
 								if(Db::$globals[$this->_key]->connect_errno) {
 										if(defined("DEBUG")){
 												die("connect database error:\n".Db::$globals[$this->_key]->connect_error);
@@ -581,12 +527,20 @@ class Db extends DbObject{
 				}
 				return $condiStr;
 		}
-		private function __array2string($mixed){
+		private function __array2string($mixed,$alais=false){
 				$r="";
 				if(is_array($mixed) || is_object($mixed)){
 						$tmp=array();
-						foreach($mixed as $t){
-								if($t!="*")$tmp[]="`" . ($t) . "`";else $tmp[]="*";
+						foreach($mixed as $k=>$t){
+								if($t!="*"){
+										if(!is_numeric($k) && $alais){
+												$tmp[]="`" . ($t). "` AS `". $k ."`";
+										}else{
+												$tmp[]="`" . ($t) . "`";
+										}
+								}else{
+										$tmp[]="*";
+								}
 						}
 						$r=implode(" , ",$tmp);
 				}else{
