@@ -132,8 +132,9 @@ class SDb extends Db{
 		 * @param string $table_name
 		 * @return void
 		 **/
-		public function __construct($table_name=""){
+		public function __construct($table_name="",$config=array()){
 				if(!empty($table_name))$this->table_name = $table_name;
+				if(!empty($config))parent::init($config);
 		}
 		/*
 		 * 按条件获取所有信息
