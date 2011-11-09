@@ -9,7 +9,31 @@
  * 简单高效，耦合性低，可以很方便移植
 
 
-= 1.数据库连接与初始化 =
+= 数据库连接与初始化 =
+<code language="sql">
+--新建2张表
+drop table user;
+CREATE TABLE `user` (
+  `id` int(11) NOT NULL auto_increment,
+  `name` varchar(32) not null default "",
+  `email` varchar(100) not null default "",
+  `password` varchar(32) not null default "",
+  `status` tinyint(4) default 1,
+  PRIMARY KEY  (`id`),
+  unique key email(email),
+  unique key name(name)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+CREATE TABLE `user_profile` (
+  `user_id` int(11) NOT NULL,
+  `address` varchar(32) default "",
+  `phone` varchar(100) default "",
+  `mobile` varchar(32) default "",
+  PRIMARY KEY  (`user_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+</code>
+
 {{{
 $db = new SDb();
 $db->init(
@@ -20,76 +44,116 @@ $db->init(
  * engine  是数据库驱动引擎，有这么多（ "mysql","mysqli","pdo_mysql","pdo_sqlite","pdo_cubrid","pdo_dblib","pdo_firebird","pdo_ibm","pdo_informix","pdo_sqlsrv","pdo_oci","pdo_odbc","pdo_pgsql","pdo_4d"），默认是用的"mysql"
 
 
-= 2.数据查询 =
+= 数据插入 =
+ * insert 方法
+{{{
+boolean|int insert($table,$item="",$isreplace=false,$isdelayed=false,$update=array());
+}}}
+   # $table，要插入的表，格式参照下面select里定义
+   # $item,要插入的字段，格式参照下面select里定义
+   # $isreplace,碰到重复字段，是否用替换模式，用replace代替insert
+   # $isdelayed，是否延迟插入
+   # $update 和$item的格式一样，碰到重复时要更新字,格式参照下面select里定义
+   # 返回值如果false，失败;如果是普通插入，返回lastInsertId,如果设置了$isreplace或者$update的值，请用!==false判断是否成功
+ * 实例
+{{{
+//增加一个用户
+$user_id = $db->insert("user",array("name"=>"lili","email"=>"lili@lili.com","password"=>"pjf(@EF"));
+//增加一个用户，当重复时，替换(注意这种方案会更新其主键ID)
+$user_id = $db->insert("user",array("name"=>"lili@lili.com","email"=>"lili@lili.com","password"=>"pjf(@EF_2"),true);
+//增加一个用户，当重重复时，更新status为2时间
+$db->insert("user",array("name"=>"lili","email"=>"lili@lili.com","password"=>"pjf(@EF"),false,false,array("status"=>2));
+}}}
+
+= 数据查询 =
 数据查询主要提供2种：
  * 1.是select，这是查询多条
 {{{
-DbObject select($table,$condition="",$item="",$groupby="",$orderby="",$leftjoin="");
+DbObject|boolean select($table,$condition="",$item="",$groupby="",$orderby="",$leftjoin="");
 }}}
 参数：
     # $table 可以是array|string|object，如:
 {{{
 //字符串
 $table="user";
-$table="user as a,profile as b";
 //数组
 $table=array("user","user_profile");
-//对像
+//加了别名的数组
+$table=array("table_alias"=>"user");
+
+//对像,加了别名的
 $table=new stdclass;
-$table->t1="user";
-$table->ts="profile";
+$table->table_alias1="user";
+$table->table_alias1="profile";
 }}}
     # $conditon 检索条件，可以为3种格式：
 {{{
 //字符串
-$condition="user_id=32";
+$condition="id=1";
 //数组
-$condition=array("user_id=32");
-$condition=array("user_id>32","user_id<30");
-$condition=array("user_id"=>32);
+$condition=array("id=1");
+$condition=array("id>0","id<3");
+$condition=array("id"=>1);
 //对像
 $condition=new stdclass;
-$condition->user_id=32;
+$condition->id=1;
 }}}
-    # $item是要取回的字段名，默认是所有，可以为如下格式：
+    # $item是要取回的字段名，默认是所有，可以设置返回的别外，可以为如下格式：
 {{{
-//字符串
+//字符串，当只需要返回一个或者全部时
 $item="*";
-$item="userid,username";
+$item="id";
 //数组
 $item=array("*");
-$item=array("userid","username");
-$item=array("user.id","profile.profileid");
-//对像
+$item=array("id","name");
+//数组，加上别名，会用UserID，替换数据库里的真实字段id和name
+$item=array("UserID"=>"id","UserName"=>"name");
+//对像，用返回别名是，很有用，这个会用UserID代替id
 $item=new stdclass;
-$item->item1 = "userid";
-$item->item2 = "username";
+$item->UserID = "id";
+$item->UserName = "name";
 }}}
     # $groupby 是要GROUP的要求，可以为如下格式:
 {{{
-//字符串
-$groupby = "group by userid ";
-$groupby = "group by userid,username";
+//字符串,只需要一个时
+$groupby = "id";
+//多个时，请用数组或者对像
+$groupby = array("id","name");
+$groupby = new stdclass;
+$groupby->g1 = "id";
+$groupby->g2 = "name";
 }}}
-    $ orderby 是要排序的字段，可以为如下格式:
+    # $orderby 是要排序的字段，可以为如下格式:
 {{{
-//字符串
-$orderby = "order by userid desc";
-//数组
-$orderby = array("userid"=>"desc","user_register_time"=>"asc");
+//字符串,当只需要一个字段，并按默认排序时
+$orderby = "id";
+//如果你的$item里设置了字段映射，你可以用映射后的名
+$orderby ="UserID";
+//如果有多个，并不按默认排序，请用数组
+$orderby = array("id"=>"desc","name"=>"asc");
 //对像
 $orderby = new stdclass;
-$orderby->userid="desc";
-$orderby->user_register_time="asc";
+$orderby->id="desc";
+$orderby->name="asc";
 }}}
-    $ leftjoin 是要LEFT JOIN的字段，可以为如下格式:
+    # $leftjoin 是要LEFT JOIN的字段，可以为如下格式:
 {{{
+//字符串
+$left="user_profile on user_profile.user_id = user.id";
 //数组
-$orderby = array("key"=>"v","key2"=>"v2");
+$left=array("user_profile"=>"user_profile.user_id=user.id");
 //对像
-$leftjoin = new stdclass;
-$leftjoin->key="v";
-$leftjoin->key2="v2";
+$left=new stdclass;
+$left->user_profile="user_profile.user_id=user.id";
+$db->select(array("user"),"","","","",$left);
+}}}
+   # 返回值
+如果为false,你可以打印出 $db->error信息
+{{{
+$result = $db->select(array("user"),"","","","",$left);
+if($result===false)｛
+   print_r($db->error);
+｝
 }}}
  * 2.是selectOne,这是查询一条
 array selectOne($table,$condition="",$item="",$groupby="",$orderby="",$leftjoin="");
@@ -121,27 +185,6 @@ boolean|int update($table,$condition="",$item="");
 $db->update("user",array("id"=>1),array("nickname"=>"xxxx"));
 //多表联合更新
 $db->update(array("user","profile") , array("user.id"=>1,"user.id=profile.userid"),array("profile.comment"=>"我的注释"));
-}}}
-
-= 数据插入 =
- * insert 方法
-{{{
-int insert($table,$item="",$isreplace=false,$isdelayed=false,$update=array());
-}}}
-   # $table，要插入的表，和上面的定义一样
-   # $item,要插入的字段，和上面的定义一样
-   # $isreplace,碰到重复字段，是否用替换模式，用replace代替insert
-   # $isdelayed，是否延迟插入
-   # $update 和$item的格式一样，碰到重复时要更新字
-
- * 实例
-{{{
-//增加一个用户
-$db->insert("user",array("username"=>"lili","password"=>"pjf(@EF"));
-//增加一个用户，当重复时，更新其密码
-$db->insert("user",array("username"=>"lili","password"=>"pjf(@EF"),true);
-//增加一个用户，当重重复时，更新操作时间
-$db->insert("user",array("username"=>"lili","password"=>"pjf(@EF"),false,false,array("logintime"=>time());
 }}}
 
 
