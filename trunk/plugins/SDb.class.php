@@ -118,13 +118,13 @@ class SDb extends Db{
 		 * $user->profile->comment="comment";
 		 */
 		private $_fields;
-		private function __get($k){
+		public function __get($k){
 				if(isset($this->_fields->$k)){
 						return $this->_fields->$k;
 				}
 				return null;
 		}
-		private function __set($k,$v){
+		public function __set($k,$v){
 				$this->_fields->$k = $v;
 		}
 		/**
