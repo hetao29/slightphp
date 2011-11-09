@@ -12,7 +12,7 @@
 = 数据库连接与初始化 =
 <code language="sql">
 --新建2张表
-drop table user;
+
 CREATE TABLE `user` (
   `id` int(11) NOT NULL auto_increment,
   `name` varchar(32) not null default "",
