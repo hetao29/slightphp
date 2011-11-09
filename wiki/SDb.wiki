@@ -41,7 +41,14 @@ $db->init(
 );
 }}}
  * charset 就是字符集，可以是utf8,gbk,gb2312等数据库支持的字符集
- * engine  是数据库驱动引擎，有这么多（ "mysql","mysqli","pdo_mysql","pdo_sqlite","pdo_cubrid","pdo_dblib","pdo_firebird","pdo_ibm","pdo_informix","pdo_sqlsrv","pdo_oci","pdo_odbc","pdo_pgsql","pdo_4d"），默认是用的"mysql"
+ * engine  是数据库驱动引擎，有这么多
+（ 
+"mysql","mysqli",
+"pdo_mysql","pdo_sqlite","pdo_cubrid",
+"pdo_dblib","pdo_firebird","pdo_ibm",
+"pdo_informix","pdo_sqlsrv","pdo_oci",
+"pdo_odbc","pdo_pgsql","pdo_4d"
+），默认是用的"mysql"
 
 
 = 数据插入 =
@@ -62,7 +69,12 @@ $user_id = $db->insert("user",array("name"=>"lili","email"=>"lili@lili.com","pas
 //增加一个用户，当重复时，替换(注意这种方案会更新其主键ID)
 $user_id = $db->insert("user",array("name"=>"lili@lili.com","email"=>"lili@lili.com","password"=>"pjf(@EF_2"),true);
 //增加一个用户，当重重复时，更新status为2时间
-$db->insert("user",array("name"=>"lili","email"=>"lili@lili.com","password"=>"pjf(@EF"),false,false,array("status"=>2));
+$db->insert(
+"user",array("name"=>"lili",
+"email"=>"lili@lili.com","password"=>"pjf(@EF"),
+false,false
+,array("status"=>2)
+);
 }}}
 
 = 数据查询 =
@@ -147,7 +159,7 @@ $left=new stdclass;
 $left->user_profile="user_profile.user_id=user.id";
 $db->select(array("user"),"","","","",$left);
 }}}
-   # 返回值
+    # 返回值
 如果为false,你可以打印出 $db->error信息
 {{{
 $result = $db->select(array("user"),"","","","",$left);
@@ -179,10 +191,11 @@ boolean|int update($table,$condition="",$item="");
   # $table 与上面参数形式一样
   # $condition 修改的条件，和上面的一样
   # $item 要修改的字段，和上面的定义一样
+  # 返回值，如果为false就失败了，否则返回更新的记录数
  * 实例
 {{{
 //把用户ID为1的用户，更新nickname为xxxx
-$db->update("user",array("id"=>1),array("nickname"=>"xxxx"));
+$db->update("user",array("id"=>1),array("password"=>"xxxx"));
 //多表联合更新
 $db->update(array("user","profile") , array("user.id"=>1,"user.id=profile.userid"),array("profile.comment"=>"我的注释"));
 }}}
@@ -190,12 +203,28 @@ $db->update(array("user","profile") , array("user.id"=>1,"user.id=profile.userid
 
 = 删除 =
 {{{
-boolean delete($table,$condition="");
+boolean|int delete($table,$condition="");
 }}}
+
+  # $table 与上面参数形式一样
+  # $condition 修改的条件，和上面的一样
+  # 返回值，如果为false就失败了，否则返回删除的记录数
 
 = 执行原始SQL = 
 {{{
-int|boolean execute($sql);
+int|boolean|Array execute($sql);
+}}}
+
+  # $sql 原始SQL
+  # 返回值，如果为false就失败了，错误请看$db->error信息，如果是更新，删除之类，返回删除的记录数，如果是查询之类的，返回查询结果
+  * 实例
+{{{
+print_r (  $db->execute("show databases") );
+print_r (  $db->execute("select * from user") );
+var_dump(  $db->execute("set names utf8") );
+if(!  $db->execute("select * from userx") ){
+        print_r($db->error);
+};
 }}}
 
 = [SDbConfig SDb数据库配置文件]==
@@ -263,12 +292,19 @@ setCount($count)
 {{{
 //只要在代码执行前加上
 define("DEBUG",true);
+//或者，如果结果为false，打印错误信息
+if(($r = $db->select("user",array("id_xx"=>1)))===false){
+        print_r($db->error);
+}
+/*
+Array
+(
+    [code] => 1054
+    [msg] => Unknown column 'id_xx' in 'where clause'
+)
+*/
 }}}
- * 其它
-{{{
-setOrderby($orderby);
-setGroupby($groupby);
-}}}
+
 
 
 = [ORM ORM 操作技巧]=
