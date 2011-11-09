@@ -26,10 +26,21 @@ class SDb extends Db{
 		static $_DbdefaultZone="default";
 		static $_DbConfigCache;
 		/**
+		 * @deprecated
 		 * @return class Db
 		 */
 		static function getDbEngine($engine){
-				return new Db($engine);
+				$engine = strtolower($engine);
+				if(!in_array($engine,array("mysql","pdo_mysql"))){
+						return false;
+				}
+				if($engine=="mysql" && extension_loaded("mysql")){
+						require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."db/Db_Mysql.php");
+						return new Db_Mysql;
+				}elseif($engine=="pdo_mysql"){
+						require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."db/Db_PDO.php");
+						return new Db_PDO("mysql");
+				}
 		}
 		static function setConfigFile($file){
 				SDb::$_DbConfigFile = $file;
