@@ -121,6 +121,16 @@ class SDb extends Db{
 		public function __get($k){
 				if(isset($this->_fields->$k)){
 						return $this->_fields->$k;
+				}else{
+						//判断是不是属于外键
+						foreach($this->foreign_keys as $k2=>$v2){
+								$tmp = explode(".",$v2);
+								if(!empty($tmp[0]) && !empty($tmp[1])){
+										$tbl_name = trim($tmp[0]);
+										if($k==$tbl_name)
+												return $this->_fields->$k = new stdclass;
+								}
+						}
 				}
 				return null;
 		}
