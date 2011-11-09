@@ -22,7 +22,7 @@ class Db{
 		/**
 		 * 
 		 */
-		public $engine="mysql";
+		private $engine="mysql";
 		private $_allow_engines=array(
 				"mysql","mysqli",
 				"pdo_mysql","pdo_sqlite","pdo_cubrid",
@@ -35,49 +35,52 @@ class Db{
 		/**
 		 *
 		 */
-		public $host;
+		private $host;
 		/**
 		 *
 		 */
-		public $port=3306;
+		private $port=3306;
 		/**
 		 *
 		 */
-		public $user;
+		private $user;
 		/**
 		 *
 		 */
-		public $password;
+		private $password;
 		/**
 		 *
 		 */
-		public $database;
+		private $database;
 		/**
 		 *
 		 */
-		public $charset;
+		private $charset;
 		/**
 		 *
 		 */
-		public $count=true;
+		private $count=true;
 		/**
 		 *
 		 */
-		public $limit=0;
+		private $limit=0;
 		/**
 		 *
 		 */
-		public $page=1;
+		private $page=1;
 		/**
 		 *
 		 */
-		public $error=array('code'=>0,'msg'=>"");
+		private $error=array('code'=>0,'msg'=>"");
 		/**
-		 * @var array $globals
+		 * @var array $_globals
 		 */
-		static $globals;
+		static $_globals;
 		function __construct($engine="mysql"){
 				$this->__setEngine($engine);
+		}
+		public function error(){
+				return $this->error;
 		}
 		private function __setEngine($engine){
 				if(in_array($engine,$this->_allow_engines)){
@@ -107,7 +110,7 @@ class Db{
 						}
 				}
 				$this->_key = $this->engine.":".$this->host.":".$this->user.":".$this->password.":".$this->database.":".$this->port;
-				if(!isset(Db::$globals[$this->_key])) Db::$globals[$this->_key] = "";
+				if(!isset(Db::$_globals[$this->_key])) Db::$_globals[$this->_key] = "";
 		}
 		/**
 		 * is count 
@@ -212,7 +215,7 @@ class Db{
 				$start = microtime(true);
 
 				$result = $this->__query($sql,$bind);
-				if($result){
+				if($result!==false){
 						$data = new DbData;
 						$data->page = $this->page;
 						$data->limit = $this->limit;
@@ -343,19 +346,19 @@ class Db{
 						}
 				}
 				//}}}
-				if(empty(Db::$globals[$this->_key])){
+				if(empty(Db::$_globals[$this->_key])){
 						$this->__connect($forceReconnect=true);
 				}
 				if($this->engine=="mysql"){
 						//BIND参数
 						if($bind1){
 								foreach($bind1 as $v){
-										$sql = preg_replace("/\?/","\"".mysql_real_escape_string($v,Db::$globals[$this->_key])."\"",$sql,1);
+										$sql = preg_replace("/\?/","\"".mysql_real_escape_string($v,Db::$_globals[$this->_key])."\"",$sql,1);
 								}
 						}
 						if($bind2){
 								foreach($bind2 as $v){
-										$sql = preg_replace("/\?/","\"".mysql_real_escape_string($v,Db::$globals[$this->_key])."\"",$sql,1);
+										$sql = preg_replace("/\?/","\"".mysql_real_escape_string($v,Db::$_globals[$this->_key])."\"",$sql,1);
 								}
 						}
 						if(defined("DEBUG")){
@@ -363,30 +366,30 @@ class Db{
 								print_r($bind1);
 								print_r($bind2);
 						}
-						$result = mysql_query($sql,Db::$globals[$this->_key]);
+						$result = mysql_query($sql,Db::$_globals[$this->_key]);
 						if(!$result){
-								$this->error['code']=mysql_errno(Db::$globals[$this->_key]);
-								$this->error['msg']=mysql_error(Db::$globals[$this->_key]);
+								$this->error['code']=mysql_errno(Db::$_globals[$this->_key]);
+								$this->error['msg']=mysql_error(Db::$_globals[$this->_key]);
 						}elseif($sql_mode==2){//查询模式
 								$data=array();
 								while($row=mysql_fetch_array($result,MYSQL_ASSOC)){ $data[]=$row; }
 								return $data;
 						}elseif($sql_mode==3){//插入模式
-								return mysql_insert_id(Db::$globals[$this->_key]);
+								return mysql_insert_id(Db::$_globals[$this->_key]);
 						}else{
-								return mysql_affected_rows(Db::$globals[$this->_key]);
+								return mysql_affected_rows(Db::$_globals[$this->_key]);
 						}
 
 				}elseif($this->engine=="mysqli"){
 						//BIND参数
 						if($bind1){
 								foreach($bind1 as $v){
-										$sql = preg_replace("/\?/","\"".Db::$globals[$this->_key]->real_escape_string($v)."\"",$sql,1);
+										$sql = preg_replace("/\?/","\"".Db::$_globals[$this->_key]->real_escape_string($v)."\"",$sql,1);
 								}
 						}
 						if($bind2){
 								foreach($bind2 as $v){
-										$sql = preg_replace("/\?/","\"".Db::$globals[$this->_key]->real_escape_string($v)."\"",$sql,1);
+										$sql = preg_replace("/\?/","\"".Db::$_globals[$this->_key]->real_escape_string($v)."\"",$sql,1);
 								}
 						}
 						if(defined("DEBUG")){
@@ -394,18 +397,18 @@ class Db{
 								print_r($bind1);
 								print_r($bind2);
 						}
-						$result = Db::$globals[$this->_key]->query($sql);
+						$result = Db::$_globals[$this->_key]->query($sql);
 						if(!$result){
-								$this->error['code']=Db::$globals[$this->_key]->errno;
-								$this->error['msg'] =Db::$globals[$this->_key]->error;
+								$this->error['code']=Db::$_globals[$this->_key]->errno;
+								$this->error['msg'] =Db::$_globals[$this->_key]->error;
 						}elseif($sql_mode==2){
 								$data=array();
 								while($row= $result->fetch_assoc()){$data[]=$row;};
 								return $data;
 						}elseif($sql_mode==3){//插入模式
-								return Db::$globals[$this->_key]->insert_id;
+								return Db::$_globals[$this->_key]->insert_id;
 						}else{
-								return Db::$globals[$this->_key]->affected_rows;
+								return Db::$_globals[$this->_key]->affected_rows;
 						}
 				}else{
 						if(defined("DEBUG")){
@@ -414,10 +417,10 @@ class Db{
 								print_r($bind2);
 						}
 						//PDO
-						$stmt = Db::$globals[$this->_key]->prepare($sql);
+						$stmt = Db::$_globals[$this->_key]->prepare($sql);
 						if(!$stmt){
-								$this->error['code']=Db::$globals[$this->_key]->errorCode ();
-								$this->error['msg']=Db::$globals[$this->_key]->errorInfo ();
+								$this->error['code']=Db::$_globals[$this->_key]->errorCode ();
+								$this->error['msg']=Db::$_globals[$this->_key]->errorInfo ();
 						}
 						if(!empty($bind1)){
 								foreach($bind1 as $k=>$v){
@@ -433,7 +436,7 @@ class Db{
 								if($sql_mode==2){
 										return $stmt->fetchAll (PDO::FETCH_ASSOC );
 								}elseif($sql_mode==3){
-										return Db::$globals[$this->_key]->lastInsertId();
+										return Db::$_globals[$this->_key]->lastInsertId();
 								}else{
 										return $stmt->rowCount();
 								}
@@ -457,27 +460,27 @@ class Db{
 		}
 
 		private function __connect($forceReconnect=false){
-				if(empty(Db::$globals[$this->_key]) || $forceReconnect){
-						if(!empty(Db::$globals[$this->_key])){
-								unset(Db::$globals[$this->_key]);
+				if(empty(Db::$_globals[$this->_key]) || $forceReconnect){
+						if(!empty(Db::$_globals[$this->_key])){
+								unset(Db::$_globals[$this->_key]);
 						}
 						if($this->engine=="mysql"){
-								Db::$globals[$this->_key] = mysql_connect($this->host.":".$this->port,$this->user,$this->password,true);
-								if(!Db::$globals[$this->_key]){
+								Db::$_globals[$this->_key] = mysql_connect($this->host.":".$this->port,$this->user,$this->password,true);
+								if(!Db::$_globals[$this->_key]){
 										if(defined("DEBUG")){
-												die("connect database error:\n".mysql_error(Db::$globals[$this->_key]));
+												die("connect database error:\n".mysql_error(Db::$_globals[$this->_key]));
 										}else{
 												die("connect database error:");
 										}
 								}
 								if($this->database!=""){
-										mysql_select_db($this->database,Db::$globals[$this->_key]);
+										mysql_select_db($this->database,Db::$_globals[$this->_key]);
 								}
 						}elseif($this->engine=="mysqli"){
-								Db::$globals[$this->_key] = new mysqli($this->host,$this->user,$this->password,$this->database,$this->port);
-								if(Db::$globals[$this->_key]->connect_errno) {
+								Db::$_globals[$this->_key] = new mysqli($this->host,$this->user,$this->password,$this->database,$this->port);
+								if(Db::$_globals[$this->_key]->connect_errno) {
 										if(defined("DEBUG")){
-												die("connect database error:\n".Db::$globals[$this->_key]->connect_error);
+												die("connect database error:\n".Db::$_globals[$this->_key]->connect_error);
 										}else{
 												die("connect database error:");
 										}
@@ -486,7 +489,7 @@ class Db{
 								$tmp = explode("_",$this->engine);
 								$driver =$tmp[1];
 								try{
-										Db::$globals[$this->_key] = new PDO($driver .":dbname=".$this->database.";host=".$this->host.";port=".$this->port,$this->user,$this->password);
+										Db::$_globals[$this->_key] = new PDO($driver .":dbname=".$this->database.";host=".$this->host.";port=".$this->port,$this->user,$this->password);
 								}catch(Exception $e){
 										if(defined("DEBUG")){
 												die("connect database error:\n".var_export($e,true));
