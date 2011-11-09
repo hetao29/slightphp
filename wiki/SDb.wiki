@@ -444,9 +444,9 @@ if($user->set()!==false){
 class User extends SDb{
         function __construct(){
                 $config =   array(
-                        "host"=>"web.db.youku.com",
+                        "host"=>"localhost",
                         "user"=>"root",
-                        "password"=>"yhnji-db-yoqoo",
+                        "password"=>"",
                         "database"=>"test",
                         "engine"=>"mysql");
                 parent::__construct("user",$config);
