@@ -532,7 +532,7 @@ class Db{
 				return $condiStr;
 		}
 		private function __addsqlslashes($k){
-			if(strpos($k,"(")!==false || strpos($k,")")!==false){
+			if(strpos($k,"(")!==false || strpos($k,")")!==false || strpos($k,".")!==false){
 				return $k;
 			}else{
 				return "`$k`";
