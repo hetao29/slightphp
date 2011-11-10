@@ -186,19 +186,20 @@ class Db{
 				//{{{ ORDERBY
 				$orderby_sql="";
 				if(!empty($orderby )){
-						//$orderby_sql = "ORDER BY ".$this->__array2string($orderby);
 						if(is_array($orderby) || is_object($orderby)){
 								$orderby_sql_tmp = array();
 								foreach($orderby as $key=>$value){
 										if(!is_numeric($key)){
-												$orderby_sql_tmp[]="`".$key."` ".$value;
+												$orderby_sql_tmp[]=$this->__addsqlslashes($key) ." ". $value;
 										}else{
-												$orderby_sql_tmp[]="`".$value."`";
+												$orderby_sql_tmp[]=$this->__addsqlslashes($value);
 										}
 								}
 								if(count($orderby_sql_tmp)>0){
 										$orderby_sql=" ORDER BY ".implode(",",$orderby_sql_tmp);
 								}
+						}else{
+							$orderby_sql=" ORDER BY $orderby";
 						}
 				}
 
@@ -512,9 +513,9 @@ class Db{
 						foreach($condition as $k=>$v){
 								if(!is_numeric($k)){
 										if(strpos($k,".")>0){
-												$v1[]="`$k` = ?";
+												$v1[]="$k = ?";
 										}else{
-												$v1[]="`$k` = ?";
+												$v1[]=$this->__addsqlslashes($k)." = ?";
 										}
 										$bind[$i++]=$v;
 								}else{
@@ -530,6 +531,13 @@ class Db{
 				}
 				return $condiStr;
 		}
+		private function __addsqlslashes($k){
+			if(strpos($k,"(")!==false || strpos($k,")")!==false){
+				return $k;
+			}else{
+				return "`$k`";
+			}
+		}
 		private function __array2string($mixed,$alais=false){
 				$r="";
 				if(is_array($mixed) || is_object($mixed)){
@@ -537,9 +545,9 @@ class Db{
 						foreach($mixed as $k=>$t){
 								if($t!="*"){
 										if(!is_numeric($k) && $alais){
-												$tmp[]="`" . ($t). "` AS `". $k ."`";
+												$tmp[]=$this->__addsqlslashes($t)."  ".$this->__addsqlslashes($k);
 										}else{
-												$tmp[]="`" . ($t) . "`";
+												$tmp[]=$this->__addsqlslashes($t);
 										}
 								}else{
 										$tmp[]="*";
@@ -547,7 +555,7 @@ class Db{
 						}
 						$r=implode(" , ",$tmp);
 				}else{
-						if($mixed!="*")$r="`".($mixed)."`";else $r="*";
+						if($mixed!="*")$r=$this->__addsqlslashes($mixed);else $r="*";
 				}
 				return $r;
 		}
