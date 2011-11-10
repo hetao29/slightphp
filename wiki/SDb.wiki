@@ -69,16 +69,23 @@ $db->init(
 
 = 数据插入 =
  * insert 方法
+
 {{{
 boolean|int insert($table,$item="",$isreplace=false,$isdelayed=false,$update=array());
 }}}
-   # $table，要插入的表，格式参照下面select里定义
-   # $item,要插入的字段，格式参照下面select里定义
-   # $isreplace,碰到重复字段，是否用替换模式，用replace代替insert
-   # $isdelayed，是否延迟插入
-   # $update 和$item的格式一样，碰到重复时要更新字,格式参照下面select里定义
-   # 返回值如果false，失败;如果是普通插入，返回lastInsertId,如果设置了$isreplace或者$update的值，请用!==false判断是否成功
+
+||*参数*||*类型*||*必须*||*默认*||*说明*||
+||$table   ||string|array|object  ||是|| ||要插入的表，格式参照下面select里定义||
+||$item    ||string|array|object  ||是|| ||要插入的字段，格式参照下面select里定义||
+||$isreplace|| boolean || || false || 碰到重复字段，是否用替换模式，用replace代替insert||
+||$isdelayed || boolean || ||false ||是否延迟插入||
+||$update || string|array|object || || ||和$item的格式一样，碰到重复时要更新字,格式参照下面select里定义||
+
+ * 返回值 boolean|int
+如果false，失败;如果是普通插入，返回lastInsertId,如果设置了$isreplace或者$update的值，请用!==false判断是否成功
+
  * 实例
+
 {{{
 //增加一个用户
 $user_id = $db->insert("user",array("name"=>"lili","email"=>"lili@lili.com","password"=>"pjf(@EF"));
