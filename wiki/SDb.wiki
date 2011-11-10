@@ -349,7 +349,6 @@ if($user->get()){
 {{{
 boolean set();
 }}}
-   # $foreign_info是否包含外键信息
    # 返回值如果false，设置失败，否则返回插入/更新的主键ID
  * 实例
 {{{
