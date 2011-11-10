@@ -1,5 +1,5 @@
 #labels Featured,database
-#SDb 数据库插件-基本操作
+#SDb 数据库插件
 
 = 主要特性 =
 
@@ -81,7 +81,7 @@ boolean|int insert($table,$item="",$isreplace=false,$isdelayed=false,$update=arr
 $user_id = $db->insert("user",array("name"=>"lili","email"=>"lili@lili.com","password"=>"pjf(@EF"));
 //增加一个用户，当重复时，替换(注意这种方案会更新其主键ID)
 $user_id = $db->insert("user",array("name"=>"lili@lili.com","email"=>"lili@lili.com","password"=>"pjf(@EF_2"),true);
-//增加一个用户，当重重复时，更新status为2时间
+//增加一个用户，当重复时，更新status为2时间
 $db->insert(
 "user",array("name"=>"lili",
 "email"=>"lili@lili.com","password"=>"pjf(@EF"),
@@ -92,7 +92,7 @@ false,false
 
 = 数据查询 =
 数据查询主要提供2种：
- * 1.是select，这是查询多条
+ * 1.是select，这是查询多条，你可以用setLimit()与setPage(),setCount()方法，分页查询(关于分页查询，请参看下面的章节)
 {{{
 DbObject|boolean select($table,$condition="",$item="",$groupby="",$orderby="",$leftjoin="");
 }}}
@@ -152,7 +152,7 @@ $groupby->g2 = "name";
 {{{
 //字符串,当只需要一个字段，并按默认排序时
 $orderby = "id";
-//如果你的$item里设置了字段映射，你可以用映射后的名
+//如果你的$item里设置了字段映射，你可以用映射后的字段名
 $orderby ="UserID";
 //如果有多个，并不按默认排序，请用数组
 $orderby = array("id"=>"desc","name"=>"asc");
@@ -297,8 +297,11 @@ $db->init($config);
 = 其它技巧=
  * 分页
 {{{
+//设置每页获取的大小
 setLimit($limit);
+//设置要获取的页数
 setPage($page);
+//设置是否要计算总数
 setCount($count)
 }}}
 
@@ -328,7 +331,7 @@ Array
 boolean|array get($foreign_info=false);
 }}}
    # $foreign_info是否包含外键信息
-   # 返回值如果false，表明没有数据
+   # 返回值如果false，表明没有数据，你还可以通过对像本身去获取属性
  * 实例
 {{{
 
