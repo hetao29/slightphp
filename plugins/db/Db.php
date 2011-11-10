@@ -364,8 +364,6 @@ class Db{
 						}
 						if(defined("DEBUG")){
 								echo "SQL:$sql\n";
-								print_r($bind1);
-								print_r($bind2);
 						}
 						$result = mysql_query($sql,Db::$_globals[$this->_key]);
 						if(!$result){
@@ -395,8 +393,6 @@ class Db{
 						}
 						if(defined("DEBUG")){
 								echo "SQL:$sql\n";
-								print_r($bind1);
-								print_r($bind2);
 						}
 						$result = Db::$_globals[$this->_key]->query($sql);
 						if(!$result){
