@@ -22,28 +22,22 @@ if(version_compare(PHP_VERSION,"5.2",">=")){
 }else{
 	require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."smarty/Smarty.class.php");
 }
-class SGui extends Smarty{
-	var $PLUGINS_DIR_ADDED=false;
-	public function __construct(){
-	}
+class SGui{
+	static $engine;
 	/**
 	 * render a .tpl
 	 */
 	public function render($tpl,$parames=array()){
-		if(!$this->PLUGINS_DIR_ADDED){
-			$this->plugins_dir=array();
-			$plugins_dir = SMARTY_DIR."/plugins_slightphp/";
-			array_push($this->plugins_dir,$plugins_dir);
-			$plugins_dir = SMARTY_DIR."/plugins/";
-			array_push($this->plugins_dir,$plugins_dir);
-			$this->PLUGINS_DIR_ADDED=true;
+		if(!self::$engine){
+			self::$engine = new Smarty;
+			self::$engine->plugins_dir = array(SMARTY_DIR."/plugins_slightphp/",SMARTY_DIR."/plugins/");
+			self::$engine->compile_dir = SlightPHP::$appDir.DIRECTORY_SEPARATOR."templates_c";
+			self::$engine->template_dir= SlightPHP::$appDir.DIRECTORY_SEPARATOR."templates";
 		}
-		$this->compile_dir	= SlightPHP::$appDir.DIRECTORY_SEPARATOR."templates_c";
-		$this->template_dir 	= SlightPHP::$appDir.DIRECTORY_SEPARATOR."templates";
 		foreach($parames as $key=>$value){
-			$this->assign($key,$value);
+			self::$engine->assign($key,$value);
 		}
-		return $this->fetch($tpl);
+		return self::$engine->fetch($tpl,$parames);
 		
 	}
 	/**
