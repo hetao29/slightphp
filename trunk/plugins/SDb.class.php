@@ -220,6 +220,36 @@ class SDb extends Db{
 				return false;
 		}
 		/**
+		 * 删除信息,可以连带外键一起删除
+		 **/
+		function del($foreign_info=false){
+				if(!empty($this->_fields)){
+						$condition=array();
+						foreach($this->_fields as $k=>$v){
+								if(!is_object($v))$condition[$k]=$v;
+						}
+						if(!empty($condition)){
+								if($this->get()!==false){
+										$result = parent::delete($this->table_name,$condition);
+										if($result!==false){
+												if($foreign_info){
+														foreach($this->foreign_keys as $k=>$v){
+																$tmp = explode(".",$v);
+																if(!empty($tmp[0]) && !empty($tmp[1]) && isset($this->_fields->$k)){
+																		$tbl_name = trim($tmp[0]);
+																		$condition = array(trim($tmp[1])=>$this->_fields->$k);
+																		parent::delete($tbl_name,$condition);
+																}
+														}
+												}
+										}
+										return $result;
+								}
+						}
+				}
+				return false;
+		}
+		/**
 		 * 保存信息,支持外键属性保存
 		 * 当外键属性保存时，特别注意:
 		 * 你必须初始化外键的值，否则可能无效，如:
