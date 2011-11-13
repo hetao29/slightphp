@@ -13,10 +13,9 @@
 | Supports: http://www.slightphp.com                                    |
 +-----------------------------------------------------------------------+
 }}}*/
-
-require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."db/DbData.php");
-require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."db/DbObject.php");
-require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."db/Db.php");
+require_once(dirname(__FILE__)."/db/DbData.php");
+require_once(dirname(__FILE__)."/db/DbObject.php");
+require_once(dirname(__FILE__)."/db/Db.php");
 /**
  * @package SlightPHP
  */
