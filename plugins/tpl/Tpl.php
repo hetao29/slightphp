@@ -53,34 +53,30 @@ class Tpl{
 	}
 	function _match($matches){
 		$content = $matches[1];
-		//替换注释
-		$pattern="/^\*(.*)\*/msU";
-		$content = preg_replace($pattern,"<?php /*\\1*/?>",$content);
-		//替换注释
 		//{{{if,elseif,/if; foreach,/foreach; for,/for*/
 		$pattern="/^(if|foreach|for)(.*)/msi";
 		//$content = preg_replace_callback($pattern,create_function('$m','print_r($m);'),$content);
 		$content = preg_replace(
 			$pattern,
-			'<?php \\1(\\2){ ?>',
+			'\\1(\\2){',
 			$content
 		);
 		$pattern="/^(elseif)([\s*|\\(].*)/msi";
 		$content = preg_replace(
 			$pattern,
-			'<?php }\\1(\\2){ ?>',
+			'}\\1(\\2){',
 			$content
 		);
 		$pattern="/^(else)/msUi";
 		$content = preg_replace(
 			$pattern,
-			'<?php }\\1{ ?>',
+			'}\\1{',
 			$content
 		);
 		$pattern="/^\/(if|foreach|for)/msi";
 		$content = preg_replace(
 			$pattern,
-			'<?php }; ?>',
+			'}',
 			$content
 		);
 		//}}}
@@ -88,18 +84,18 @@ class Tpl{
 		//{fun $param }
 		//{fun $param1 $param2 "param3" }
 		$pattern="/^(\w+)\\s+(.*)/ms";
-		$content = preg_replace_callback($pattern,create_function('$m','$tmp=explode(" ",trim($m[2]));$func="tpl_function_".$m[1]; $params=implode(",",$tmp);if(function_exists($func))return "<?php echo $func($params);?>";else return "$func function not exists!";'),$content);
+		$content = preg_replace_callback($pattern,create_function('$m','$tmp=explode(" ",trim($m[2]));$func="tpl_function_".$m[1]; $params=implode(",",$tmp);if(function_exists($func))return "echo $func($params)";else return "$func function not exists!";'),$content);
 		//modifier，支持多种格式
 		//{$v|modifer}
 		//{$v|modifer:1:2}
 		//{'v'|modifer:1:2}
 		$pattern="/^(\S+)\\|(\S+)/ms";
-		$content = preg_replace_callback($pattern,create_function('$m','$tmp=explode(":",trim($m[2]));$func="tpl_modifier_".$tmp[0]; $tmp[0] = $m[1]; $params=implode(",",$tmp);if(function_exists($func))return "<?php echo $func($params);?>";else return "$func function not exists!";'),$content);
+		$content = preg_replace_callback($pattern,create_function('$m','$tmp=explode(":",trim($m[2]));$func="tpl_modifier_".$tmp[0]; $tmp[0] = $m[1]; $params=implode(",",$tmp);if(function_exists($func))return "echo $func($params)";else return "$func function not exists!";'),$content);
 		//{{{加ECHO
-		$pattern="/^(\\$[a-zA-z0-9_]+)/ms";
+		$pattern="/^(\\$\w+)$/ms";
 		$content = preg_replace(
 			$pattern,
-			'<?php echo \\1; ?>',
+			'echo \\1',
 			$content
 		);
 		//}}}
@@ -110,6 +106,7 @@ class Tpl{
 			'Tpl::$_tpl_vars["\1"]',
 			$content
 		);
+		$content="<?php $content; ?>";
 		//}}}
 		return $content;
 	}
@@ -130,6 +127,9 @@ class Tpl{
 				$content
 			);
 		}
+		//替换注释
+		$pattern="/{$left_delimiter_quote}\*(.*)\*{$right_delimiter_quota}/msU";
+		$content = preg_replace($pattern,"<?php /*\\1*/?>",$content);
 		$pattern="/{$left_delimiter_quote}([\S].*){$right_delimiter_quota}/msU";
 		return preg_replace_callback($pattern,'Tpl::_match',$content);
 	}
