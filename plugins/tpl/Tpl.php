@@ -25,7 +25,7 @@ class Tpl{
 	var $right_delimiter =  '}';
 	var $template_dir    =  'templates';
 	var $compile_dir     =  'templates_c';
-	var $force_compile   =  true;
+	var $force_compile   =  false;
 	var $safe_mode = true;
 	function assign($tpl_var, $value = null){
 		if (is_array($tpl_var)){
