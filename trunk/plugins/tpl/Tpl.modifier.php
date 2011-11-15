@@ -1,0 +1,10 @@
+<?php
+function tpl_modifier_tostring($mixed){
+	return var_export($mixed,true);
+}
+function tpl_modifier_tr($string,$zone="main"){
+	return SLanguage::tr($string,$zone);
+}
+function tpl_modifier_default($input,$default=""){
+	return empty($input)?$default:$input;
+}
