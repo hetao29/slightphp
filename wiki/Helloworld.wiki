@@ -1,5 +1,5 @@
+#summary hello,world示例
 #labels Featured,Phase-Implementation,Phase-QA
-#hello,world
 
 = Hello, world! =
 
