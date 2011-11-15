@@ -1,3 +1,4 @@
+#labels Featured
 #nginx rewrite route examples.
 
 = Nginx Rewrite 例子 =
