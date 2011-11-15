@@ -1,5 +1,5 @@
-#labels Featured,Phase-Support,Phase-QA,Zone别名
-#zoneAlias
+#summary Zone别名
+#labels Featured,Phase-Support,Phase-QA
 
 = zoneAlias 功能说明 =
 
