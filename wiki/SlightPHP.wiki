@@ -1,5 +1,5 @@
+#summary so 扩展加载方法
 #labels Featured
-#so 加载方法
 
 = 使用方法 =
 
