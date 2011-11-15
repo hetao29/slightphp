@@ -1,5 +1,5 @@
+#summary nginx rewrite示例
 #labels Featured
-#nginx rewrite route examples.
 
 = Nginx Rewrite 例子 =
 
