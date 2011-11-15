@@ -1,5 +1,5 @@
+#summary STpl快捷的PHP模板引擎
 #labels Featured,Phase-Implementation,PHP模板
-#STpl快捷的PHP模板引擎
 
 = 主要特性 =
 
