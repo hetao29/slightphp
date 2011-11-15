@@ -131,6 +131,6 @@ class Tpl{
 		$pattern="/{$left_delimiter_quote}\*(.*)\*{$right_delimiter_quota}/msU";
 		$content = preg_replace($pattern,"<?php /*\\1*/?>",$content);
 		$pattern="/{$left_delimiter_quote}([\S].*){$right_delimiter_quota}/msU";
-		return preg_replace_callback($pattern,'Tpl::_match',$content);
+		return preg_replace_callback($pattern,array($this,'_match'),$content);
 	}
 }
