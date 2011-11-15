@@ -79,9 +79,11 @@ class index_main extends STpl{
 {{{
 {$key}
 {$key|tostring}
+{$key_array['key']}
+{$key_object->key}
 }}}
 
- * 变量赋值
+ * 模板里变量赋值
 
 {{{
 {$key="name"}
