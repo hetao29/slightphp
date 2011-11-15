@@ -1,5 +1,5 @@
+#summary Apache Rewrite 例子
 #labels Featured,Phase-Requirements,Phase-Support,Phase-QA
-#apache rewrite route examples.
 
 = Apache Rewrite 例子 =
 
