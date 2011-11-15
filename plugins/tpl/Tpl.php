@@ -25,7 +25,7 @@ class Tpl{
 	var $right_delimiter =  '}';
 	var $template_dir    =  'templates';
 	var $compile_dir     =  'templates_c';
-	var $force_compile   =  false;
+	var $force_compile   =  true;
 	var $safe_mode = true;
 	function assign($tpl_var, $value = null){
 		if (is_array($tpl_var)){
@@ -88,13 +88,13 @@ class Tpl{
 		//{fun $param }
 		//{fun $param1 $param2 "param3" }
 		$pattern="/^(\w+)\\s+(.*)/ms";
-		$content = preg_replace_callback($pattern,create_function('$m','$tmp=explode(" ",trim($m[2]));$func="tpl_function_".$m[1]; $params=implode(",",$tmp);if(function_exists($func))return "<?php echo $func($params);?>";else return $m[0];'),$content);
+		$content = preg_replace_callback($pattern,create_function('$m','$tmp=explode(" ",trim($m[2]));$func="tpl_function_".$m[1]; $params=implode(",",$tmp);if(function_exists($func))return "<?php echo $func($params);?>";else return "$func function not exists!";'),$content);
 		//modifier，支持多种格式
 		//{$v|modifer}
 		//{$v|modifer:1:2}
 		//{'v'|modifer:1:2}
 		$pattern="/^(\S+)\\|(\S+)/ms";
-		$content = preg_replace_callback($pattern,create_function('$m','$tmp=explode(":",trim($m[2]));$func="tpl_modifier_".$tmp[0]; $tmp[0] = $m[1]; $params=implode(",",$tmp);if(function_exists($func))return "<?php echo $func($params);?>";else return $m[0];'),$content);
+		$content = preg_replace_callback($pattern,create_function('$m','$tmp=explode(":",trim($m[2]));$func="tpl_modifier_".$tmp[0]; $tmp[0] = $m[1]; $params=implode(",",$tmp);if(function_exists($func))return "<?php echo $func($params);?>";else return "$func function not exists!";'),$content);
 		//{{{加ECHO
 		$pattern="/^(\\$[a-zA-z0-9_]+)/ms";
 		$content = preg_replace(
