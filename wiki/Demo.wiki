@@ -1,11 +1,13 @@
+#summary 使用了SlightPHP的网站
 #labels Featured
-#demo and samples.
 
-= Introduction =
+= 网如列表 =
 
 1.YOUKU
 http://lipton-icha.youku.com
 
+2.Zhubajie
+http://zhubajie.com
 
-
-= Details =
+3.Youku.FM
+http://youku.f
