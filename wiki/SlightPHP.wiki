@@ -1,6 +1,7 @@
-#summary One-sentence summary of this page.
+#labels Featured
+#so 加载方法
 
-= Introduction =
+= 使用方法 =
 
 cd pecl
 
@@ -13,11 +14,3 @@ make install
 extension=SlightPHP.so
 
 就可以了
-
-
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
