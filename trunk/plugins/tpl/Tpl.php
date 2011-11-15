@@ -25,7 +25,7 @@ class Tpl{
 	var $right_delimiter =  '}';
 	var $template_dir    =  'templates';
 	var $compile_dir     =  'templates_c';
-	var $force_compile   =  false;
+	var $force_compile   =  true;
 	var $safe_mode = true;
 	function assign($tpl_var, $value = null){
 		if (is_array($tpl_var)){
@@ -53,7 +53,7 @@ class Tpl{
 	}
 	function _match($matches){
 		$content = $matches[1];
-		//{{{if,elseif,/if; foreach,/foreach; for,/for*/
+		//{{{if,elseif,/if; foreach,/foreach; for,/for
 		$pattern="/^(if|foreach|for)(.*)/msi";
 		//$content = preg_replace_callback($pattern,create_function('$m','print_r($m);'),$content);
 		$content = preg_replace(
@@ -91,14 +91,6 @@ class Tpl{
 		//{'v'|modifer:1:2}
 		$pattern="/^(\S+)\\|(\S+)/ms";
 		$content = preg_replace_callback($pattern,create_function('$m','$tmp=explode(":",trim($m[2]));$func="tpl_modifier_".$tmp[0]; $tmp[0] = $m[1]; $params=implode(",",$tmp);if(function_exists($func))return "echo $func($params)";else return "/* $func function not exists! */";'),$content);
-		//{{{加ECHO
-		$pattern="/^(\\$\w+)$/ms";
-		$content = preg_replace(
-			$pattern,
-			'echo \\1',
-			$content
-		);
-		//}}}
 		//{{{替换变量
 		$pattern="/\\$(\w+)/ms";
 		$content = preg_replace(
@@ -106,6 +98,14 @@ class Tpl{
 			'Tpl::$_tpl_vars["\1"]',
 			$content
 		);
+		//{{{加ECHO
+		$pattern="/^(Tpl::\\$\S+)$/ms";
+		$content = preg_replace(
+			$pattern,
+			'echo \\1',
+			$content
+		);
+		//}}}
 		$content="<?php $content; ?>";
 		//}}}
 		return $content;
