@@ -1,5 +1,5 @@
+#summary SDb 数据库插件
 #labels Featured,database
-#SDb 数据库插件
 
 = 主要特性 =
 
