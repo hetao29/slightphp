@@ -1,10 +1,11 @@
-#summary One-sentence summary of this page.
+#labels Featured
+#RewriteRule
 
-= Introduction =
+= 错误信息 =
 
 No input file specified.
 
-= Details =
+= 请修改成下面设置 =
 
 change .htaccess file:
 {{{
