@@ -157,7 +157,7 @@ class Db{
 				//TABLE
 				$table = $this->__array2string($table,true);
 				//condition
-				$condiStr = $this->__quote($condition,"AND",$bind);
+				$condiStr = $this->__quote($condition,"AND");
 
 				if($condiStr!=""){
 						$condiStr=" WHERE ".$condiStr;
@@ -215,7 +215,7 @@ class Db{
 				$sql="SELECT $item FROM $table $join $condiStr $groupby $orderby_sql $limit_sql";
 				$start = microtime(true);
 
-				$result = $this->__query($sql,$bind);
+				$result = $this->__query($sql);
 				if($result!==false){
 						$data = new DbData;
 						$data->page = $this->page;
@@ -225,7 +225,7 @@ class Db{
 						//{{{
 						if($this->count==true){
 								$countsql="SELECT count(1) totalSize FROM $table $join $condiStr $groupby";
-								$result_count = $this->__query($countsql,$bind);
+								$result_count = $this->__query($countsql);
 								if($result_count!==false){
 									$data->totalSize = $result_count[0]['totalSize'];
 									if($this->limit>0){
@@ -268,15 +268,15 @@ class Db{
 		 * @param string|array|object $item
 		 * @return int|boolean
 		 */
-		public function update($table,$condition="",$item=""){
+		public function update($table,$condition,$item){
 				$table = $this->__array2string($table);
-				$value = $this->__quote($item,",",$bind_v);
-				$condiStr = $this->__quote($condition,"AND",$bind_c);
+				$value = $this->__quote($item,",");
+				$condiStr = $this->__quote($condition,"AND");
 				if($condiStr!=""){
 						$condiStr=" WHERE ".$condiStr;
 				}
 				$sql="UPDATE $table SET $value $condiStr";
-				return $this->__query($sql,$bind_v,$bind_c);
+				return $this->__query($sql);
 		}
 		/**
 		 * delete
@@ -285,14 +285,14 @@ class Db{
 		 * @param string|array|object $condition
 		 * @return int|boolean
 		 */
-		public function delete($table,$condition=""){
+		public function delete($table,$condition){
 				$table = $this->__array2string($table);
-				$condiStr = $this->__quote($condition,"AND",$bind);
+				$condiStr = $this->__quote($condition,"AND");
 				if($condiStr!=""){
 						$condiStr=" WHERE ".$condiStr;
 				}
 				$sql="DELETE FROM  $table $condiStr";
-				return $this->__query($sql,$bind);
+				return $this->__query($sql);
 		}
 		/**
 		 * insert
@@ -315,14 +315,14 @@ class Db{
 						$command.=" DELAYED ";
 				}
 
-				$f = $this->__quote($item,",",$bind_f);
+				$f = $this->__quote($item,",");
 
 				$sql="$command INTO $table SET $f ";
-				$v = $this->__quote($update,",",$bind_v);
+				$v = $this->__quote($update,",");
 				if(!empty($v)){
 						$sql.="ON DUPLICATE KEY UPDATE $v";
 				}
-				return $this->__query($sql,$bind_f,$bind_v);
+				return $this->__query($sql);
 		}
 
 		/**
@@ -332,7 +332,7 @@ class Db{
 		 * @return Array $result  || Boolean false
 		 */
 
-		private function __query($sql,$bind1=array(),$bind2=array()){
+		private function __query($sql){
 				//{{{
 				//SQL MODE 默认为DELETE，INSERT，REPLACE 或 UPDATE,不需要返回值
 				$sql_mode = 1;//1.更新模式 2.查询模式 3.插入模式
@@ -353,19 +353,8 @@ class Db{
 						$this->__connect($forceReconnect=true);
 				}
 				if($this->engine=="mysql"){
-						//BIND参数
-						if($bind1){
-								foreach($bind1 as $v){
-										$sql = preg_replace("/\?/","\"".mysql_real_escape_string($v,Db::$_globals[$this->_key])."\"",$sql,1);
-								}
-						}
-						if($bind2){
-								foreach($bind2 as $v){
-										$sql = preg_replace("/\?/","\"".mysql_real_escape_string($v,Db::$_globals[$this->_key])."\"",$sql,1);
-								}
-						}
 						if(defined("DEBUG")){
-								echo "SQL:$sql\n";
+								echo "MYSQL SQL:$sql\n";
 						}
 						$result = mysql_query($sql,Db::$_globals[$this->_key]);
 						if(!$result){
@@ -383,18 +372,8 @@ class Db{
 
 				}elseif($this->engine=="mysqli"){
 						//BIND参数
-						if($bind1){
-								foreach($bind1 as $v){
-										$sql = preg_replace("/\?/","\"".Db::$_globals[$this->_key]->real_escape_string($v)."\"",$sql,1);
-								}
-						}
-						if($bind2){
-								foreach($bind2 as $v){
-										$sql = preg_replace("/\?/","\"".Db::$_globals[$this->_key]->real_escape_string($v)."\"",$sql,1);
-								}
-						}
 						if(defined("DEBUG")){
-								echo "SQL:$sql\n";
+								echo "MYSQLI SQL:$sql\n";
 						}
 						$result = Db::$_globals[$this->_key]->query($sql);
 						if(!$result){
@@ -411,25 +390,13 @@ class Db{
 						}
 				}else{
 						if(defined("DEBUG")){
-								echo "SQL:$sql\n";
-								print_r($bind1);
-								print_r($bind2);
+								echo "PDO SQL:$sql\n";
 						}
 						//PDO
 						$stmt = Db::$_globals[$this->_key]->prepare($sql);
 						if(!$stmt){
 								$this->error['code']=Db::$_globals[$this->_key]->errorCode ();
 								$this->error['msg']=Db::$_globals[$this->_key]->errorInfo ();
-						}
-						if(!empty($bind1)){
-								foreach($bind1 as $k=>$v){
-										$stmt->bindValue($k,$v);
-								}
-						}
-						if(!empty($bind2)){
-								foreach($bind2 as $k=>$v){
-										$stmt->bindValue($k + count($bind1),$v);
-								}
 						}
 						if($stmt->execute ()){
 								if($sql_mode==2){
@@ -502,22 +469,20 @@ class Db{
 						$this->execute("SET NAMES ".$this->charset);
 				}
 		}
-		private function __quote($condition,$split="AND",&$bind){
+		private function __quote($condition,$split="AND"){
 				$condiStr = "";
-				if(!is_array($bind)){$bind=array();}
 				if(is_array($condition) || is_object($condition)){
 						$v1=array();
 						$i=1;
 						foreach($condition as $k=>$v){
 								if(!is_numeric($k)){
-										if(strpos($k,".")>0){
-												$v1[]="$k = ?";
-										}else{
-												$v1[]=$this->__addsqlslashes($k)." = ?";
-										}
-										$bind[$i++]=$v;
+									if(strpos($k,".")===false){
+										$k = $this->__addsqlslashes($k);
+									}
+									$v = addslashes($v);
+									$v1[]="$k = \"$v\"";
 								}else{
-										$v1[]=($v);
+									$v1[]=($v);
 								}
 						}
 						if(count($v1)>0){
