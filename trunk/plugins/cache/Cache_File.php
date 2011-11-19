@@ -70,7 +70,7 @@ class Cache_File extends CacheObject{
 	 */
 	function get($key){
 		$realFile = $this->_getDir($key);
-		if(!$realFile || !file_exists($realFile)){
+		if(!$realFile || !is_file($realFile)){
 			return false;
 		}
 		$fp=fopen($realFile,"r");
@@ -100,7 +100,7 @@ class Cache_File extends CacheObject{
 	 */
 	function del($key){
 		$realFile = $this->_getDir($key);
-		if(!$realFile || !file_exists($realFile)){
+		if(!$realFile || !is_file($realFile)){
 			return true;
 		}
 		return unlink($realFile);
@@ -115,26 +115,14 @@ class Cache_File extends CacheObject{
 		}
 		$realFile = $this->dir.DIRECTORY_SEPARATOR.implode(DIRECTORY_SEPARATOR,$tmp).".data";
 		if($mk){
-			if(!$this->_mkdirr(dirname($realFile))){
-				return false;
+			$dirname = dirname($realFile);
+			if(!is_dir($dirname)){
+				if(!mkdir($dirname,0777,true)){
+					return false;
+				}
 			}
 		}
 		return $realFile;
-	}
-	private function _mkdirr($pathname){
-		if (is_dir($pathname) || empty($pathname)) {
-		  return true;
-		}
-		if (is_file($pathname)) {
-		  return false;
-		}
-		$next_pathname = substr($pathname, 0, strrpos($pathname, DIRECTORY_SEPARATOR));
-		if ($this->_mkdirr($next_pathname)) {
-		  if (!file_exists($pathname)) {
-			return mkdir($pathname);
-		  }
-		}
-		return false;
 	}
 }
 ?>
