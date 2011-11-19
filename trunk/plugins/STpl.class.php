@@ -24,9 +24,9 @@ class STpl extends Tpl{
 	 * render a .tpl
 	 */
 	public function render($tpl,$parames=array()){
+		parent::$compile_dir = SlightPHP::$appDir.DIRECTORY_SEPARATOR."templates_c";
+		parent::$template_dir= SlightPHP::$appDir.DIRECTORY_SEPARATOR."templates";
 		parent::assign($parames);
-		$this->compile_dir = SlightPHP::$appDir.DIRECTORY_SEPARATOR."templates_c";
-		$this->template_dir= SlightPHP::$appDir.DIRECTORY_SEPARATOR."templates";
 		return parent::fetch("$tpl");
 	}
 	/**
