@@ -34,12 +34,11 @@
 普通类方法：
 
 {{{
-$tpl = new Tpl();
-$tpl->force_compile=true;
-$tpl->safe_mode=false;
-$tpl->template_dir=".";
-$tpl->assign("key","value");
-echo $tpl->fetch("test.tpl");
+Tpl::$force_compile=true;
+Tpl::$safe_mode=false;
+Tpl::$template_dir=".";
+Tpl::assign("key","value");
+echo Tpl::fetch("test.tpl");
 }}}
 
 扩展类方法：
@@ -145,11 +144,20 @@ function tpl_function_xxxx($param1,$param2,$param3...)
 
 = 系统插件 =
  * part 插件
-这个插件能帮你包含另一个路径里的代码
+这个插件能帮你包含另一个路径里的代码,这个路径就是URL，如
+{part "/index.main.header"}
+
+ * include 插件
+包含另一个tpl文件，这是相对于tpl本地文件来的。
+{include "header.tpl"}
+
  * tostring 插件
 这个插件，主要是显示string,array,object的内容
+
  * default 修改器
+
  * tr 修改器
 这个主要是用来翻译的，详细请看demo
+
  * tostring 修改器
  
