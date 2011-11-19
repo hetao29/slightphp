@@ -34,11 +34,11 @@
 普通类方法：
 
 {{{
-Tpl::$force_compile=true;
-Tpl::$safe_mode=false;
-Tpl::$template_dir=".";
-Tpl::assign("key","value");
-echo Tpl::fetch("test.tpl");
+STpl::$force_compile=true;
+STpl::$safe_mode=false;
+STpl::$template_dir=".";
+STpl::assign("key","value");
+echo STpl::fetch("test.tpl");
 }}}
 
 扩展类方法：
