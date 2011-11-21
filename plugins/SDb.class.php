@@ -99,6 +99,14 @@ class SDb extends Db{
 				$i =  array_rand($cache[$zone][$type]);
 				return $cache[$zone][$type][$i];
 		}
+		/**
+		 * 切换数据库配置文件
+		 * $param string $zone
+		 * $param string $type="main"
+		 */
+		function useConfig($zone,$type="main"){
+			$this->init(SDb::getConfig($zone,$type));
+		}
 
 
 
