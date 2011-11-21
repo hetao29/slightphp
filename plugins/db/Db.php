@@ -352,10 +352,10 @@ class Db{
 				if(empty(Db::$_globals[$this->_key])){
 						$this->__connect($forceReconnect=true);
 				}
+				if(defined("DEBUG")){
+					trigger_error("{$this->engine} ( $sql )");
+				}
 				if($this->engine=="mysql"){
-						if(defined("DEBUG")){
-								echo "MYSQL SQL:$sql\n";
-						}
 						$result = mysql_query($sql,Db::$_globals[$this->_key]);
 						if(!$result){
 								$this->error['code']=mysql_errno(Db::$_globals[$this->_key]);
@@ -371,10 +371,6 @@ class Db{
 						}
 
 				}elseif($this->engine=="mysqli"){
-						//BIND²ÎÊý
-						if(defined("DEBUG")){
-								echo "MYSQLI SQL:$sql\n";
-						}
 						$result = Db::$_globals[$this->_key]->query($sql);
 						if(!$result){
 								$this->error['code']=Db::$_globals[$this->_key]->errno;
@@ -389,10 +385,6 @@ class Db{
 								return Db::$_globals[$this->_key]->affected_rows;
 						}
 				}else{
-						if(defined("DEBUG")){
-								echo "PDO SQL:$sql\n";
-						}
-						//PDO
 						$stmt = Db::$_globals[$this->_key]->prepare($sql);
 						if(!$stmt){
 								$this->error['code']=Db::$_globals[$this->_key]->errorCode ();
@@ -412,7 +404,7 @@ class Db{
 						}
 				}
 				if(defined("DEBUG")){
-						print_r($this->error);
+					trigger_error("DB ERROR!!! ( ".var_export($this->error['msg'],true)." ), CODE( {$this->error['code']} )",E_USER_WARNING);
 				}
 				return false;
 		}
@@ -434,10 +426,11 @@ class Db{
 								Db::$_globals[$this->_key] = mysql_connect($this->host.":".$this->port,$this->user,$this->password,true);
 								if(!Db::$_globals[$this->_key]){
 										if(defined("DEBUG")){
-												die("connect database error:\n".mysql_error(Db::$_globals[$this->_key]));
+												trigger_error("CONNECT DATABASE ERROR ( ".mysql_error()." ) ",E_USER_WARNING);
 										}else{
-												die("connect database error:");
+												trigger_error("CONNECT DATABASE ERROR!!!",E_USER_WARNING);
 										}
+										return false;
 								}
 								if($this->database!=""){
 										mysql_select_db($this->database,Db::$_globals[$this->_key]);
@@ -446,10 +439,11 @@ class Db{
 								Db::$_globals[$this->_key] = new mysqli($this->host,$this->user,$this->password,$this->database,$this->port);
 								if(Db::$_globals[$this->_key]->connect_errno) {
 										if(defined("DEBUG")){
-												die("connect database error:\n".Db::$_globals[$this->_key]->connect_error);
+												trigger_error("CONNECT DATABASE ERROR ( ".Db::$_globals[$this->_key]->connect_error." ) ",E_USER_WARNING);
 										}else{
-												die("connect database error:");
+												trigger_error("CONNECT DATABASE ERROR!!!",E_USER_WARNING);
 										}
+										return false;
 								}
 						}else{
 								$tmp = explode("_",$this->engine);
@@ -458,10 +452,11 @@ class Db{
 										Db::$_globals[$this->_key] = new PDO($driver .":dbname=".$this->database.";host=".$this->host.";port=".$this->port,$this->user,$this->password);
 								}catch(Exception $e){
 										if(defined("DEBUG")){
-												die("connect database error:\n".var_export($e,true));
+												trigger_error("CONNECT DATABASE ERROR ( ".$e->getMessage()." ) ",E_USER_WARNING);
 										}else{
-												die("connect database error:");
+												trigger_error("CONNECT DATABASE ERROR!!!",E_USER_WARNING);
 										}
+										return false;
 								}
 						}
 				}
