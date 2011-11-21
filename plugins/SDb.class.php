@@ -53,7 +53,7 @@ class SDb extends Db{
 		 * @return array
 		 */
 		static function getConfig($zone,$type="main"){
-				if(!SDb::$_DbConfigFile){return;}
+				if(!SDb::$_DbConfigFile){return array();}
 
 
 				$cache = &SDb::$_DbConfigCache;
@@ -68,12 +68,8 @@ class SDb extends Db{
 				}elseif(isset($file_data[SDb::$_DbdefaultZone])){
 						$db = $file_data[SDb::$_DbdefaultZone];
 				}else{
-						return;
+						return array();
 				}
-				foreach($db as $key=>$row){
-
-				}
-
 				//no query to direct to main
 				$query_flag = false;
 				foreach($db as $key =>$row){
