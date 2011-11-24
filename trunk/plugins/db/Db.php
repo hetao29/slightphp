@@ -226,7 +226,7 @@ class Db{
 						if($this->count==true){
 								$countsql="SELECT count(1) totalSize FROM $table $join $condiStr $groupby";
 								$result_count = $this->__query($countsql);
-								if($result_count!==false){
+								if(!empty($result_count[0])){
 									$data->totalSize = $result_count[0]['totalSize'];
 									if($this->limit>0){
 										$data->totalPage = ceil($data->totalSize/$data->limit);
