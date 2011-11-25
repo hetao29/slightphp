@@ -35,14 +35,17 @@ class SLanguage{
 				$l=explode(";",$_SERVER['HTTP_ACCEPT_LANGUAGE']);
 				$t=explode(',',$l[0]);
 				foreach($t as $locale){
-					$locales[] = strtolower($locale);
+					$k = strtolower($locale);
+					$locales[$k] = $k;
 				}
 			}
 		}else{
-			$locales[] = strtolower(SLanguage::$locale);
+			$k = strtolower(SLanguage::$locale);
+			$locales[$k] = $k;
 		}
 		if(!empty(SLanguage::$defaultLocale)){
-			$locales[] = strtolower(SLanguage::$defaultLocale);
+			$k = strtolower(SLanguage::$defaultLocale);
+			$locales[$k] = $k;
 		}
 		if(empty($locales) || !is_array($locales))return $source;
 
