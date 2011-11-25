@@ -21,41 +21,42 @@ class SLanguage{
 	 *
 	 */
 	static $languageDir;
+	//强制翻译语言
 	static $locale;
-	//static $charset;
+	//默认语言，当其它都没有设置时，使用这个默认翻译
 	static $defaultLocale;
 
 	static $_languageCache;
+	static $_loadedFile;
 	static public function tr($source,$zone="main"){
 		$locales = array();
-		if(empty(SLanguage::$defaultLocale)){
-			//auto detec
+		if(empty(SLanguage::$locale)){
 			if(!empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])){
 				$l=explode(";",$_SERVER['HTTP_ACCEPT_LANGUAGE']);
 				$t=explode(',',$l[0]);
 				foreach($t as $locale){
-					SLanguage::$defaultLocale[$locale] = strtolower($locale);
+					$locales[] = strtolower($locale);
 				}
 			}
+		}else{
+			$locales[] = strtolower(SLanguage::$locale);
 		}
-		$locales = SLanguage::$defaultLocale;
-		if(SLanguage::$locale){
-			$locales[SLanguage::$locale] = SLanguage::$locale;
+		if(!empty(SLanguage::$defaultLocale)){
+			$locales[] = strtolower(SLanguage::$defaultLocale);
 		}
 		if(empty($locales) || !is_array($locales))return $source;
 
-		$locales = @array_reverse ($locales);
-
 		foreach($locales as $locale){
 			
-			if(!empty(SLanguage::$_languageCache[$locale][$zone][$source])){
+			if(isset(SLanguage::$_languageCache[$locale][$zone][$source])){
 				return SLanguage::$_languageCache[$locale][$zone][$source];
 			}
 
 			$filename = SLanguage::$languageDir."/".$locale."/".$zone.".ini";
-			if(file_exists($filename)){
+			if(file_exists($filename) && !isset(SLanguage::$_loadedFile[$filename])){
+				SLanguage::$_loadedFile[$filename]=1;
 				SLanguage::$_languageCache[$locale][$zone] = parse_ini_file($filename);
-				if(!empty(SLanguage::$_languageCache[$locale][$zone][$source])){
+				if(isset(SLanguage::$_languageCache[$locale][$zone][$source])){
 					return SLanguage::$_languageCache[$locale][$zone][$source];
 				}
 			}
