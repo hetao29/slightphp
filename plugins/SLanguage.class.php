@@ -26,57 +26,61 @@ class SLanguage{
 	//默认语言，当其它都没有设置时，使用这个默认翻译
 	static $defaultLocale;
 
-	static $_languageCache;
-	static $_loadedFile;
+	private static $_languageCache;
+	private static $_locales=array();
 	static public function tr($source,$zone="main"){
-		$locales = array();
-		if(empty(SLanguage::$locale)){
-			if(!empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])){
-				$l=explode(";",$_SERVER['HTTP_ACCEPT_LANGUAGE']);
-				$t=explode(',',$l[0]);
-				foreach($t as $locale){
-					$k = strtolower($locale);
-					$locales[$k] = $k;
+		if(empty(self::$_locales)){
+			if(empty(self::$locale)){
+				if(!empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])){
+					$l=@explode(",",$_SERVER['HTTP_ACCEPT_LANGUAGE']);
+					if(!empty($l)){
+						foreach($l as $t){
+							$t=@explode(';',$t);
+							if(!empty($t)){
+								$k = strtolower($t[0]);
+								self::$_locales[$k] = $k;
+							}
+						}
+					}
 				}
+			}else{
+				$k = strtolower(self::$locale);
+				self::$_locales[$k] = $k;
 			}
-		}else{
-			$k = strtolower(SLanguage::$locale);
-			$locales[$k] = $k;
+			if(!empty(self::$defaultLocale)){
+				$k = strtolower(self::$defaultLocale);
+				self::$_locales[$k] = $k;
+			}
 		}
-		if(!empty(SLanguage::$defaultLocale)){
-			$k = strtolower(SLanguage::$defaultLocale);
-			$locales[$k] = $k;
-		}
-		if(empty($locales) || !is_array($locales))return $source;
+		if(empty(self::$_locales) || !is_array(self::$_locales))return $source;
 
-		foreach($locales as $locale){
+		foreach(self::$_locales as $locale){
 			
-			if(isset(SLanguage::$_languageCache[$locale][$zone][$source])){
-				return SLanguage::$_languageCache[$locale][$zone][$source];
+			if(isset(self::$_languageCache[$locale][$zone][$source])){
+				return self::$_languageCache[$locale][$zone][$source];
 			}
 
-			$filename = SLanguage::$languageDir."/".$locale."/".$zone.".ini";
-			if(file_exists($filename) && !isset(SLanguage::$_loadedFile[$filename])){
-				SLanguage::$_loadedFile[$filename]=1;
-				SLanguage::$_languageCache[$locale][$zone] = parse_ini_file($filename);
-				if(isset(SLanguage::$_languageCache[$locale][$zone][$source])){
-					return SLanguage::$_languageCache[$locale][$zone][$source];
+			$filename = self::$languageDir."/".$locale."/".$zone.".ini";
+			if(is_file($filename) && !isset(self::$_languageCache[$locale][$zone])){
+				self::$_languageCache[$locale][$zone] = parse_ini_file($filename);
+				if(isset(self::$_languageCache[$locale][$zone][$source])){
+					return self::$_languageCache[$locale][$zone][$source];
 				}
 			}
 		}
 		return $source;
 	}
 	static public function setLanguageDir($dir){
-		SLanguage::$languageDir = $dir;
+		self::$languageDir = $dir;
 	}
 	static public function getLanguageDir(){
-		return SLanguage::$languageDir;
+		return self::$languageDir;
 	}
 	static public function setLocale($locale){
-		SLanguage::$locale = $locale;
+		self::$locale = $locale;
 	}
 	static public function getLocale(){
-		return SLanguage::$locale;
+		return self::$locale;
 	}
 }
 ?>
