@@ -239,7 +239,7 @@ final class SlightPHP{
 
 		$app_file = self::$appDir . DIRECTORY_SEPARATOR . $zone . DIRECTORY_SEPARATOR . $page . ".page.php";
 		if(!is_file($app_file)){
-			self::debug("file[$app_file] not exists");
+			self::debug("file[$app_file] does not exists");
 			return false;
 		}else{
 			require_once(realpath($app_file));
@@ -248,7 +248,7 @@ final class SlightPHP{
 		$classname = $zone ."_". $page;
 		
 		if(!class_exists($classname)){
-			self::debug("class[$classname] not exists");
+			self::debug("class[$classname] does not exists");
 			return false;
 		}
 		$path_array[0] = $zone;
@@ -256,7 +256,7 @@ final class SlightPHP{
 		$path_array[2] = $entry;
 		$classInstance = new $classname($path_array);
 		if(!method_exists($classInstance,$method)){
-			self::debug("method[$method] not exists in class[$classname]");
+			self::debug("method[$method] does not exists in class[$classname]");
 			return false;
 		}
 		return call_user_func(array(&$classInstance,$method),$path_array);
