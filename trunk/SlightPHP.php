@@ -70,7 +70,7 @@ final class SlightPHP{
 	 * @return boolean
 	 */
 	public static function setZoneAlias($zone,$alias){
-		SlightPHP::$zoneAlias[$zone]=$alias;
+		self::$zoneAlias[$zone]=$alias;
 		return true;
 	}
 	/**
@@ -78,7 +78,7 @@ final class SlightPHP{
 	 * @return string | boolean
 	 */
 	public static function getZoneAlias($zone){
-		return isset(SlightPHP::$zoneAlias[$zone]) ? SlightPHP::$zoneAlias[$zone] : false;
+		return isset(self::$zoneAlias[$zone]) ? self::$zoneAlias[$zone] : false;
 	}
 	
 	/**
@@ -89,7 +89,7 @@ final class SlightPHP{
 	 */
 
 	public static function setDefaultZone($zone){
-		SlightPHP::$defaultZone = $zone;
+		self::$defaultZone = $zone;
 		return true;
 	}
 	/**
@@ -99,7 +99,7 @@ final class SlightPHP{
 	 */
 
 	public static function getDefaultZone(){
-		return SlightPHP::$defaultZone;
+		return self::$defaultZone;
 	}
 	/**
 	 * defaultClass set
@@ -108,7 +108,7 @@ final class SlightPHP{
 	 * @return boolean
 	 */
 	public static function setDefaultPage($page){
-		SlightPHP::$defaultPage = $page;
+		self::$defaultPage = $page;
 		return true;
 	}
 	/**
@@ -117,7 +117,7 @@ final class SlightPHP{
 	 * @return string
 	 */
 	public static function getDefaultPage(){
-		return SlightPHP::$defaultPage;
+		return self::$defaultPage;
 	}
 	/**
 	 * defaultMethod set
@@ -126,7 +126,7 @@ final class SlightPHP{
 	 * @return boolean
 	 */
 	public static function setDefaultEntry($entry){
-		SlightPHP::$defaultEntry = $entry;
+		self::$defaultEntry = $entry;
 		return true;
 	}
 	/**
@@ -135,7 +135,7 @@ final class SlightPHP{
 	 * @return string $method
 	 */
 	public static function getDefaultEntry(){
-		return SlightPHP::$defaultEntry;
+		return self::$defaultEntry;
 	}
 	/**
 	 * splitFlag set
@@ -144,7 +144,7 @@ final class SlightPHP{
 	 * @return boolean
 	 */
 	public static function setSplitFlag($flag){
-		SlightPHP::$splitFlag = $flag;
+		self::$splitFlag = $flag;
 		return true;
 	}
 	/**
@@ -153,7 +153,7 @@ final class SlightPHP{
 	 * @return string
 	 */
 	public static function getSplitFlag(){
-		return SlightPHP::$splitFlag;
+		return self::$splitFlag;
 	}
 	/**
 	 * appDir set && get
@@ -164,7 +164,7 @@ final class SlightPHP{
 	 */
 
 	public static function setAppDir($dir){
-		SlightPHP::$appDir = $dir;
+		self::$appDir = $dir;
 		return true;
 	}
 	/**
@@ -173,7 +173,7 @@ final class SlightPHP{
 	 * @return string
 	 */
 	public static function getAppDir(){
-		return SlightPHP::$appDir;
+		return self::$appDir;
 	}
 	/**
 	 * debug status set
@@ -182,7 +182,7 @@ final class SlightPHP{
 	 * @return boolean
 	 */
 	public static function setDebug($debug){
-		SlightPHP::$_debug = $debug;
+		self::$_debug = $debug;
 		return true;
 	}
 	/**
@@ -191,7 +191,7 @@ final class SlightPHP{
 	 * @return boolean 
 	 */
 	public static function getDebug(){
-		return SlightPHP::$_debug;
+		return self::$_debug;
 	}
 
 	/**
@@ -201,9 +201,9 @@ final class SlightPHP{
 	 * @return boolean
 	 */
 
-	final public static function run($path=""){
+	public static function run($path=""){
 		//{{{
-		$splitFlag = preg_quote(SlightPHP::$splitFlag,"/");
+		$splitFlag = preg_quote(self::$splitFlag,"/");
 		$path_array = array();
 		if(!empty($path)){
 			$isPart = true;
@@ -219,27 +219,27 @@ final class SlightPHP{
 			}
 		}
 
-		$zone	= !empty($path_array[0]) ? $path_array[0] : SlightPHP::$defaultZone ;
-		$page	= !empty($path_array[1]) ? $path_array[1] : SlightPHP::$defaultPage ;
-		$entry	= !empty($path_array[2]) ? $path_array[2] : SlightPHP::$defaultEntry ;
+		$zone	= !empty($path_array[0]) ? $path_array[0] : self::$defaultZone ;
+		$page	= !empty($path_array[1]) ? $path_array[1] : self::$defaultPage ;
+		$entry	= !empty($path_array[2]) ? $path_array[2] : self::$defaultEntry ;
 
-		if(SlightPHP::$zoneAlias && ($key = array_search($zone,SlightPHP::$zoneAlias))!==false){
+		if(self::$zoneAlias && ($key = array_search($zone,self::$zoneAlias))!==false){
 			$zone = $key;
 		}
 		if(!$isPart){
-			SlightPHP::$zone	= $zone;
-			SlightPHP::$page	= $page;
-			SlightPHP::$entry	= $entry;
+			self::$zone	= $zone;
+			self::$page	= $page;
+			self::$entry	= $entry;
 		}else{
-			if($zone == SlightPHP::$zone && $page == SlightPHP::$page && $entry == SlightPHP::$entry){
-				SlightPHP::debug("part ignored [$path]");
+			if($zone == self::$zone && $page == self::$page && $entry == self::$entry){
+				self::debug("part ignored [$path]");
 				return;
 			}
 		}
 
-		$app_file = SlightPHP::$appDir . DIRECTORY_SEPARATOR . $zone . DIRECTORY_SEPARATOR . $page . ".page.php";
+		$app_file = self::$appDir . DIRECTORY_SEPARATOR . $zone . DIRECTORY_SEPARATOR . $page . ".page.php";
 		if(!is_file($app_file)){
-			SlightPHP::debug("file[$app_file] not exists");
+			self::debug("file[$app_file] not exists");
 			return false;
 		}else{
 			require_once(realpath($app_file));
@@ -248,7 +248,7 @@ final class SlightPHP{
 		$classname = $zone ."_". $page;
 		
 		if(!class_exists($classname)){
-			SlightPHP::debug("class[$classname] not exists");
+			self::debug("class[$classname] not exists");
 			return false;
 		}
 		$path_array[0] = $zone;
@@ -256,7 +256,7 @@ final class SlightPHP{
 		$path_array[2] = $entry;
 		$classInstance = new $classname($path_array);
 		if(!method_exists($classInstance,$method)){
-			SlightPHP::debug("method[$method] not exists in class[$classname]");
+			self::debug("method[$method] not exists in class[$classname]");
 			return false;
 		}
 		return call_user_func(array(&$classInstance,$method),$path_array);
@@ -266,11 +266,11 @@ final class SlightPHP{
 	/**
 	 * @var boolean
 	 */
-	public static $_debug=0;
+	private static $_debug=0;
 
 	/*private*/
 	private function debug($debugmsg){
-		if(SlightPHP::$_debug){
+		if(self::$_debug){
 			error_log($debugmsg);
 			echo "<!--slightphp debug: ".$debugmsg."-->";
 		}
