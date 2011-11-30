@@ -337,7 +337,7 @@ class Db_Mysql extends DbObject{
 			while($row=mysql_fetch_array($result,MYSQL_ASSOC)){
 				$tmp = array();
 				foreach($row as $key=>$value){
-					$tmp[$key]=stripslashes($value);
+					$tmp[$key]=($value);
 				}
 				$data->items[]=$tmp;
 				$data->pageSize++;
