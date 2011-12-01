@@ -409,21 +409,23 @@ class Db_Mysql extends DbObject{
 		}
 	}
 
-	function __quote($condition,$split="AND"){
+	private function __quote($condition,$split="AND"){
 		$condiStr = "";
-		if(is_array($condition)){
+		if(is_array($condition) || is_object($condition)){
 			$v1=array();
-			foreach($condition as $k=>$v)
-			{
-				if(!is_numeric($k))
-				{
-					$v1[]="`".$k."`"." = '".mysql_escape_string($v)."'";
+			$i=1;
+			foreach($condition as $k=>$v){
+				if(!is_numeric($k)){
+					if(strpos($k,".")===false){
+						$k = $this->__addsqlslashes($k);
+					}
+					$v = addslashes($v);
+					$v1[]="$k = \"$v\"";
 				}else{
 					$v1[]=($v);
 				}
 			}
-			if(count($v1)>0)
-			{
+			if(count($v1)>0){
 				$condiStr=implode(" ".$split." ",$v1);
 
 			}
@@ -432,5 +434,37 @@ class Db_Mysql extends DbObject{
 		}
 		return $condiStr;
 	}
+	private function __addsqlslashes($k){
+		if(strpos($k,"(")!==false || strpos($k,")")!==false || strpos($k,".")!==false){
+			return $k;
+		}else{
+			return "`$k`";
+		}
+	}
+		/*
+			function __quote($condition,$split="AND"){
+				$condiStr = "";
+				if(is_array($condition)){
+					$v1=array();
+					foreach($condition as $k=>$v)
+					{
+						if(!is_numeric($k))
+						{
+							$v1[]="`".$k."`"." = '".mysql_escape_string($v)."'";
+}else{
+	$v1[]=($v);
+}
+					}
+					if(count($v1)>0)
+					{
+						$condiStr=implode(" ".$split." ",$v1);
+
+					}
+					}else{
+						$condiStr=$condition;
+					}
+					return $condiStr;
+					}
+		 */
 }
 ?>
