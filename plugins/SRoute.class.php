@@ -22,19 +22,20 @@ class SRoute{
 	private static $_Routes=array();
 	static function setConfigFile($file){
 		self::$_RouteConfigFile= $file;
-		self::$_Routes = parse_ini_file(self::$_RouteConfigFile,true);
+		self::$_Routes = array_merge(self::$_Routes,parse_ini_file(self::$_RouteConfigFile,true));
 		self::parse();
 	}
 	static function getConfigFile(){
 		return self::$_RouteConfigFile;
 	}
 	static function set(array $route){
-		self::$_Routes = array($route);
+		self::$_Routes[] = $route;
 		self::parse();
 	}
 	private static function parse(){
 		$splitFlag = SlightPHP::getSplitFlag();
 		$splitFlag = $splitFlag{0};
+		print_r(self::$_Routes);
 		foreach(self::$_Routes as $route){
 			$pattern = $route['pattern'];
 			foreach($route as $k=>$v){
