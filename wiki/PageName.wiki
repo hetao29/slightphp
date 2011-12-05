@@ -1,0 +1,73 @@
+#summary SRoute框架路由功能
+
+= 简要说明 =
+
+ * Route功能,可以实现自定义的url配置与隐藏
+ * url检验功能
+ * 支持多个配置文件与多次set
+
+= 注意事项 =
+ * 请在加载框架文件后调用SRoute
+ * 请在SlightPHP::run()之前设置route选项
+
+= 使用方法 =
+
+{{{
+//设置配置文件(你可以设置多个)
+SRoute::setConfigFile("plugins/route1.ini");
+SRoute::setConfigFile("plugins/route2.ini");
+//或者单独设置
+SRoute::set(
+　　array(
+　　　　"pattern"=>"bb_(.*).html"
+　　)
+);
+
+if(($r=SlightPHP::run())===false){
+
+}
+}}}
+
+= SRoute方法 =
+
+ * static function setConfigFile($file)
+设置配置文件地址
+
+ * static function getConfigFile()
+获取配置文件地址
+
+ * static function set(array $route)
+单独设置$route,主要包括,
+{{{
+$route = array(
+    "pattern"=>"",
+    "zone"=>"",
+    "page"=>"",
+    "entry"=>"",
+    //与严格的限制
+}}}
+详细设置方法见下一章
+
+= 路由语法 = 
+{{{
+[bbs]
+pattern = "bbs_:id.html"
+zone="bbs"
+page="main"
+entry="show"
+:id="\d+"
+
+[user]
+pattern = "user_(.*).html"
+zone="user"
+page="main"
+entry="show"
+
+[user]
+pattern = "{zone}_(.*).html"
+zone="user"
+page="main"
+entry="show"
+
+}}}
+ 
