@@ -21,9 +21,9 @@ require_once(dirname(__FILE__)."/db/Db.php");
  */
 class SDb extends Db{
 
-		static $_DbConfigFile;
-		static $_DbdefaultZone="default";
-		static $_DbConfigCache;
+		private static $_DbConfigFile;
+		private static $_DbdefaultZone="default";
+		private static $_DbConfigCache;
 		/**
 		 * @deprecated
 		 * @return class Db
@@ -42,10 +42,10 @@ class SDb extends Db{
 				}
 		}
 		static function setConfigFile($file){
-				SDb::$_DbConfigFile = $file;
+				self::$_DbConfigFile = $file;
 		}
 		static function getConfigFile(){
-				return SDb::$_DbConfigFile;
+				return self::$_DbConfigFile;
 		}
 		/**
 		 * @param string $zone
@@ -53,20 +53,20 @@ class SDb extends Db{
 		 * @return array
 		 */
 		static function getConfig($zone,$type="main"){
-				if(!SDb::$_DbConfigFile){return array();}
+				if(!self::$_DbConfigFile){return array();}
 
 
-				$cache = &SDb::$_DbConfigCache;
+				$cache = &self::$_DbConfigCache;
 				if(isset($cache[$zone]) && isset($cache[$zone][$type])){
 						$i =  array_rand($cache[$zone][$type]);
 						return $cache[$zone][$type][$i];
 				}
 
-				$file_data = parse_ini_file(realpath(SDb::$_DbConfigFile),true);
+				$file_data = parse_ini_file(realpath(self::$_DbConfigFile),true);
 				if(isset($file_data[$zone])){
 						$db = $file_data[$zone];
-				}elseif(isset($file_data[SDb::$_DbdefaultZone])){
-						$db = $file_data[SDb::$_DbdefaultZone];
+				}elseif(isset($file_data[self::$_DbdefaultZone])){
+						$db = $file_data[self::$_DbdefaultZone];
 				}else{
 						return array();
 				}
@@ -101,7 +101,7 @@ class SDb extends Db{
 		 * $param string $type="main"
 		 */
 		function useConfig($zone,$type="main"){
-			$this->init(SDb::getConfig($zone,$type));
+			$this->init(self::getConfig($zone,$type));
 		}
 
 
