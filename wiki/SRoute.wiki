@@ -63,11 +63,64 @@ zone="user"
 page="main"
 entry="show"
 
+}}}
+
+= 路由示例1 =
+ * 把http://yourdomain.com/userid_232_username_MyName.html 这样的地址，定向到(zone为"user",page为"main",entry为"show",其中userid的id必须为整数。
+
+配置方法
+{{{
+;[user]这个为名称，可以随意设置，主要是用来区别不同的配置的
 [user]
-pattern = "{zone}_(.*).html"
+pattern = "userid_:id_username_:name.html"
 zone="user"
 page="main"
 entry="show"
+:id="\d+"
+:name="\w+"
+}}}
 
+或者直接设置
+
+{{{
+//或者单独设置
+SRoute::set(
+        array(
+                "pattern"=>"userid_:id_username_:name.html",
+                "zone"=>"user",
+                "entry"=>"show",
+                ":id"=>"\d+", 
+                ":name"=>"\w+",
+        )
+);
+
+if(($r=SlightPHP::run())===false){
+}
+}}}
+
+在pageShow方法里如何获取id值,$inPath[3]为第1个参数值，$inPath[4]为第2个，以此类推
+{{{
+class user_main{
+ function pageShow($inPath){
+   print_r($inPath);
+   $zone = $inPath[0];
+   $page = $inPath[1];
+   $entry = $inPath[2];
+   $id = $inPath[3];
+   $name = $inPath[4];
+ }
+}
 }}}
  
+
+= 路由示例2 =
+ * 把http://yourdomain.com/vXXXXXXXXX 这样的以v开头的地址，定向到(zone为"index",page为"main",entry为默认(entry),。
+
+配置方法(或者单独设置)
+{{{
+[v]
+pattern = "v(.*)"
+zone="user"
+page="main"
+entry="show"
+}}}
