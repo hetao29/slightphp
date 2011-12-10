@@ -300,6 +300,43 @@ if(!  $db->execute("select * from userx") ){
 
 = SDb数据库配置文件==
 
+ * 设置配置文件
+
+{{{
+void setConfigFile($file);
+}}}
+
+
+||*参数*||*类型*||*必须*||*默认*||*说明*||
+||$file||string||是|| ||文件全路径||
+
+
+ * 获取配置文件
+
+{{{
+string getConfigFile();
+}}}
+
+ * 获取配置
+
+{{{
+array getConfig($zone,$type="main")
+}}}
+||*参数*||*类型*||*必须*||*默认*||*说明*||
+||$zone||string||是|| ||zone||
+||$type||string||否|| ||main，query(主库，从库)||
+
+
+ * 切换配置参数，提供在SDb类中，切换数据库配置的方法
+
+{{{
+void useConfig($zone,$type="main")
+}}}
+||*参数*||*类型*||*必须*||*默认*||*说明*||
+||$zone||string||是|| ||zone||
+||$type||string||否|| ||main，query(主库，从库)||
+
+
  * 配置文件模板样例
 
 {{{
