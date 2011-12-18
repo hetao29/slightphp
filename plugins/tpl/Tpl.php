@@ -47,7 +47,7 @@ class Tpl{
 		$compiled_file = self::$compile_dir."/".base64_encode($tpl).".%%.tpl";
 		if(self::$force_compile || !is_file($compiled_file) || filemtime($tpl_real)>filemtime($compiled_file)){
 			$compiled_contents = self::_compile(file_get_contents($tpl_real));
-			file_put_contents($compiled_file,$compiled_contents);
+			file_put_contents($compiled_file,$compiled_contents,LOCK_EX);
 		}
 		include($compiled_file);
 	}
