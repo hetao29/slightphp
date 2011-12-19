@@ -16,6 +16,7 @@
 /**
  * @package SlightPHP
  */
+if(!class_exists("SlightPHP",false)):
 final class SlightPHP{
 	/**
 	 * @var string
@@ -276,4 +277,4 @@ final class SlightPHP{
 		}
 	}
 }
-?>
+endif;
