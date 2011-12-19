@@ -3,10 +3,8 @@
 = Lighttpd Rewrite 例子 =
 
 {{{
-server.modules = (
-    #增加重定向模块
-    "mod_rewrite",
-)
+#增加重定向模块
+server.modules += ("mod_rewrite")
 fastcgi.server = ( ".php" =>
         ((
           "host" => "127.0.0.1",
