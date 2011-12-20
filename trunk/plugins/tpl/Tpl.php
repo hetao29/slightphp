@@ -54,20 +54,22 @@ class Tpl{
 	static function _match($matches){
 		$content = $matches[1];
 		//{{{if,elseif,/if; foreach,/foreach; for,/for
-		$patterns = array("/^(if|foreach|for)(.*)/msi","/^(elseif)([\s*|\\(].*)/msi","/^(else)/msUi","/^\/(if|foreach|for)/msi");
-		$replacements=array('\\1(\\2){','}\\1(\\2){','}\\1{','}');
+		$pattern = "/^(if|foreach|for)(([\s|\(]+)(.+))/msi";
+		$content = preg_replace_callback($pattern,create_function('$m','$t = trim($m[3]);$v = trim($m[2]);if(empty($t)){return "{$m[1]}($v){";}else{return "{$m[1]}$v{";}'),$content);
+		$patterns = array("/^(elseif)([\s*|\\(].*)/msi","/^(else)/msUi","/^\/(if|foreach|for)/msi");
+		$replacements=array('}\\1(\\2){','}\\1{','}');
 		$content = preg_replace($patterns,$replacements,$content);
 		//}}}
 		//function
 		//{fun $param }
 		//{fun $param1 $param2 "param3" }
-		$pattern="/^(\w+)\\s+(.*)/ms";
+		$pattern = "/^(\w+)\\s+(.*)/ms";
 		$content = preg_replace_callback($pattern,create_function('$m','$tmp=explode(" ",trim($m[2]));$func="tpl_function_".$m[1]; $params=implode(",",$tmp);if(function_exists($func))return "echo $func($params)";else return "/* $func function not exists! */";'),$content);
 		//modifier，支持多种格式
 		//{$v|modifer}
 		//{$v|modifer:1:2}
 		//{'v'|modifer:1:2}
-		$pattern="/^(\S+)\\|(\S+)/ms";
+		$pattern = "/^(\S+)\\|(\S+)/ms";
 		$content = preg_replace_callback($pattern,create_function('$m','$tmp=explode(":",trim($m[2]));$func="tpl_modifier_".$tmp[0]; $tmp[0] = $m[1]; $params=implode(",",$tmp);if(function_exists($func))return "echo $func($params)";else return "/* $func function not exists! */";'),$content);
 		//{{{替换变量,加ECHO
 		$patterns = array("/\\$(\w+)/ms","/^(Tpl::\\$\S+)$/ms");
