@@ -42,7 +42,7 @@ class SRoute{
 					$pattern = str_replace("$k","($v)",$pattern);
 				}
 			}
-			if(preg_match_all("/$pattern/sm",$_SERVER['PATH_INFO'],$_m)){
+			if(preg_match_all("/$pattern/sm",!empty($_SERVER['PATH_INFO'])?$_SERVER['PATH_INFO']:$_SERVER['REQUEST_URI'],$_m)){
 				array_shift($_m);
 				if(!empty($_m)){
 					$params = "";
