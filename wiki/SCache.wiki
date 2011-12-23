@@ -1,4 +1,5 @@
 #summary SCache 缓存插件（默认引擎memcache，另外还支持file,apc）
+#labels Featured
 
 = 主要特性 =
 
