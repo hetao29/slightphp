@@ -1,0 +1,136 @@
+#summary SCache 缓存插件（默认引擎memcache，另外还支持file,apc）
+
+= 主要特性 =
+
+ * 多memcache server支持
+ * 支持server权重设置
+ * memcache依赖key的设置(同时支持，完全匹配与部分匹配模式)
+ * 优化的server分步算法，在增加memcache服务器组的时候，不会导致大部分cache过期
+ 
+= 使用方法 =
+
+{{{
+//设置memcache服务器
+SCache::init(array("host"=>"127.0.0.1","port"=>10006));
+//增加
+var_dump(SCache::set("name",new stdclass));
+//增加，60秒后过期
+var_dump(SCache::set("name2",60));
+//读取
+var_dump(SCache::get("name"));
+//删除
+var_dump(SCache::del("name"));
+}}}
+
+
+= 配置文件 =
+ * 配置文件模板样例
+
+{{{
+;配置一共有4个字段，分别用","分割，用":"连接，如果有空格，空格不会被忽略
+
+;host 主机IP，或者主机名
+;port 端口号
+;weight 权重，整数，默认为1
+;timeout 连接超时设置，默认为1
+
+;default 是默认的Cache配置
+
+[default]
+main1 = host:127.0.0.1,port:10006,weight:40,timeout:1,
+main2 = host:127.0.0.1,port:11211,weight:60,timeout:2,
+[video]
+main1 = host:127.0.0.1,port:10006,weight:40,timeout:3,
+main2 = host:127.0.0.1,port:11211,weight:60,timeout:4,
+
+}}}
+
+ * 实例
+
+{{{
+//设置配置文件地址
+SCache::setConfigFile($filePath="cache.ini");
+//多种获取方式
+$config = SCache::getConfig("default");//这里会返回[default]配置
+$config = SCache::getConfig("video");   //blog主库
+
+SCache::addServers($config);
+
+
+//SCache::addServer("10.10.221.12",10006,60);
+//SCache::addServer("10.10.221.12",11211,40);
+SCache::set("key1","value1",10000);
+SCache::set("key2","value1",10000);
+print_r(SCache::getServer("key1"));
+print_r(SCache::getServer("key2"));
+print_r(SCache::getServer("key3"));
+print_r(SCache::getServer("key4"));
+print_r(SCache::getServer("key5"));
+print_r(SCache::getServer("key6"));
+SCache::set("key2","value2",10000);
+SCache::set("key3","value3",10000);
+SCache::set("key4","value4",10000);
+SCache::set("key5","value5",10000);
+SCache::set("key6","value6",10000);
+SCache::set("key7","value7",10000);
+echo "key1:".(SCache::get("key1"))."\n";
+echo "key2:".(SCache::get("key2"))."\n";
+echo "delete key3\n";
+SCache::del("key3");
+//echo "key3:".(SCache::get("key3"))."\n";
+echo "key1:".(SCache::get("key1",array("key2","key3"))).",depend by key2,key3\n";
+echo "key1:".(SCache::get("key1","key2")).",depend by key2\n";
+echo "key1:".(SCache::get("key1","key3")).",depend by key3\n";
+echo "set localCache false\n";
+SCache::setLocalCache(false);
+echo "key1:".(SCache::get("key1",array("key2","key3"))).",depend by key2,key3\n";
+echo "set mode 2\n";
+SCache::setMode(2);
+echo "key1:".(SCache::get("key1",array("key2","key3"))).",depend by key2,key3\n";
+
+}}}
+
+
+= 其它apc,file操作类 =
+
+{{{
+
+/**
+ * 文件cache例子 File Cache Samples
+ */
+$cache = SCache::getCacheEngine($cacheengine="File");
+if(!$cache){
+    die("File cache engine not exists");
+}
+/**
+ * 初始参数，这里的dir为必要参数，depth表示目录深度
+ */
+$cache->init(array("dir"=>SlightPHP::$appDir."../cache","depth"=>3));
+/**
+ * 设置
+ */
+var_dump($cache->set("name",new stdclass));
+/**
+ * 获取
+ */
+var_dump($cache->get("name2"));
+var_dump($cache->get("name"));
+/**
+ * 删除
+ */
+var_dump($cache->del("name"));
+
+/**
+ * APC Cache Samples
+ */
+
+$cache = SCache::getCacheEngine($cacheengine="APC");
+if(!$cache){
+    die("APC cache engine not exists");
+}
+
+var_dump($cache->set("name",new stdclass));
+var_dump($cache->get("name2"));
+var_dump($cache->get("name"));
+var_dump($cache->del("name"));
+}}}
