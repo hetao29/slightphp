@@ -14,69 +14,66 @@
 +-----------------------------------------------------------------------+
 }}}*/
 
-require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."cache/CacheObject.php");
 /**
  * @package SlightPHP
  */
-class SCache{
-	static $engines=array("file","apc","memcache","memcached");
-	
+if(!defined("SLIGHTPHP_PLUGINS_DIR"))define("SLIGHTPHP_PLUGINS_DIR",dirname(__FILE__));
+require_once(SLIGHTPHP_PLUGINS_DIR."/cache/Cache_MemCache.php");
+class SCache extends Cache_MemCache{
 	static $_CacheConfigFile;
 	static $_CachedefaultZone="default";
 	static $_CacheConfigCache;
+
 	/**
-	 * @param string $engine enum("file","apc","memcache","memcached")
-	 * @return CacheObject
+	 * @deprecated
 	 */
-	static function getCacheEngine($engine='memcache'){//,$server=array()){
-		// global config
-		/*
-		global $CacheServer;
-		if (empty($server) && isset($CacheServer)) {
-			$server = $CacheServer;
-		}
-		*/
-		// only support single cache server
-		//$cindex = 0;
+	private static $engines=array("file","apc","memcache");
+
+	/**
+	 * @deprecated
+	 * @return class Db
+	 */
+	static function getCacheEngine($engine='memcache'){
 		$engine = strtolower($engine);
-		if(!in_array($engine,SCache::$engines)){
+		if(!in_array($engine,self::$engines)){
 			return false;
 		}
 		if($engine=="apc" && extension_loaded("apc")){
-			require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."cache/Cache_APC.php");
+			require_once(SLIGHTPHP_PLUGINS_DIR."/cache/CacheObject.php");
+			require_once(SLIGHTPHP_PLUGINS_DIR."/cache/Cache_APC.php");
 			return new Cache_APC;
-		}elseif(($engine=="memcache" ||$engine=="memcached")&& extension_loaded("memcache")){
-			require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."cache/Cache_MemCache.php");
+		}elseif($engine=="memcache" && extension_loaded("memcache")){
+			require_once(SLIGHTPHP_PLUGINS_DIR."/cache/Cache_MemCache.php");
 			return new Cache_MemCache;
 		}elseif($engine=="file"){
-			require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."cache/Cache_File.php");
+			require_once(SLIGHTPHP_PLUGINS_DIR."/cache/CacheObject.php");
+			require_once(SLIGHTPHP_PLUGINS_DIR."/cache/Cache_File.php");
 			return new Cache_File;
 		}
 		return false;
 	}
 	
 	static function setConfigFile($file){
-		SCache::$_CacheConfigFile = $file;
+		self::$_CacheConfigFile = $file;
 	}
 	static function getConfigFile(){
-		return SCache::$_CacheConfigFile;
+		return self::$_CacheConfigFile;
 	}
 	
 	/**
-	 * @param string $zone
-	 * @param string $type	main|query
+	 * @param string $zone="default"
 	 * @return array
 	 */
-	static function getConfig($zone){
-		if(!SCache::$_CacheConfigFile){return;}
+	static function getConfig($zone="default"){
+		if(!self::$_CacheConfigFile){return;}
 		
-		$cache = &SCache::$_CacheConfigCache;
+		$cache = &self::$_CacheConfigCache;
 		if(empty($cache[$zone])){
-			$file_data = parse_ini_file(realpath(SCache::$_CacheConfigFile),true);
+			$file_data = parse_ini_file(realpath(self::$_CacheConfigFile),true);
 			if(isset($file_data[$zone])){
 					$db = $file_data[$zone];
-			}elseif(isset($file_data[SCache::$_CachedefaultZone])){
-					$db = $file_data[SCache::$_CachedefaultZone];
+			}elseif(isset($file_data[self::$_CachedefaultZone])){
+					$db = $file_data[self::$_CachedefaultZone];
 			}else{
 					return;
 			}
@@ -93,33 +90,7 @@ class SCache{
 			}
 		}
 		if(isset($cache[$zone])){	
-			$i =  array_rand($cache[$zone]);
-			return $cache[$zone][$i];
+			return $cache[$zone];
 		}else return array();
 	}
-	/**
-	 * check key
-	 */
-	static private function checkKey($key) {
-		return md5($key);
-	}
-	/**
-	 * get
-	 */
-	static public function get($key) {
-		return self::getCacheEngine()->get(self::checkKey($key));
-	}
-	/**
-	 * set
-	 */
-	static public function set($key,$value,$exp=-1) {
-		return self::getCacheEngine()->set(self::checkKey($key),$value,$exp);
-	}
-	/**
-	 * del
-	 */
-	static public function del($key) {
-		return self::getCacheEngine()->del(self::checkKey($key));
-	}
 }
-?>
