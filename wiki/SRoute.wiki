@@ -1,4 +1,5 @@
 #summary SRoute框架路由功能
+#labels Featured
 
 = 简要说明 =
 
