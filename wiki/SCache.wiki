@@ -78,12 +78,15 @@ echo "key2:".(SCache::get("key2"))."\n";
 echo "delete key3\n";
 SCache::del("key3");
 //echo "key3:".(SCache::get("key3"))."\n";
+//读取依赖key，如果key2,key3中没有值，那么key1就失败
 echo "key1:".(SCache::get("key1",array("key2","key3"))).",depend by key2,key3\n";
+//读取依赖key，如果key2没有值，那么key1就失败
 echo "key1:".(SCache::get("key1","key2")).",depend by key2\n";
 echo "key1:".(SCache::get("key1","key3")).",depend by key3\n";
 echo "set localCache false\n";
 SCache::setLocalCache(false);
 echo "key1:".(SCache::get("key1",array("key2","key3"))).",depend by key2,key3\n";
+//读取依赖key，如果key2,key3没有值，那么key1就失败
 echo "set mode 2\n";
 SCache::setMode(2);
 echo "key1:".(SCache::get("key1",array("key2","key3"))).",depend by key2,key3\n";
