@@ -1,4 +1,5 @@
 #summary lighttpd rewrite示例
+#labels Featured
 
 = Lighttpd Rewrite 例子 =
 
