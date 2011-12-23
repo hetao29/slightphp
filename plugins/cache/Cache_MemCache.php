@@ -18,95 +18,173 @@
  * @package SlightPHP
  * @subpackage SCache
  */
-class Cache_MemCache extends CacheObject{
-	/**
-	 * @var string host
-	 */
-	var $host;
-	/**
-	 * @var int $port
-	 */
-
-	var $port="11211";
-	 
-
-	/**
-	 * @var boolean $permanent default false
-	 */
-
-	var $permanent=false;
-	/**
-	 * @var array $globals
-	 */
-	static $globals;
-	
-	function __construct($params=array()) {
-		$this->init($params);
+final class Cache_MemcacheObject{
+	var $v;
+	var $t;
+	function __construct($value){
+		$this->v = $value;
+		$this->t = time();
 	}
+}
+class Cache_Memcache{
+	static private $_connects	=	array();
+	static private $_data		=	array();
+	static private $_servers	=	array();
+	static private $_serverid = 0;
+	static private $_weight = 0;
+
 	/**
-	 * init
-	 *
-	 * @param array $params array("include","host","port","permanent")
+	 * var $localCache
+	 */
+	static $localCache=true;
+
+	/**
+	 * int $mode
+	 */
+	static $mode = 1;
+	
+	/**
+	 * @param array['host']
+	 * @param array['port']
+	 * @param array['timeout']
+	 * @param array['weight']
 	 */
 	function init($params=array()){
-		foreach($params as $key=>$value){
-			$this->$key = $value;
+		if(!empty($params['host'])){
+			self::addServer(
+				$params['host'],
+				isset($params['port'])?$params['port']:0,
+				isset($params['timeout'])?$params['timeout']:1,
+				isset($params['weight'])?$params['weight']:1
+			);
 		}
 	}
 	/**
-	 * set cache
-	 *
-	 * @param string $key
-	 * @param mixed $value
-	 * @param int $timestamp default:-1 forever
-	 * @return boolean
+	 * @param array $servers
 	 */
-	function set($key,$value,$timestamp=-1){
-		$memcache = $this->_connect();
-		if($memcache){
-			return memcache_set($memcache, $key, $value, MEMCACHE_COMPRESSED , $timestamp==-1?0:$timestamp);
-		}
-		return false;
+	static function addServers($servers){
+		foreach($servers as $server) self::init($server);
 	}
 	/**
-	 * get cache
-	 *
-	 * @param mixed $key
-	 * @return mixed $result
+	 * @param string $host
+	 * @param int $port
+	 * @param int $weight=1
+	 * @param int $timeout=1
 	 */
-	function get($key){
-		$memcache = $this->_connect();
-		if($memcache){
-			return memcache_get($memcache, $key);
-		}
-		return false;
+	static function addServer($host,$port=11211,$weight=1,$timeout=1){
+		self::$_servers[self::$_serverid]=array(
+			"host"=>$host,
+			"port"=>$port,
+			"weight"=>$weight,
+			"id"=>self::$_serverid,
+			"timeout"=>$timeout,
+		);
+		self::$_serverid++;
+		self::$_weight+=$weight;
 	}
 	/**
-	 * delete cache
-	 *
-	 * @param string $key
-	 * @return boolean
+	 * @param int $mode
 	 */
-	function del($key){
-		$memcache = $this->_connect();
-		if($memcache){
-			return memcache_delete($memcache,$key);
-		}
-		return false;
+	static function setMode($mode){
+		self::$mode=$mode;
 	}
-	
 	/**
-	 * @return boolean
+	 * @param bool $cache
 	 */
-	private function _connect(){
-		$s_str=md5($this->host.":".$this->port);
-		if(!$this->permanent || empty(Cache_MemCache::$globals[$s_str])){
-			return Cache_MemCache::$globals[$s_str] = memcache_connect($this->host, $this->port);
-		}else{
-			return Cache_MemCache::$globals[$s_str];
-		}
-		return false;
+	static function setLocalCache($cache){
+		self::$localCache=$cache;
 	}
 
+	/**
+	 * @param string $key
+	 * @param string|array  $depKeys
+	 * @return mixed
+	 */
+	static function get($key,$depKeys=null){
+		$keys = array($key);
+		if(!empty($depKeys)){
+			if(is_string($depKeys))$depKeys=array($depKeys);
+			if(is_array($depKeys)) $keys =array_merge($keys,$depKeys);
+		}
+		$values = self::_get($keys);
+		if(!isset($values[$key]) || !($values[$key] instanceof Cache_MemcacheObject))return false;
+		$value = $values[$key];unset($values[$key]);
+		if(!empty($depKeys)){
+			if(self::$mode==1){
+				foreach($depKeys as $depKey){
+					if(	!isset($values[$depKey]) || 
+						!($values[$depKey] instanceof Cache_MemcacheObject) || 
+						$values[$depKey]->t>$value->t
+					) return false;
+				}
+			}else{
+				foreach($values as $k=>$v){
+					if(($v instanceof Cache_MemcacheObject) && $v->t > $value->t)return false;
+				}
+			};
+		}
+		return $value->v;
+
+	}
+	/**
+	 * @param string|array $key
+	 * @return bool
+	 */
+	static function del($key){
+		if(is_array($key))foreach($key as $k)return self::delete($k);
+		if(self::$localCache && isset(self::$_data[$key]))unset(self::$_data[$key]);
+		$memcache_obj = self::_connect(self::getServer($key));
+		return memcache_delete($memcache_obj,$key);
+	}
+	/**
+	 * @param string $key
+	 * @param mixed $value
+	 * @param int $exp
+	 */
+	static function set($key,$value,$exp=0){
+		$v = new Cache_MemcacheObject($value);
+		if(self::$localCache)self::$_data[$key]=$v;
+		$memcache_obj = self::_connect(self::getServer($key));
+		return memcache_set($memcache_obj,$key,$v,0,$exp);
+	}
+
+	static private function _connect($server){
+		$index = implode(":",$server);
+		if(!isset(self::$_connects[$index])){
+			$memcache_obj = memcache_connect($server['host'], $server['port'],$server['timeout']);
+			if($memcache_obj)self::$_connects[$index]=$memcache_obj;
+		}
+		return self::$_connects[$index];
+
+	}
+	static private function _get($keys){
+		$servs  = array();
+		$values = array();
+		foreach($keys as $key){
+			if(self::$localCache && isset(self::$_data[$key]) && (self::$_data[$key] instanceof Cache_MemcacheObject)){
+				$values[$key]=self::$_data[$key];
+			}else{
+				$server = self::getServer($key);
+				$serverid = $server['id'];
+				$servs[$serverid][]=$key;
+			}
+		}
+		foreach($servs as $serverid=>$key){
+			$memcache_obj = self::_connect(self::$_servers[$serverid]);
+			$vars = memcache_get($memcache_obj, $key);
+			var_dump($vars);
+			$values = array_merge($values,$vars);
+			if(self::$localCache)self::$_data = array_merge(self::$_data,$vars);
+		}
+		return $values;
+	}
+	public static function getServer($key){
+		$key_md5 = md5($key);
+		$ordvalue =hexdec( substr($key_md5,0,3 ))%self::$_weight;
+		$weight=0;
+		foreach(self::$_servers as $server){
+			$weight+=$server['weight'];
+			if($ordvalue<=$weight) return $server;
+		}
+	}
 }
-?>
