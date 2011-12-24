@@ -29,11 +29,11 @@ class SHttp{
 	 * @return string | array
 	 */
 
-	function get( $url, $params=array(), $cookies=array(), $returnHeader=false)
-	{
+	function get( $url, $params=array(), $cookies=array(), $returnHeader=false, $timeout=1){
 		$opts = array(
 			'http'=>array(
 				'method'=>"GET",
+				'timeout'=>$timeout,
 				'header'=>
 						"Accept-Language: zh-cn\r\n" .
 						"User-Agent: Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)\r\n" .
@@ -60,12 +60,12 @@ class SHttp{
 	 * @param boolean $returnHeader
 	 * @return string | array
 	 */
-	function post( $url, $params=array(), $cookies=array(), $returnHeader=false)
-	{
+	function post( $url, $params=array(), $cookies=array(), $returnHeader=false, $timeout=1){
 		$content = empty($params)?"":http_build_query($params);
 		$opts = array(
 			'http'=>array(
 				'method' => 'POST',
+				'timeout'=>$timeout,
 				'header' =>
 						"Accept-Language: zh-cn\r\n" .
 						"User-Agent: Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)\r\n" .
