@@ -17,9 +17,8 @@
 /**
  * @package SlightPHP
  */
-if(!defined("SLIGHTPHP_PLUGINS_DIR"))define("SLIGHTPHP_PLUGINS_DIR",dirname(__FILE__));
-require_once(SLIGHTPHP_PLUGINS_DIR."/tpl/Tpl.modifier.php");
-require_once(SLIGHTPHP_PLUGINS_DIR."/tpl/Tpl.function.php");
+require_once(dirname(__FILE__)."/Tpl.modifier.php");
+require_once(dirname(__FILE__)."/Tpl.function.php");
 class Tpl{
 	static $_tpl_vars             = array();
 	static $left_delimiter  =  '{';
