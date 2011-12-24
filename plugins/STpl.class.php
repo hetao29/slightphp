@@ -14,7 +14,8 @@
 +-----------------------------------------------------------------------+
 }}}*/
 
-require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."tpl/Tpl.php");
+if(!defined("SLIGHTPHP_PLUGINS_DIR"))define("SLIGHTPHP_PLUGINS_DIR",dirname(__FILE__));
+require_once(SLIGHTPHP_PLUGINS_DIR."/tpl/Tpl.php");
 /**
  * @package SlightPHP
  */
