@@ -63,6 +63,7 @@ class Cache_Memcache{
 	 * @param array $servers
 	 */
 	static function addServers($servers){
+		self::$_servers=array();
 		foreach($servers as $server) self::init($server);
 	}
 	/**
