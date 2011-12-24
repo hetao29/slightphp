@@ -59,6 +59,9 @@ class SCache extends Cache_MemCache{
 	static function getConfigFile(){
 		return self::$_CacheConfigFile;
 	}
+	static function useConfig($zone){
+		self::addServers(self::getConfig($zone));
+	}
 	
 	/**
 	 * @param string $zone="default"
