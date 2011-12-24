@@ -142,12 +142,15 @@ main2 = host:127.0.0.1,port:11211,weight:60,timeout:4,
 {{{
 //设置配置文件地址
 SCache::setConfigFile($filePath="cache.ini");
+SCache::useConfig("video");
+
+/*或者用下面的方式
 //多种获取方式
 $config = SCache::getConfig("default");//这里会返回[default]配置
 $config = SCache::getConfig("video");   //blog主库
-
-SCache::addServers($config);
-
+#这里是addServers，不是addServer,注意是（复数）
+SCache::addServers($config); 
+*/
 
 //SCache::addServer("10.10.221.12",10006,60);
 //SCache::addServer("10.10.221.12",11211,40);
