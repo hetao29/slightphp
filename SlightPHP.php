@@ -208,14 +208,14 @@ final class SlightPHP{
 		$path_array = array();
 		if(!empty($path)){
 			$isPart = true;
-			if($path{0}=="/")$path=substr($path,1);
+			if($path[0]=="/")$path=substr($path,1);
 			$path_array = preg_split("/[$splitFlag\/]/",$path,-1);
 		}else{
 			$isPart = false;
 			if(!empty($_REQUEST['PATH_INFO']))$_SERVER["PATH_INFO"]=$_REQUEST['PATH_INFO'];
 			$url    = !empty($_SERVER['REDIRECT_SCRIPT_URL'])?$_SERVER['REDIRECT_SCRIPT_URL']:(!empty($_SERVER["PATH_INFO"])?$_SERVER["PATH_INFO"]:"");
 			if(!empty($url)){
-				if($url{0}=="/")$url=substr($url,1);
+				if($url[0]=="/")$url=substr($url,1);
 				$path_array = preg_split("/[$splitFlag\/]/",$url,-1);
 			}
 		}
