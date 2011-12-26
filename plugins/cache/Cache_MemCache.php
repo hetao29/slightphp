@@ -30,7 +30,6 @@ class Cache_Memcache{
 	static private $_connects	=	array();
 	static private $_data		=	array();
 	static private $_servers	=	array();
-	static private $_serverid = 0;
 	static private $_weight = 0;
 
 	/**
@@ -72,17 +71,6 @@ class Cache_Memcache{
 	 * @param int $weight=1
 	 * @param int $timeout=1
 	 */
-	static function addServer($host,$port=11211,$weight=1,$timeout=1){
-		self::$_servers[self::$_serverid]=array(
-			"host"=>$host,
-			"port"=>$port,
-			"weight"=>$weight,
-			"id"=>self::$_serverid,
-			"timeout"=>$timeout,
-		);
-		self::$_serverid++;
-		self::$_weight+=$weight;
-	}
 	/**
 	 * @param int $mode
 	 */
@@ -173,19 +161,39 @@ class Cache_Memcache{
 		foreach($servs as $serverid=>$key){
 			$memcache_obj = self::_connect(self::$_servers[$serverid]);
 			$vars = memcache_get($memcache_obj, $key);
-			var_dump($vars);
 			$values = array_merge($values,$vars);
 			if(self::$localCache)self::$_data = array_merge(self::$_data,$vars);
 		}
 		return $values;
 	}
-	public static function getServer($key){
-		$key_md5 = md5($key);
-		$ordvalue =hexdec( substr($key_md5,0,3 ))%self::$_weight;
-		$weight=0;
-		foreach(self::$_servers as $server){
-			$weight+=$server['weight'];
-			if($ordvalue<=$weight) return $server;
+	/**
+	 * consistent hashing
+	 */
+	public static function addServer($host,$port=11211,$weight=1,$timeout=1){
+		for($i=1;$i<=$weight;$i++){
+			$serverid = self::hash($host.":".$port.":".$i);
+			self::$_servers[$serverid]=array(
+				"host"=>$host,
+				"port"=>$port,
+				"weight"=>$weight,
+				"id"=>$serverid,
+				"timeout"=>$timeout,
+			);
 		}
+		ksort(self::$_servers);
+	}
+	public static function getServer($key){
+		$hash = self::hash($key);
+		foreach(self::$_servers as $serverid => $server){
+			if($hash<=$serverid){
+				return $server;
+			}
+		}
+		foreach(self::$_servers as $serverid => $server){
+			return $server;
+		}
+	}
+	private static function hash($str){
+		return sprintf("%u",crc32($str));
 	}
 }
