@@ -4,9 +4,9 @@
 = 主要特性 =
 
  * 多memcache server支持
- * 支持server权重设置
+ * 分布算法采用consistent hashing算法加weight(权重值)组合设置
  * memcache依赖key的设置(同时支持，完全匹配与部分匹配模式)
- * 优化的server分步算法，在增加memcache服务器组的时候，不会导致大部分cache过期
+ * 以典型的配置文件方法，可以方便使用分布式memcache
  
 = 使用方法 =
 
