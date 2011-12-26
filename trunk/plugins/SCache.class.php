@@ -81,15 +81,12 @@ class SCache extends Cache_MemCache{
 					return;
 			}
 			foreach($db as $key =>$row){
-				if(strpos($key,"main")!==false){
-					$row = str_replace(":","=",$row);
-					$row = str_replace(",","&",$row);
-					parse_str($row,$out);
-					if(!empty($out)){
-						$cache[$zone][]=$out;
-					}
+				$row = str_replace(":","=",$row);
+				$row = str_replace(",","&",$row);
+				parse_str($row,$out);
+				if(!empty($out)){
+					$cache[$zone][]=$out;
 				}
-	
 			}
 		}
 		if(isset($cache[$zone])){	

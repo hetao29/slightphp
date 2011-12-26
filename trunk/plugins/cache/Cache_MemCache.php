@@ -30,7 +30,6 @@ class Cache_Memcache{
 	static private $_connects	=	array();
 	static private $_data		=	array();
 	static private $_servers	=	array();
-	static private $_weight = 0;
 
 	/**
 	 * var $localCache
@@ -53,8 +52,8 @@ class Cache_Memcache{
 			self::addServer(
 				$params['host'],
 				isset($params['port'])?$params['port']:0,
-				isset($params['timeout'])?$params['timeout']:1,
-				isset($params['weight'])?$params['weight']:1
+				isset($params['weight'])?$params['weight']:1,
+				isset($params['timeout'])?$params['timeout']:1
 			);
 		}
 	}
@@ -175,7 +174,7 @@ class Cache_Memcache{
 			self::$_servers[$serverid]=array(
 				"host"=>$host,
 				"port"=>$port,
-				"weight"=>$weight,
+				"weight"=>$weight<10?10:$weight,
 				"id"=>$serverid,
 				"timeout"=>$timeout,
 			);
