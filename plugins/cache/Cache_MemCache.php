@@ -30,6 +30,7 @@ class Cache_Memcache{
 	static private $_connects	=	array();
 	static private $_data		=	array();
 	static private $_servers	=	array();
+	static private $_serverCt	=	0;
 
 	/**
 	 * var $localCache
@@ -153,12 +154,12 @@ class Cache_Memcache{
 				$values[$key]=self::$_data[$key];
 			}else{
 				$server = self::getServer($key);
-				$serverid = $server['id'];
-				$servs[$serverid][]=$key;
+				$serverIndex = $server['index'];
+				$servs[$serverIndex][]=$key;
 			}
 		}
-		foreach($servs as $serverid=>$key){
-			$memcache_obj = self::_connect(self::$_servers[$serverid]);
+		foreach($servs as $serverIndex=>$key){
+			$memcache_obj = self::_connect(self::$_servers[$serverIndex]);
 			$vars = memcache_get($memcache_obj, $key);
 			$values = array_merge($values,$vars);
 			if(self::$localCache)self::$_data = array_merge(self::$_data,$vars);
@@ -172,7 +173,7 @@ class Cache_Memcache{
 		$weight = $weight<10?10:$weight;
 		for($i=1;$i<=$weight;$i++){
 			$serverid = self::hash($host.":".$port.":".$i);
-			self::$_servers[$serverid]=array(
+			self::$_servers[]=array(
 				"host"=>$host,
 				"port"=>$port,
 				"weight"=>$weight,
@@ -180,20 +181,41 @@ class Cache_Memcache{
 				"timeout"=>$timeout,
 			);
 		}
-		ksort(self::$_servers);
+		usort(self::$_servers,function($a,$b){return $a['id']>$b['id'];});
+		self::$_serverCt=count(self::$_servers);
 	}
 	public static function getServer($key){
-		$hash = self::hash($key);
-		foreach(self::$_servers as $serverid => $server){
-			if($hash<=$serverid){
-				return $server;
+		$key = self::hash($key);
+		$left = 0;
+		$right=self::$_serverCt-1;
+		$index = 0;
+		while($left<$right-1){
+			$middle = (int)(($left+$right)/2);
+			if($key <= self::$_servers[$left]['id']){
+				$index = $left;
+				break;
+			}
+			if($key>= self::$_servers[$right]['id']){
+				$index = $right;
+				break;
+			}
+			$t = self::$_servers[$middle]['id'];
+			if($key==$t){
+				$index = $middle;
+			}
+			if($key>$t){
+				$left = $middle;
+				$index = $right;
+			}else {
+				$right=$middle;
+				$index = $middle;
 			}
 		}
-		foreach(self::$_servers as $serverid => $server){
-			return $server;
-		}
+		$server = self::$_servers[$index];
+		$server['index'] = $index;
+		return $server;
 	}
 	private static function hash($str){
-		return sprintf("%u",crc32($str));
+		return crc32($str);
 	}
 }
