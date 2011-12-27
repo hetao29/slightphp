@@ -170,7 +170,7 @@ class Cache_Memcache{
 	 * consistent hashing
 	 */
 	public static function addServer($host,$port=11211,$weight=1,$timeout=1){
-		$weight = $weight<10?10:$weight;
+		$weight = $weight*10;
 		for($i=1;$i<=$weight;$i++){
 			$serverid = self::hash($host.":".$port.":".$i);
 			self::$_servers[]=array(
