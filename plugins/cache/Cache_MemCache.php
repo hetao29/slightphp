@@ -138,7 +138,7 @@ class Cache_Memcache{
 	}
 
 	static private function _connect($server){
-		$index = implode(":",$server);
+		$index = $server['host'].":".$server['port'];
 		if(!isset(self::$_connects[$index])){
 			$memcache_obj = memcache_connect($server['host'], $server['port'],$server['timeout']);
 			if($memcache_obj)self::$_connects[$index]=$memcache_obj;
