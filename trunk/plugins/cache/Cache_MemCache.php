@@ -181,8 +181,11 @@ class Cache_Memcache{
 				"timeout"=>$timeout,
 			);
 		}
-		usort(self::$_servers,function($a,$b){return $a['id']>$b['id'];});
+		usort(self::$_servers,self::_sort);
 		self::$_serverCt=count(self::$_servers);
+	}
+	private static function _sort($a,$b){
+		return $a['id']>$b['id'];
 	}
 	public static function getServer($key){
 		$key = self::hash($key);
