@@ -181,7 +181,7 @@ class Cache_Memcache{
 				"timeout"=>$timeout,
 			);
 		}
-		usort(self::$_servers,self::_sort);
+		usort(self::$_servers,"self::_sort");
 		self::$_serverCt=count(self::$_servers);
 	}
 	private static function _sort($a,$b){
