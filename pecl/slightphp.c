@@ -53,6 +53,19 @@ PHP_METHOD(slightphp, setAppDir)
 		RETURN_TRUE;
 }
 /* }}} setAppDir */
+/* {{{ proto void setPathInfo(mixed pathInfo)
+ */
+PHP_METHOD(slightphp, setPathInfo)
+{
+		char* pathInfo;
+		int pathInfo_len;
+		if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &pathInfo,&pathInfo_len) == FAILURE) {
+				RETURN_FALSE;
+		}
+		zend_update_static_property_string(slightphp_ce_ptr, "pathInfo", sizeof("pathInfo")-1, pathInfo TSRMLS_CC);
+		RETURN_TRUE;
+}
+/* }}} setPathInfo */
 
 
 
@@ -306,17 +319,21 @@ PHP_METHOD(slightphp, run)
 				}
 				isPart = 1;
 		}else{
-				isPart = 0;
+			isPart = 0;
+			path = zend_read_static_property(slightphp_ce_ptr,"pathInfo",sizeof("pathInfo")-1,1 TSRMLS_CC);
+			if(!path){
 				zend_is_auto_global("_SERVER", sizeof("_SERVER") - 1 TSRMLS_CC);
-				if(zend_hash_find(Z_ARRVAL_P(PG(http_globals)[TRACK_VARS_GET]), "PATH_INFO", sizeof("PATH_INFO"), (void **) &token) == SUCCESS){
-						path = *token;
-				}else if(zend_hash_find(Z_ARRVAL_P(PG(http_globals)[TRACK_VARS_POST]), "PATH_INFO", sizeof("PATH_INFO"), (void **) &token) == SUCCESS){
-						path = *token;
-				}else if(zend_hash_find(Z_ARRVAL_P(PG(http_globals)[TRACK_VARS_SERVER]), "PATH_INFO", sizeof("PATH_INFO"), (void **) &token) == SUCCESS){
-						path = *token;
+				if(zend_hash_find(Z_ARRVAL_P(PG(http_globals)[TRACK_VARS_REQUEST]), 
+							"PATH_INFO", sizeof("PATH_INFO"), (void **) &token) == SUCCESS
+				){
+					path = *token;
+				}else if(zend_hash_find(Z_ARRVAL_P(PG(http_globals)[TRACK_VARS_SERVER]), 
+							"PATH_INFO", sizeof("PATH_INFO"), (void **) &token) == SUCCESS
+				){
+					path = *token;
 				}
+			}
 		}
-
 		//}}}
 
 		MAKE_STD_ZVAL(path_array);
@@ -446,6 +463,7 @@ PHP_METHOD(slightphp, run)
 static zend_function_entry slightphp_methods[] = {
 
 		PHP_ME(slightphp, setAppDir, slightphp__setAppDir_args, /**/ZEND_ACC_STATIC|ZEND_ACC_PUBLIC)
+		PHP_ME(slightphp, setPathInfo , slightphp__setPathInfo_args, /**/ZEND_ACC_STATIC|ZEND_ACC_PUBLIC)
 				PHP_ME(slightphp, getAppDir, NULL, /**/ZEND_ACC_STATIC|ZEND_ACC_PUBLIC)
 
 				//PHP_ME(slightphp, setPluginsDir, slightphp__setPluginsDir_arg, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
@@ -491,6 +509,9 @@ static void class_init_slightphp(TSRMLS_D)
 						"appDir", 6, ".", 
 						ZEND_ACC_STATIC|ZEND_ACC_PUBLIC TSRMLS_CC);
 
+		zend_declare_property_string(slightphp_ce_ptr, 
+						"pathInfo", 8, ".", 
+						ZEND_ACC_STATIC|ZEND_ACC_PUBLIC TSRMLS_CC);
 		//zend_declare_property_string(slightphp_ce_ptr, 
 		//	"pluginsDir", 10, "plugins", 
 		//	ZEND_ACC_STATIC|ZEND_ACC_PUBLIC TSRMLS_CC);

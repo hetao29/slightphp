@@ -51,6 +51,14 @@ PHP_MINFO_FUNCTION(slightphp);
 #define PROP_SET_STRINGL(name, s, l) zend_update_property_stringl(_this_ce, _this_zval, #name, strlen(#name), s, l TSRMLS_CC)
 
 
+PHP_METHOD(slightphp, setPathInfo);
+#if PHP_MINOR_VERSION<=2
+static 
+#endif
+ZEND_BEGIN_ARG_INFO_EX(slightphp__setPathInfo_args, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, 1)
+  ZEND_ARG_INFO(0, pathInfo)
+ZEND_END_ARG_INFO()
+
 PHP_METHOD(slightphp, setAppDir);
 #if PHP_MINOR_VERSION<=2
 static 
