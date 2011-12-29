@@ -24,6 +24,11 @@ final class SlightPHP{
 	public static $appDir=".";
 
 	/**
+	 * @var string
+	 */
+	public static $pathInfo="";
+
+	/**
 	 * current zone
 	 * @var string
 	 */
@@ -168,6 +173,10 @@ final class SlightPHP{
 		self::$appDir = $dir;
 		return true;
 	}
+	public static function setPathInfo($pathInfo){
+		self::$pathInfo = $pathInfo;
+		return true;
+	}
 	/**
 	 * appDir get
 	 * 
@@ -203,7 +212,6 @@ final class SlightPHP{
 	 */
 
 	public static function run($path=""){
-		//{{{
 		$splitFlag = preg_quote(self::$splitFlag,"/");
 		$path_array = array();
 		if(!empty($path)){
@@ -212,8 +220,15 @@ final class SlightPHP{
 			$path_array = preg_split("/[$splitFlag\/]/",$path,-1);
 		}else{
 			$isPart = false;
-			if(!empty($_REQUEST['PATH_INFO']))$_SERVER["PATH_INFO"]=$_REQUEST['PATH_INFO'];
-			$url    = !empty($_SERVER['REDIRECT_SCRIPT_URL'])?$_SERVER['REDIRECT_SCRIPT_URL']:(!empty($_SERVER["PATH_INFO"])?$_SERVER["PATH_INFO"]:"");
+			if(!empty(self::$pathInfo)){
+				$url = self::$pathInfo;
+			}else{
+				if(!empty($_REQUEST['PATH_INFO'])){
+					$url = $_REQUEST['PATH_INFO'];
+				}else{
+					$url = $_SERVER["PATH_INFO"];
+				}
+			}
 			if(!empty($url)){
 				if($url[0]=="/")$url=substr($url,1);
 				$path_array = preg_split("/[$splitFlag\/]/",$url,-1);

@@ -52,7 +52,8 @@ class SRoute{
 					$zone = empty($route['zone']) ? SlightPHP::getDefaultZone() : $route['zone'];
 					$page = empty($route['page']) ? SlightPHP::getDefaultPage() : $route['page'];
 					$entry = empty($route['entry']) ? SlightPHP::getDefaultEntry() : $route['entry'];
-					$_SERVER['PATH_INFO'] = "{$zone}{$splitFlag}{$page}{$splitFlag}{$entry}{$params}";
+					$PATH_INFO = "{$zone}{$splitFlag}{$page}{$splitFlag}{$entry}{$params}";
+					SlightPHP::setPathInfo($PATH_INFO);
 					break;
 				}
 			}
