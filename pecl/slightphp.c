@@ -321,9 +321,10 @@ PHP_METHOD(slightphp, run)
 		}else{
 			isPart = 0;
 			path = zend_read_static_property(slightphp_ce_ptr,"pathInfo",sizeof("pathInfo")-1,1 TSRMLS_CC);
-			if(!path){
+			int s = Z_STRLEN_P(path);
+			if(s==0){
 				zend_is_auto_global("_SERVER", sizeof("_SERVER") - 1 TSRMLS_CC);
-				if(zend_hash_find(Z_ARRVAL_P(PG(http_globals)[TRACK_VARS_REQUEST]), 
+				if(zend_hash_find(Z_ARRVAL_P(PG(http_globals)[TRACK_VARS_GET]), 
 							"PATH_INFO", sizeof("PATH_INFO"), (void **) &token) == SUCCESS
 				){
 					path = *token;
@@ -510,7 +511,7 @@ static void class_init_slightphp(TSRMLS_D)
 						ZEND_ACC_STATIC|ZEND_ACC_PUBLIC TSRMLS_CC);
 
 		zend_declare_property_string(slightphp_ce_ptr, 
-						"pathInfo", 8, ".", 
+						"pathInfo", 8, "", 
 						ZEND_ACC_STATIC|ZEND_ACC_PUBLIC TSRMLS_CC);
 		//zend_declare_property_string(slightphp_ce_ptr, 
 		//	"pluginsDir", 10, "plugins", 

@@ -223,8 +223,8 @@ final class SlightPHP{
 			if(!empty(self::$pathInfo)){
 				$url = self::$pathInfo;
 			}else{
-				if(!empty($_REQUEST['PATH_INFO'])){
-					$url = $_REQUEST['PATH_INFO'];
+				if(!empty($_GET['PATH_INFO'])){
+					$url = $_GET['PATH_INFO'];
 				}else{
 					$url = $_SERVER["PATH_INFO"];
 				}
