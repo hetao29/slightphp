@@ -226,7 +226,7 @@ final class SlightPHP{
 				if(!empty($_GET['PATH_INFO'])){
 					$url = $_GET['PATH_INFO'];
 				}else{
-					$url = $_SERVER["PATH_INFO"];
+					$url = !empty($_SERVER["PATH_INFO"])?$_SERVER["PATH_INFO"]:"";
 				}
 			}
 			if(!empty($url)){
