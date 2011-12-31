@@ -120,10 +120,10 @@ class Cache_Memcache{
 	 * @return bool
 	 */
 	static function del($key){
-		if(is_array($key))foreach($key as $k)return self::delete($k);
+		if(is_array($key))foreach($key as $k)return self::del($k);
 		if(self::$localCache && isset(self::$_data[$key]))unset(self::$_data[$key]);
 		$memcache_obj = self::_connect(self::getServer($key));
-		return memcache_delete($memcache_obj,$key);
+		return memcache_delete($memcache_obj,$key,0);
 	}
 	/**
 	 * @param string $key
