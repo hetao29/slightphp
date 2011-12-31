@@ -92,12 +92,17 @@ class index_main extends STpl{
  * 判断
 
 {{{
-{if()}
+
+{if($set)}
+
+{/if}
+
+{if($set)}
 {elseif}
 {/if}
 
-{if $a=b}
-{elseif}
+{if $a=="b"}
+{elseif $a=="c"}
 {/if}
 }}}
 
