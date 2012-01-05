@@ -64,13 +64,13 @@ class Tpl{
 		//{fun $param }
 		//{fun $param1 $param2 "param3" }
 		$pattern = "/^(\w+)\\s+(.*)/ms";
-		$content = preg_replace_callback($pattern,create_function('$m','$tmp=explode(" ",trim($m[2]));$func="tpl_function_".$m[1]; $params=implode(",",$tmp);if(function_exists($func))return "echo $func($params)";else return "/* $func function not exists! */";'),$content);
+		$content = preg_replace_callback($pattern,create_function('$m','$r=preg_match_all("/(\\\\$?\w+|\".+?\"|\'.+?\')/",$m[2],$tmp);$func="tpl_function_".$m[1];if($r>=2){$params=implode(",",$tmp[0]);if(function_exists($func))return "echo $func($params)";else return "/* $func function not exists! */";}else{return "/* $m[0] is not a STpl function */";}'),$content);
 		//modifier，支持多种格式
 		//{$v|modifer}
 		//{$v|modifer:1:2}
 		//{'v'|modifer:1:2}
-		$pattern = "/^(\S+)\\|(\S+)/ms";
-		$content = preg_replace_callback($pattern,create_function('$m','$tmp=explode(":",trim($m[2]));$func="tpl_modifier_".$tmp[0]; $tmp[0] = $m[1]; $params=implode(",",$tmp);if(function_exists($func))return "echo $func($params)";else return "/* $func function not exists! */";'),$content);
+		$pattern = "/^(\S+)\\|(.+)/ms";
+		$content = preg_replace_callback($pattern,create_function('$m','$r=preg_match_all("/(\\\\$?\w+|\".+?\"|\'.+?\')/",$m[2],$tmp); if($r>=0){$eg=$tmp[0];$func="tpl_modifier_".$eg[0]; $eg[0]=$m[1];$params=implode(",",$eg);if(function_exists($func))return "echo $func($params)";else return "/* $func function not exists! */";}else{return "/* {$m[0]} is not a STpl modifier */";}'),$content);
 		//{{{替换变量,加ECHO
 		$patterns = array("/\\$(\w+)/ms","/^(Tpl::\\$\S+)$/ms");
 		$replacements=array('Tpl::$_tpl_vars["\1"]','echo \\1');
