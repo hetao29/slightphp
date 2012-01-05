@@ -64,7 +64,7 @@ class Tpl{
 		//{fun $param }
 		//{fun $param1 $param2 "param3" }
 		$pattern = "/^(\w+)\\s+(.*)/ms";
-		$content = preg_replace_callback($pattern,create_function('$m','$r=preg_match_all("/(\\\\$?\w+|\".+?\"|\'.+?\')/",$m[2],$tmp);$func="tpl_function_".$m[1];if($r>=2){$params=implode(",",$tmp[0]);if(function_exists($func))return "echo $func($params)";else return "/* $func function not exists! */";}else{return "/* $m[0] is not a STpl function */";}'),$content);
+		$content = preg_replace_callback($pattern,create_function('$m','$r=preg_match_all("/(\\\\$?\w+|\".+?\"|\'.+?\')/",$m[2],$tmp);$func="tpl_function_".$m[1];if($r>=1){$params=implode(",",$tmp[0]);if(function_exists($func))return "echo $func($params)";else return "/* $func function not exists! */";}else{return "/* $m[0] is not a STpl function */";}'),$content);
 		//modifier，支持多种格式
 		//{$v|modifer}
 		//{$v|modifer:1:2}
