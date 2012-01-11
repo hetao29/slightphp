@@ -52,6 +52,120 @@ class SHttp{
 		}
 	}
 	/**
+	 * get multi urls
+	 *
+	 * @param array $url_array
+	 * @param int $timeout=1
+	 * @return string | array
+	 */
+	function getArray($url_array, $timeout = 1) {
+		if (!is_array($url_array))
+			return false;
+		$data    = array();
+		$handle  = array();
+		if(!function_exists("curl_multi_init")){
+			foreach($url_array as $key=>$url){
+				$_tmp = parse_url($url);
+				$_tmp['port'] = empty($_tmp['port'])?80:$_tmp['port'];
+				$requests[$key]=$_tmp;
+			}
+			$timeout = 1;
+			$status = array();
+			$retdata = array();
+			$sockets = array();
+			$e = array();
+			$data    = array();
+			foreach($url_array as $key=>$url){
+				$_tmp = parse_url($url);
+				$_tmp['port'] = empty($_tmp['port'])?80:$_tmp['port'];
+				$host = $_tmp['host'];
+				$port = $_tmp['port'];
+				$errno = 0;
+				$errstr = "";
+				$s = @stream_socket_client("$host:$port", $errno, $errstr, $timeout,STREAM_CLIENT_ASYNC_CONNECT|STREAM_CLIENT_CONNECT);
+				$data[$key]=array("error"=>"","errno"=>"","result"=>"");
+				if ($s) {
+					$_p = $_tmp['path']."?".$_tmp['query'];
+					fwrite($s, "GET $_p HTTP/1.0\r\nHost: ".$host."\r\n\r\n");
+					$sockets[$s] = $s;
+				} else {
+					$data[$key]=array("error"=>$errstr,"errno"=>$errno,"result"=>"");
+				}
+				$handle[$s] = array("key"=>$key,"ch"=>$s,"req"=>$_tmp);
+			}
+			while (count($sockets)) {
+				$read = $write = $sockets;
+				$n = stream_select($read, $write=null, $e=null, $timeout);
+				if ($n > 0) {
+					foreach ($read as $r) {
+						$_r = ($handle[$r]);
+						$_data = stream_get_contents($r);
+						$_key = $_r['key'];
+						if (strlen($_data) == 0) {
+							fclose($r);
+							unset($sockets[$r]);
+						} else {
+							preg_match("/Content-Length: (\d+)/i",$_data,$_m);
+							if(!empty($_m[1])){
+								$_data=substr($_data,0-$_m[1]);
+							}
+							$data[$_key]['result']=$_data;
+						}
+					}
+				} else {
+					foreach ($sockets as $id => $s) {
+						$status[$id] = "timed out " . $status[$id];
+					}
+					break;
+				}
+			}
+			return $data;
+		}else{
+			$running = 0;
+			$mh = curl_multi_init();
+			$i = 0;
+			foreach($url_array as $key=>$url) {
+				$ch = curl_init();
+				curl_setopt($ch, CURLOPT_URL, $url);
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+				curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
+				curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)');
+				curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1); // 302 redirect
+				curl_setopt($ch, CURLOPT_MAXREDIRS, 7);
+				curl_multi_add_handle($mh, $ch); 
+				$data[$key]=array("error"=>"","errno"=>"","result"=>"");
+				$handle[$ch] = array("key"=>$key,"ch"=>$ch);
+			}
+			do {
+				$mrc = curl_multi_exec($mh, $active);
+			} while ($mrc == CURLM_CALL_MULTI_PERFORM);
+
+			while ($active and $mrc == CURLM_OK) {
+				if (curl_multi_select($mh) != -1) {
+					do {
+						$mrc = curl_multi_exec($mh, $active);
+						while($info=curl_multi_info_read($mh)){
+							$ch = $info['handle'];
+							$key = $handle[$ch]['key'];
+							if($info['result']==0){
+								$data[$key]['result'] = curl_multi_getcontent($info['handle']);
+							}else{
+								$data[$key]['errno']=$info['result'];
+								$data[$key]['error']=curl_error($info['handle']);
+							}
+						}
+					} while ($mrc == CURLM_CALL_MULTI_PERFORM);
+				}
+			}
+			foreach($handle as $c) {
+				curl_multi_remove_handle($mh, $c['ch']);
+			}
+
+			curl_multi_close($mh);
+			return $data;
+		}
+	}
+	/**
 	 * post url
 	 *
 	 * @param string $url
