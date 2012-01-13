@@ -68,10 +68,3 @@ class SConfig{
 				return array();
 		}
 }
-/*
-$config = new SConfig;
-$config->setConfigFile("../samples/config/cache.ini");
-print_r($config->getConfig("video","main.*"));
-print_r($config->getConfig("videox","main1"));
-print_r($config->listConfig("videox",".*"));
- */
