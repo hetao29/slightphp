@@ -18,12 +18,10 @@
  * @package SlightPHP
  */
 if(!defined("SLIGHTPHP_PLUGINS_DIR"))define("SLIGHTPHP_PLUGINS_DIR",dirname(__FILE__));
+require_once(SLIGHTPHP_PLUGINS_DIR."/SConfig.class.php");
 require_once(SLIGHTPHP_PLUGINS_DIR."/cache/Cache_MemCache.php");
 class SCache extends Cache_MemCache{
-	static $_CacheConfigFile;
-	static $_CachedefaultZone="default";
-	static $_CacheConfigCache;
-
+	private static $_config;
 	/**
 	 * @deprecated
 	 */
@@ -54,10 +52,11 @@ class SCache extends Cache_MemCache{
 	}
 	
 	static function setConfigFile($file){
-		self::$_CacheConfigFile = $file;
+		self::$_config = new SConfig;
+		self::$_config->setConfigFile($file);
 	}
 	static function getConfigFile(){
-		return self::$_CacheConfigFile;
+		return self::$_config->getConfigFile();
 	}
 	static function useConfig($zone){
 		self::addServers(self::getConfig($zone));
@@ -68,29 +67,6 @@ class SCache extends Cache_MemCache{
 	 * @return array
 	 */
 	static function getConfig($zone="default"){
-		if(!self::$_CacheConfigFile){return;}
-		
-		$cache = &self::$_CacheConfigCache;
-		if(empty($cache[$zone])){
-			$file_data = parse_ini_file(realpath(self::$_CacheConfigFile),true);
-			if(isset($file_data[$zone])){
-					$db = $file_data[$zone];
-			}elseif(isset($file_data[self::$_CachedefaultZone])){
-					$db = $file_data[self::$_CachedefaultZone];
-			}else{
-					return;
-			}
-			foreach($db as $key =>$row){
-				$row = str_replace(":","=",$row);
-				$row = str_replace(",","&",$row);
-				parse_str($row,$out);
-				if(!empty($out)){
-					$cache[$zone][]=$out;
-				}
-			}
-		}
-		if(isset($cache[$zone])){	
-			return $cache[$zone];
-		}else return array();
+		return self::$_config->listConfig($zone,".*");
 	}
 }

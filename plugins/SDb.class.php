@@ -14,6 +14,7 @@
 +-----------------------------------------------------------------------+
 }}}*/
 if(!defined("SLIGHTPHP_PLUGINS_DIR"))define("SLIGHTPHP_PLUGINS_DIR",dirname(__FILE__));
+require_once(SLIGHTPHP_PLUGINS_DIR."/SConfig.class.php");
 require_once(SLIGHTPHP_PLUGINS_DIR."/db/DbData.php");
 require_once(SLIGHTPHP_PLUGINS_DIR."/db/DbObject.php");
 require_once(SLIGHTPHP_PLUGINS_DIR."/db/Db.php");
@@ -21,10 +22,7 @@ require_once(SLIGHTPHP_PLUGINS_DIR."/db/Db.php");
  * @package SlightPHP
  */
 class SDb extends Db{
-
-		private static $_DbConfigFile;
-		private static $_DbdefaultZone="default";
-		private static $_DbConfigCache;
+		private static $_config;
 		/**
 		 * @deprecated
 		 * @return class Db
@@ -43,10 +41,11 @@ class SDb extends Db{
 				}
 		}
 		static function setConfigFile($file){
-				self::$_DbConfigFile = $file;
+			self::$_config = new SConfig;
+			self::$_config->setConfigFile($file);
 		}
 		static function getConfigFile(){
-				return self::$_DbConfigFile;
+			return self::$_config->getConfigFile();
 		}
 		/**
 		 * @param string $zone
@@ -54,47 +53,7 @@ class SDb extends Db{
 		 * @return array
 		 */
 		static function getConfig($zone,$type="main"){
-				if(!self::$_DbConfigFile){return array();}
-
-
-				$cache = &self::$_DbConfigCache;
-				if(isset($cache[$zone]) && isset($cache[$zone][$type])){
-						$i =  array_rand($cache[$zone][$type]);
-						return $cache[$zone][$type][$i];
-				}
-
-				$file_data = parse_ini_file(realpath(self::$_DbConfigFile),true);
-				if(isset($file_data[$zone])){
-						$db = $file_data[$zone];
-				}elseif(isset($file_data[self::$_DbdefaultZone])){
-						$db = $file_data[self::$_DbdefaultZone];
-				}else{
-						return array();
-				}
-				//no query to direct to main
-				$query_flag = false;
-				foreach($db as $key =>$row){
-						if(strpos($key,"main")!==false){
-								$index = "main";
-						}elseif(strpos($key,"query")!==false){
-								$index = "query";
-						}else{
-								continue;
-						}
-						$row = str_replace(":","=",$row);
-						$row = str_replace(",","&",$row);
-						parse_str($row,$out);
-						if(!empty($out)){
-								if(strpos($key,"query")!==false)$query_flag = true;
-								$cache[$zone][$index][]=$out;
-						}
-
-				}
-				if(!$query_flag){
-						$type = "main";
-				}
-				$i =  array_rand($cache[$zone][$type]);
-				return $cache[$zone][$type][$i];
+			return self::$_config->getConfig($zone,$type.".*");
 		}
 		/**
 		 * 切换数据库配置文件
@@ -104,9 +63,6 @@ class SDb extends Db{
 		function useConfig($zone,$type="main"){
 			$this->init(self::getConfig($zone,$type));
 		}
-
-
-
 
 		private $foreign_keys =array();
 		private $table_name=""; //表名，默认和 类名 user 一样
