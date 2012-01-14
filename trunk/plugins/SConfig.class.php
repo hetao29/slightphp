@@ -30,15 +30,15 @@ class SConfig{
 		 * @param string $key preg_match
 		 * @return array
 		 */
-		public function getConfig($zone,$key){
-			$configs = $this->listConfig($zone,$key);
+		public function getConfig($zone,$key,$parse=true){
+			$configs = $this->listConfig($zone,$key,$parse);
 			if(!empty($configs)){
 				$i =  array_rand($configs);
 				return $configs[$i];
 			}
 			return array();
 		}
-		public function listConfig($zone,$key){
+		public function listConfig($zone,$key,$parse=true){
 				if(!$this->_ConfigFile){return array();}
 				$cache = $this->_ConfigCache;
 				if(isset($cache[$zone]) && isset($cache[$zone][$key])){
@@ -54,11 +54,15 @@ class SConfig{
 				}
 				foreach($_configs as $k =>$row){
 					if(preg_match("/$key/i",$k)){
-						$row = str_replace(":","=",$row);
-						$row = str_replace(",","&",$row);
-						parse_str($row,$out);
-						if(!empty($out)){
-								$cache[$zone][$key][]=$out;
+						if($parse){
+							$row = str_replace(":","=",$row);
+							$row = str_replace(",","&",$row);
+							parse_str($row,$out);
+							if(!empty($out)){
+								$cache[$zone][$key][$k]=$out;
+							}
+						}else{
+							$cache[$zone][$key][$k]=$row;
 						}
 					}
 				}
