@@ -85,42 +85,77 @@ class Cache_Memcache{
 	}
 
 	/**
-	 * @param string $key
-	 * @param string|array  $depKeys
+	 * @param string|array $key
+	 * @param string|array $depKeys
 	 * @return mixed
 	 */
 	static function get($key,$depKeys=null){
-		$keys = array($key);
+		$return_type=1;
+		if(is_array($key)){
+			$return_keys = $key;
+			$return_type=2;
+		}else{
+			$return_keys = array($key);
+		}
+		$keys=array();
 		if(!empty($depKeys)){
 			if(is_string($depKeys))$depKeys=array($depKeys);
-			if(is_array($depKeys)) $keys =array_merge($keys,$depKeys);
+			if(is_array($depKeys)) $keys =array_merge($return_keys,$depKeys);
+		}else{
+			$keys = $return_keys;
 		}
 		$values = self::_get($keys);
-		if(!isset($values[$key]) || !($values[$key] instanceof Cache_MemcacheObject))return false;
-		$value = $values[$key];unset($values[$key]);
-		if(!empty($depKeys)){
-			if(self::$mode==1){
-				foreach($depKeys as $depKey){
-					if(	!isset($values[$depKey]) || 
-						!($values[$depKey] instanceof Cache_MemcacheObject) || 
-						$values[$depKey]->t>$value->t
-					) return false;
-				}
+		$result=array();
+		foreach($return_keys as $key){
+			if(!isset($values[$key]) || !($values[$key] instanceof Cache_MemcacheObject)){
+				$result[$key]=false;continue;
 			}else{
-				foreach($values as $k=>$v){
-					if(($v instanceof Cache_MemcacheObject) && $v->t > $value->t)return false;
+				$value = $values[$key];
+				if(!empty($depKeys)){
+					if(self::$mode==1){
+						$flag=true;
+						foreach($depKeys as $depKey){
+							if(	!isset($values[$depKey]) || 
+								!($values[$depKey] instanceof Cache_MemcacheObject) || 
+								$values[$depKey]->t>$value->t
+							){
+								$flag=false;break;
+							}
+						}
+						if($flag===false){
+							$result[$key]=false;continue;
+						}
+					}else{
+						$flag=false;
+						foreach($depKeys as $depKey){
+							if(	isset($values[$depKey]) && 
+								($values[$depKey] instanceof Cache_MemcacheObject) &&
+								$values[$depKey]->t<=$value->t
+							){
+								$flag=true;break;
+							}
+						}
+						if($flag===false){
+							$result[$key]=false;continue;
+						}
+					};
 				}
-			};
+			}
+			$result[$key]=$value->v;
 		}
-		return $value->v;
-
+		if(empty($result))return false;
+		if($return_type==1)return array_shift($result);
+		return $result;
 	}
 	/**
 	 * @param string|array $key
 	 * @return bool
 	 */
 	static function del($key){
-		if(is_array($key))foreach($key as $k)return self::del($k);
+		if(is_array($key)){
+			foreach($key as $k)self::del($k);
+			return;
+		}
 		if(self::$localCache && isset(self::$_data[$key]))unset(self::$_data[$key]);
 		$memcache_obj = self::_connect(self::getServer($key));
 		return memcache_delete($memcache_obj,$key,0);
