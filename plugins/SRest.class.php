@@ -19,12 +19,10 @@
 abstract class SRest {
 	private $_allowMethods=array("PUT","POST","GET","HEAD","DELETE","OPTIONS");
 	private $_method="GET";
-	public function __construct(){
+	public function __call($name,$arguments){
 		if(!empty($_SERVER['REQUEST_METHOD']) && in_array($_SERVER['REQUEST_METHOD'],$this->_allowMethods)){
 			$this->method = $_SERVER['REQUEST_METHOD'];
 		}
-	}
-	public function __call($name,$arguments){
 		$method=$this->_method.$arguments[0][2];
 		if(method_exists($this,$method)){
 			return call_user_func(array($this,$method),$arguments[0]);
