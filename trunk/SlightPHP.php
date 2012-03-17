@@ -249,7 +249,7 @@ final class SlightPHP{
 		}else{
 			if($zone == self::$zone && $page == self::$page && $entry == self::$entry){
 				self::debug("part ignored [$path]");
-				return;
+				return false;
 			}
 		}
 
