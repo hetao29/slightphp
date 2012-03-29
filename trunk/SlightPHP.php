@@ -263,7 +263,7 @@ final class SlightPHP{
 		$method = "Page".$entry;
 		$classname = $zone ."_". $page;
 		
-		if(!class_exists($classname)){
+		if(!class_exists($classname,false)){
 			self::debug("class[$classname] does not exists");
 			return false;
 		}
