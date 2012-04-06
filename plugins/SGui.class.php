@@ -16,6 +16,7 @@
 
 /**
  * @package SlightPHP
+ * @deprecated
  */
 if(version_compare(PHP_VERSION,"5.2",">=")){
 	require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."smarty3/Smarty.class.php");
