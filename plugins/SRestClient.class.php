@@ -64,4 +64,7 @@ class SRestClient extends Rest_Http{
 		$http = new SHttp;
 		return $http->getArray(self::$_requests);
 	}
+	static function reset(){
+		self::$_requests = array();
+	}
 }
