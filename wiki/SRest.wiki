@@ -1,0 +1,32 @@
+#summary SRest插件(beta)
+
+= 主要特性 =
+
+ *支持并发请求,速度效率高
+ *支持多节点配置
+ *分布算法采用consistent hashing算法加weight(权重值)组合设置
+
+
+=示例代码(配置文件)=
+
+{{{
+[photo]
+main1=host:"192.168.1.101",path:"query.php",weight:40,timeout:1
+main2=host:"192.168.1.102",path:"query.php",weight:40,timeout:1
+main3=host:"192.168.1.103",path:"query.php",weight:40,timeout:1
+[user]
+main1=host:"192.168.2.101",path:"query.php",weight:40,timeout:1
+main2=host:"192.168.2.102",path:"query.php",weight:40,timeout:1
+main3=host:"192.168.2.103",path:"query.php",weight:40,timeout:1
+}}}
+
+=示例代码(PHP)=
+
+{{{
+SRestClient::setConfigFile(ROOT_CONFIG."/rest.ini");
+
+$rest = new SRestClient();
+$rest->addGET($zone="photo",$parameters=array("id"=>"32232"),$key="photo_info")
+$rest->addGET($zone="user",$parameters=array("id"=>"23232"),$key="user_info")
+$result = $rest->get();
+}}}
