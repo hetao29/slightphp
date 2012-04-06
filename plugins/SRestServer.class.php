@@ -21,7 +21,7 @@ abstract class SRestServer{
 	private $_method="GET";
 	public function __call($name,$arguments){
 		if(!empty($_SERVER['REQUEST_METHOD']) && in_array($_SERVER['REQUEST_METHOD'],$this->_allowMethods)){
-			$this->method = $_SERVER['REQUEST_METHOD'];
+			$this->_method = $_SERVER['REQUEST_METHOD'];
 		}
 		$method=$this->_method.$arguments[0][2];
 		if(method_exists($this,$method)){
