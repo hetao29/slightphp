@@ -54,18 +54,19 @@ class SHttp{
 	/**
 	 * get multi urls
 	 *
-	 * @param array $url_array
+	 * @param array $url_array=array("url"=>"","parameters"=>array(),"timeout"=>1,"method"=>"get");
 	 * @param int $timeout=1
 	 * @return string | array
 	 */
-	function getArray($url_array, $timeout = 1) {
+	function getArray($url_array,$timeout = 1) {
 		if (!is_array($url_array))
 			return false;
 		$data    = array();
 		$handle  = array();
-		if(!function_exists("curl_multi_init")){
-			foreach($url_array as $key=>$url){
-				$_tmp = parse_url($url);
+		if(!function_exists("curl_multi_init"))
+		{
+			foreach($url_array as $key=>$value){
+				$_tmp = parse_url($value['url']);
 				$_tmp['port'] = empty($_tmp['port'])?80:$_tmp['port'];
 				$requests[$key]=$_tmp;
 			}
@@ -75,18 +76,46 @@ class SHttp{
 			$sockets = array();
 			$e = array();
 			$data    = array();
-			foreach($url_array as $key=>$url){
-				$_tmp = parse_url($url);
+			foreach($url_array as $key=>$value){
+				$url = $value['url'];
+
+				$method="GET";
+				if(isset($value['method']))$method=$value['method'];
+				if(strcasecmp($value['method'],"POST")==0){
+					$method="POST";
+				}else{
+					if(!empty($value['parameters'])){
+						$url = $value['url']."?".http_build_query($value['parameters']);
+					}
+				}
+				
+				$_tmp = parse_url($value['url']);
 				$_tmp['port'] = empty($_tmp['port'])?80:$_tmp['port'];
 				$host = $_tmp['host'];
 				$port = $_tmp['port'];
 				$errno = 0;
 				$errstr = "";
-				$s = @stream_socket_client("$host:$port", $errno, $errstr, $timeout,STREAM_CLIENT_ASYNC_CONNECT|STREAM_CLIENT_CONNECT);
+				$s = @stream_socket_client(
+						"$host:$port", 
+						$errno, 
+						$errstr, 
+						!isset($value['timeout'])?$value['timeout']:$timeout,
+						STREAM_CLIENT_ASYNC_CONNECT|STREAM_CLIENT_CONNECT
+				);
 				$data[$key]=array("error"=>"","errno"=>"","result"=>"");
 				if ($s) {
-					$_p = $_tmp['path']."?".$_tmp['query'];
-					fwrite($s, "GET $_p HTTP/1.0\r\nHost: ".$host."\r\n\r\n");
+					$_p = $_tmp['path'];
+					if($method!="POST" && !empty($value['parameters'])){
+						$_p = $_tmp['path']."?".http_build_query($value['parameters']);
+					}
+					$content="";
+					if($method=="POST" && !empty($value['parameters'])){
+						$content = http_build_query($value['parameters']);
+						fwrite($s, "$method $_p HTTP/1.0\r\nHost: ".$host."\r\nContent-Length:".strlen($content)."\r\nContent-Type: application/x-www-form-urlencoded\r\nConnection: close\r\n\r\n$content\r\n\r\n");
+					}else{
+						fwrite($s, "$method $_p HTTP/1.0\r\nHost: ".$host."\r\nConnection: close\r\n\r\n");
+					}
+
 					$sockets[$s] = $s;
 				} else {
 					$data[$key]=array("error"=>$errstr,"errno"=>$errno,"result"=>"");
@@ -124,14 +153,31 @@ class SHttp{
 			$running = 0;
 			$mh = curl_multi_init();
 			$i = 0;
-			foreach($url_array as $key=>$url) {
+			foreach($url_array as $key=>$value) {
 				$ch = curl_init();
-				curl_setopt($ch, CURLOPT_URL, $url);
 				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-				curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
-				curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)');
+				curl_setopt($ch, CURLOPT_TIMEOUT, isset($value['timeout'])?$value['timeout']:$timeout);
+				curl_setopt($ch, CURLOPT_USERAGENT, 'RESTful Request');
 				curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1); // 302 redirect
-				curl_setopt($ch, CURLOPT_MAXREDIRS, 7);
+				curl_setopt($ch, CURLOPT_MAXREDIRS, 5);
+				if(!isset($value['method'])){
+					$value['method']="GET";
+				}
+				curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $value['method']);
+				if(strcasecmp($value['method'],"POST")==0){
+					curl_setopt($ch, CURLOPT_POST, 1);
+					if(!empty($value['parameters'])){
+						curl_setopt($ch, CURLOPT_POSTFIELDS,http_build_query($value['parameters']));
+					}
+					curl_setopt($ch, CURLOPT_URL, $value['url']);
+				}else{
+					if(!empty($value['parameters'])){
+						$url = $value['url']."?".http_build_query($value['parameters']);
+					}else{
+						$url = $value['url'];
+					}
+					curl_setopt($ch, CURLOPT_URL, $url);
+				}
 				curl_multi_add_handle($mh, $ch); 
 				$data[$key]=array("error"=>"","errno"=>"","result"=>"");
 				$handle[$ch] = array("key"=>$key,"ch"=>$ch);
