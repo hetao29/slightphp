@@ -79,6 +79,8 @@ class SConfig{
 		  * @return mixed $result
 		  **/
 		public function parse($flag=SCONFIG_FLAG_OBJECT,$allowMultiValue=true){
+			self::$_flag = $flag;
+			self::$_allowMultiValue = $allowMultiValue;
 			$content = file_get_contents(self::getConfigFile());
 			//去掉注释,#号表示注释
 			$content = preg_replace("/^(\s*)#(.*)/m","",$content);
@@ -90,6 +92,8 @@ class SConfig{
 		private static $_tmpData=array();
 		private static $_tmpPrefix="SCONFIG_TMP_PREFIX_";
 		private static $_tmpIndex=0;
+		private static $_flag = SCONFIG_FLAG_OBJECT;
+		private static $_allowMultiValue = true;
 		private function _tmpData($matches){
 			$key = self::$_tmpPrefix.(self::$_tmpIndex++);
 			self::$_tmpData[$key]=$matches[3];
@@ -110,7 +114,7 @@ class SConfig{
 						array_push($path2,$key);
 						//找回被替换的值
 						if(isset(self::$_tmpData[$value])){$value = self::$_tmpData[$value];}
-						self::_setData($result,$path2,$value,$flag=2,$allowMultiValue=true);
+						self::_setData($result,$path2,$value,self::$_flag,self::$_allowMultiValue);
 					}
 					self::_split($m[2], $result,$layer + 1,$path);
 				}
