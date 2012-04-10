@@ -89,7 +89,7 @@ class SConfig{
 		//去掉注释,#号表示注释
 		$content = preg_replace("/^(\s*)#(.*)/m","",$content);
 		//保存临时变量,单引号,双引号里特殊字符
-		$content = preg_replace_callback("/(\S+?)[\s:]+([\'\"])(.*)\\2;/m",array("SConfig","_tmpData"),$content);
+		$content = preg_replace_callback("/(\S+?)[\s:]+([\'\"])(.*?)\\2;/m",array("SConfig","_tmpData"),$content);
 		self::_split($content,$result);
 		self::$_result[$cacheKey]=$result;
 		return $result;
@@ -112,15 +112,19 @@ class SConfig{
 				$path[$layer]=$m[1];
 				//找出普通的k,v,需要把{}里的给无视
 				$tmp_string = preg_replace("/(\S+?)([\s:]*)\{(([^{}]+|(?R))+)\}/","",$m[2]);
-				preg_match_all("/(\w+?)[\s:]+(.+);/",$tmp_string,$_matches2,PREG_SET_ORDER);
-				foreach($_matches2 as $_m2){
-					$key = $_m2[1];
-					$value= $_m2[2];
-					$path2 = $path;
-					array_push($path2,$key);
-					//找回被替换的值
-					if(isset(self::$_tmpData[$value])){$value = self::$_tmpData[$value];}
-					self::_setData($result,$path2,$value,self::$_flag,self::$_allowMultiValue);
+				preg_match_all("/(\w+)[\s:]+(.+?);/",$tmp_string,$_matches2,PREG_SET_ORDER);
+				if(!empty($_matches2)){
+					foreach($_matches2 as $_m2){
+						$key = $_m2[1];
+						$value= $_m2[2];
+						$path2 = $path;
+						array_push($path2,$key);
+						//找回被替换的值
+						if(isset(self::$_tmpData[$value])){$value = self::$_tmpData[$value];}
+						self::_setData($result,$path2,$value,self::$_flag,self::$_allowMultiValue);
+					}
+				}else{
+					self::_setData($result,$path,null,self::$_flag,self::$_allowMultiValue);
 				}
 				self::_split($m[2], $result,$layer + 1,$path);
 			}
