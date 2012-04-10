@@ -79,42 +79,42 @@ class SConfig{
 		  * @return mixed $result
 		  **/
 		public function parse($flag=SCONFIG_FLAG_OBJECT,$allowMultiValue=true){
-			$content = file(self::getConfigFile());
-			$result=null;
-			$path = array();
-			$_deep=0;
-			foreach($content as $line){
-				//去掉注释,#号表示注释
-				$line = preg_replace("/^(\s*)#(.*)/m","",$line);
-				//找出key,value对应
-				preg_match_all("/(\w+)([\s:]*)([\{\['\"]*)(.*?)\\3([;\{\}\[\]])/S",$line,$_matches,PREG_SET_ORDER);
-				//print_r($_matches);exit;
-				if(!empty($_matches)){
-					foreach($_matches as $_m){
-						if(!empty($_m)){
-							$key = ($_m[1]);
-							$value = ($_m[4]);
-							$object = ($_m[5]);
-							$path[$_deep]=$key;
-							if($object !="{" && $object!="["){
-								self::_setData($result,$path,$value,$flag,$allowMultiValue);
-							}else{
-								$_deep++;
-								self::_setData($result,$path,null,$flag,$allowMultiValue);
-							}
-						}
+			$content = file_get_contents(self::getConfigFile());
+			//去掉注释,#号表示注释
+			$content = preg_replace("/^(\s*)#(.*)/m","",$content);
+			//保存临时变量,单引号,双引号里特殊字符
+			$content = preg_replace_callback("/([\'\"])(.*)\\1/m",array("SConfig","_tmpData"),$content);
+			self::_split($content,$result);
+			return $result;
+		}
+		private static $_tmpData=array();
+		private static $_tmpPrefix="SCONFIG_TMP_PREFIX_";
+		private static $_tmpIndex=0;
+		private function _tmpData($matches){
+			$key = self::$_tmpPrefix.(self::$_tmpIndex++);
+			self::$_tmpData[$key]=$matches[2];
+			return $key;
+		}
+		private function _split ($string,&$result, $layer=0, $path=array()) {
+			preg_match_all("/(\w+?)\s*\{(([^{}]*|(?R))+)\}/xms",$string,$matches,PREG_SET_ORDER);
+			if (!empty($matches)) {
+				foreach($matches as $m){
+					$path[$layer]=$m[1];
+					//找出普通的k,v,需要把{}里的给无视
+					$tmp_string = preg_replace("/\w+\s*\{(([^{}]+|(?R))+)\}/","",$m[2]);
+					preg_match_all("/(\w+)([\s:]+)(.*);/S",$tmp_string,$_matches2,PREG_SET_ORDER);
+					foreach($_matches2 as $_m2){
+						$key = $_m2[1];
+						$value= $_m2[3];
+						$path2 = $path;
+						array_push($path2,$key);
+						//找回被替换的值
+						if(isset(self::$_tmpData[$value])){$value = self::$_tmpData[$value];}
+						self::_setData($result,$path2,$value,$flag=2,$allowMultiValue=true);
 					}
-				}else{
-					preg_match("/([\]\}]+).*?/",$line,$_m);
-					if(!empty($_m)){
-						$_deep--;
-						array_pop($path);
-					}
-
-
+					self::_split($m[2], $result,$layer + 1,$path);
 				}
 			}
-			return $result;
 		}
 		private function _setData(&$arr,$path,$value,$flag=SCONFIG_FLAG_OBJECT,$allowMultiValue=true){
 			$tmp = &$arr;
