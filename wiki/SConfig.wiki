@@ -190,7 +190,7 @@ Array
 )
 }}}
 
-=结果值三,关闭数组功能=
+=结果值三,关闭数组功能,后面的设置会覆盖前面的设置=
 
 {{{
 $conf->parse(SCONFIG_FLAG_OBJECT,false)
