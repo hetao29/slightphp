@@ -87,7 +87,7 @@ class SConfig{
 				//去掉注释,#号表示注释
 				$line = preg_replace("/^(\s*)#(.*)/m","",$line);
 				//找出key,value对应
-				preg_match_all("/(\w+)([\s:]+)([\{\['\"]*)(.*?)\\3([;\{\}\[\]])/S",$line,$_matches,PREG_SET_ORDER);
+				preg_match_all("/(\w+)([\s:]*)([\{\['\"]*)(.*?)\\3([;\{\}\[\]])/S",$line,$_matches,PREG_SET_ORDER);
 				//print_r($_matches);exit;
 				if(!empty($_matches)){
 					foreach($_matches as $_m){
