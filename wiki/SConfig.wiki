@@ -13,6 +13,16 @@ $conf = new SConfig;
 $conf->setConfigFile("/etc/nginx/nginx.conf");
 //解析conf格式
 print_r($conf->parse());
+}}}
+
+{{{
+/*定义如下*/
+/**
+  * @param int $flag 返回类型Array|Object,默认是Object
+  * @param boolean $allowMultiValue 允许配置文件存在相同的key(多个相同的key,会自动变成数组)
+  * @return mixed $result
+  */
+public function parse($flag=SCONFIG_FLAG_OBJECT,$allowMultiValue=true);
 
 //另外关于ini的请参看SDb,SCache等插件
 public function getConfig($zone,$key,$parse=true);
@@ -133,7 +143,7 @@ stdClass Object
 =结果值二,返回数组=
 
 {{{
-$conf->parse(SCONFIG_FLAG_OBJECT)
+$conf->parse(SCONFIG_FLAG_ARRAY)
 }}}
 
 {{{
