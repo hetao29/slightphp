@@ -106,7 +106,7 @@ class SConfig{
 		return $matches[1].":".$key.";";
 	}
 	private function _split ($string,&$result, $layer=0, $path=array()) {
-		preg_match_all("/(\S+?)\s*\{(([^{}]*|(?R))+)\}/xms",$string,$matches,PREG_SET_ORDER);
+		preg_match_all("/(\S+?)[:\s]*\{(([^{}]*|(?R))+)\}/xms",$string,$matches,PREG_SET_ORDER);
 		if (!empty($matches)) {
 			foreach($matches as $m){
 				$path[$layer]=$m[1];
