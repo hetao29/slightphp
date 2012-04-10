@@ -81,12 +81,17 @@ class SConfig{
 		public function parse($flag=SCONFIG_FLAG_OBJECT,$allowMultiValue=true){
 			self::$_flag = $flag;
 			self::$_allowMultiValue = $allowMultiValue;
+			$cacheKey = self::$_flag."_".self::$_allowMultiValue;
+			if(isset(self::$_result[$cacheKey])){
+				return self::$_result[$cacheKey];
+			}
 			$content = file_get_contents(self::getConfigFile());
 			//去掉注释,#号表示注释
 			$content = preg_replace("/^(\s*)#(.*)/m","",$content);
 			//保存临时变量,单引号,双引号里特殊字符
 			$content = preg_replace_callback("/(\S+)[\s:]+([\'\"])(.*)\\2;/m",array("SConfig","_tmpData"),$content);
 			self::_split($content,$result);
+			self::$_result[$cacheKey]=$result;
 			return $result;
 		}
 		private static $_tmpData=array();
@@ -94,6 +99,7 @@ class SConfig{
 		private static $_tmpIndex=0;
 		private static $_flag = SCONFIG_FLAG_OBJECT;
 		private static $_allowMultiValue = true;
+		private static $_result=array();
 		private function _tmpData($matches){
 			$key = self::$_tmpPrefix.(self::$_tmpIndex++);
 			self::$_tmpData[$key]=$matches[3];
