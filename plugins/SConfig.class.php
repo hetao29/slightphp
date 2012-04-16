@@ -14,8 +14,6 @@
 +-----------------------------------------------------------------------+
 }}}*/
 if(!defined("SLIGHTPHP_PLUGINS_DIR"))define("SLIGHTPHP_PLUGINS_DIR",dirname(__FILE__));
-define("SCONFIG_FLAG_OBJECT",	1);
-define("SCONFIG_FLAG_ARRAY",	2);
 class SConfig{
 	private $_ConfigFile;
 	private $_ConfigCache;
@@ -74,14 +72,10 @@ class SConfig{
 	}
 	/**
 	 * 支持新的conf配置格式(类似nginx的配置)
-	 * @param int $flag 返回类型Array|Object,默认是Object
-	 * @param boolean $allowMultiValue 允许配置文件存在相同的key(多个相同的key,会自动变成数组)
 	 * @return mixed $result
 	 **/
-	public function parse($flag=SCONFIG_FLAG_OBJECT,$allowMultiValue=true){
-		self::$_flag = $flag;
-		self::$_allowMultiValue = $allowMultiValue;
-		$cacheKey = self::$_flag."_".self::$_allowMultiValue;
+	public function parse(){
+		$cacheKey = "SConfig_Cache";
 		if(isset(self::$_result[$cacheKey])){
 			return self::$_result[$cacheKey];
 		}
@@ -90,6 +84,7 @@ class SConfig{
 		$content = preg_replace("/^(\s*)#(.*)/m","",$content);
 		//保存临时变量,单引号,双引号里特殊字符
 		$content = preg_replace_callback("/(\S+?)[\s:]+([\'\"])(.*?)\\2;/m",array("SConfig","_tmpData"),$content);
+		$result = new stdclass;
 		self::_split($content,$result);
 		self::$_result[$cacheKey]=$result;
 		return $result;
@@ -97,57 +92,51 @@ class SConfig{
 	private static $_tmpData=array();
 	private static $_tmpPrefix="SCONFIG_TMP_PREFIX_";
 	private static $_tmpIndex=0;
-	private static $_flag = SCONFIG_FLAG_OBJECT;
-	private static $_allowMultiValue = true;
 	private static $_result=array();
 	private function _tmpData($matches){
 		$key = self::$_tmpPrefix.(self::$_tmpIndex++);
 		self::$_tmpData[$key]=$matches[3];
 		return $matches[1].":".$key.";";
 	}
-	private function _split ($string,&$result, $layer=0, $path=array()) {
-		preg_match_all("/(\S+?)[:\s]*\{(([^{}]*|(?R))+)\}/xms",$string,$matches,PREG_SET_ORDER);
+	private function _split ($string,&$result) {
+		preg_match_all("/([\w\.\-\_]+?)[:\s]*\{(([^{}]*|(?R))+)\}/xms",$string,$matches,PREG_SET_ORDER);
 		if (!empty($matches)) {
 			foreach($matches as $m){
-				$path[$layer]=$m[1];
 				//找出普通的k,v,需要把{}里的给无视
-				$tmp_string = preg_replace("/(\S+?)([\s:]*)\{(([^{}]+|(?R))+)\}/","",$m[2]);
-				preg_match_all("/(\w+)[\s:]+(.+?);/",$tmp_string,$_matches2,PREG_SET_ORDER);
+				$tmp_string = preg_replace("/([\w\.\-\_]+?)([\s:]*)\{(([^{}]+|(?R))+)\}/","",$m[2]);
+				preg_match_all("/([\w\.\-\_]+)[\s:]+(.+?);/",$tmp_string,$_matches2,PREG_SET_ORDER);
+				$_data=new stdclass;
 				if(!empty($_matches2)){
 					foreach($_matches2 as $_m2){
 						$key = $_m2[1];
 						$value= $_m2[2];
-						$path2 = $path;
-						array_push($path2,$key);
 						//找回被替换的值
 						if(isset(self::$_tmpData[$value])){$value = self::$_tmpData[$value];}
-						self::_setData($result,$path2,$value,self::$_flag,self::$_allowMultiValue);
+						if(isset($_data->$key)){
+							if(is_array($_data->$key)){
+								array_push($_data->$key,$value);
+							}else{
+								$tmp2=array($_data->$key,$value);
+								$_data->$key = $tmp2;
+							}
+						}else{
+							$_data->$key = $value;
+						}
+					}
+				}
+				if(!isset($result->$m[1])){
+					if(!is_array($result)){
+						$result->$m[1] = $_data;
 					}
 				}else{
-					self::_setData($result,$path,null,self::$_flag,self::$_allowMultiValue);
+					if(is_array($result->$m[1])){
+						array_push($result->$m[1],$_data);
+					}else{
+						$result->$m[1] = array($result->$m[1],$_data);
+					}
 				}
-				self::_split($m[2], $result,$layer + 1,$path);
+				self::_split($m[2], $_data);
 			}
-		}
-	}
-	private function _setData(&$arr,$path,$value,$flag=SCONFIG_FLAG_OBJECT,$allowMultiValue=true){
-		$tmp = &$arr;
-		foreach ($path as $segment) {
-			if($flag==SCONFIG_FLAG_ARRAY){
-				$tmp = &$tmp[$segment];
-			}else{
-				$tmp = &$tmp->$segment;
-			}
-		}
-		if(isset($tmp) && $allowMultiValue==true){
-			if(is_array($tmp)){
-				array_push($tmp,$value);
-			}else{
-				$tmp2=array($tmp,$value);
-				$tmp = $tmp2;
-			}
-		}else{
-			$tmp=$value;
 		}
 	}
 }
