@@ -84,10 +84,8 @@ class SConfig{
 		$content = preg_replace("/^(\s*)#(.*)/m","",$content);
 		//保存临时变量,单引号,双引号里特殊字符
 		$content = preg_replace_callback("/(\S+?)[\s:]+([\'\"])(.*?)\\2;/m",array("SConfig","_tmpData"),$content);
-		$result = new stdclass;
 		//获取最直接的k,v值
-		$_data = self::_getKV($content);
-		$result = (object) array_merge((array) $result, (array) $_data);
+		$result = self::_getKV($content);
 		self::_split($content,$result);
 		self::$_result[$cacheKey]=$result;
 		return $result;
