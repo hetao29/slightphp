@@ -125,9 +125,10 @@ class SConfig{
 		return $_data;
 	}
 	private function _split ($string,&$result) {
-		preg_match_all("/([\w\.\-\_]+?)[:\s]*\{(([^{}]*|(?R))+)\}/xms",$string,$matches,PREG_SET_ORDER);
+		preg_match_all("/([\w\.\-\_]*?)[:\s]*\{(([^{}]*|(?R))+)\}/xms",$string,$matches,PREG_SET_ORDER);
 		if (!empty($matches)) {
 			foreach($matches as $m){
+				if(empty($m[1]))continue;
 				$_data = self::_getKV($m[2]);
 				if(!isset($result->$m[1])){
 					if(!is_array($result)){
