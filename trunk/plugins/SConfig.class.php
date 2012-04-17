@@ -75,7 +75,7 @@ class SConfig{
 	 * @return mixed $result
 	 **/
 	public function parse(){
-		$cacheKey = "SConfig_Cache";
+		$cacheKey = "SConfig_Cache_"+self::getConfigFile();
 		if(isset(self::$_result[$cacheKey])){
 			return self::$_result[$cacheKey];
 		}
