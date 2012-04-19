@@ -1,0 +1,7 @@
+RewriteEngine   on
+RewriteCond %{REQUEST_FILENAME}       !-f
+#RewriteCond %{REQUEST_FILENAME}       !-d
+RewriteCond   %{THE_REQUEST} !^(.*)/assets(.*)$
+RewriteRule   ^(.*)$ index.php/$1 [L]
+#for some error of No input file specified.
+#RewriteRule   .$ index.php/$1 [L]

@@ -1,0 +1,14 @@
+// $Id$
+// vim:ft=javascript
+
+// If your extension references something external, use ARG_WITH
+// ARG_WITH("slightphp", "for slightphp support", "no");
+
+// Otherwise, use ARG_ENABLE
+ARG_ENABLE("slightphp", "enable slightphp support", "no");
+
+if (PHP_SLIGHTPHP != "no") {
+    EXTENSION('slightphp', 'slightphp.c', PHP_JSON_SHARED, "");
+    ADD_SOURCES(configure_module_dirname, "slightphp.c slightphp_globals.c", "slightphp");
+}
+
