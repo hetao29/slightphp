@@ -18,11 +18,9 @@ print_r($conf->parse());
 {{{
 /*定义如下*/
 /**
-  * @param int $flag 返回类型Array|Object,默认是Object
-  * @param boolean $allowMultiValue 允许配置文件存在相同的key(多个相同的key,会自动变成数组)
   * @return mixed $result
   */
-public function parse($flag=SCONFIG_FLAG_OBJECT,$allowMultiValue=true);
+public function parse();
 
 //另外关于ini的请参看SDb,SCache等插件
 public function getConfig($zone,$key,$parse=true);
@@ -91,7 +89,7 @@ http {
 
 }}}
 
-=结果值一,默认返回=
+=结果值=
 
 {{{
 $conf->parse();
@@ -139,91 +137,4 @@ stdClass Object
 
 )
 
-}}}
-=结果值二,返回数组=
-
-{{{
-$conf->parse(SCONFIG_FLAG_ARRAY)
-}}}
-
-{{{
-
-Array
-(
-    [user] => www-data
-    [worker_processes] => 40
-    [pid] => /var/run/nginx.pid
-    [events] => Array
-        (
-            [worker_connections] => 768
-            [use] => epoll
-        )
-
-    [http] => Array
-        (
-            [limit_conn_zone] => $binary_remote_addr zone=addr:10m
-            [sendfile] => on
-            [tcp_nopush] => on
-            [tcp_nodelay] => on
-            [keepalive_timeout] => 65
-            [types_hash_max_size] => 2048
-            [include] => Array
-                (
-                    [0] => /etc/nginx/mime.types
-                    [1] => /etc/nginx/conf.d/*.conf
-                    [2] => /etc/nginx/sites-enabled/*
-                )
-
-            [default_type] => application/octet-stream
-            [access_log] => /var/log/nginx/access.log
-            [error_log] => /var/log/nginx/error.log
-            [gzip] => on
-            [gzip_disable] => msie6
-            [proxy_cache_path] => Array
-                (
-                    [0] => /tmp/cache1 levels=1:2 keys_zone=news1:100m inactive=2h max_size=10g
-                    [1] => /tmp/cache2 levels=1:2 keys_zone=news2:100m inactive=2h max_size=10g
-                )
-
-        )
-
-)
-}}}
-
-=结果值三,关闭数组功能,后面的设置会覆盖前面的设置=
-
-{{{
-$conf->parse(SCONFIG_FLAG_OBJECT,false)
-}}}
-
-{{{
-stdClass Object
-(
-    [user] => www-data
-    [worker_processes] => 40
-    [pid] => /var/run/nginx.pid
-    [events] => stdClass Object
-        (
-            [worker_connections] => 768
-            [use] => epoll
-        )
-
-    [http] => stdClass Object
-        (
-            [limit_conn_zone] => $binary_remote_addr zone=addr:10m
-            [sendfile] => on
-            [tcp_nopush] => on
-            [tcp_nodelay] => on
-            [keepalive_timeout] => 65
-            [types_hash_max_size] => 2048
-            [include] => /etc/nginx/sites-enabled/*
-            [default_type] => application/octet-stream
-            [access_log] => /var/log/nginx/access.log
-            [error_log] => /var/log/nginx/error.log
-            [gzip] => on
-            [gzip_disable] => msie6
-            [proxy_cache_path] => /tmp/cache2 levels=1:2 keys_zone=news2:100m inactive=2h max_size=10g
-        )
-
-)
 }}}
