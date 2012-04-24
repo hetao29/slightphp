@@ -85,7 +85,7 @@ class SConfig{
 			self::$_result[$cacheKey]=$result;
 			return $result;
 		}
-		$content = file_get_contents($this->_ConfigFile);
+		$content = file_get_contents($this->_ConfigFile,false);
 		//去掉注释,#号表示注释
 		$content = preg_replace("/^(\s*)#(.*)/m","",$content);
 		//保存临时变量,单引号,双引号里特殊字符
