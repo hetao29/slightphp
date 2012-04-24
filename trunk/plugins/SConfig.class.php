@@ -79,7 +79,13 @@ class SConfig{
 		if(isset(self::$_result[$cacheKey])){
 			return self::$_result[$cacheKey];
 		}
-		$content = file_get_contents(self::getConfigFile());
+		$tmp_file = self::_tmpDir()."/".self::$_tmpPrefix.basename($this->_ConfigFile);
+		if(is_file($tmp_file) && filemtime($tmp_file)>=filemtime($this->_ConfigFile)){
+			$result = unserialize(file_get_contents($tmp_file,false));
+			self::$_result[$cacheKey]=$result;
+			return $result;
+		}
+		$content = file_get_contents($this->_ConfigFile);
 		//去掉注释,#号表示注释
 		$content = preg_replace("/^(\s*)#(.*)/m","",$content);
 		//保存临时变量,单引号,双引号里特殊字符
@@ -87,6 +93,7 @@ class SConfig{
 		//获取最直接的k,v值
 		$result = self::_getKV($content);
 		self::_split($content,$result);
+		file_put_contents($tmp_file,serialize($result),LOCK_EX);
 		self::$_result[$cacheKey]=$result;
 		return $result;
 	}
@@ -141,6 +148,22 @@ class SConfig{
 				}
 				self::_split($m[2], $_data);
 			}
+		}
+	}
+	private function _tmpDir(){
+		if ( !function_exists('sys_get_temp_dir')){
+			function sys_get_temp_dir() {
+				if (!empty($_ENV['TMP'])) { return realpath($_ENV['TMP']); }
+				if (!empty($_ENV['TMPDIR'])) { return realpath( $_ENV['TMPDIR']); }
+				if (!empty($_ENV['TEMP'])) { return realpath( $_ENV['TEMP']); }
+				$tempfile=tempnam(uniqid(rand(),TRUE),'');
+				if (file_exists($tempfile)) {
+					unlink($tempfile);
+					return realpath(dirname($tempfile));
+				}
+			}
+		}else{
+			return sys_get_temp_dir();
 		}
 	}
 }
