@@ -13,79 +13,24 @@
 | Supports: http://www.slightphp.com                                    |
 +-----------------------------------------------------------------------+
 }}}*/
-if(!defined("SLIGHTPHP_PLUGINS_DIR"))define("SLIGHTPHP_PLUGINS_DIR",dirname(__FILE__));
 class SConfig{
-	private $_ConfigFile;
-	private $_ConfigCache;
-	private $_DefaultZone="default";
-	public function setConfigFile($file){
-		$this->_ConfigFile = $file;
-	}
-	public function getConfigFile(){
-		return $this->_ConfigFile;
-	}
-	/**
-	 * @param string $zone
-	 * @param string $key preg_match
-	 * @return array
-	 */
-	public function getConfig($zone,$key,$parse=true){
-		$configs = $this->listConfig($zone,$key,$parse);
-		if(!empty($configs)){
-			$i =  array_rand($configs);
-			return $configs[$i];
-		}
-		return array();
-	}
-	public function listConfig($zone,$key,$parse=true){
-		if(!$this->_ConfigFile){return array();}
-		$cache = $this->_ConfigCache;
-		if(isset($cache[$zone]) && isset($cache[$zone][$key])){
-			return $cache[$zone][$key];
-		}
-		$file_data = parse_ini_file(realpath($this->_ConfigFile),true);
-		if(isset($file_data[$zone])){
-			$_configs = $file_data[$zone];
-		}elseif(isset($file_data[$this->_DefaultZone])){
-			$_configs = $file_data[$this->_DefaultZone];
-		}else{
-			return array();
-		}
-		foreach($_configs as $k =>$row){
-			if(preg_match("/$key/i",$k)){
-				if($parse){
-					$row = str_replace(":","=",$row);
-					$row = str_replace(",","&",$row);
-					parse_str($row,$out);
-					if(!empty($out)){
-						$cache[$zone][$key][$k]=$out;
-					}
-				}else{
-					$cache[$zone][$key][$k]=$row;
-				}
-			}
-		}
-		if(isset($cache[$zone][$key])){
-			return $cache[$zone][$key];
-		}
-		return array();
-	}
 	/**
 	 * 支持新的conf配置格式(类似nginx的配置)
 	 * @return mixed $result
+	 * @param string $configFile
 	 **/
-	public function parse(){
-		$cacheKey = "SConfig_Cache_"+self::getConfigFile();
+	public static function parse($configFile){
+		$cacheKey = "SConfig_Cache_"+$configFile;
 		if(isset(self::$_result[$cacheKey])){
 			return self::$_result[$cacheKey];
 		}
-		$tmp_file = self::_tmpDir()."/".self::$_tmpPrefix.basename($this->_ConfigFile);
-		if(is_file($tmp_file) && filemtime($tmp_file)>=filemtime($this->_ConfigFile)){
+		$tmp_file = self::_tmpDir()."/".self::$_tmpPrefix.basename($configFile);
+		if(is_file($tmp_file) && filemtime($tmp_file)>=filemtime($configFile)){
 			$result = unserialize(file_get_contents($tmp_file,false));
 			self::$_result[$cacheKey]=$result;
 			return $result;
 		}
-		$content = file_get_contents($this->_ConfigFile,false);
+		$content = file_get_contents($configFile,false);
 		//去掉注释,#号表示注释
 		$content = preg_replace("/^(\s*)#(.*)/m","",$content);
 		//保存临时变量,单引号,双引号里特殊字符
@@ -97,16 +42,17 @@ class SConfig{
 		self::$_result[$cacheKey]=$result;
 		return $result;
 	}
+
 	private static $_tmpData=array();
 	private static $_tmpPrefix="SCONFIG_TMP_PREFIX_";
 	private static $_tmpIndex=0;
 	private static $_result=array();
-	private function _tmpData($matches){
+	private static function _tmpData($matches){
 		$key = self::$_tmpPrefix.(self::$_tmpIndex++);
 		self::$_tmpData[$key]=$matches[3];
 		return $matches[1].":".$key.";";
 	}
-	private function _getKV($string) {
+	private static function _getKV($string) {
 		$_data = new stdclass;
 		$tmp_string = preg_replace("/([\w\.\-\_]+?)([\s:]*)\{(([^{}]+|(?R))+)\}/","",$string);
 		preg_match_all("/([\w\.\-\_]+)[\s:]+(.+?);/",$tmp_string,$_matches2,PREG_SET_ORDER);
@@ -129,7 +75,7 @@ class SConfig{
 		}
 		return $_data;
 	}
-	private function _split ($string,&$result) {
+	private static function _split ($string,&$result) {
 		preg_match_all("/([\w\.\-\_]*?)[:\s]*\{(([^{}]*|(?R))+)\}/xms",$string,$matches,PREG_SET_ORDER);
 		if (!empty($matches)) {
 			foreach($matches as $m){
@@ -150,7 +96,7 @@ class SConfig{
 			}
 		}
 	}
-	private function _tmpDir(){
+	private static function _tmpDir(){
 		if ( !function_exists('sys_get_temp_dir')){
 			function sys_get_temp_dir() {
 				if (!empty($_ENV['TMP'])) { return realpath($_ENV['TMP']); }
