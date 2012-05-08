@@ -97,11 +97,6 @@ $cache->setMode(2);
 好处：部分依赖，cache命中率高<br />
 坏处：如果某些时候依赖Key只删除了，没有更新的话，会导致内容不太准确。
 
-= 关于localCache =
-是否在内存中暂时保存memcache中的值，优点是重复获取时速度会更快。
-{{{
-SCache::setLocalCache(boolean);
-}}}
 
 = 列表Key的解决办法 =
 列表Key的问题，在用列表Key时，请把模式设置成完全匹配模式。
@@ -118,26 +113,29 @@ $cache->setMode(1);
 
 = 配置文件 =
  * 配置文件模板样例
-
-{{{
+<code language="conf">
 #配置一共有4个字段
-
 #host 主机IP，或者主机名
 #port 端口号
 #weight 权重，整数，默认为1
 #timeout 连接超时设置，默认为1
-
 #default 是默认的Cache配置
+
+
 #default 
 default{ host 127.0.0.1; port 10006; weight 40; timeout 1; }
 default{ host 127.0.0.1; port 10006; weight 40; timeout 1; }
+
+
 #video
 video   {       host:10.10.221.12;      port:10006;     weight 5; timeout 3;}
 video   {       host:10.10.221.12;      port:11211;     weight 5; timeout 3;}
+
+
 #user
 user   {       host:10.10.221.12;      port:10006;     weight 5; timeout 3;}
-}}}
 
+</code>
  * 实例
 
 {{{
