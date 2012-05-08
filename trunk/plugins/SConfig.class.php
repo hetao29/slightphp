@@ -19,6 +19,18 @@ class SConfig{
 	 * @return mixed $result
 	 * @param string $configFile
 	 **/
+	public static function getConfig($configFile,$zone=null){
+		$config = self::parse($configFile);
+		if($zone){
+			if($config->$zone){
+				return $config->$zone;
+			}elseif($config->default){
+				return $config->default;
+			}
+			return null;
+		}
+		return $config;
+	}
 	public static function parse($configFile){
 		$cacheKey = "SConfig_Cache_"+$configFile;
 		if(isset(self::$_result[$cacheKey])){

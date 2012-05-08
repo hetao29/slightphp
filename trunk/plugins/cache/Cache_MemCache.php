@@ -26,21 +26,117 @@ final class Cache_MemcacheObject{
 		$this->t = time();
 	}
 }
-class Cache_Memcache{
-	static private $_connects	=	array();
-	static private $_data		=	array();
-	static private $_servers	=	array();
-	static private $_serverCt	=	0;
+if(class_exists("Memcached")){
+	class Cache_MemcacheEngine{
+		static private $_memcache;
+		public function __construct(){
+			if(!self::$_memcache){
+				self::$_memcache = new Memcached();
+				self::$_memcache->setOption(Memcached::OPT_DISTRIBUTION,Memcached::DISTRIBUTION_CONSISTENT);
+				self::$_memcache->setOption(Memcached::OPT_LIBKETAMA_COMPATIBLE,true); 
+				self::$_memcache->setOption(Memcached::OPT_CONNECT_TIMEOUT,1000);
+			}
+		}
+		public function addServer($host,$port=11211,$weight=10,$timeout=1){
+			self::$_memcache->setOption(Memcached::OPT_CONNECT_TIMEOUT,$timeout*1000);
+			return self::$_memcache->addServer($host,$port,$weight);
+		}
+		public function addServers($hosts=array()){
+			$realhost=array();
+			if(is_array($hosts)){
+				foreach($hosts as $host){
+					$realhost[]=array($host->host,
+							isset($host->port)?$host->port:11211,
+							isset($host->weight)?$host->weight:10
+							);
+				}
+			}elseif(is_object($hosts)){
+				$host = $hosts;
+				$realhost[]=array($host->host,
+						isset($host->port)?$host->port:11211,
+						isset($host->weight)?$host->weight:10
+						);
+			}
+			return self::$_memcache->addServers($realhost);
+		}
+		public function del($keys){
+			if(is_array($keys)){
+				foreach($keys as $key){
+					return self::del($key);
+				}
+			}else{
+				return self::$_memcache->delete($keys);
+			}
+		}
+		public function get($keys){
+			if(is_array($keys)){
+				return self::$_memcache->getMulti($keys);
+			}else{
+				return self::$_memcache->get($keys);
+			}
+		}
+		public function set($key,$value,$expire=0){
+			return self::$_memcache->set($key,$value,$expire);
+		}
+	}
+}else{
+	class Cache_MemcacheEngine extends Memcache{
+		static private $_memcache;
+		public function __construct(){
+			if(!self::$_memcache){
+				self::$_memcache = new Memcache();
+				ini_set("memcache.hash_strategy","consistent");
+				ini_set("memcache.hash_function","crc32");
+			}
+		}
+		public function addServer($host,$port=11211,$weight=10,$timeout=1){
+			return self::$_memcache->addServer($host,$port,true,$weight>0?$weight:10,$timeout>0?$timeout:1);
+		}
+		public function addServers($hosts=array()){
+			if(is_array($hosts)){
+				foreach($hosts as $host){
+					return self::addServer($host->host,
+							isset($host->port)?$host->port:11211,
+							isset($host->weight)?$host->weight:10,
+							isset($host->timeout)?$host->timeout:1
+							);
+				}
+			}elseif(is_object($hosts)){
+				$host = $hosts;
+				return self::addServer($host->host,
+						isset($host->port)?$host->port:11211,
+						isset($host->weight)?$host->weight:10,
+						isset($host->timeout)?$host->timeout:1
+						);
+			}
 
-	/**
-	 * var $localCache
-	 */
-	static $localCache=true;
+		}
+		public function del($keys){
+			if(is_array($keys)){
+				foreach($keys as $key){
+					return self::del($key);
+				}
+			}else{
+				return self::$_memcache->delete($keys);
+			}
+		}
+		public function get($keys){
+			return self::$_memcache->get($keys);
+		}
+		public function set($key,$value,$expire=0){
+			return self::$_memcache->set($key,$value,0,$expire);
+		}
+	}
+}
+class Cache_Memcache extends Cache_MemcacheEngine{
 
 	/**
 	 * int $mode
 	 */
 	static $mode = 1;
+	public function __construct(){
+		parent::__construct();
+	}
 	
 	/**
 	 * @param array['host']
@@ -59,29 +155,10 @@ class Cache_Memcache{
 		}
 	}
 	/**
-	 * @param array $servers
-	 */
-	static function addServers($servers){
-		self::$_servers=array();
-		foreach($servers as $server) self::init($server);
-	}
-	/**
-	 * @param string $host
-	 * @param int $port
-	 * @param int $weight=1
-	 * @param int $timeout=1
-	 */
-	/**
 	 * @param int $mode
 	 */
-	static function setMode($mode){
+	function setMode($mode){
 		self::$mode=$mode;
-	}
-	/**
-	 * @param bool $cache
-	 */
-	static function setLocalCache($cache){
-		self::$localCache=$cache;
 	}
 
 	/**
@@ -89,7 +166,7 @@ class Cache_Memcache{
 	 * @param string|array $depKeys
 	 * @return mixed
 	 */
-	static function get($key,$depKeys=null){
+	function get($key,$depKeys=null){
 		$return_type=1;
 		if(is_array($key)){
 			$return_keys = $key;
@@ -104,7 +181,7 @@ class Cache_Memcache{
 		}else{
 			$keys = $return_keys;
 		}
-		$values = self::_get($keys);
+		$values = parent::get($keys);
 		$result=array();
 		foreach($return_keys as $key){
 			if(!isset($values[$key]) || !($values[$key] instanceof Cache_MemcacheObject)){
@@ -147,113 +224,8 @@ class Cache_Memcache{
 		if($return_type==1)return array_shift($result);
 		return $result;
 	}
-	/**
-	 * @param string|array $key
-	 * @return bool
-	 */
-	static function del($key){
-		if(is_array($key)){
-			foreach($key as $k)self::del($k);
-			return;
-		}
-		if(self::$localCache && isset(self::$_data[$key]))unset(self::$_data[$key]);
-		$memcache_obj = self::_connect(self::getServer($key));
-		return memcache_delete($memcache_obj,$key,0);
-	}
-	/**
-	 * @param string $key
-	 * @param mixed $value
-	 * @param int $exp
-	 */
-	static function set($key,$value,$exp=0){
+	function set($key,$value,$exp=0){
 		$v = new Cache_MemcacheObject($value);
-		if(self::$localCache)self::$_data[$key]=$v;
-		$memcache_obj = self::_connect(self::getServer($key));
-		return memcache_set($memcache_obj,$key,$v,0,$exp);
-	}
-
-	static private function _connect($server){
-		$index = $server['host'].":".$server['port'];
-		if(!isset(self::$_connects[$index])){
-			$memcache_obj = memcache_connect($server['host'], $server['port'],$server['timeout']);
-			if($memcache_obj)self::$_connects[$index]=$memcache_obj;
-		}
-		return self::$_connects[$index];
-
-	}
-	static private function _get($keys){
-		$servs  = array();
-		$values = array();
-		foreach($keys as $key){
-			if(self::$localCache && isset(self::$_data[$key]) && (self::$_data[$key] instanceof Cache_MemcacheObject)){
-				$values[$key]=self::$_data[$key];
-			}else{
-				$server = self::getServer($key);
-				$serverIndex = $server['index'];
-				$servs[$serverIndex][]=$key;
-			}
-		}
-		foreach($servs as $serverIndex=>$key){
-			$memcache_obj = self::_connect(self::$_servers[$serverIndex]);
-			$vars = memcache_get($memcache_obj, $key);
-			$values = array_merge($values,$vars);
-			if(self::$localCache)self::$_data = array_merge(self::$_data,$vars);
-		}
-		return $values;
-	}
-	/**
-	 * consistent hashing
-	 */
-	public static function addServer($host,$port=11211,$weight=1,$timeout=1){
-		$weight = $weight*10;
-		for($i=1;$i<=$weight;$i++){
-			$serverid = self::hash($host.":".$port.":".$i);
-			self::$_servers[]=array(
-				"host"=>$host,
-				"port"=>$port,
-				"weight"=>$weight,
-				"id"=>$serverid,
-				"timeout"=>$timeout,
-			);
-		}
-		usort(self::$_servers,"self::_sort");
-		self::$_serverCt=count(self::$_servers);
-	}
-	private static function _sort($a,$b){
-		return $a['id']>$b['id'];
-	}
-	public static function getServer($key){
-		$key = self::hash($key);
-		$left = 0;
-		$right=self::$_serverCt-1;
-		$index = 0;
-		while($left<$right-1){
-			$middle = (int)(($left+$right)/2);
-			if($key <= self::$_servers[$left]['id']){
-				$index = $left;
-				break;
-			}
-			if($key>= self::$_servers[$right]['id']){
-				$index = $right;
-				break;
-			}
-			$t = self::$_servers[$middle]['id'];
-			if($key==$t){
-				$index = $middle;
-			}
-			if($key>$t){
-				$left = $middle;
-				$index = $right;
-			}else {
-				$right=$middle;
-				$index = $middle;
-			}
-		}
-		$server = self::$_servers[$index];
-		$server['index'] = $index;
-		return $server;
-	}
-	private static function hash($str){
-		return crc32($str);
+		parent::set($key,$v,$exp);
 	}
 }
