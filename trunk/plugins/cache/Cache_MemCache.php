@@ -26,7 +26,7 @@ final class Cache_MemcacheObject{
 		$this->t = time();
 	}
 }
-if(class_exists("Memcached")){
+if(class_exists("Memcached",false)){
 	class Cache_MemcacheEngine{
 		static private $_memcache;
 		public function __construct(){

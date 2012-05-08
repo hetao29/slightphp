@@ -120,8 +120,7 @@ class SConfig{
 					return realpath(dirname($tempfile));
 				}
 			}
-		}else{
-			return sys_get_temp_dir();
 		}
+		return sys_get_temp_dir();
 	}
 }
