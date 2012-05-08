@@ -1,30 +1,26 @@
-#summary SConfig 配置文件插件（默认是ini格式，另外还支持类似nginx.conf的配置文件格式）
+#summary SConfig 配置文件插件（支持类似nginx.conf的配置文件格式）
 #labels Featured
 
-= 主要特性 =
-
- * 支持ini,conf这２种不同的配置文件
   
 = 使用方法 =
 
 {{{
-$conf = new SConfig;
-//设置配置文件
-$conf->setConfigFile("/etc/nginx/nginx.conf");
-//解析conf格式
-print_r($conf->parse());
+#解析全部文件
+SConfig::parse("/etc/nginx/nginx.conf");
+
+#获取其中某一个节点数据（SlightPHP框架使用）
+SConfig::getConfig("/etc/nginx/nginx.conf",$zone);
+
 }}}
 
 {{{
 /*定义如下*/
 /**
+  * @param string $configFile
   * @return mixed $result
   */
-public function parse();
+public function parse($configFile);
 
-//另外关于ini的请参看SDb,SCache等插件
-public function getConfig($zone,$key,$parse=true);
-public function listConfig($zone,$key,$parse=true);
 }}}
 
 = 配置文件 =
@@ -92,7 +88,7 @@ http {
 =结果值=
 
 {{{
-$conf->parse();
+$conf->parse($file);
 }}}
 
 {{{
