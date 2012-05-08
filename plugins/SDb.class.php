@@ -25,27 +25,35 @@ class SDb extends Db{
 	private static $_config;
 
 	static function setConfigFile($file){
-		self::$_config = new SConfig;
-		self::$_config->setConfigFile($file);
-	}
-	static function getConfigFile(){
-		return self::$_config->getConfigFile();
+		self::$_config = $file;
 	}
 	/**
 	 * @param string $zone
 	 * @param string $type	main|query
 	 * @return array
 	 */
-	static function getConfig($zone,$type="main"){
-		return self::$_config->getConfig($zone,$type.".*");
+	static function getConfig($zone=null,$type="main"){
+		$config = SConfig::getConfig(self::$_config,$zone);
+		if(isset($config->$type)){
+			return $config->$type;
+		}elseif(isset($config->main)){
+			return $config->main;
+		}
+		return;
 	}
 	/**
 	 * 切换数据库配置文件
-	 * $param string $zone
-	 * $param string $type="main"
+	 * @param string $zone
+	 * @param string $type	main|query
+	 * @return array
 	 */
 	function useConfig($zone,$type="main"){
-		$this->init(self::getConfig($zone,$type));
+		$config = self::getConfig($zone,$type);
+		if(is_object($config)){
+			self::init($config);
+		}elseif(is_array($config)){
+			self::init($config[array_rand($config)]);
+		}
 	}
 
 	private $foreign_keys =array();
