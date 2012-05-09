@@ -39,7 +39,7 @@ if(class_exists("Memcached",false)){
 		}
 		public function addServer($host,$port=11211,$weight=10,$timeout=1){
 			self::$_memcache->setOption(Memcached::OPT_CONNECT_TIMEOUT,$timeout*1000);
-			return self::$_memcache->addServer($host,$port,$weight);
+			self::$_memcache->addServer($host,$port,$weight);
 		}
 		public function addServers($hosts=array()){
 			$realhost=array();
@@ -57,7 +57,7 @@ if(class_exists("Memcached",false)){
 						isset($host->weight)?$host->weight:10
 						);
 			}
-			return self::$_memcache->addServers($realhost);
+			self::$_memcache->addServers($realhost);
 		}
 		public function del($keys){
 			if(is_array($keys)){
@@ -90,24 +90,24 @@ if(class_exists("Memcached",false)){
 			}
 		}
 		public function addServer($host,$port=11211,$weight=10,$timeout=1){
-			return self::$_memcache->addServer($host,$port,true,$weight>0?$weight:10,$timeout>0?$timeout:1);
+			self::$_memcache->addServer($host,$port,true,$weight>0?$weight:10,$timeout>0?$timeout:1);
 		}
 		public function addServers($hosts=array()){
 			if(is_array($hosts)){
 				foreach($hosts as $host){
-					return self::addServer($host->host,
+					self::addServer($host->host,
 							isset($host->port)?$host->port:11211,
 							isset($host->weight)?$host->weight:10,
 							isset($host->timeout)?$host->timeout:1
-							);
+						       );
 				}
 			}elseif(is_object($hosts)){
 				$host = $hosts;
-				return self::addServer($host->host,
+				self::addServer($host->host,
 						isset($host->port)?$host->port:11211,
 						isset($host->weight)?$host->weight:10,
 						isset($host->timeout)?$host->timeout:1
-						);
+					       );
 			}
 
 		}
