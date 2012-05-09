@@ -14,6 +14,7 @@
 +-----------------------------------------------------------------------+
 }}}*/
 class SConfig{
+	public static $CACHE=true;
 	/**
 	 * 支持新的conf配置格式(类似nginx的配置)
 	 * @return mixed $result
@@ -33,14 +34,16 @@ class SConfig{
 	}
 	public static function parse($configFile){
 		$cacheKey = "SConfig_Cache_"+$configFile;
-		if(isset(self::$_result[$cacheKey])){
-			return self::$_result[$cacheKey];
-		}
-		$tmp_file = self::_tmpDir()."/".self::$_tmpPrefix.basename($configFile);
-		if(is_file($tmp_file) && filemtime($tmp_file)>=filemtime($configFile)){
-			$result = unserialize(file_get_contents($tmp_file,false));
-			self::$_result[$cacheKey]=$result;
-			return $result;
+		if(self::$CACHE){
+			if(isset(self::$_result[$cacheKey])){
+				return self::$_result[$cacheKey];
+			}
+			$tmp_file = self::_tmpDir()."/".self::$_tmpPrefix.basename($configFile);
+			if(is_file($tmp_file) && filemtime($tmp_file)>=filemtime($configFile)){
+				$result = unserialize(file_get_contents($tmp_file,false));
+				self::$_result[$cacheKey]=$result;
+				return $result;
+			}
 		}
 		$content = file_get_contents($configFile,false);
 		//去掉注释,#号表示注释
@@ -50,8 +53,10 @@ class SConfig{
 		//获取最直接的k,v值
 		$result = self::_getKV($content);
 		self::_split($content,$result);
-		file_put_contents($tmp_file,serialize($result),LOCK_EX);
-		self::$_result[$cacheKey]=$result;
+		if(self::$CACHE){
+			file_put_contents($tmp_file,serialize($result),LOCK_EX);
+			self::$_result[$cacheKey]=$result;
+		}
 		return $result;
 	}
 
