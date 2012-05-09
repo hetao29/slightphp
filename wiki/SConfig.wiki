@@ -19,7 +19,7 @@ SConfig::getConfig("/etc/nginx/nginx.conf",$zone);
   * @param string $configFile
   * @return mixed $result
   */
-public function parse($configFile);
+public static function parse($configFile);
 
 }}}
 
