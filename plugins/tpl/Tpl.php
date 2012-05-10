@@ -74,7 +74,7 @@ class Tpl{
 		$pattern = "/^(.+)\\|(.+)/ms";
 		$content = preg_replace_callback($pattern,create_function('$m','$r=preg_match_all("/(\\\\$?\w+|\".+?\"|\'.+?\')/",$m[2],$tmp); if($r>=0){$eg=$tmp[0];$func="tpl_modifier_".$eg[0]; $eg[0]=$m[1];$params=implode(",",$eg);if(function_exists($func))return "echo $func($params)";else return "/* $func function not exists! */";}else{return "/* {$m[0]} is not a STpl modifier */";}'),$content);
 		//{{{替换变量,加ECHO
-		$patterns = array("/\\$(\w+)/ms","/^(Tpl::\\$\S+)$/ms");
+		$patterns = array('/\$(\w+)/ms','/^(Tpl::\$_tpl_vars\[\"\w+\"\])$/ms');
 		$replacements=array('Tpl::$_tpl_vars["\1"]','echo \\1');
 		$content = preg_replace($patterns,$replacements,$content);
 		////}}}
