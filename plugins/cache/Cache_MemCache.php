@@ -45,17 +45,19 @@ if(class_exists("Memcached",false)){
 			$realhost=array();
 			if(is_array($hosts)){
 				foreach($hosts as $host){
+					if(isset($host->host))
+						$realhost[]=array($host->host,
+								isset($host->port)?$host->port:11211,
+								isset($host->weight)?$host->weight:10
+								);
+				}
+			}elseif(is_object($hosts)){
+				$host = $hosts;
+				if(isset($host->host))
 					$realhost[]=array($host->host,
 							isset($host->port)?$host->port:11211,
 							isset($host->weight)?$host->weight:10
 							);
-				}
-			}elseif(is_object($hosts)){
-				$host = $hosts;
-				$realhost[]=array($host->host,
-						isset($host->port)?$host->port:11211,
-						isset($host->weight)?$host->weight:10
-						);
 			}
 			self::$_memcache->addServers($realhost);
 		}
@@ -95,19 +97,21 @@ if(class_exists("Memcached",false)){
 		public function addServers($hosts=array()){
 			if(is_array($hosts)){
 				foreach($hosts as $host){
+					if(isset($host->host))
+						self::addServer($host->host,
+								isset($host->port)?$host->port:11211,
+								isset($host->weight)?$host->weight:10,
+								isset($host->timeout)?$host->timeout:1
+							       );
+				}
+			}elseif(is_object($hosts)){
+				$host = $hosts;
+				if(isset($host->host))
 					self::addServer($host->host,
 							isset($host->port)?$host->port:11211,
 							isset($host->weight)?$host->weight:10,
 							isset($host->timeout)?$host->timeout:1
 						       );
-				}
-			}elseif(is_object($hosts)){
-				$host = $hosts;
-				self::addServer($host->host,
-						isset($host->port)?$host->port:11211,
-						isset($host->weight)?$host->weight:10,
-						isset($host->timeout)?$host->timeout:1
-					       );
 			}
 
 		}
