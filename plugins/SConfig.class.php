@@ -23,9 +23,9 @@ class SConfig{
 	public static function getConfig($configFile,$zone=null){
 		$config = self::parse($configFile);
 		if($zone){
-			if($config->$zone){
+			if(isset($config->$zone)){
 				return $config->$zone;
-			}elseif($config->default){
+			}elseif(isset($config->default)){
 				return $config->default;
 			}
 			return null;
