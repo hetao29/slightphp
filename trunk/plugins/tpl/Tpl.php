@@ -93,7 +93,7 @@ class Tpl{
 	}
 	private static function _matchfunction($function){
 		$r=preg_match_all("/(\\$?\w+|\".+?\"|\'.+?\')/",$function[2],$tmp);
-		if($r>=1){
+		if($r){
 			$func="tpl_function_".$function[1];
 			$params=implode(",",$tmp[0]);
 			if(function_exists($func))return "$func($params)";
@@ -105,7 +105,7 @@ class Tpl{
 	}
 	private static function _matchmodifier($modifier){
 		$r=preg_match_all("/(\\$?\w+)/",$modifier[2],$keys);
-		if($r>0){
+		if($r){
 			$func = array_shift($keys[0]);
 			$func_m = "tpl_modifier_".$func;
 			array_unshift($keys[0],$modifier[1]);
@@ -117,11 +117,10 @@ class Tpl{
 			}else{
 				$str = "/* $func_m function not exists! */";
 			}
+			return $str;
 		}
-		return $str;
 	}
 	private static function _compile($content){
-
 		$left_delimiter= self::$left_delimiter;
 		$right_delimiter= self::$right_delimiter;
 		$left_delimiter_quote = preg_quote($left_delimiter);
