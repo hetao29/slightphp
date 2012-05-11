@@ -103,14 +103,6 @@ class Tpl{
 			return "/* $function[0] is not a STpl function */";
 		}
 	}
-	private static $_tmpData;
-	private static $_tmpIndex=0;
-	private static $_tmpPrefix="TPL_TMP_PREFIX_";
-	private static function _tmpData($matches){
-		$key = self::$_tmpPrefix.(self::$_tmpIndex++);
-		self::$_tmpData[$key]=$matches[1].$matches[2].$matches[1];
-		return $key;
-	}
 	private static function _matchmodifier($modifier){
 		$r=preg_match_all("/(\\$?\w+)/",$modifier[2],$keys);
 		if($r>0){
@@ -150,5 +142,13 @@ class Tpl{
 		$content = preg_replace($pattern,"<?php /*\\1*/?>",$content);
 		$pattern="/{$left_delimiter_quote}([\S].*){$right_delimiter_quota}/msU";
 		return preg_replace_callback($pattern,array("Tpl",'_match'),$content);
+	}
+	private static $_tmpData;
+	private static $_tmpIndex=0;
+	private static $_tmpPrefix="TPL_TMP_PREFIX_";
+	private static function _tmpData($matches){
+		$key = self::$_tmpPrefix.(self::$_tmpIndex++);
+		self::$_tmpData[$key]=$matches[1].$matches[2].$matches[1];
+		return $key;
 	}
 }
