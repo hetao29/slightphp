@@ -51,8 +51,12 @@ class Tpl{
 		}
 		include($compiled_file);
 	}
-	static function _match($matches){
+	private static function _match($matches){
 		$content = $matches[1];
+		//替换特殊字符
+		self::$_tmpData=array();
+		self::$_tmpIndex=0;
+		$content = preg_replace_callback("/([\'\"])(.+?)\\1/m",array("Tpl","_tmpData"),$content);
 		//{{{if,elseif,/if; foreach,/foreach; for,/for
 		$pattern = "/^(if|foreach|for)(([\s|\(]+)(.+))/msi";
 		$content = preg_replace_callback($pattern,create_function('$m','$t = trim($m[3]);$v = trim($m[2]);if(empty($t)){return "{$m[1]}($v){";}else{return "{$m[1]}$v{";}'),$content);
@@ -65,23 +69,66 @@ class Tpl{
 		//{fun $param1 $param2 "param3" }
 		//{fun($param1,$param2,"param3")}
 		//{fun ($param1,$param2,"param3")}
-		$pattern = "/^(\w+)\\s?(.*)/ms";
-		$content = preg_replace_callback($pattern,create_function('$m','$r=preg_match_all("/(\\\\$?\w+|\".+?\"|\'.+?\')/",$m[2],$tmp);$func="tpl_function_".$m[1];if($r>=1){$params=implode(",",$tmp[0]);if(function_exists($func))return "echo $func($params)";elseif(function_exists($m[1]))return "echo {$m[1]}($params)";else return "/* $func function not exists! */";}else{return "/* $m[0] is not a STpl function */";}'),$content);
-		//modifier，支持多种格式
+		$pattern = "/^(\w+)\\s+(.*)/ms";
+		do{
+			$content = preg_replace_callback($pattern,array("Tpl","_matchfunction"),$content,-1,$ct);
+		}while(0);
+		//modifier，支持多种格式，与多极modifier
 		//{$v|modifer}
 		//{$v|modifer:1:2}
-		//{'v'|modifer:1:2}
-		$pattern = "/^(.+)\\|(.+)/ms";
-		$content = preg_replace_callback($pattern,create_function('$m','$r=preg_match_all("/(\\\\$?\w+|\".+?\"|\'.+?\')/",$m[2],$tmp); if($r>=0){$eg=$tmp[0];$func="tpl_modifier_".$eg[0]; $eg[0]=$m[1];$params=implode(",",$eg);if(function_exists($func))return "echo $func($params)";else return "/* $func function not exists! */";}else{return "/* {$m[0]} is not a STpl modifier */";}'),$content);
+		//{'v'|modifer:1:2|modifer:3}
+		$pattern = "/(.+?)\\|([^\\|]+)/ms";
+		do{
+			$content = preg_replace_callback($pattern,array("Tpl","_matchmodifier"),$content,-1,$ct);
+		}while($ct);
 		//{{{替换变量,加ECHO
-		$patterns = array('/\$(\w+)/ms','/^(Tpl::\$_tpl_vars\[\"\w+\"\])$/ms');
-		$replacements=array('Tpl::$_tpl_vars["\1"]','echo \\1');
+		$patterns = array('/\$(\w+)/ms','/^(?!(if|else|for|foreach|elseif))(\w+)([^\=]+)$/ms');
+		$replacements=array('Tpl::$_tpl_vars["\1"]','echo \\0');
 		$content = preg_replace($patterns,$replacements,$content);
+		//还原特殊字符
+		$content = str_replace(array_keys(self::$_tmpData),self::$_tmpData,$content);
 		////}}}
 		$content="<?php $content; ?>";
 		return $content;
 	}
-	function _compile($content){
+	private static function _matchfunction($function){
+		$r=preg_match_all("/(\\$?\w+|\".+?\"|\'.+?\')/",$function[2],$tmp);
+		if($r>=1){
+			$func="tpl_function_".$function[1];
+			$params=implode(",",$tmp[0]);
+			if(function_exists($func))return "$func($params)";
+			elseif(function_exists($function[1]))return "{$function[1]}($params)";
+			else return "/* $func function not exists! */";
+		}else{
+			return "/* $function[0] is not a STpl function */";
+		}
+	}
+	private static $_tmpData;
+	private static $_tmpIndex=0;
+	private static $_tmpPrefix="TPL_TMP_PREFIX_";
+	private static function _tmpData($matches){
+		$key = self::$_tmpPrefix.(self::$_tmpIndex++);
+		self::$_tmpData[$key]=$matches[1].$matches[2].$matches[1];
+		return $key;
+	}
+	private static function _matchmodifier($modifier){
+		$r=preg_match_all("/(\\$?\w+)/",$modifier[2],$keys);
+		if($r>0){
+			$func = array_shift($keys[0]);
+			$func_m = "tpl_modifier_".$func;
+			array_unshift($keys[0],$modifier[1]);
+			$params = implode(",",$keys[0]);
+			if(function_exists($func_m)){
+				$str = "$func_m($params)";
+			}elseif(function_exists($func)){
+				$str = "$func($params)";
+			}else{
+				$str = "/* $func_m function not exists! */";
+			}
+		}
+		return $str;
+	}
+	private static function _compile($content){
 
 		$left_delimiter= self::$left_delimiter;
 		$right_delimiter= self::$right_delimiter;
