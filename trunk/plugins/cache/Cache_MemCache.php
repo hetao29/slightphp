@@ -28,18 +28,16 @@ final class Cache_MemcacheObject{
 }
 if(class_exists("Memcached",false)){
 	class Cache_MemcacheEngine{
-		static private $_memcache;
+		private $_memcache;
 		public function __construct(){
-			if(!self::$_memcache){
-				self::$_memcache = new Memcached();
-				self::$_memcache->setOption(Memcached::OPT_DISTRIBUTION,Memcached::DISTRIBUTION_CONSISTENT);
-				self::$_memcache->setOption(Memcached::OPT_LIBKETAMA_COMPATIBLE,true); 
-				self::$_memcache->setOption(Memcached::OPT_CONNECT_TIMEOUT,1000);
-			}
+			$this->_memcache = new Memcached();
+			$this->_memcache->setOption(Memcached::OPT_DISTRIBUTION,Memcached::DISTRIBUTION_CONSISTENT);
+			$this->_memcache->setOption(Memcached::OPT_LIBKETAMA_COMPATIBLE,true); 
+			$this->_memcache->setOption(Memcached::OPT_CONNECT_TIMEOUT,1000);
 		}
 		public function addServer($host,$port=11211,$weight=10,$timeout=1){
-			self::$_memcache->setOption(Memcached::OPT_CONNECT_TIMEOUT,$timeout*1000);
-			self::$_memcache->addServer($host,$port,$weight);
+			$this->_memcache->setOption(Memcached::OPT_CONNECT_TIMEOUT,$timeout*1000);
+			$this->_memcache->addServer($host,$port,$weight);
 		}
 		public function addServers($hosts=array()){
 			$realhost=array();
@@ -59,46 +57,44 @@ if(class_exists("Memcached",false)){
 							isset($host->weight)?$host->weight:10
 							);
 			}
-			self::$_memcache->addServers($realhost);
+			$this->_memcache->addServers($realhost);
 		}
 		public function del($keys){
 			if(is_array($keys)){
 				foreach($keys as $key){
-					return self::del($key);
+					return $this->del($key);
 				}
 			}else{
-				return self::$_memcache->delete($keys);
+				return $this->_memcache->delete($keys);
 			}
 		}
 		public function get($keys){
 			if(is_array($keys)){
-				return self::$_memcache->getMulti($keys);
+				return $this->_memcache->getMulti($keys);
 			}else{
-				return self::$_memcache->get($keys);
+				return $this->_memcache->get($keys);
 			}
 		}
 		public function set($key,$value,$expire=0){
-			return self::$_memcache->set($key,$value,$expire);
+			return $this->_memcache->set($key,$value,$expire);
 		}
 	}
 }else{
 	class Cache_MemcacheEngine extends Memcache{
-		static private $_memcache;
+		private $_memcache;
 		public function __construct(){
-			if(!self::$_memcache){
-				self::$_memcache = new Memcache();
-				ini_set("memcache.hash_strategy","consistent");
-				ini_set("memcache.hash_function","crc32");
-			}
+			$this->_memcache = new Memcache();
+			ini_set("memcache.hash_strategy","consistent");
+			ini_set("memcache.hash_function","crc32");
 		}
 		public function addServer($host,$port=11211,$weight=10,$timeout=1){
-			self::$_memcache->addServer($host,$port,true,$weight>0?$weight:10,$timeout>0?$timeout:1);
+			$this->_memcache->addServer($host,$port,true,$weight>0?$weight:10,$timeout>0?$timeout:1);
 		}
 		public function addServers($hosts=array()){
 			if(is_array($hosts)){
 				foreach($hosts as $host){
 					if(isset($host->host))
-						self::addServer($host->host,
+						$this->addServer($host->host,
 								isset($host->port)?$host->port:11211,
 								isset($host->weight)?$host->weight:10,
 								isset($host->timeout)?$host->timeout:1
@@ -107,7 +103,7 @@ if(class_exists("Memcached",false)){
 			}elseif(is_object($hosts)){
 				$host = $hosts;
 				if(isset($host->host))
-					self::addServer($host->host,
+					$this->addServer($host->host,
 							isset($host->port)?$host->port:11211,
 							isset($host->weight)?$host->weight:10,
 							isset($host->timeout)?$host->timeout:1
@@ -118,17 +114,17 @@ if(class_exists("Memcached",false)){
 		public function del($keys){
 			if(is_array($keys)){
 				foreach($keys as $key){
-					return self::del($key);
+					return $this->del($key);
 				}
 			}else{
-				return self::$_memcache->delete($keys);
+				return $this->_memcache->delete($keys);
 			}
 		}
 		public function get($keys){
-			return self::$_memcache->get($keys);
+			return $this->_memcache->get($keys);
 		}
 		public function set($key,$value,$expire=0){
-			return self::$_memcache->set($key,$value,0,$expire);
+			return $this->_memcache->set($key,$value,0,$expire);
 		}
 	}
 }
@@ -137,7 +133,7 @@ class Cache_Memcache extends Cache_MemcacheEngine{
 	/**
 	 * int $mode
 	 */
-	static $mode = 1;
+	private $mode = 1;
 	public function __construct(){
 		parent::__construct();
 	}
@@ -150,7 +146,7 @@ class Cache_Memcache extends Cache_MemcacheEngine{
 	 */
 	function init($params=array()){
 		if(!empty($params['host'])){
-			self::addServer(
+			parent::addServer(
 				$params['host'],
 				isset($params['port'])?$params['port']:0,
 				isset($params['weight'])?$params['weight']:1,
@@ -162,7 +158,7 @@ class Cache_Memcache extends Cache_MemcacheEngine{
 	 * @param int $mode
 	 */
 	function setMode($mode){
-		self::$mode=$mode;
+		$this->mode=$mode;
 	}
 
 	/**
@@ -193,7 +189,7 @@ class Cache_Memcache extends Cache_MemcacheEngine{
 			}else{
 				$value = $values[$key];
 				if(!empty($depKeys)){
-					if(self::$mode==1){
+					if($this->mode==1){
 						$flag=true;
 						foreach($depKeys as $depKey){
 							if(	!isset($values[$depKey]) || 
