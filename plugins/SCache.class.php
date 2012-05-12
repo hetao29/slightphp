@@ -58,6 +58,6 @@ class SCache extends Cache_MemCache{
 		return SConfig::getConfig(self::$_config,$zone);
 	}
 	function useConfig($zone){
-		self::addServers(self::getConfig($zone));
+		parent::addServers(self::getConfig($zone));
 	}
 }
