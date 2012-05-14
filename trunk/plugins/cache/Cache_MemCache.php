@@ -35,6 +35,9 @@ if(class_exists("Memcached",false)){
 			$this->_memcache->setOption(Memcached::OPT_LIBKETAMA_COMPATIBLE,true); 
 			$this->_memcache->setOption(Memcached::OPT_CONNECT_TIMEOUT,1000);
 		}
+		public function __destruct(){
+		}
+
 		public function addServer($host,$port=11211,$weight=10,$timeout=1){
 			$this->_memcache->setOption(Memcached::OPT_CONNECT_TIMEOUT,$timeout*1000);
 			$this->_memcache->addServer($host,$port,$weight);
@@ -87,8 +90,11 @@ if(class_exists("Memcached",false)){
 			ini_set("memcache.hash_strategy","consistent");
 			ini_set("memcache.hash_function","crc32");
 		}
+		public function __destruct(){
+			$this->_memcache->close();
+		}
 		public function addServer($host,$port=11211,$weight=10,$timeout=1){
-			$this->_memcache->addServer($host,$port,true,$weight>0?$weight:10,$timeout>0?$timeout:1);
+			$this->_memcache->addServer($host,$port,false,$weight>0?$weight:10,$timeout>0?$timeout:1);
 		}
 		public function addServers($hosts=array()){
 			if(is_array($hosts)){
