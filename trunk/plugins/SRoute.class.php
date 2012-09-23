@@ -44,18 +44,18 @@ class SRoute{
 			}
 			if(preg_match_all("/$pattern/sm",!empty($_SERVER['PATH_INFO'])?$_SERVER['PATH_INFO']:$_SERVER['REQUEST_URI'],$_m)){
 				array_shift($_m);
+				$params = "";
 				if(!empty($_m)){
-					$params = "";
 					foreach($_m as $_m2){
 						$params.=$splitFlag.$_m2[0];
 					}
-					$zone = empty($route['zone']) ? SlightPHP::getDefaultZone() : $route['zone'];
-					$page = empty($route['page']) ? SlightPHP::getDefaultPage() : $route['page'];
-					$entry = empty($route['entry']) ? SlightPHP::getDefaultEntry() : $route['entry'];
-					$PATH_INFO = "{$zone}{$splitFlag}{$page}{$splitFlag}{$entry}{$params}";
-					SlightPHP::setPathInfo($PATH_INFO);
-					break;
 				}
+				$zone = empty($route['zone']) ? SlightPHP::getDefaultZone() : $route['zone'];
+				$page = empty($route['page']) ? SlightPHP::getDefaultPage() : $route['page'];
+				$entry = empty($route['entry']) ? SlightPHP::getDefaultEntry() : $route['entry'];
+				$PATH_INFO = "{$zone}{$splitFlag}{$page}{$splitFlag}{$entry}{$params}";
+				SlightPHP::setPathInfo($PATH_INFO);
+				break;
 			}
 
 		}
