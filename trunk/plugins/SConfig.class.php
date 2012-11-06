@@ -33,6 +33,8 @@ class SConfig{
 		return $config;
 	}
 	public static function parse($configFile){
+		self::$_tmpPrefix = 0;
+		self::$_tmpData=array();
 		$cacheKey = "SConfig_Cache_"+$configFile;
 		if(self::$CACHE){
 			if(isset(self::$_result[$cacheKey])){
