@@ -46,10 +46,3 @@ class SRedis{
 		return call_user_method_array($name,$this->_rc,$args);
 	}
 }
-$s = new SRedis;
-$s->setConfigFile("../samples/config/redis.ini");
-$s->useConfig("default");
-var_dump($s->set("D","ww"));
-var_dump($s->get("D"));
-var_dump($s->zAdd('k1', 0, 'val0'));
-var_dump($s->zAdd('k1', 1, 'val1'));
