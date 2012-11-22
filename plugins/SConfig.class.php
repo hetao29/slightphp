@@ -35,12 +35,12 @@ class SConfig{
 	public static function parse($configFile){
 		self::$_tmpPrefix = 0;
 		self::$_tmpData=array();
-		$cacheKey = "SConfig_Cache_"+$configFile;
+		$cacheKey = "SConfig_Cache_".md5(realpath($configFile));
 		if(self::$CACHE){
 			if(isset(self::$_result[$cacheKey])){
 				return self::$_result[$cacheKey];
 			}
-			$tmp_file = self::_tmpDir()."/".self::$_tmpPrefix.basename($configFile);
+			$tmp_file = self::_tmpDir()."/".self::$_tmpPrefix.$cacheKey;
 			if(is_file($tmp_file) && filemtime($tmp_file)>=filemtime($configFile)){
 				$result = unserialize(file_get_contents($tmp_file,false));
 				self::$_result[$cacheKey]=$result;
