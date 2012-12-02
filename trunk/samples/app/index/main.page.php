@@ -1,5 +1,5 @@
 <?php
-class index_main extends SGui{
+class index_main extends STpl{
 	function __construct(){
 	}
 	function __destruct(){

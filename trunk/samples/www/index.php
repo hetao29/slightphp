@@ -19,7 +19,6 @@ SlightPHP::setSplitFlag("-_.");
 //{{{
 SDb::setConfigFile(ROOT_CONFIG. "/db.ini");
 SRoute::setConfigFile(ROOT_CONFIG."/route.ini");
-SCache::setConfigFile(ROOT_CONFIG."/cache.ini");
 //}}}
 if(($r=SlightPHP::run())===false){
 	var_dump("404 error");
