@@ -16,7 +16,7 @@ class index_dbconfig{
 		 * 第一步 设置配置文件
 		 * 配置说明文档请参看 db.ini 里的注释
 		 */
-		SDb::setConfigFile(SlightPHP::$appDir."/index/db.ini.php");
+		SDb::setConfigFile(ROOT_CONFIG."/db.ini");
 		
 		/**
 		 * 第二步 获取配置
@@ -32,10 +32,7 @@ class index_dbconfig{
 		$db_config = SDb::getConfig("test");
 		
 		//获取数据库引擎
-		$db = SDb::getDbEngine("pdo_mysql");
-		if(!$db){
-			die("DbEngine not exits");
-		}
+		$db = new SDb;
 		//初始化数据库配置
 		$db->init($db_config);
 	}
