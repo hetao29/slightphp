@@ -7,8 +7,8 @@ class index_db{
 	private $_zone;
 	function __construct($zone="index"){
 		$this->_zone = $zone;
-		$this->_dbConfig = SDb::getConfig($this->_zone);
-		$this->_db = SDb::getDbEngine("pdo_mysql");
+		$this->_db = new SDb;
+		$this->_db->useConfig("index","main");
 		$this->_db->init($this->_dbConfig);
 	}
 	
