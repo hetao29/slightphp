@@ -334,8 +334,8 @@ class Db{
 
 	private function __query($sql){
 		//{{{
-		//SQL MODE Ä¬ÈÏÎªDELETE£¬INSERT£¬REPLACE »ò UPDATE,²»ÐèÒª·µ»ØÖµ
-		$sql_mode = 1;//1.¸üÐÂÄ£Ê½ 2.²éÑ¯Ä£Ê½ 3.²åÈëÄ£Ê½
+		//SQL MODE é»˜è®¤ä¸ºDELETEï¼ŒINSERTï¼ŒREPLACE æˆ– UPDATE,ä¸éœ€è¦è¿”å›žå€¼
+		$sql_mode = 1;//1.æ›´æ–°æ¨¡å¼ 2.æŸ¥è¯¢æ¨¡å¼ 3.æ’å…¥æ¨¡å¼
 
 		if(stripos($sql,"INSERT")!==false){
 			$sql_mode = 3;
@@ -360,11 +360,11 @@ class Db{
 			if(!$result){
 				$this->error['code']=mysql_errno(Db::$_globals[$this->_key]);
 				$this->error['msg']=mysql_error(Db::$_globals[$this->_key]);
-			}elseif($sql_mode==2){//²éÑ¯Ä£Ê½
+			}elseif($sql_mode==2){//æŸ¥è¯¢æ¨¡å¼
 				$data=array();
 				while($row=mysql_fetch_array($result,MYSQL_ASSOC)){ $data[]=$row; }
 				return $data;
-			}elseif($sql_mode==3){//²åÈëÄ£Ê½
+			}elseif($sql_mode==3){//æ’å…¥æ¨¡å¼
 				return mysql_insert_id(Db::$_globals[$this->_key]);
 			}else{
 				return mysql_affected_rows(Db::$_globals[$this->_key]);
@@ -379,7 +379,7 @@ class Db{
 				$data=array();
 				while($row= $result->fetch_assoc()){$data[]=$row;};
 				return $data;
-			}elseif($sql_mode==3){//²åÈëÄ£Ê½
+			}elseif($sql_mode==3){//æ’å…¥æ¨¡å¼
 				return Db::$_globals[$this->_key]->insert_id;
 			}else{
 				return Db::$_globals[$this->_key]->affected_rows;
