@@ -237,6 +237,9 @@ final class SlightPHP{
 		$path=self::$appDir;
 		$file_loaded=false;
 		$file="";
+		if(empty($path_array[0])){$path_array[0]=self::$defaultZone;}
+		if(empty($path_array[1])){$path_array[1]=self::$defaultPage;}
+		if(empty($path_array[2])){$path_array[2]=self::$defaultEntry;}
 		do{
 			$zone = array_shift($path_array);
 			$page	= isset($path_array[0]) ? $path_array[0] : self::$defaultPage ;
