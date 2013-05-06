@@ -305,7 +305,7 @@ final class SlightPHP{
 	private static $_debug=0;
 
 	/*private*/
-	private function debug($debugmsg){
+	private static function debug($debugmsg){
 		if(self::$_debug){
 			error_log($debugmsg);
 			echo "<!--slightphp debug: ".$debugmsg."-->";
