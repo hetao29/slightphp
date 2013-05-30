@@ -1,5 +1,5 @@
 <?php
-class index_smarty extends SGui{
+class index_smarty extends STpl{
 	function pageEntry($inPath){
 		$params['key']="value";
 		$params['date'] = date("Y-m-d H:i:s");
