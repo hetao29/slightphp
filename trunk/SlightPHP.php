@@ -234,52 +234,32 @@ final class SlightPHP{
 				$path_array = preg_split("/[$splitFlag\/]/",$url,-1);
 			}
 		}
-		$path=self::$appDir;
-		$file_loaded=false;
-		$file="";
-		if(empty($path_array[0])){$path_array[0]=self::$defaultZone;}
-		if(empty($path_array[1])){$path_array[1]=self::$defaultPage;}
-		if(empty($path_array[2])){$path_array[2]=self::$defaultEntry;}
-		do{
-			$zone = array_shift($path_array);
-			$page	= isset($path_array[0]) ? $path_array[0] : self::$defaultPage ;
-			$entry	= isset($path_array[1]) ? $path_array[1] : self::$defaultEntry ;
 
-			if($zone===NULL){
-				$zone = self::$defaultZone ;
-				break;
-			}
-			
-			if(self::$zoneAlias && ($key = array_search($zone,self::$zoneAlias))!==false){
-				$zone = $key;
-			}
+		$zone	= !empty($path_array[0]) ? $path_array[0] : self::$defaultZone ;
+		$page	= !empty($path_array[1]) ? $path_array[1] : self::$defaultPage ;
+		$entry	= !empty($path_array[2]) ? $path_array[2] : self::$defaultEntry ;
 
-			if(!$isPart){
-				self::$zone	= $zone;
-				self::$page	= $page;
-				self::$entry	= $entry;
-			}else{
-				if($zone == self::$zone && $page == self::$page && $entry == self::$entry){
-					self::debug("part ignored [$path]");
-					return false;
-				}
+		if(self::$zoneAlias && ($key = array_search($zone,self::$zoneAlias))!==false){
+			$zone = $key;
+		}
+		if(!$isPart){
+			self::$zone	= $zone;
+			self::$page	= $page;
+			self::$entry	= $entry;
+		}else{
+			if($zone == self::$zone && $page == self::$page && $entry == self::$entry){
+				self::debug("part ignored [$path]");
+				return false;
 			}
-
-			$path=$path.DIRECTORY_SEPARATOR . $zone;
-			$file=$path.DIRECTORY_SEPARATOR	. $page.".page.php";
-			if(is_file($file)){
-				array_unshift($path_array,$zone);
-				$file_loaded=true;
-				require_once(realpath($file));
-				break;
-			}
-		}while(true);
-
-		if($file_loaded===false){
-			self::debug("file[$file] does not exists");
-			return false;
 		}
 
+		$app_file = self::$appDir . DIRECTORY_SEPARATOR . $zone . DIRECTORY_SEPARATOR . $page . ".page.php";
+		if(!is_file($app_file)){
+			self::debug("file[$app_file] does not exists");
+			return false;
+		}else{
+			require_once(realpath($app_file));
+		}
 		$method = "Page".$entry;
 		$classname = $zone ."_". $page;
 		
