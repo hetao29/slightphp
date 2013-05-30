@@ -21,7 +21,9 @@ SDb::setConfigFile(ROOT_CONFIG. "/db.ini");
 SRoute::setConfigFile(ROOT_CONFIG."/route.ini");
 //}}}
 if(($r=SlightPHP::run())===false){
-	var_dump("404 error");
-}else{
+	echo("404 error");
+}elseif(is_object($r)){
 	var_dump($r);
+}else{
+	echo($r);
 }
