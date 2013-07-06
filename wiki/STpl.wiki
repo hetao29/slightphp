@@ -73,6 +73,11 @@ class index_main extends STpl{
 
 = 模板语法 = 
 
+ * 注释代码
+{{{
+默认是{*  与 *}注释，其实就是delimiter加*号就注释了
+}}}
+
  * 显示变量
 
 {{{
