@@ -563,7 +563,7 @@ static void class_init_slightphp(TSRMLS_D)
 /* }}} Class definitions*/
 
 /* {{{ slightphp_functions[] */
-function_entry slightphp_functions[] = {
+static zend_function_entry slightphp_functions[] = {
 		{ NULL, NULL, NULL }
 };
 /* }}} */
