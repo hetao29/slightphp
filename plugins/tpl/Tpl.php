@@ -92,7 +92,7 @@ class Tpl{
 		return $content;
 	}
 	private static function _matchfunction($function){
-		$r=preg_match_all("/(\\$?\w+|\".+?\"|\'.+?\')/",$function[2],$tmp);
+		$r=preg_match_all("/(\\$?\S+|\".+?\"|\'.+?\')/",$function[2],$tmp);
 		if($r){
 			$func="tpl_function_".$function[1];
 			$params=implode(",",$tmp[0]);
