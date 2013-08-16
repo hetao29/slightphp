@@ -44,10 +44,16 @@ $cache->set("key7","value7",10000);
 {{{
 $cache->get("key1");
 $cache->get("key2");
+
+//批量获取多个
+$cache->get(array("key1","key2"));
 }}}
 删除key3的内容
 {{{
 $cache->del("key3");
+
+//批量删除多个
+$cache->del(array("key1","key2"));
 }}}
 获取key1,的内容，依赖key分别为key2,key3
 {{{
