@@ -1,0 +1,44 @@
+This is a standalone PHP extension
+
+
+BUILDING ON UNIX etc.
+=====================
+
+To compile your new extension, you will have to execute the following steps:
+
+1.  $ phpize
+2.  $ ./configure
+3.  $ make
+4.  $ make install
+
+
+
+BUILDING ON WINDOWS
+===================
+
+https://wiki.php.net/internals/windows/stepbystepbuild
+
+
+
+TESTING
+=======
+
+You can now load the extension using a php.ini directive
+
+  extension="slightphp.[so|dll]"
+
+or load it at runtime using the dl() function
+
+  dl("slightphp.[so|dll]");
+
+The extension should now be available, you can test this
+using the extension_loaded() function:
+
+  if (extension_loaded("slightphp"))
+    echo "slightphp loaded :)";
+  else
+    echo "something is wrong :(";
+
+The extension will also add its own block to the output
+of phpinfo();
+
