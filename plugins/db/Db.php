@@ -337,12 +337,12 @@ class Db{
 		//SQL MODE 默认为DELETE，INSERT，REPLACE 或 UPDATE,不需要返回值
 		$sql_mode = 1;//1.更新模式 2.查询模式 3.插入模式
 
-		if(stripos($sql,"INSERT")!==false){
+		if(stripos($sql,"INSERT")===0){
 			$sql_mode = 3;
 		}else{
 			$sql_result_query=array("SELECT","SHOW","DESCRIBE","EXPLAIN");
 			foreach($sql_result_query as $query_type){
-				if(stripos($sql,$query_type)!==false){
+				if(stripos($sql,$query_type)===0){
 					$sql_mode = 2;
 					break;
 				}
