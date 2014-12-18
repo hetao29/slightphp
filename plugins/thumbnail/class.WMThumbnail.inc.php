@@ -31,7 +31,6 @@ require_once 'class.Thumbnail.inc.php';
 * @copyright Michael Wimmer
 * @link http://code.google.com/p/flaimo-php
 * @package Thumbnail
-* @example sample_thumb.php Sample script
 * @version 2.000
 */
 class WMThumbnail extends Thumbnail {

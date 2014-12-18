@@ -26,7 +26,6 @@
 * @copyright Michael Wimmer
 * @link http://code.google.com/p/flaimo-php
 * @package Thumbnail
-* @example sample_thumb.php Sample script
 * @version 2.001
 */
 class Thumbnail {
