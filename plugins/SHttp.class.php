@@ -215,13 +215,17 @@ class SHttp{
 	 * post url
 	 *
 	 * @param string $url
-	 * @param array $params
+	 * @param array | string $params
 	 * @param array $cookies
 	 * @param boolean $returnHeader
 	 * @return string | array
 	 */
 	function post( $url, $params=array(), $cookies=array(), $returnHeader=false, $timeout=1){
-		$content = empty($params)?"":http_build_query($params);
+		if(is_array($params)){
+			$content = empty($params)?"":http_build_query($params);
+		}else{
+			$content=$params;
+		}
 		$opts = array(
 			'http'=>array(
 				'method' => 'POST',
