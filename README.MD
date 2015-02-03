@@ -148,7 +148,7 @@ SCache缓存插件
 
 
 ### Version
-2.0 beta
+2.0.1 beta
 
 **Free Software, Hell Yeah!**
 
