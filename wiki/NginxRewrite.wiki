@@ -8,7 +8,7 @@ location / {
 	root   /var/www/slightphp/samples/www;
 	index  index.php;
 	if (!-e $request_filename){
-		rewrite ^/(.+?)$ /index.php?PATH_INFO=$1 last;
+		rewrite ^/(.+?)$ /index.php last;
 	}
 }
 location ~ \.php$ {
