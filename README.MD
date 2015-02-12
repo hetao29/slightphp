@@ -146,6 +146,22 @@ SCache缓存插件
 更多插件功能请看samples下的示例
 
 
+####Nginx配置
+```php
+location / {
+	root   /var/www/slightphp/samples/www;
+	index  index.php;
+	if (!-e $request_filename){
+		rewrite ^/(.+?)$ /index.php last;
+	}
+}
+location ~ \.php$ {
+	fastcgi_pass   127.0.0.1:9000;
+	fastcgi_index  index.php;
+	fastcgi_param  SCRIPT_FILENAME  /var/www/slightphp/samples/www$fastcgi_script_name;
+	include        fastcgi_params;
+}
+```
 
 ### Version
 2.0.1 beta
