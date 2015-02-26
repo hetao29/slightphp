@@ -229,10 +229,11 @@ final class SlightPHP{
 					$url = $_SERVER["PATH_INFO"];
 				}elseif(!empty($_SERVER['REQUEST_URI'])){
 					$url = $_SERVER["REQUEST_URI"];
-					$url_parsed = parse_url($url);
-					if(!empty($url_parsed['path'])){
-						$url = $url_parsed['path'];
-					}
+				}
+				$url = preg_replace("/(\/+)/","/",$url);
+				$url_parsed = parse_url($url);
+				if(!empty($url_parsed['path'])){
+					$url = $url_parsed['path'];
 				}
 			}
 			if(!empty($url)){
