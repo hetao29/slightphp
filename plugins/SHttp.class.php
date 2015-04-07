@@ -38,7 +38,7 @@ class SHttp{
 						"Accept-Language: zh-cn\r\n" .
 						"User-Agent: Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)\r\n" .
 						"Referer: $url\r\n" .
-						(!empty($cookies)?"Cookie: ".self::cookie_build($cookies)."\r\n":"").
+						(!empty($cookies)?"Cookie: ".http_build_query ($cookies,"","; ")."\r\n":"").
 						"Connection: Close\r\n" ,
 			)
 		);
@@ -235,7 +235,7 @@ class SHttp{
 						"User-Agent: Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)\r\n" .
 						"Referer: $url\r\n" .
 						"Connection: Close\r\n" .
-						(!empty($cookies)?"Cookie: ".self::cookie_build($cookies)."\r\n":"").
+						(!empty($cookies)?"Cookie: ".http_build_query ($cookies,"","; ")."\r\n":"").
 						"Content-type: application/x-www-form-urlencoded\r\n" . 
 						"Content-length: ".strlen($content)."\r\n",
 						'content' => $content
@@ -252,51 +252,57 @@ class SHttp{
 
 	}
 	function cookie_parse( $header ) {
-			$cookies = array();
-			foreach( $header as $line ) {
-					if(	preg_match_all ("/Set-Cookie: (.+?)=(.+?);/i", $line, $_match,PREG_SET_ORDER)){
-						$cdata=array();
-						$key = $_match[0][1];
-						$value =$_match[0][2];
-						$csplit = explode( ';', substr($line,strpos($line,$value)+strlen($value)) );
-						foreach( $csplit as $data ) {
-								$cinfo = explode( '=', $data ,2);
-								if(count($cinfo)<2)continue;
+		if(function_exists("http_parse_cookie")){
+			return http_parse_cookie($header);
+		}
+		$cookies = array();
+		foreach( $header as $line ) {
+			if(	preg_match_all ("/Set-Cookie: (.+?)=(.+?);/i", $line, $_match,PREG_SET_ORDER)){
+				$cdata=array();
+				$key = $_match[0][1];
+				$value =$_match[0][2];
+				$csplit = explode( ';', substr($line,strpos($line,$value)+strlen($value)) );
+				foreach( $csplit as $data ) {
+					$cinfo = explode( '=', $data ,2);
+					if(count($cinfo)<2)continue;
 
-								$key2 =  trim($cinfo[0]);
-								$value2 = $cinfo[1];
-								if($key==$key2)continue;
-								
-								if( in_array( strtolower($key2), array( 'domain', 'expires', 'path', 'secure', 'comment' ) ) ) {
-									$key2 = strtolower($key2);
-										
-									if( $key2 == 'expires' ) $value2 = strtotime( $value2 );
-									if( $key2 == 'secure' ) $value2 = "true";
-								}
-								$cdata[$key2]=$value2;
-								
-						}
-						$cdata['value']['key'] = $key;
-						$cdata['value']['value'] = $value;
+					$key2 =  trim($cinfo[0]);
+					$value2 = $cinfo[1];
+					if($key==$key2)continue;
 
-						$cookies[$key] = $cdata;
+					if( in_array( strtolower($key2), array( 'domain', 'expires', 'path', 'secure', 'comment' ) ) ) {
+						$key2 = strtolower($key2);
+
+						if( $key2 == 'expires' ) $value2 = strtotime( $value2 );
+						if( $key2 == 'secure' ) $value2 = "true";
 					}
+					$cdata[$key2]=$value2;
+
+				}
+				$cdata['value']['key'] = $key;
+				$cdata['value']['value'] = $value;
+
+				$cookies[$key] = $cdata;
 			}
-			return $cookies;
+		}
+		return $cookies;
 	}
 
 	function cookie_build( $data ) {
-			if( is_array( $data ) ) {
-					$cookie = '';
-					foreach( $data as $d ) {
-						if(!empty($d['expires']) && $d['expires']<time()){continue;}
-						$cookie[] = $d['value']['key'].'='.$d['value']['value'];
-					}
-					if( count( $cookie ) > 0 ) {
-							return trim( implode( '; ', $cookie ) );
-					}
+		if(function_exists("http_build_cookie")){
+			return http_build_cookie($data);
+		}
+		if( is_array( $data ) ) {
+			$cookie = '';
+			foreach( $data as $d ) {
+				if(!empty($d['expires']) && $d['expires']<time()){continue;}
+			$cookie[] = $d['value']['key'].'='.$d['value']['value'];
 			}
-			return false;
+			if( count( $cookie ) > 0 ) {
+				return trim( implode( '; ', $cookie ) );
+			}
+		}
+		return false;
 	}
 
 }
