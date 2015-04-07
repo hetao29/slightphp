@@ -212,7 +212,7 @@ class Db{
 			$limit    =($this->page-1)*$this->limit;
 			$limit_sql ="LIMIT $limit,$this->limit";
 		}
-		$sql="SELECT $item FROM $table $join $condiStr $groupby $orderby_sql $limit_sql";
+		$sql="SELECT $item FROM ($table) $join $condiStr $groupby $orderby_sql $limit_sql";
 		$start = microtime(true);
 
 		$result = $this->__query($sql);
@@ -224,7 +224,7 @@ class Db{
 			$data->pageSize = count($data->items);
 			//{{{
 			if($this->count==true){
-				$countsql="SELECT count(1) totalSize FROM $table $join $condiStr $groupby";
+				$countsql="SELECT count(1) totalSize FROM ($table)$join $condiStr $groupby";
 				$result_count = $this->__query($countsql);
 				if(!empty($result_count[0])){
 					$data->totalSize = $result_count[0]['totalSize'];
@@ -337,12 +337,12 @@ class Db{
 		//SQL MODE 默认为DELETE，INSERT，REPLACE 或 UPDATE,不需要返回值
 		$sql_mode = 1;//1.更新模式 2.查询模式 3.插入模式
 
-		if(stripos($sql,"INSERT")!==false){
+		if(stripos($sql,"INSERT")===0){
 			$sql_mode = 3;
 		}else{
 			$sql_result_query=array("SELECT","SHOW","DESCRIBE","EXPLAIN");
 			foreach($sql_result_query as $query_type){
-				if(stripos($sql,$query_type)!==false){
+				if(stripos($sql,$query_type)===0){
 					$sql_mode = 2;
 					break;
 				}

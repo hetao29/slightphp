@@ -14,8 +14,7 @@
 +-----------------------------------------------------------------------+
 }}}*/
 
-//if(function_exists("json_encode")):
-if(false):
+if(function_exists("json_encode")):
 	/**
 	 * @package SlightPHP
 	 */
