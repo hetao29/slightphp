@@ -52,10 +52,10 @@ class SRedis{
 		$hosts=array();
 		$options=array();
 		$config = self::getConfig($zone,$type);
-		if(is_object($config)){
-			$hosts[]=$config;
-		}elseif(is_array($config)){
+		if(is_array($config)){
 			$hosts=$config;
+		}else{
+			$hosts[]=$config;
 		}
 		$config = self::getConfig($zone,"options");
 		if(!empty($config)){
