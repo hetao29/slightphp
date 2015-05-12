@@ -52,6 +52,10 @@ class SRedis{
 		$hosts=array();
 		$options=array();
 		$config = self::getConfig($zone,$type);
+		if(empty($config)){
+			trigger_error("the redis hosts is not set in config file(".self::$_config.")");
+			return false;
+		}
 		if(is_array($config)){
 			$hosts=$config;
 		}else{
