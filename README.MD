@@ -143,19 +143,17 @@ SlightPHP::setAppDir("/home/www/myAppdir");
 所有插件：https://github.com/hetao29/slightphp/tree/wiki
 
 
-STpl 模板插件 https://github.com/hetao29/slightphp/blob/wiki/STpl.md
-SDb 数据库插件 https://github.com/hetao29/slightphp/blob/wiki/SDb.md
-
-SCache 缓存Memcache,File,Apc插件 https://github.com/hetao29/slightphp/blob/wiki/SCache.md
-SRedis 缓存Redis插件 https://github.com/hetao29/slightphp/blob/wiki/SRedis.md
-SConfig 配置文件插件 https://github.com/hetao29/slightphp/blob/wiki/SConfig.md
-SRoute 路由插件 https://github.com/hetao29/slightphp/blob/wiki/SRoute.md
-SError 错误插件 https://github.com/hetao29/slightphp/blob/wiki/SError.md
-...
-
-
-
-更多插件功能请看samples下的示例
+STpl 模板插件 https://github.com/hetao29/slightphp/blob/wiki/STpl.md  
+SDb 数据库插件 https://github.com/hetao29/slightphp/blob/wiki/SDb.md  
+  
+SCache 缓存Memcache,File,Apc插件 https://github.com/hetao29/slightphp/blob/wiki/SCache.md  
+SRedis 缓存Redis插件 https://github.com/hetao29/slightphp/blob/wiki/SRedis.md  
+SConfig 配置文件插件 https://github.com/hetao29/slightphp/blob/wiki/SConfig.md  
+SRoute 路由插件 https://github.com/hetao29/slightphp/blob/wiki/SRoute.md  
+SError 错误插件 https://github.com/hetao29/slightphp/blob/wiki/SError.md  
+...  
+ 
+更多插件功能请看samples下的示例  
 
 
 ####Nginx配置
