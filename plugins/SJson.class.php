@@ -26,7 +26,7 @@ if(function_exists("json_encode")):
 		* @return   string  json
 		* @access   public
 		*/
-		function encode($object){
+		public static function encode($object){
 			return json_encode($object);
 		}
 		/**
@@ -37,7 +37,7 @@ if(function_exists("json_encode")):
 		 * @access public
 		 */
 
-		function decode($str,$assoc=false){
+		public static function decode($str,$assoc=false){
 			return json_decode($str,$assoc);
 		}
 	}
@@ -53,7 +53,7 @@ else:
 		* @return   string  json
 		* @access   public
 		*/
-		function encode($object){
+		public static function encode($object){
 			$json = new Json;
 			return $json->encode($object);
 		}
@@ -65,7 +65,7 @@ else:
 		 * @access public
 		 */
 
-		function decode($str,$assoc=false){
+		public static function decode($str,$assoc=false){
 			$json = new Json;
 			return $json->decode($str);
 		}
