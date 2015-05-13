@@ -21,11 +21,11 @@ class SError{
 	/**
 	 * 
 	 */
-	static $CONSOLE=true;
+	static $CONSOLE=false;
 	/**
 	 * 
 	 */
-	static $LOG=false;
+	static $LOG=true;
 	/**
 	 * 
 	 */
