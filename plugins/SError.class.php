@@ -49,6 +49,10 @@ class SError{
 		"1024"=>"E_USER_NOTICE",
 		"2047"=>"E_ALL",
 		"2048"=>"E_STRICT",
+		"4096"=>"E_RECOVERABLE_ERROR",
+		"8192"=>"E_DEPRECATED",
+		"16384"=>"E_USER_DEPRECATED",
+		"30719"=>"E_ALL",
 		);
 
 	public static function exception_handler(Exception $e){
@@ -63,6 +67,7 @@ class SError{
 	public static function fatal_handler() {
 		$error = error_get_last();
 		if($error != NULL){
+print_r($error);
 			if(SError::$CONSOLE)		echo SError::getFatalHtml($error);
 			if(SError::$LOG){
 				$log = SError::getFatalText($error);
@@ -111,25 +116,44 @@ class SError{
 		$index=0;
 		if($arrLen>0){
 			for($i=$arrLen-1;$i>0;$i--){
-				$text.=($index++)."\t".
-					@$backtrace[$i]['file']."(".@$backtrace[$i]['line'].")\t".
-					(empty($backtrace[$i]['class'])?"":$backtrace[$i]['class'].'::').
-					@$backtrace[$i]['function']."()\r\n";
+				$line  = isset($backtrace[$i]['line'])?$backtrace[$i]['line']:"";
+				$file  = isset($backtrace[$i]['file'])?$backtrace[$i]['file']:"";
+				$class = isset($backtrace[$i]['class'])?$backtrace[$i]['class']:"";
+				$func = isset($backtrace[$i]['function'])?$backtrace[$i]['function']:"";
+				$text.=($index++)."\t".  $file."($line)\t".  (empty($class)?"":$class.'::').$func."(";
+				if(!empty($backtrace[$i]['args'])){
+					$text.=self::args2str($backtrace[$i]['args']);
+				}
+				$text.=")\r\n";
 			}
 		}
 		$i=0;
-		if(!empty($backtrace[$i]['args']) &&!empty($backtrace[$i]['args'][0]) &&!empty($backtrace[$i]['args'][1])){
-			//error
+		if($e){
+			$text.=($index++)."\t".$e->getFile()."(".$e->getLine().")\t".$e->getCode().":".$e->getMessage()."\t\r\n";
+		}else{
 			$errorCode = $backtrace[$i]['args'][0];
+			$line  = isset($backtrace[$i]['line'])?$backtrace[$i]['line']:"";
 			$text.=($index++)."\t".
-				@$backtrace[$i]['args'][2]."(".
-				@$backtrace[$i]['line'].")\t".
+				@$backtrace[$i]['args'][2]."($line)\t".
 				SError::$error_type[$errorCode].':'.
 				(!empty($backtrace[$i]['args'])?$backtrace[$i]['args'][1]:"")."\r\n";
-		}elseif($e){
-			$text.=($index++)."\t".$e->getFile()."(".$e->getLine().")\t".$e->getCode().":".$e->getMessage()."\t\r\n";
 		}
 		return $text;
+	}
+	public static function obj2str(&$args){
+		if(is_array($args)){
+			foreach($args as &$v){
+				self::obj2str($v);
+			}
+		}elseif(is_object($args)){
+			$args=get_class($args)."::";
+		}
+	}
+	public static function args2str($args){
+		self::obj2str($args);
+		$tmp  = SJson::encode($args);
+		$tmp = str_replace("\/","/",$tmp);
+		return substr($tmp,1,strlen($tmp)-2);
 	}
 	/**
  	 * @return string
@@ -140,34 +164,29 @@ class SError{
 		$index=0;
 		if($arrLen>0){
 			for($i=$arrLen-1;$i>0;$i--){
+				$line  = isset($backtrace[$i]['line'])?$backtrace[$i]['line']:"";
+				$file  = isset($backtrace[$i]['file'])?$backtrace[$i]['file']:"";
+				$class = isset($backtrace[$i]['class'])?$backtrace[$i]['class']:"";
+				$type = isset($backtrace[$i]['type'])?$backtrace[$i]['type']:"";
+				$func = isset($backtrace[$i]['function'])?$backtrace[$i]['function']:"";
 				$html.='<tr style="background-color: #cccccc; color: #000000;"><td>'.($index++).'</td><td style="padding:4px">'.
-					@$backtrace[$i]['file'].'</td><td style="padding:4px">'.
-					@$backtrace[$i]['line'].'</td><td style="padding:4px">'.
-					(empty($backtrace[$i]['class'])?"":$backtrace[$i]['class'].'::').
-					@$backtrace[$i]['function'].'(';
+					$file.'</td><td style="padding:4px">'.
+					$line.'</td><td style="padding:4px">'.
+					(empty($class)?"":$class.$type).
+					$func.'(';
 				if(!empty($backtrace[$i]['args'])){
-					$tmpK=array();	
-					foreach($backtrace[$i]['args'] as $value){
-						if(is_object($value)){
-							$tmpK[]=get_class ($value );
-						}elseif(is_array($value)){
-							$tmpK[]=$value;
-						}
-					}
-					$html.=@implode(",",$tmpK);
-						
+					$html.=self::args2str($backtrace[$i]['args']);
 				}
 				$html.=')<td></td></tr>';
 			}
 		}
 		$i=0;
-		if(!empty($backtrace[$i]['args']) &&!empty($backtrace[$i]['args'][0]) &&!empty($backtrace[$i]['args'][1])){
-			//error
+		if($e){
+			$html.='<tr style="background-color: #cccccc; color: #000000;"><td style="padding:4px">'.($index++).'</td><td style="padding:4px">'.$e->getFile().'</td><td style="padding:4px">'.$e->getLine().'</td><td></td><td style="padding:4px;font-weight:bold">'.$e->getCode().':'.$e->getMessage().'</td></tr>';
+		}else{
 			$errorCode = $backtrace[$i]['args'][0];
 			$line = empty($backtrace[$i]['line'])?0:$backtrace[$i]['line'];
 			$html.='<tr style="background-color: #cccccc; color: #000000;"><td style="padding:4px">'.($index++).'</td><td style="padding:4px">'.$backtrace[$i]['args'][2].'</td><td style="padding:4px">'.$line.'</td><td></td><td style="padding:4px;font-weight:bold">'.SError::$error_type[$errorCode].':'.(!empty($backtrace[$i]['args'])?$backtrace[$i]['args'][1]:"").'</td></tr>';
-		}elseif($e){
-			$html.='<tr style="background-color: #cccccc; color: #000000;"><td style="padding:4px">'.($index++).'</td><td style="padding:4px">'.$e->getFile().'</td><td style="padding:4px">'.$e->getLine().'</td><td></td><td style="padding:4px;font-weight:bold">'.$e->getCode().':'.$e->getMessage().'</td></tr>';
 		}
 		$html.='</table><hr style="background-color: #cccccc; border: 0px; height: 1px;" />'."\r\n\r\n";
 		return $html;
