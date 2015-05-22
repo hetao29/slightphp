@@ -164,9 +164,10 @@ class Thumbnail {
 		$height = (int) $height;
 		if ($height < $this->image_height && $height > 0) {
 			$this->thumb_max_height = $height;
-			return (boolean) TRUE;
-		} // end if
-		return (boolean) FALSE;
+		}else{
+			$this->thumb_max_height = $this->image_height;
+		}
+		return true;
 	} // end function
 
 	/**
@@ -183,9 +184,10 @@ class Thumbnail {
 		$width = (int) $width;
 		if ($width < $this->image_width && $width > 0) {
 			$this->thumb_max_width = $width;
-			return (boolean) TRUE;
-		} // end if
-		return (boolean) FALSE;
+		}else{
+			$this->thumb_max_width = $this->image_width;
+		}
+		return true;
 	} // end function
 
 	/**
@@ -200,12 +202,9 @@ class Thumbnail {
 	* @uses setMaxWidth()
 	*/
 	public function setMaxSize($width = 0, $height = 0) {
-		if ($this->setMaxWidth($width) === TRUE
-			&& $this->setMaxHeight($height) === TRUE) {
-			return (boolean) TRUE;
-		} else {
-			return (boolean) FALSE;
-		} // end if
+		$this->setMaxWidth($width);
+		$this->setMaxHeight($height);
+		return true;
 	} // end function
 
 	/**
