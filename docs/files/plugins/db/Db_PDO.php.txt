@@ -246,7 +246,7 @@ class Db_PDO extends DbObject{
 
 		$data->items = $this->query($this->sql,$bind);
 		if($data->items === false){
-			//²éÑ¯Ê§°Ü
+			//Ñ¯Ê§
 			return false;
 		}
 		$data->pageSize = count($data->items);

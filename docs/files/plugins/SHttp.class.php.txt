@@ -29,7 +29,7 @@ class SHttp{
 	 * @return string | array
 	 */
 
-	function get( $url, $params=array(), $cookies=array(), $returnHeader=false, $timeout=1){
+	public static function get( $url, $params=array(), $cookies=array(), $returnHeader=false, $timeout=1){
 		$opts = array(
 			'http'=>array(
 				'method'=>"GET",
@@ -58,7 +58,7 @@ class SHttp{
 	 * @param int $timeout=1
 	 * @return string | array
 	 */
-	function getArray($url_array,$timeout = 1) {
+	public static function getArray($url_array,$timeout = 1) {
 		if (!is_array($url_array))
 			return false;
 		$data    = array();
@@ -220,7 +220,7 @@ class SHttp{
 	 * @param boolean $returnHeader
 	 * @return string | array
 	 */
-	function post( $url, $params=array(), $cookies=array(), $returnHeader=false, $timeout=1){
+	public static function post( $url, $params=array(), $cookies=array(), $returnHeader=false, $timeout=1){
 		if(is_array($params)){
 			$content = empty($params)?"":http_build_query($params);
 		}else{
@@ -251,7 +251,7 @@ class SHttp{
 		}
 
 	}
-	function cookie_parse( $header ) {
+	public static function cookie_parse( $header ) {
 			$cookies = array();
 			foreach( $header as $line ) {
 					if(	preg_match_all ("/Set-Cookie: (.+?)=(.+?);/i", $line, $_match,PREG_SET_ORDER)){
@@ -285,7 +285,7 @@ class SHttp{
 			return $cookies;
 	}
 
-	function cookie_build( $data ) {
+	public static function cookie_build( $data ) {
 			if( is_array( $data ) ) {
 					$cookie = '';
 					foreach( $data as $d ) {

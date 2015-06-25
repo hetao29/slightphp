@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<phpdoc>
+	<title>SlightPHP framework Documentation</title>
+	<parser>
+		<target>/home/hetao/slightphp/</target>
+		 <encoding>utf8</encoding>
+		 <extensions>
+			 <extension>php</extension>
+		 </extensions>
+	</parser>
+	<transformer>
+	    <target>/home/hetao/slightphp/docs_new</target>
+	</transformer>
+	<files>
+		<directory>/home/hetao/slightphp/</directory>
+		<ignore>doc/,pecl/,samples/,js/,example-form.php,plugins/mail/examples/,plugins/smarty/,plugins/smarty3/,plugins/mail/language/,plugins/mail/phpdoc/,plugins/mail/test/,*test*</ignore>
+
+	</files>
+</phpdoc>

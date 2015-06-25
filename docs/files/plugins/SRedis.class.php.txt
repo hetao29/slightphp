@@ -16,6 +16,8 @@
 
 /**
  * @package SlightPHP
+ * SRedis is base on php5-redis(phpredis https://github.com/phpredis/phpredis)
+ * use RedisArray , docs is on https://github.com/phpredis/phpredis/blob/master/arrays.markdown#readme
  */
 if(!defined("SLIGHTPHP_PLUGINS_DIR"))define("SLIGHTPHP_PLUGINS_DIR",dirname(__FILE__));
 require_once(SLIGHTPHP_PLUGINS_DIR."/SConfig.class.php");
@@ -28,22 +30,52 @@ class SRedis{
 	static function setConfigFile($file){
 		self::$_config = $file;
 	}
-	static function getConfig($zone=null){
-		return SConfig::getConfig(self::$_config,$zone);
+	/**
+	 * @param string $zone
+	 * @return array
+	 */
+	static function getConfig($zone=null,$type="host"){
+		$config = SConfig::getConfig(self::$_config,$zone);
+		if(isset($config->$type)){
+			return $config->$type;
+		}elseif(isset($config->host)){
+			return $config->host;
+		}
+		return;
 	}
-	public function useConfig($zone){
+	/**
+	 * 切换配置文件
+	 * @param string $zone
+	 * @return array
+	 */
+	static function useConfig($zone,$type="host"){
 		$hosts=array();
-		$cfg = self::getConfig($zone);
-		if(empty($cfg))$cfg=self::getConfig("default");
-		if(!empty($cfg)){
-			foreach($cfg as $host){
-			$hosts[]=$host->host.":".$host->port;
+		$options=array();
+		$config = self::getConfig($zone,$type);
+		if(empty($config)){
+			trigger_error("the redis hosts is not set in config file(".self::$_config.")");
+			return false;
+		}
+		if(is_array($config)){
+			$hosts=$config;
+		}else{
+			$hosts[]=$config;
+		}
+		$config = self::getConfig($zone,"options");
+		if(!empty($config)){
+			if(is_object($config)){
+				foreach ($config as $k=>$v){
+					$options[$k]=$v;
+				}
 			}
 		}
-		$this->_rc = new RedisArray($hosts);
+		self::$_rc = new RedisArray($hosts,$options);
 	}
 	public function __call($name,$args){
-		return call_user_method_array($name,$this->_rc,$args);
+		return call_user_func_array(array(self::$_rc,$name),$args);
+	}
+	public static function __callStatic($name,$args){
+		return call_user_func_array(array(self::$_rc,$name),$args);
 	}
 }
 
