@@ -22,6 +22,7 @@ require_once(SLIGHTPHP_PLUGINS_DIR."/tpl/Tpl.php");
 class STpl extends Tpl{
 	static $engine;
 	/**
+	 * @deprecated , 新版本请使用 display
 	 * render a .tpl
 	 */
 	public function render($tpl,$parames=array()){
@@ -36,7 +37,7 @@ class STpl extends Tpl{
 	/**
 	 * like as render except delimiter 
 	 */
-	public function renderV2($tpl,$parames=array()){
+	public function display($tpl,$parames=array()){
 		parent::$compile_dir = SlightPHP::$appDir.DIRECTORY_SEPARATOR."templates_c";
 		parent::$template_dir= SlightPHP::$appDir.DIRECTORY_SEPARATOR."templates";
 		parent::$left_delimiter='<{';
