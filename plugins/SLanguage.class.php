@@ -30,7 +30,11 @@ class SLanguage{
 	private static $_locales=array();
 	static public function tr($source,$zone="main"){
 		if(empty(self::$_locales)){
-			if(empty(self::$locale)){
+			if(!empty(self::$locale)){
+				$k = strtolower(self::$locale);
+				self::$_locales[$k] = $k;
+			}else{
+				$langs = array();
 				if(!empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])){
 					$l=@explode(",",$_SERVER['HTTP_ACCEPT_LANGUAGE']);
 					if(!empty($l)){
@@ -38,18 +42,17 @@ class SLanguage{
 							$t=@explode(';',$t);
 							if(!empty($t)){
 								$k = strtolower($t[0]);
-								self::$_locales[$k] = $k;
+								$langs[$k] = $k;
 							}
 						}
 					}
 				}
-			}else{
-				$k = strtolower(self::$locale);
-				self::$_locales[$k] = $k;
-			}
-			if(!empty(self::$defaultLocale)){
-				$k = strtolower(self::$defaultLocale);
-				self::$_locales[$k] = $k;
+				if(!empty(self::$defaultLocale) && in_array(strtolower(self::$defaultLocale) , $langs)){
+					$k = strtolower(self::$defaultLocale);
+					self::$_locales[$k] = $k;
+				}else{
+					self::$_locales = $langs;
+				}
 			}
 		}
 		if(empty(self::$_locales) || !is_array(self::$_locales))return $source;
