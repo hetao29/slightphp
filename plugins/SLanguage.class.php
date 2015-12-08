@@ -36,15 +36,18 @@ class SLanguage{
 			}else{
 				$langs = array();
 				if(!empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])){
-					$l=@explode(",",$_SERVER['HTTP_ACCEPT_LANGUAGE']);
+					$l=explode(",",$_SERVER['HTTP_ACCEPT_LANGUAGE']);
 					if(!empty($l)){
 						foreach($l as $t){
-							$t=@explode(';',$t);
+							$t=explode(';',$t);
 							if(!empty($t)){
 								$k = strtolower($t[0]);
 								$langs[$k] = $k;
 							}
 						}
+						$t2 = explode('-',$t[0]);
+						$k2 = strtolower($t2[0]);
+						if(!isset($langs[$k2])) $langs[$k2] = $k2;
 					}
 				}
 				if(!empty(self::$defaultLocale) && in_array(strtolower(self::$defaultLocale) , $langs)){
