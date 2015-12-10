@@ -57,5 +57,5 @@ if test "$PHP_SLIGHTPHP" != "no"; then
   dnl
   dnl PHP_SUBST(SLIGHTPHP_SHARED_LIBADD)
 
-  PHP_NEW_EXTENSION(slightphp, slightphp.c, $ext_shared)
+  PHP_NEW_EXTENSION(slightphp, main.c, $ext_shared)
 fi
