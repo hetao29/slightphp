@@ -20,7 +20,9 @@
 ```php
 <?php
 require_once("SlightPHP.php");
-//或者你也可以用动态库方式 dl("SlightPHP.so");
+//或者你也可以用动态库方式 dl("slightphp.so");
+//或者在php.ini里增加（如果不支持dl的话）
+//extension = slightphp.so
 SlightPHP::run();
 ?>
 ```
