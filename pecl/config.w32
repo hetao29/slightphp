@@ -8,7 +8,7 @@
 ARG_ENABLE("slightphp", "enable slightphp support", "no");
 
 if (PHP_SLIGHTPHP != "no") {
-    EXTENSION('slightphp', 'slightphp.c', PHP_JSON_SHARED, "");
-    ADD_SOURCES(configure_module_dirname, "slightphp.c slightphp_globals.c", "slightphp");
+    EXTENSION('slightphp', 'main.c', PHP_JSON_SHARED, "");
+    ADD_SOURCES(configure_module_dirname, "main.c", "slightphp");
 }
 
