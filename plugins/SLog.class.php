@@ -119,12 +119,12 @@ class SLog
      * @param array $conf
      * @param uint $startTime
      */
-    private function __construct(Array $conf, $startTime)
+    private function __construct($conf, $startTime)
     {
-        $this->type     = $conf['type'];
-        $this->level    = $conf['level'];
-        $this->path     = $conf['path'];
-        $this->filename = $conf['filename'];
+        $this->type     = $conf->type;
+        $this->level    = $conf->level;
+        $this->path     = $conf->path;
+        $this->filename = $conf->filename;
 
         $this->startTime = $startTime;
         $this->logId     = $this->__logId();
@@ -141,8 +141,24 @@ class SLog
     public static function getInstance()
     {
         if (self::$instance === null) {
-            $startTime      = defined('PROCESS_START_TIME') ? PROCESS_START_TIME : microtime(true) * 1000;
-            self::$instance = new SLog($GLOBALS['LOG'], $startTime);
+            $startTime      = microtime(true) * 1000;
+            $logConf        = !empty($GLOBALS['LOG_CONF']) ? $GLOBALS['LOG_CONF'] : 'default';
+            $logConfig = SConfig::getConfig(ROOT_CONFIG."/log.conf", $logConf);
+
+            if (!empty($logConfig->filename)) {
+                $logConfig->filename = sprintf($logConfig->filename, date('Ymd'));
+                self::$instance = new SLog($logConfig, $startTime);
+            } else {
+                $stdClass = new stdClass();
+                $stdClass->appName = 'AllLog';
+                $stdClass->type = 'LOCAL_LOG';
+                $stdClass->level = '0x15';
+                $stdClass->path = '/tmp';
+                $stdClass->filename = 'All_log.'.date('Ymd');
+
+                self::$instance = new SLog($stdClass, $startTime);
+            }
+
         }
 
         return self::$instance;
