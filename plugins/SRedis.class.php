@@ -26,6 +26,7 @@ class SRedis{
 	}
 	private static $_config;
 	private static $_rc;
+	private static $_instances=array();
 	
 	static function setConfigFile($file){
 		self::$_config = $file;
@@ -49,6 +50,11 @@ class SRedis{
 	 * @return array
 	 */
 	static function useConfig($zone,$type="host"){
+		$key = $zone.":".$type;
+		if(isset(self::$_instances[$key])){
+			self::$_rc = self::$_instances[$key];
+			return self::$_rc;
+		}
 		$hosts=array();
 		$options=array();
 		$config = self::getConfig($zone,$type);
@@ -69,7 +75,7 @@ class SRedis{
 				}
 			}
 		}
-		self::$_rc = new RedisArray($hosts,$options);
+		return self::$_rc = self::$_instances[$key] = new RedisArray($hosts,$options);
 	}
 	public function __call($name,$args){
 		return call_user_func_array(array(self::$_rc,$name),$args);
