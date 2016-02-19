@@ -79,7 +79,19 @@ class SConfig{
 			foreach($_matches2 as $_m2){
 				$key = $_m2[1];
 				$value= $_m2[2];
+
+
 				if(isset(self::$_tmpData[$value])){$value = self::$_tmpData[$value];}
+
+				//类型转化
+				if(is_numeric($value)){
+					$value = $value+0;//自动转化 
+				}elseif(is_string($value)){
+					$v_t = strtolower($value);;
+					if($v_t == "true" ) $value =true;
+					elseif($v_t == "false" )$value=false;
+				}
+
 				if(isset($_data->$key)){
 					if(is_array($_data->$key)){
 						array_push($_data->$key,$value);
