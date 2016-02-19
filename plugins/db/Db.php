@@ -449,7 +449,14 @@ class Db{
 				$tmp = explode("_",$this->engine);
 				$driver =$tmp[1];
 				try{
-					Db::$_globals[$this->_key] = new PDO($driver .":dbname=".$this->database.";host=".$this->host.";port=".$this->port,$this->user,$this->password);
+					Db::$_globals[$this->_key] = new PDO(
+						$driver .":dbname=".$this->database.";host=".$this->host.";port=".$this->port,
+						$this->user,
+						$this->password,
+						array(
+							PDO::ATTR_PERSISTENT => true
+						)
+					);
 				}catch(Exception $e){
 					if(defined("DEBUG")){
 						trigger_error("CONNECT DATABASE ERROR ( ".$e->getMessage()." ) ",E_USER_WARNING);
