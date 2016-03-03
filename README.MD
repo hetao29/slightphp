@@ -1,7 +1,12 @@
 # SlightPHP 高效的PHP敏捷开发框架
 
 ###支持composer
-
+  - 安装方法 ，新增 composer.json，然后 composer install就可以了
+{
+    "require": {
+        "hetao29/slightphp": "dev-master"
+    }
+}
 ###pecl 模块支持php7
   - 最新更新，支持php7模块
   
