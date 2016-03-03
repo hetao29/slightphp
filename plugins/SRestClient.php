@@ -17,8 +17,8 @@
  * @package SlightPHP
  */
 if(!defined("SLIGHTPHP_PLUGINS_DIR"))define("SLIGHTPHP_PLUGINS_DIR",dirname(__FILE__));
-require_once(SLIGHTPHP_PLUGINS_DIR."/SConfig.class.php");
-require_once(SLIGHTPHP_PLUGINS_DIR."/rest/Rest_Http.class.php");
+require_once(SLIGHTPHP_PLUGINS_DIR."/SConfig.php");
+require_once(SLIGHTPHP_PLUGINS_DIR."/rest/Rest_Http.php");
 class SRestClient extends Rest_Http{
 	private static $_config;
 	static function setConfigFile($file){
@@ -60,7 +60,7 @@ class SRestClient extends Rest_Http{
 		return self::$_requests;
 	}
 	static function request(){
-		require_once(SLIGHTPHP_PLUGINS_DIR."/SHttp.class.php");
+		require_once(SLIGHTPHP_PLUGINS_DIR."/SHttp.php");
 		$http = new SHttp;
 		return $http->getArray(self::$_requests);
 	}

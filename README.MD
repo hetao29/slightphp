@@ -1,5 +1,7 @@
 # SlightPHP 高效的PHP敏捷开发框架
 
+###支持composer
+
 ###pecl 模块支持php7
   - 最新更新，支持php7模块
   
