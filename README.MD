@@ -9,6 +9,13 @@
     }
 }
 ```
+  - v2.0升级方法 ，加载SlightPHP.php改成如下方法就可以了，自定义slightphp_path的路径
+```php
+<?php
+//require_once($slightphp_path."/SlightPHP.php"); #不用这个方法了
+require_once($slightphp_path."/vendor/autoload.php");
+
+```
   - 老版本请大家使用v2.0版本
   
 ###pecl 模块支持php7
