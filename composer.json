@@ -5,7 +5,6 @@
     "homepage": "https://github.com/hetao29/slightphp",
     "type": "library",
     "license": "MIT",
-	"version":"3.0",
     "authors": [
         {
             "name": "hetao",
