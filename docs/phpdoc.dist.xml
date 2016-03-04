@@ -13,7 +13,7 @@
 	</transformer>
 	<files>
 		<directory>/home/hetao/slightphp/</directory>
-		<ignore>doc/,pecl/,samples/,js/,example-form.php,plugins/mail/examples/,plugins/smarty/,plugins/smarty3/,plugins/mail/language/,plugins/mail/phpdoc/,plugins/mail/test/,*test*</ignore>
+		<ignore>vendor/,doc/,pecl/,samples/,js/,example-form.php,plugins/mail/examples/,plugins/smarty/,plugins/smarty3/,plugins/mail/language/,plugins/mail/phpdoc/,plugins/mail/test/,*test*</ignore>
 
 	</files>
 </phpdoc>

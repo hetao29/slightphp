@@ -1,0 +1,1413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <meta charset="utf-8"/>
+    <title>SlightPHP framework Documentation</title>
+    <meta name="author" content=""/>
+    <meta name="description" content=""/>
+
+    <link href="../css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
+    <link href="../css/font-awesome.min.css" rel="stylesheet">
+    <link href="../css/prism.css" rel="stylesheet" media="all"/>
+    <link href="../css/template.css" rel="stylesheet" media="all"/>
+    
+    <!--[if lt IE 9]>
+    <script src="../js/html5.js"></script>
+    <![endif]-->
+    <script src="../js/jquery-1.11.0.min.js"></script>
+    <script src="../js/ui/1.10.4/jquery-ui.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/jquery.smooth-scroll.js"></script>
+    <script src="../js/prism.min.js"></script>
+    <!-- TODO: Add http://jscrollpane.kelvinluck.com/ to style the scrollbars for browsers not using webkit-->
+    <script type="text/javascript">
+    function loadExternalCodeSnippets() {
+        Array.prototype.slice.call(document.querySelectorAll('pre[data-src]')).forEach(function (pre) {
+            var src = pre.getAttribute('data-src');
+            var extension = (src.match(/\.(\w+)$/) || [, ''])[1];
+            var language = 'php';
+
+            var code = document.createElement('code');
+            code.className = 'language-' + language;
+
+            pre.textContent = '';
+
+            code.textContent = 'Loading…';
+
+            pre.appendChild(code);
+
+            var xhr = new XMLHttpRequest();
+
+            xhr.open('GET', src, true);
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4) {
+
+                    if (xhr.status < 400 && xhr.responseText) {
+                        code.textContent = xhr.responseText;
+
+                        Prism.highlightElement(code);
+                    }
+                    else if (xhr.status >= 400) {
+                        code.textContent = '✖ Error ' + xhr.status + ' while fetching file: ' + xhr.statusText;
+                    }
+                    else {
+                        code.textContent = '✖ Error: File does not exist or is empty';
+                    }
+                }
+            };
+
+            xhr.send(null);
+        });
+    }
+
+    $(document).ready(function(){
+        loadExternalCodeSnippets();
+    });
+    $('#source-view').on('shown', function () {
+        loadExternalCodeSnippets();
+    })
+</script>
+
+    <link rel="shortcut icon" href="../images/favicon.ico"/>
+    <link rel="apple-touch-icon" href="../images/apple-touch-icon.png"/>
+    <link rel="apple-touch-icon" sizes="72x72" href="../images/apple-touch-icon-72x72.png"/>
+    <link rel="apple-touch-icon" sizes="114x114" href="../images/apple-touch-icon-114x114.png"/>
+</head>
+<body>
+
+<div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <i class="icon-ellipsis-vertical"></i>
+            </a>
+            <a class="brand" href="../index.html">SlightPHP framework Documentation</a>
+
+            <div class="nav-collapse">
+                <ul class="nav pull-right">
+                                        <li class="dropdown">
+                        <a href="../index.html" class="dropdown-toggle" data-toggle="dropdown">
+                            API Documentation <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                                                        <li><a href="../namespaces/SlightPHP.html">\SlightPHP</a></li>
+                                                    </ul>
+                    </li>
+                                        <li class="dropdown" id="charts-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            Charts <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="../graphs/class.html">
+                                    <i class="icon-list-alt"></i>&#160;Class hierarchy diagram
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="dropdown" id="reports-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            Reports <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="../reports/errors.html">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <i class="icon-list-alt"></i>&#160;Errors <span class="label label-info pull-right">770</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="../reports/markers.html">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <i class="icon-list-alt"></i>&#160;Markers <span class="label label-info pull-right">1</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="../reports/deprecated.html">
+                                                                                                                                                                                        <i class="icon-list-alt"></i>&#160;Deprecated <span class="label label-info pull-right">1</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!--<div class="go_to_top">-->
+    <!--<a href="#___" style="color: inherit">Back to top&#160;&#160;<i class="icon-upload icon-white"></i></a>-->
+    <!--</div>-->
+</div>
+
+<div id="___" class="container-fluid">
+        <section class="row-fluid">
+        <div class="span2 sidebar">
+                                <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-578461662"></a>
+                                <a href="../namespaces/default.html" style="margin-left: 30px; padding-left: 0">\</a>
+            </div>
+            <div id="namespace-578461662" class="accordion-body collapse in">
+                <div class="accordion-inner">
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-113923990"></a>
+                                <a href="../namespaces/SlightPHP.html" style="margin-left: 30px; padding-left: 0">SlightPHP</a>
+            </div>
+            <div id="namespace-113923990" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/SlightPHP.Cache_APC.html">Cache_APC</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.Cache_Memcache.html">Cache_Memcache</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.Cache_MemcacheEngine.html">Cache_MemcacheEngine</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.Cache_MemcacheObject.html">Cache_MemcacheObject</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.CacheObject.html">CacheObject</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.Db.html">Db</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.Db_Mysql.html">Db_Mysql</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.Db_PDO.html">Db_PDO</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.DbData.html">DbData</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.DbObject.html">DbObject</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.PHPMailer.html">PHPMailer</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.POP3.html">POP3</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.Rest_Http.html">Rest_Http</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.SMTP.html">SMTP</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.SphinxClient.html">SphinxClient</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.Thumbnail.html">Thumbnail</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.Tpl.html">Tpl</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.WMThumbnail.html">WMThumbnail</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/SCache.html">SCache</a></li>
+                                                    <li class="class"><a href="../classes/SCaptcha.html">SCaptcha</a></li>
+                                                    <li class="class"><a href="../classes/SConfig.html">SConfig</a></li>
+                                                    <li class="class"><a href="../classes/SDb.html">SDb</a></li>
+                                                    <li class="class"><a href="../classes/SError.html">SError</a></li>
+                                                    <li class="class"><a href="../classes/SHttp.html">SHttp</a></li>
+                                                    <li class="class"><a href="../classes/SJson.html">SJson</a></li>
+                                                    <li class="class"><a href="../classes/SLanguage.html">SLanguage</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.html">SlightPHP</a></li>
+                                                    <li class="class"><a href="../classes/SLog.html">SLog</a></li>
+                                                    <li class="class"><a href="../classes/SLunar.html">SLunar</a></li>
+                                                    <li class="class"><a href="../classes/SMail.html">SMail</a></li>
+                                                    <li class="class"><a href="../classes/SRedis.html">SRedis</a></li>
+                                                    <li class="class"><a href="../classes/SRestClient.html">SRestClient</a></li>
+                                                    <li class="class"><a href="../classes/SRestServer.html">SRestServer</a></li>
+                                                    <li class="class"><a href="../classes/SRoute.html">SRoute</a></li>
+                                                    <li class="class"><a href="../classes/SSphinx.html">SSphinx</a></li>
+                                                    <li class="class"><a href="../classes/STpl.html">STpl</a></li>
+                                                    <li class="class"><a href="../classes/SUtil.html">SUtil</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        </div>
+    </section>
+    <section class="row-fluid">
+        <div class="span10 offset2">
+            <div class="row-fluid">
+                <div class="span8 content class">
+                    <nav>
+                                                <a href="../namespaces/SlightPHP.html">\SlightPHP</a> <i class="icon-level-up"></i>
+                                            </nav>
+                    <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal"><i class="icon-code"></i></a>
+
+                    <h1><small>\SlightPHP</small>SMTP</h1>
+                    <p><em></em></p>
+                    
+                    
+                                        
+                    <section id="summary">
+                        <h2>Summary</h2>
+                        <section class="row-fluid heading">
+                            <section class="span4">
+                                <a href="#methods">Methods</a>
+                            </section>
+                            <section class="span4">
+                                <a href="#properties">Properties</a>
+                            </section>
+                            <section class="span4">
+                                <a href="#constants">Constants</a>
+                            </section>
+                        </section>
+                        <section class="row-fluid public">
+                            <section class="span4">
+                                                                    <a href="../classes/SlightPHP.SMTP.html#method___construct" class="">__construct()</a><br />
+                                                                    <a href="../classes/SlightPHP.SMTP.html#method_Connect" class="">Connect()</a><br />
+                                                                    <a href="../classes/SlightPHP.SMTP.html#method_StartTLS" class="">StartTLS()</a><br />
+                                                                    <a href="../classes/SlightPHP.SMTP.html#method_Authenticate" class="">Authenticate()</a><br />
+                                                                    <a href="../classes/SlightPHP.SMTP.html#method_Connected" class="">Connected()</a><br />
+                                                                    <a href="../classes/SlightPHP.SMTP.html#method_Close" class="">Close()</a><br />
+                                                                    <a href="../classes/SlightPHP.SMTP.html#method_Data" class="">Data()</a><br />
+                                                                    <a href="../classes/SlightPHP.SMTP.html#method_Expand" class="">Expand()</a><br />
+                                                                    <a href="../classes/SlightPHP.SMTP.html#method_Hello" class="">Hello()</a><br />
+                                                                    <a href="../classes/SlightPHP.SMTP.html#method_Help" class="">Help()</a><br />
+                                                                    <a href="../classes/SlightPHP.SMTP.html#method_Mail" class="">Mail()</a><br />
+                                                                    <a href="../classes/SlightPHP.SMTP.html#method_Noop" class="">Noop()</a><br />
+                                                                    <a href="../classes/SlightPHP.SMTP.html#method_Quit" class="">Quit()</a><br />
+                                                                    <a href="../classes/SlightPHP.SMTP.html#method_Recipient" class="">Recipient()</a><br />
+                                                                    <a href="../classes/SlightPHP.SMTP.html#method_Reset" class="">Reset()</a><br />
+                                                                    <a href="../classes/SlightPHP.SMTP.html#method_Send" class="">Send()</a><br />
+                                                                    <a href="../classes/SlightPHP.SMTP.html#method_SendAndMail" class="">SendAndMail()</a><br />
+                                                                    <a href="../classes/SlightPHP.SMTP.html#method_SendOrMail" class="">SendOrMail()</a><br />
+                                                                    <a href="../classes/SlightPHP.SMTP.html#method_Turn" class="">Turn()</a><br />
+                                                                    <a href="../classes/SlightPHP.SMTP.html#method_Verify" class="">Verify()</a><br />
+                                                            </section>
+                            <section class="span4">
+                                                                    <a href="../classes/SlightPHP.SMTP.html#property_SMTP_PORT" class="">$SMTP_PORT</a><br />
+                                                                    <a href="../classes/SlightPHP.SMTP.html#property_CRLF" class="">$CRLF</a><br />
+                                                                    <a href="../classes/SlightPHP.SMTP.html#property_do_debug" class="">$do_debug</a><br />
+                                                                    <a href="../classes/SlightPHP.SMTP.html#property_do_verp" class="">$do_verp</a><br />
+                                                            </section>
+                            <section class="span4">
+                                                                    <em>No constants found</em>
+                                                            </section>
+                        </section>
+                        <section class="row-fluid protected">
+                            <section class="span4">
+                                                                    <em>No protected methods found</em>
+                                                            </section>
+                            <section class="span4">
+                                                                    <em>No protected properties found</em>
+                                                            </section>
+                            <section class="span4">
+                                <em>N/A</em>
+                            </section>
+                        </section>
+                        <section class="row-fluid private">
+                            <section class="span4">
+                                                                    <a href="../classes/SlightPHP.SMTP.html#method_SendHello" class="">SendHello()</a><br />
+                                                                    <a href="../classes/SlightPHP.SMTP.html#method_get_lines" class="">get_lines()</a><br />
+                                                            </section>
+                            <section class="span4">
+                                                                    <a href="../classes/SlightPHP.SMTP.html#property_smtp_conn" class="">$smtp_conn</a><br />
+                                                                    <a href="../classes/SlightPHP.SMTP.html#property_error" class="">$error</a><br />
+                                                                    <a href="../classes/SlightPHP.SMTP.html#property_helo_rply" class="">$helo_rply</a><br />
+                                                            </section>
+                            <section class="span4">
+                                <em>N/A</em>
+                            </section>
+                        </section>
+                    </section>
+                </div>
+                <aside class="span4 detailsbar">
+                                        
+                    
+                    <dl>
+                        <dt>File</dt>
+                            <dd><a href="../files/plugins.mail.class.smtp.html"><div class="path-wrapper">plugins/mail/class.smtp.php</div></a></dd>
+                                                <dt>Package</dt>
+                            <dd><div class="namespace-wrapper">Default</div></dd>
+                                                <dt>Class hierarchy</dt>
+                            <dd class="hierarchy">
+                                                                                                                                                                    <div class="namespace-wrapper">\SlightPHP\SMTP</div>
+                            </dd>
+
+                        
+                        
+                        
+                        
+                                                                        </dl>
+                    <h2>Tags</h2>
+                    <table class="table table-condensed">
+                                            <tr><td colspan="2"><em>None found</em></td></tr>
+                                        </table>
+                </aside>
+            </div>
+
+                        
+                                    <a id="properties" name="properties"></a>
+            <div class="row-fluid">
+                <div class="span8 content class">
+                    <h2>Properties</h2>
+                </div>
+                <aside class="span4 detailsbar"></aside>
+            </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_SMTP_PORT" name="property_SMTP_PORT" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$SMTP_PORT</h3>
+                <pre class="signature">$SMTP_PORT : </pre>
+                <p><em>SMTP server port</em></p>
+                <p>@var int</p>
+
+                                <h4>Type</h4>
+                
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_CRLF" name="property_CRLF" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$CRLF</h3>
+                <pre class="signature">$CRLF : </pre>
+                <p><em>SMTP reply line ending</em></p>
+                <p>@var string</p>
+
+                                <h4>Type</h4>
+                
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_do_debug" name="property_do_debug" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$do_debug</h3>
+                <pre class="signature">$do_debug : </pre>
+                <p><em>Sets whether debugging is turned on</em></p>
+                <p>@var bool</p>
+
+                                <h4>Type</h4>
+                
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_do_verp" name="property_do_verp" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$do_verp</h3>
+                <pre class="signature">$do_verp : </pre>
+                <p><em>Sets VERP use on/off (default is off)</em></p>
+                <p>@var bool</p>
+
+                                <h4>Type</h4>
+                
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_smtp_conn" name="property_smtp_conn" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$smtp_conn</h3>
+                <pre class="signature">$smtp_conn : </pre>
+                <p><em></em></p>
+                
+
+                                <h4>Type</h4>
+                
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_error" name="property_error" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$error</h3>
+                <pre class="signature">$error : </pre>
+                <p><em></em></p>
+                
+
+                                <h4>Type</h4>
+                
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_helo_rply" name="property_helo_rply" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$helo_rply</h3>
+                <pre class="signature">$helo_rply : </pre>
+                <p><em></em></p>
+                
+
+                                <h4>Type</h4>
+                
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                            
+                                    <a id="methods" name="methods"></a>
+            <div class="row-fluid">
+                <div class="span8 content class"><h2>Methods</h2></div>
+                <aside class="span4 detailsbar"></aside>
+            </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method___construct" name="method___construct" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">__construct()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">__construct() : void</pre>
+                <p><em>Initialize the class so that the data is in a known state.</em></p>
+                
+
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_Connect" name="method_Connect" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">Connect()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">Connect(  <span class="argument">$host</span>,   <span class="argument">$port</span>,   <span class="argument">$tval = 30</span>) : boolean</pre>
+                <p><em>Connect to the server specified on the port specified.</em></p>
+                <p>If the port is not specified use the default SMTP_PORT.
+If tval is specified then a connection will try and be
+established with the server for that number of seconds.
+If tval is not specified the default is 30 seconds to
+try on the connection.</p>
+<p>SMTP CODE SUCCESS: 220
+SMTP CODE FAILURE: 421</p>
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$host </td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td></td>
+                                <td>$port </td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td></td>
+                                <td>$tval </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    boolean
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_StartTLS" name="method_StartTLS" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">StartTLS()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">StartTLS() : boolean</pre>
+                <p><em>Initiate a TSL communication with the server.</em></p>
+                <p>SMTP CODE 220 Ready to start TLS
+SMTP CODE 501 Syntax error (no parameters allowed)
+SMTP CODE 454 TLS not available due to temporary reason</p>
+
+                
+                
+                                    <h4>Returns</h4>
+                    boolean
+                                            &mdash; <p>success</p>
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_Authenticate" name="method_Authenticate" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">Authenticate()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">Authenticate(  <span class="argument">$username</span>,   <span class="argument">$password</span>) : boolean</pre>
+                <p><em>Performs SMTP authentication.  Must be run after running the
+Hello() method.  Returns true if successfully authenticated.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$username </td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td></td>
+                                <td>$password </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    boolean
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_Connected" name="method_Connected" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">Connected()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">Connected() : boolean</pre>
+                <p><em>Returns true if connected to a server otherwise false</em></p>
+                
+
+                
+                
+                                    <h4>Returns</h4>
+                    boolean
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_Close" name="method_Close" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">Close()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">Close() : void</pre>
+                <p><em>Closes the socket and cleans up the state of the class.</em></p>
+                <p>It is not considered good to use this function without
+first trying to use QUIT.</p>
+
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_Data" name="method_Data" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">Data()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">Data(  <span class="argument">$msg_data</span>) : boolean</pre>
+                <p><em>Issues a data command and sends the msg_data to the server
+finializing the mail transaction. $msg_data is the message
+that is to be send with the headers. Each header needs to be
+on a single line followed by a &lt;CRLF&gt; with the message headers
+and the message body being seperated by and additional &lt;CRLF&gt;.</em></p>
+                <p>Implements rfc 821: DATA <CRLF></p>
+<p>SMTP CODE INTERMEDIATE: 354
+[data]</p>
+<CRLF>.<CRLF>
+    SMTP CODE SUCCESS: 250
+    SMTP CODE FAILURE: 552,554,451,452
+SMTP CODE FAILURE: 451,554
+SMTP CODE ERROR  : 500,501,503,421
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$msg_data </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    boolean
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_Expand" name="method_Expand" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">Expand()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">Expand(  <span class="argument">$name</span>) : string</pre>
+                <p><em>Expand takes the name and asks the server to list all the
+people who are members of the _list_. Expand will return
+back and array of the result or false if an error occurs.</em></p>
+                <p>Each value in the array returned has the format of:
+[ <full-name> <sp> ] <path>
+The definition of <path> is defined in rfc 821</p>
+<p>Implements rfc 821: EXPN <SP> <string> <CRLF></p>
+<p>SMTP CODE SUCCESS: 250
+SMTP CODE FAILURE: 550
+SMTP CODE ERROR  : 500,501,502,504,421</p>
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$name </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    string
+                                            &mdash; <p>array</p>
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_Hello" name="method_Hello" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">Hello()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">Hello(  <span class="argument">$host = &quot;&quot;</span>) : boolean</pre>
+                <p><em>Sends the HELO command to the smtp server.</em></p>
+                <p>This makes sure that we and the server are in
+the same known state.</p>
+<p>Implements from rfc 821: HELO <SP> <domain> <CRLF></p>
+<p>SMTP CODE SUCCESS: 250
+SMTP CODE ERROR  : 500, 501, 504, 421</p>
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$host </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    boolean
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_Help" name="method_Help" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">Help()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">Help(  <span class="argument">$keyword = &quot;&quot;</span>) : string</pre>
+                <p><em>Gets help information on the keyword specified. If the keyword
+is not specified then returns generic help, ussually contianing
+A list of keywords that help is available on. This function
+returns the results back to the user. It is up to the user to
+handle the returned data. If an error occurs then false is
+returned with $this-&gt;error set appropiately.</em></p>
+                <p>Implements rfc 821: HELP [ <SP> <string> ] <CRLF></p>
+<p>SMTP CODE SUCCESS: 211,214
+SMTP CODE ERROR  : 500,501,502,504,421</p>
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$keyword </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    string
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_Mail" name="method_Mail" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">Mail()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">Mail(  <span class="argument">$from</span>) : boolean</pre>
+                <p><em>Starts a mail transaction from the email address specified in
+$from. Returns true if successful or false otherwise. If True
+the mail transaction is started and then one or more Recipient
+commands may be called followed by a Data command.</em></p>
+                <p>Implements rfc 821: MAIL <SP> FROM:<reverse-path> <CRLF></p>
+<p>SMTP CODE SUCCESS: 250
+SMTP CODE SUCCESS: 552,451,452
+SMTP CODE SUCCESS: 500,501,421</p>
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$from </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    boolean
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_Noop" name="method_Noop" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">Noop()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">Noop() : boolean</pre>
+                <p><em>Sends the command NOOP to the SMTP server.</em></p>
+                <p>Implements from rfc 821: NOOP <CRLF></p>
+<p>SMTP CODE SUCCESS: 250
+SMTP CODE ERROR  : 500, 421</p>
+
+                
+                
+                                    <h4>Returns</h4>
+                    boolean
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_Quit" name="method_Quit" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">Quit()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">Quit(  <span class="argument">$close_on_error = true</span>) : boolean</pre>
+                <p><em>Sends the quit command to the server and then closes the socket
+if there is no error or the $close_on_error argument is true.</em></p>
+                <p>Implements from rfc 821: QUIT <CRLF></p>
+<p>SMTP CODE SUCCESS: 221
+SMTP CODE ERROR  : 500</p>
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$close_on_error </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    boolean
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_Recipient" name="method_Recipient" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">Recipient()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">Recipient(  <span class="argument">$to</span>) : boolean</pre>
+                <p><em>Sends the command RCPT to the SMTP server with the TO: argument of $to.</em></p>
+                <p>Returns true if the recipient was accepted false if it was rejected.</p>
+<p>Implements from rfc 821: RCPT <SP> TO:<forward-path> <CRLF></p>
+<p>SMTP CODE SUCCESS: 250,251
+SMTP CODE FAILURE: 550,551,552,553,450,451,452
+SMTP CODE ERROR  : 500,501,503,421</p>
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$to </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    boolean
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_Reset" name="method_Reset" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">Reset()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">Reset() : boolean</pre>
+                <p><em>Sends the RSET command to abort and transaction that is
+currently in progress. Returns true if successful false
+otherwise.</em></p>
+                <p>Implements rfc 821: RSET <CRLF></p>
+<p>SMTP CODE SUCCESS: 250
+SMTP CODE ERROR  : 500,501,504,421</p>
+
+                
+                
+                                    <h4>Returns</h4>
+                    boolean
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_Send" name="method_Send" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">Send()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">Send(  <span class="argument">$from</span>) : boolean</pre>
+                <p><em>Starts a mail transaction from the email address specified in
+$from. Returns true if successful or false otherwise. If True
+the mail transaction is started and then one or more Recipient
+commands may be called followed by a Data command. This command
+will send the message to the users terminal if they are logged
+in.</em></p>
+                <p>Implements rfc 821: SEND <SP> FROM:<reverse-path> <CRLF></p>
+<p>SMTP CODE SUCCESS: 250
+SMTP CODE SUCCESS: 552,451,452
+SMTP CODE SUCCESS: 500,501,502,421</p>
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$from </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    boolean
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_SendAndMail" name="method_SendAndMail" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">SendAndMail()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">SendAndMail(  <span class="argument">$from</span>) : boolean</pre>
+                <p><em>Starts a mail transaction from the email address specified in
+$from. Returns true if successful or false otherwise. If True
+the mail transaction is started and then one or more Recipient
+commands may be called followed by a Data command. This command
+will send the message to the users terminal if they are logged
+in and send them an email.</em></p>
+                <p>Implements rfc 821: SAML <SP> FROM:<reverse-path> <CRLF></p>
+<p>SMTP CODE SUCCESS: 250
+SMTP CODE SUCCESS: 552,451,452
+SMTP CODE SUCCESS: 500,501,502,421</p>
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$from </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    boolean
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_SendOrMail" name="method_SendOrMail" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">SendOrMail()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">SendOrMail(  <span class="argument">$from</span>) : boolean</pre>
+                <p><em>Starts a mail transaction from the email address specified in
+$from. Returns true if successful or false otherwise. If True
+the mail transaction is started and then one or more Recipient
+commands may be called followed by a Data command. This command
+will send the message to the users terminal if they are logged
+in or mail it to them if they are not.</em></p>
+                <p>Implements rfc 821: SOML <SP> FROM:<reverse-path> <CRLF></p>
+<p>SMTP CODE SUCCESS: 250
+SMTP CODE SUCCESS: 552,451,452
+SMTP CODE SUCCESS: 500,501,502,421</p>
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$from </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    boolean
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_Turn" name="method_Turn" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">Turn()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">Turn() : boolean</pre>
+                <p><em>This is an optional command for SMTP that this class does not
+support. This method is here to make the RFC821 Definition
+complete for this class and __may__ be implimented in the future</em></p>
+                <p>Implements from rfc 821: TURN <CRLF></p>
+<p>SMTP CODE SUCCESS: 250
+SMTP CODE FAILURE: 502
+SMTP CODE ERROR  : 500, 503</p>
+
+                
+                
+                                    <h4>Returns</h4>
+                    boolean
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_Verify" name="method_Verify" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">Verify()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">Verify(  <span class="argument">$name</span>) : integer</pre>
+                <p><em>Verifies that the name is recognized by the server.</em></p>
+                <p>Returns false if the name could not be verified otherwise
+the response from the server is returned.</p>
+<p>Implements rfc 821: VRFY <SP> <string> <CRLF></p>
+<p>SMTP CODE SUCCESS: 250,251
+SMTP CODE FAILURE: 550,551,553
+SMTP CODE ERROR  : 500,501,502,421</p>
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$name </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    integer
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_SendHello" name="method_SendHello" class="anchor"></a>
+            <article class="method">
+                <h3 class="private ">SendHello()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">SendHello(  <span class="argument">$hello</span>,   <span class="argument">$host</span>) : boolean</pre>
+                <p><em>Sends a HELO/EHLO command.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$hello </td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td></td>
+                                <td>$host </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    boolean
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_get_lines" name="method_get_lines" class="anchor"></a>
+            <article class="method">
+                <h3 class="private ">get_lines()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">get_lines() : string</pre>
+                <p><em>Read in as many lines as possible
+either before eof or socket timeout occurs on the operation.</em></p>
+                <p>With SMTP we can tell if we have more lines to read if the
+4th character is '-' symbol. If it is a space then we don't
+need to read anything else.</p>
+
+                
+                
+                                    <h4>Returns</h4>
+                    string
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    </div>
+    </section>
+
+    <div id="source-view" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="source-view-label" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="source-view-label">class.smtp.php</h3>
+        </div>
+        <div class="modal-body">
+            <pre data-src="../files/plugins/mail/class.smtp.php.txt" class="language-php line-numbers"></pre>
+        </div>
+    </div>
+
+    <footer class="row-fluid">
+        <section class="span10 offset2">
+            <section class="row-fluid">
+                <section class="span10 offset1">
+                    <section class="row-fluid footer-sections">
+                        <section class="span4">
+                                                        <h1><i class="icon-code"></i></h1>
+                            <div>
+                                <ul>
+                                                                            <li><a href="../namespaces/SlightPHP.html">\SlightPHP</a></li>
+                                                                    </ul>
+                            </div>
+                        </section>
+                        <section class="span4">
+                                                        <h1><i class="icon-bar-chart"></i></h1>
+                            <div>
+                                <ul>
+                                    <li><a href="../graphs/class.html">Class Hierarchy Diagram</a></li>
+                                </ul>
+                            </div>
+                        </section>
+                        <section class="span4">
+                                                        <h1><i class="icon-pushpin"></i></h1>
+                            <div>
+                                <ul>
+                                    <li><a href="../reports/errors.html">Errors</a></li>
+                                    <li><a href="../reports/markers.html">Markers</a></li>
+                                </ul>
+                            </div>
+                        </section>
+                    </section>
+                </section>
+            </section>
+            <section class="row-fluid">
+                <section class="span10 offset1">
+                    <hr />
+                    Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and authored
+                    on March 4th, 2016 at 11:58.
+                </section>
+            </section>
+        </section>
+    </footer>
+</div>
+
+</body>
+</html>

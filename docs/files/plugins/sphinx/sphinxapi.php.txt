@@ -19,6 +19,7 @@
 // PHP version of Sphinx searchd client (PHP API)
 /////////////////////////////////////////////////////////////////////////////
 
+namespace SlightPHP;
 /// known searchd commands
 define ( "SEARCHD_COMMAND_SEARCH",		0 );
 define ( "SEARCHD_COMMAND_EXCERPT",		1 );

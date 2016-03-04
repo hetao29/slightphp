@@ -18,6 +18,7 @@
  * @package SlightPHP
  * @subpackage SCache
  */
+namespace SlightPHP;
 final class Cache_MemcacheObject{
 	var $v;
 	var $t;
@@ -30,16 +31,16 @@ if(class_exists("Memcached",false)){
 	class Cache_MemcacheEngine{
 		private $_memcache;
 		public function __construct(){
-			$this->_memcache = new Memcached();
-			$this->_memcache->setOption(Memcached::OPT_DISTRIBUTION,Memcached::DISTRIBUTION_CONSISTENT);
-			$this->_memcache->setOption(Memcached::OPT_LIBKETAMA_COMPATIBLE,true); 
-			$this->_memcache->setOption(Memcached::OPT_CONNECT_TIMEOUT,1000);
+			$this->_memcache = new \Memcached();
+			$this->_memcache->setOption(\Memcached::OPT_DISTRIBUTION,\Memcached::DISTRIBUTION_CONSISTENT);
+			$this->_memcache->setOption(\Memcached::OPT_LIBKETAMA_COMPATIBLE,true); 
+			$this->_memcache->setOption(\Memcached::OPT_CONNECT_TIMEOUT,1000);
 		}
 		public function __destruct(){
 		}
 
 		public function addServer($host,$port=11211,$weight=10,$timeout=1){
-			$this->_memcache->setOption(Memcached::OPT_CONNECT_TIMEOUT,$timeout*1000);
+			$this->_memcache->setOption(\Memcached::OPT_CONNECT_TIMEOUT,$timeout*1000);
 			$this->_memcache->addServer($host,$port,$weight);
 		}
 		public function addServers($hosts=array()){
@@ -83,10 +84,10 @@ if(class_exists("Memcached",false)){
 		}
 	}
 }else{
-	class Cache_MemcacheEngine extends Memcache{
+	class Cache_MemcacheEngine extends \Memcache{
 		private $_memcache;
 		public function __construct(){
-			$this->_memcache = new Memcache();
+			$this->_memcache = new \Memcache();
 			ini_set("memcache.hash_strategy","consistent");
 			ini_set("memcache.hash_function","crc32");
 		}

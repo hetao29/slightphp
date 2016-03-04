@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <meta charset="utf-8"/>
+    <title>SlightPHP framework Documentation</title>
+    <meta name="author" content=""/>
+    <meta name="description" content=""/>
+
+    <link href="../css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
+    <link href="../css/font-awesome.min.css" rel="stylesheet">
+    <link href="../css/prism.css" rel="stylesheet" media="all"/>
+    <link href="../css/template.css" rel="stylesheet" media="all"/>
+    
+    <!--[if lt IE 9]>
+    <script src="../js/html5.js"></script>
+    <![endif]-->
+    <script src="../js/jquery-1.11.0.min.js"></script>
+    <script src="../js/ui/1.10.4/jquery-ui.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/jquery.smooth-scroll.js"></script>
+    <script src="../js/prism.min.js"></script>
+    <!-- TODO: Add http://jscrollpane.kelvinluck.com/ to style the scrollbars for browsers not using webkit-->
+    <script type="text/javascript">
+    function loadExternalCodeSnippets() {
+        Array.prototype.slice.call(document.querySelectorAll('pre[data-src]')).forEach(function (pre) {
+            var src = pre.getAttribute('data-src');
+            var extension = (src.match(/\.(\w+)$/) || [, ''])[1];
+            var language = 'php';
+
+            var code = document.createElement('code');
+            code.className = 'language-' + language;
+
+            pre.textContent = '';
+
+            code.textContent = 'Loading…';
+
+            pre.appendChild(code);
+
+            var xhr = new XMLHttpRequest();
+
+            xhr.open('GET', src, true);
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4) {
+
+                    if (xhr.status < 400 && xhr.responseText) {
+                        code.textContent = xhr.responseText;
+
+                        Prism.highlightElement(code);
+                    }
+                    else if (xhr.status >= 400) {
+                        code.textContent = '✖ Error ' + xhr.status + ' while fetching file: ' + xhr.statusText;
+                    }
+                    else {
+                        code.textContent = '✖ Error: File does not exist or is empty';
+                    }
+                }
+            };
+
+            xhr.send(null);
+        });
+    }
+
+    $(document).ready(function(){
+        loadExternalCodeSnippets();
+    });
+    $('#source-view').on('shown', function () {
+        loadExternalCodeSnippets();
+    })
+</script>
+
+    <link rel="shortcut icon" href="../images/favicon.ico"/>
+    <link rel="apple-touch-icon" href="../images/apple-touch-icon.png"/>
+    <link rel="apple-touch-icon" sizes="72x72" href="../images/apple-touch-icon-72x72.png"/>
+    <link rel="apple-touch-icon" sizes="114x114" href="../images/apple-touch-icon-114x114.png"/>
+</head>
+<body>
+
+<div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <i class="icon-ellipsis-vertical"></i>
+            </a>
+            <a class="brand" href="../index.html">SlightPHP framework Documentation</a>
+
+            <div class="nav-collapse">
+                <ul class="nav pull-right">
+                                        <li class="dropdown">
+                        <a href="../index.html" class="dropdown-toggle" data-toggle="dropdown">
+                            API Documentation <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                                                        <li><a href="../namespaces/SlightPHP.html">\SlightPHP</a></li>
+                                                    </ul>
+                    </li>
+                                        <li class="dropdown" id="charts-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            Charts <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="../graphs/class.html">
+                                    <i class="icon-list-alt"></i>&#160;Class hierarchy diagram
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="dropdown" id="reports-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            Reports <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="../reports/errors.html">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <i class="icon-list-alt"></i>&#160;Errors <span class="label label-info pull-right">770</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="../reports/markers.html">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <i class="icon-list-alt"></i>&#160;Markers <span class="label label-info pull-right">1</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="../reports/deprecated.html">
+                                                                                                                                                                                        <i class="icon-list-alt"></i>&#160;Deprecated <span class="label label-info pull-right">1</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!--<div class="go_to_top">-->
+    <!--<a href="#___" style="color: inherit">Back to top&#160;&#160;<i class="icon-upload icon-white"></i></a>-->
+    <!--</div>-->
+</div>
+
+<div id="___" class="container-fluid">
+        <section class="row-fluid">
+        <div class="span2 sidebar">
+                                <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-478546813"></a>
+                                <a href="../namespaces/default.html" style="margin-left: 30px; padding-left: 0">\</a>
+            </div>
+            <div id="namespace-478546813" class="accordion-body collapse in">
+                <div class="accordion-inner">
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1908792586"></a>
+                                <a href="../namespaces/SlightPHP.html" style="margin-left: 30px; padding-left: 0">SlightPHP</a>
+            </div>
+            <div id="namespace-1908792586" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/SlightPHP.Cache_APC.html">Cache_APC</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.Cache_Memcache.html">Cache_Memcache</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.Cache_MemcacheEngine.html">Cache_MemcacheEngine</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.Cache_MemcacheObject.html">Cache_MemcacheObject</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.CacheObject.html">CacheObject</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.Db.html">Db</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.Db_Mysql.html">Db_Mysql</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.Db_PDO.html">Db_PDO</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.DbData.html">DbData</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.DbObject.html">DbObject</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.PHPMailer.html">PHPMailer</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.POP3.html">POP3</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.Rest_Http.html">Rest_Http</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.SMTP.html">SMTP</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.SphinxClient.html">SphinxClient</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.Thumbnail.html">Thumbnail</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.Tpl.html">Tpl</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.WMThumbnail.html">WMThumbnail</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/SCache.html">SCache</a></li>
+                                                    <li class="class"><a href="../classes/SCaptcha.html">SCaptcha</a></li>
+                                                    <li class="class"><a href="../classes/SConfig.html">SConfig</a></li>
+                                                    <li class="class"><a href="../classes/SDb.html">SDb</a></li>
+                                                    <li class="class"><a href="../classes/SError.html">SError</a></li>
+                                                    <li class="class"><a href="../classes/SHttp.html">SHttp</a></li>
+                                                    <li class="class"><a href="../classes/SJson.html">SJson</a></li>
+                                                    <li class="class"><a href="../classes/SLanguage.html">SLanguage</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.html">SlightPHP</a></li>
+                                                    <li class="class"><a href="../classes/SLog.html">SLog</a></li>
+                                                    <li class="class"><a href="../classes/SLunar.html">SLunar</a></li>
+                                                    <li class="class"><a href="../classes/SMail.html">SMail</a></li>
+                                                    <li class="class"><a href="../classes/SRedis.html">SRedis</a></li>
+                                                    <li class="class"><a href="../classes/SRestClient.html">SRestClient</a></li>
+                                                    <li class="class"><a href="../classes/SRestServer.html">SRestServer</a></li>
+                                                    <li class="class"><a href="../classes/SRoute.html">SRoute</a></li>
+                                                    <li class="class"><a href="../classes/SSphinx.html">SSphinx</a></li>
+                                                    <li class="class"><a href="../classes/STpl.html">STpl</a></li>
+                                                    <li class="class"><a href="../classes/SUtil.html">SUtil</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        </div>
+    </section>
+    <section class="row-fluid">
+        <div class="span10 offset2">
+            <div class="row-fluid">
+                <div class="span8 content class">
+                    <nav>
+                                                <a href="../namespaces/SlightPHP.html">\SlightPHP</a> <i class="icon-level-up"></i>
+                                            </nav>
+                    <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal"><i class="icon-code"></i></a>
+
+                    <h1><small>\SlightPHP</small>Thumbnail</h1>
+                    <p><em></em></p>
+                    
+                    
+                                        
+                    <section id="summary">
+                        <h2>Summary</h2>
+                        <section class="row-fluid heading">
+                            <section class="span4">
+                                <a href="#methods">Methods</a>
+                            </section>
+                            <section class="span4">
+                                <a href="#properties">Properties</a>
+                            </section>
+                            <section class="span4">
+                                <a href="#constants">Constants</a>
+                            </section>
+                        </section>
+                        <section class="row-fluid public">
+                            <section class="span4">
+                                                                    <a href="../classes/SlightPHP.Thumbnail.html#method___construct" class="">__construct()</a><br />
+                                                                    <a href="../classes/SlightPHP.Thumbnail.html#method_setOutputFormat" class="">setOutputFormat()</a><br />
+                                                                    <a href="../classes/SlightPHP.Thumbnail.html#method_setMaxHeight" class="">setMaxHeight()</a><br />
+                                                                    <a href="../classes/SlightPHP.Thumbnail.html#method_setMaxWidth" class="">setMaxWidth()</a><br />
+                                                                    <a href="../classes/SlightPHP.Thumbnail.html#method_setMaxSize" class="">setMaxSize()</a><br />
+                                                                    <a href="../classes/SlightPHP.Thumbnail.html#method_setQualityOutput" class="">setQualityOutput()</a><br />
+                                                                    <a href="../classes/SlightPHP.Thumbnail.html#method_outputThumbnail" class="">outputThumbnail()</a><br />
+                                                                    <a href="../classes/SlightPHP.Thumbnail.html#method_returnThumbnail" class="">returnThumbnail()</a><br />
+                                                                    <a href="../classes/SlightPHP.Thumbnail.html#method_getThumbHeight" class="">getThumbHeight()</a><br />
+                                                                    <a href="../classes/SlightPHP.Thumbnail.html#method_getThumbWidth" class="">getThumbWidth()</a><br />
+                                                                    <a href="../classes/SlightPHP.Thumbnail.html#method_getPictureName" class="">getPictureName()</a><br />
+                                                            </section>
+                            <section class="span4">
+                                                                    <em>No public properties found</em>
+                                                            </section>
+                            <section class="span4">
+                                                                    <a href="../classes/SlightPHP.Thumbnail.html#constant_VERSION" class="">VERSION</a><br />
+                                                            </section>
+                        </section>
+                        <section class="row-fluid protected">
+                            <section class="span4">
+                                                                    <a href="../classes/SlightPHP.Thumbnail.html#method_readSourceImageData" class="">readSourceImageData()</a><br />
+                                                                    <a href="../classes/SlightPHP.Thumbnail.html#method_readSourceImage" class="">readSourceImage()</a><br />
+                                                                    <a href="../classes/SlightPHP.Thumbnail.html#method_setThumbnailSize" class="">setThumbnailSize()</a><br />
+                                                                    <a href="../classes/SlightPHP.Thumbnail.html#method_createThumbnail" class="">createThumbnail()</a><br />
+                                                            </section>
+                            <section class="span4">
+                                                                    <a href="../classes/SlightPHP.Thumbnail.html#property_formats" class="">$formats</a><br />
+                                                                    <a href="../classes/SlightPHP.Thumbnail.html#property_thumb_max_height" class="">$thumb_max_height</a><br />
+                                                                    <a href="../classes/SlightPHP.Thumbnail.html#property_thumb_max_width" class="">$thumb_max_width</a><br />
+                                                                    <a href="../classes/SlightPHP.Thumbnail.html#property_quality_thumb" class="">$quality_thumb</a><br />
+                                                                    <a href="../classes/SlightPHP.Thumbnail.html#property_image_path" class="">$image_path</a><br />
+                                                                    <a href="../classes/SlightPHP.Thumbnail.html#property_image_width" class="">$image_width</a><br />
+                                                                    <a href="../classes/SlightPHP.Thumbnail.html#property_image_height" class="">$image_height</a><br />
+                                                                    <a href="../classes/SlightPHP.Thumbnail.html#property_image_type" class="">$image_type</a><br />
+                                                                    <a href="../classes/SlightPHP.Thumbnail.html#property_thumbnail_height" class="">$thumbnail_height</a><br />
+                                                                    <a href="../classes/SlightPHP.Thumbnail.html#property_thumbnail_width" class="">$thumbnail_width</a><br />
+                                                                    <a href="../classes/SlightPHP.Thumbnail.html#property_thumbnail_type" class="">$thumbnail_type</a><br />
+                                                                    <a href="../classes/SlightPHP.Thumbnail.html#property_image" class="">$image</a><br />
+                                                                    <a href="../classes/SlightPHP.Thumbnail.html#property_thumbnail" class="">$thumbnail</a><br />
+                                                            </section>
+                            <section class="span4">
+                                <em>N/A</em>
+                            </section>
+                        </section>
+                        <section class="row-fluid private">
+                            <section class="span4">
+                                                                    <em>No private methods found</em>
+                                                            </section>
+                            <section class="span4">
+                                                                    <em>No private properties found</em>
+                                                            </section>
+                            <section class="span4">
+                                <em>N/A</em>
+                            </section>
+                        </section>
+                    </section>
+                </div>
+                <aside class="span4 detailsbar">
+                                        
+                    
+                    <dl>
+                        <dt>File</dt>
+                            <dd><a href="../files/plugins.thumbnail.class.Thumbnail.inc.html"><div class="path-wrapper">plugins/thumbnail/class.Thumbnail.inc.php</div></a></dd>
+                                                <dt>Package</dt>
+                            <dd><div class="namespace-wrapper">Thumbnail</div></dd>
+                                                <dt>Class hierarchy</dt>
+                            <dd class="hierarchy">
+                                                                                                                                                                    <div class="namespace-wrapper">\SlightPHP\Thumbnail</div>
+                            </dd>
+
+                        
+                        
+                        
+                        
+                                                                        </dl>
+                    <h2>Tags</h2>
+                    <table class="table table-condensed">
+                                            <tr><td colspan="2"><em>None found</em></td></tr>
+                                        </table>
+                </aside>
+            </div>
+
+                                    <a id="constants" name="constants"></a>
+            <div class="row-fluid">
+                <div class="span8 content class">
+                    <h2>Constants</h2>
+                </div>
+                <aside class="span4 detailsbar"></aside>
+            </div>
+
+                                <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="constant_VERSION" name="constant_VERSION" class="anchor"></a>
+            <article id="constant_VERSION" class="constant">
+                <h3 class="">VERSION</h3>
+                <pre class="signature">VERSION</pre>
+                <p><em></em></p>
+                
+            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                            
+                                    <a id="properties" name="properties"></a>
+            <div class="row-fluid">
+                <div class="span8 content class">
+                    <h2>Properties</h2>
+                </div>
+                <aside class="span4 detailsbar"></aside>
+            </div>
+
+                                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_formats" name="property_formats" class="anchor"></a>
+            <article class="property">
+                <h3 class="protected ">$formats</h3>
+                <pre class="signature">$formats : array</pre>
+                <p><em>possible image formats</em></p>
+                
+
+                                <h4>Type</h4>
+                array
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_thumb_max_height" name="property_thumb_max_height" class="anchor"></a>
+            <article class="property">
+                <h3 class="protected ">$thumb_max_height</h3>
+                <pre class="signature">$thumb_max_height : integer</pre>
+                <p><em>maximal height of the generated thumbnail</em></p>
+                
+
+                                <h4>Type</h4>
+                integer
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_thumb_max_width" name="property_thumb_max_width" class="anchor"></a>
+            <article class="property">
+                <h3 class="protected ">$thumb_max_width</h3>
+                <pre class="signature">$thumb_max_width : integer</pre>
+                <p><em>maximal width of the generated thumbnail</em></p>
+                
+
+                                <h4>Type</h4>
+                integer
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_quality_thumb" name="property_quality_thumb" class="anchor"></a>
+            <article class="property">
+                <h3 class="protected ">$quality_thumb</h3>
+                <pre class="signature">$quality_thumb : boolean</pre>
+                <p><em>quality or speed when generating the thumbnail</em></p>
+                
+
+                                <h4>Type</h4>
+                boolean
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_image_path" name="property_image_path" class="anchor"></a>
+            <article class="property">
+                <h3 class="protected ">$image_path</h3>
+                <pre class="signature">$image_path : string</pre>
+                <p><em>path/filename of imagefile</em></p>
+                
+
+                                <h4>Type</h4>
+                string
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_image_width" name="property_image_width" class="anchor"></a>
+            <article class="property">
+                <h3 class="protected ">$image_width</h3>
+                <pre class="signature">$image_width : integer</pre>
+                <p><em></em></p>
+                
+
+                                <h4>Type</h4>
+                integer
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_image_height" name="property_image_height" class="anchor"></a>
+            <article class="property">
+                <h3 class="protected ">$image_height</h3>
+                <pre class="signature">$image_height : integer</pre>
+                <p><em></em></p>
+                
+
+                                <h4>Type</h4>
+                integer
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_image_type" name="property_image_type" class="anchor"></a>
+            <article class="property">
+                <h3 class="protected ">$image_type</h3>
+                <pre class="signature">$image_type : integer</pre>
+                <p><em>image format of source</em></p>
+                
+
+                                <h4>Type</h4>
+                integer
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_thumbnail_height" name="property_thumbnail_height" class="anchor"></a>
+            <article class="property">
+                <h3 class="protected ">$thumbnail_height</h3>
+                <pre class="signature">$thumbnail_height : integer</pre>
+                <p><em></em></p>
+                
+
+                                <h4>Type</h4>
+                integer
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_thumbnail_width" name="property_thumbnail_width" class="anchor"></a>
+            <article class="property">
+                <h3 class="protected ">$thumbnail_width</h3>
+                <pre class="signature">$thumbnail_width : integer</pre>
+                <p><em></em></p>
+                
+
+                                <h4>Type</h4>
+                integer
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_thumbnail_type" name="property_thumbnail_type" class="anchor"></a>
+            <article class="property">
+                <h3 class="protected ">$thumbnail_type</h3>
+                <pre class="signature">$thumbnail_type : integer</pre>
+                <p><em>image format of the thumbnail</em></p>
+                
+
+                                <h4>Type</h4>
+                integer
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_image" name="property_image" class="anchor"></a>
+            <article class="property">
+                <h3 class="protected ">$image</h3>
+                <pre class="signature">$image : resource</pre>
+                <p><em></em></p>
+                
+
+                                <h4>Type</h4>
+                resource
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_thumbnail" name="property_thumbnail" class="anchor"></a>
+            <article class="property">
+                <h3 class="protected ">$thumbnail</h3>
+                <pre class="signature">$thumbnail : resource</pre>
+                <p><em></em></p>
+                
+
+                                <h4>Type</h4>
+                resource
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                            
+                                    <a id="methods" name="methods"></a>
+            <div class="row-fluid">
+                <div class="span8 content class"><h2>Methods</h2></div>
+                <aside class="span4 detailsbar"></aside>
+            </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method___construct" name="method___construct" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">__construct()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">__construct(string  <span class="argument">$file = &#039;&#039;</span>) : void</pre>
+                <p><em>Constructor</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$file </td>
+                                <td><p>path/filename of picture or stream from a DB field</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                                                            <dt>Uses</dt>
+                                                                <dd>$image_path</dd>
+                                                </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_setOutputFormat" name="method_setOutputFormat" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">setOutputFormat()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">setOutputFormat(string  <span class="argument">$format = &#039;png&#039;</span>) : void</pre>
+                <p><em>sets the output type of the thumbnail</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$format </td>
+                                <td><p>gif, jpg, png, wbmp</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                                                            <dt>Uses</dt>
+                                                                <dd>$thumbnail_type</dd>
+                                            <dd>$formats</dd>
+                                                </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_setMaxHeight" name="method_setMaxHeight" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">setMaxHeight()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">setMaxHeight(integer  <span class="argument">$height</span>) : boolean</pre>
+                <p><em>sets the max. height of the thumbnail</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>integer</td>
+                                <td>$height </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    boolean
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                                                            <dt>Uses</dt>
+                                                                <dd>readSourceImageData()</dd>
+                                            <dd>$image_height</dd>
+                                            <dd>$thumb_max_height</dd>
+                                                </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_setMaxWidth" name="method_setMaxWidth" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">setMaxWidth()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">setMaxWidth(integer  <span class="argument">$width</span>) : boolean</pre>
+                <p><em>sets the max. width of the thumbnail</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>integer</td>
+                                <td>$width </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    boolean
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                                                            <dt>Uses</dt>
+                                                                <dd>readSourceImageData()</dd>
+                                            <dd>$image_width</dd>
+                                            <dd>$thumb_max_width</dd>
+                                                </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_setMaxSize" name="method_setMaxSize" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">setMaxSize()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">setMaxSize(integer  <span class="argument">$width</span>, integer  <span class="argument">$height</span>) : boolean</pre>
+                <p><em>sets the max. width and height of the thumbnail</em></p>
+                <p>passes values to the functions setMaxHeight() and setMaxWidth()</p>
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>integer</td>
+                                <td>$width </td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td>integer</td>
+                                <td>$height </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    boolean
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                                                            <dt>Uses</dt>
+                                                                <dd>setMaxHeight()</dd>
+                                            <dd>setMaxWidth()</dd>
+                                                </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_setQualityOutput" name="method_setQualityOutput" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">setQualityOutput()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">setQualityOutput(boolean  <span class="argument">$boolean = TRUE</span>) : void</pre>
+                <p><em>whether to create thumbs fast or with good quality</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>boolean</td>
+                                <td>$boolean </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                                                            <dt>Uses</dt>
+                                                                <dd>$quality_thumb</dd>
+                                                </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_outputThumbnail" name="method_outputThumbnail" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">outputThumbnail()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">outputThumbnail(string  <span class="argument">$format = &#039;png&#039;</span>, integer  <span class="argument">$quality = 75</span>) : void</pre>
+                <p><em>outputs the thumbnail to the browser</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$format </td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td>integer</td>
+                                <td>$quality </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                                                            <dt>Uses</dt>
+                                                                <dd>setOutputFormat()</dd>
+                                            <dd>createThumbnail()</dd>
+                                            <dd>$thumbnail_type</dd>
+                                            <dd>$thumbnail</dd>
+                                                </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_returnThumbnail" name="method_returnThumbnail" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">returnThumbnail()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">returnThumbnail() : mixed</pre>
+                <p><em>returns the variable with the thumbnail image</em></p>
+                
+
+                
+                
+                                    <h4>Returns</h4>
+                    mixed
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                                                            <dt>Uses</dt>
+                                                                <dd>setOutputFormat()</dd>
+                                            <dd>createThumbnail()</dd>
+                                            <dd>$thumbnail</dd>
+                                                </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getThumbHeight" name="method_getThumbHeight" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">getThumbHeight()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getThumbHeight() : integer</pre>
+                <p><em>returns the height of the thumbnail</em></p>
+                
+
+                
+                
+                                    <h4>Returns</h4>
+                    integer
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                                                            <dt>Uses</dt>
+                                                                <dd>$thumbnail_height</dd>
+                                                </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getThumbWidth" name="method_getThumbWidth" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">getThumbWidth()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getThumbWidth() : integer</pre>
+                <p><em>returns the width of the thumbnail</em></p>
+                
+
+                
+                
+                                    <h4>Returns</h4>
+                    integer
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                                                            <dt>Uses</dt>
+                                                                <dd>$thumbnail_width</dd>
+                                                </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getPictureName" name="method_getPictureName" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">getPictureName()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getPictureName() : integer</pre>
+                <p><em>returns the width of the thumbnail</em></p>
+                
+
+                
+                
+                                    <h4>Returns</h4>
+                    integer
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                                                            <dt>Uses</dt>
+                                                                <dd>$thumbnail_width</dd>
+                                                </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_readSourceImageData" name="method_readSourceImageData" class="anchor"></a>
+            <article class="method">
+                <h3 class="protected ">readSourceImageData()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">readSourceImageData() : void</pre>
+                <p><em>reads metadata of the source image</em></p>
+                
+
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                                                            <dt>Uses</dt>
+                                                                <dd>$image_width</dd>
+                                            <dd>$image_height</dd>
+                                            <dd>$image_type</dd>
+                                            <dd>$formats</dd>
+                                                </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_readSourceImage" name="method_readSourceImage" class="anchor"></a>
+            <article class="method">
+                <h3 class="protected ">readSourceImage()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">readSourceImage() : void</pre>
+                <p><em>reads the source image into a variable</em></p>
+                
+
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                                                            <dt>Uses</dt>
+                                                                <dd>$image</dd>
+                                            <dd>readSourceImageData()</dd>
+                                            <dd>$image_type</dd>
+                                            <dd>$image_path</dd>
+                                                </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_setThumbnailSize" name="method_setThumbnailSize" class="anchor"></a>
+            <article class="method">
+                <h3 class="protected ">setThumbnailSize()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">setThumbnailSize() : void</pre>
+                <p><em>sets the actual width and height of the thumbnail based on the source image size and the max limits for the thumbnail</em></p>
+                
+
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                                                            <dt>Uses</dt>
+                                                                <dd>readSourceImageData()</dd>
+                                            <dd>$image_height</dd>
+                                            <dd>$thumb_max_height</dd>
+                                            <dd>$image_width</dd>
+                                            <dd>$thumb_max_width</dd>
+                                                </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_createThumbnail" name="method_createThumbnail" class="anchor"></a>
+            <article class="method">
+                <h3 class="protected ">createThumbnail()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">createThumbnail() : void</pre>
+                <p><em>creates the thumbnail and saves it to a variable</em></p>
+                
+
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                                                            <dt>Uses</dt>
+                                                                <dd>setThumbnailSize()</dd>
+                                            <dd>readSourceImage()</dd>
+                                            <dd>$thumbnail</dd>
+                                            <dd>$thumbnail_width</dd>
+                                            <dd>$thumbnail_height</dd>
+                                            <dd>$quality_thumb</dd>
+                                            <dd>$image</dd>
+                                            <dd>$image_width</dd>
+                                            <dd>$image_height</dd>
+                                                </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                                    </div>
+    </section>
+
+    <div id="source-view" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="source-view-label" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="source-view-label">class.Thumbnail.inc.php</h3>
+        </div>
+        <div class="modal-body">
+            <pre data-src="../files/plugins/thumbnail/class.Thumbnail.inc.php.txt" class="language-php line-numbers"></pre>
+        </div>
+    </div>
+
+    <footer class="row-fluid">
+        <section class="span10 offset2">
+            <section class="row-fluid">
+                <section class="span10 offset1">
+                    <section class="row-fluid footer-sections">
+                        <section class="span4">
+                                                        <h1><i class="icon-code"></i></h1>
+                            <div>
+                                <ul>
+                                                                            <li><a href="../namespaces/SlightPHP.html">\SlightPHP</a></li>
+                                                                    </ul>
+                            </div>
+                        </section>
+                        <section class="span4">
+                                                        <h1><i class="icon-bar-chart"></i></h1>
+                            <div>
+                                <ul>
+                                    <li><a href="../graphs/class.html">Class Hierarchy Diagram</a></li>
+                                </ul>
+                            </div>
+                        </section>
+                        <section class="span4">
+                                                        <h1><i class="icon-pushpin"></i></h1>
+                            <div>
+                                <ul>
+                                    <li><a href="../reports/errors.html">Errors</a></li>
+                                    <li><a href="../reports/markers.html">Markers</a></li>
+                                </ul>
+                            </div>
+                        </section>
+                    </section>
+                </section>
+            </section>
+            <section class="row-fluid">
+                <section class="span10 offset1">
+                    <hr />
+                    Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and authored
+                    on March 4th, 2016 at 11:58.
+                </section>
+            </section>
+        </section>
+    </footer>
+</div>
+
+</body>
+</html>
