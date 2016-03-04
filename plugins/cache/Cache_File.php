@@ -17,6 +17,7 @@
  * @package SlightPHP
  * @subpackage SCache
  */
+namespace SlightPHP;
 class Cache_File extends CacheObject{
 	/**
 	 * @var string $dir cache dir
@@ -125,4 +126,3 @@ class Cache_File extends CacheObject{
 		return $realFile;
 	}
 }
-?>

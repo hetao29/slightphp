@@ -17,6 +17,7 @@
 /**
  * @package SlightPHP \STpl
  */
+namespace SlightPHP;
 require_once(dirname(__FILE__)."/Tpl.modifier.php");
 require_once(dirname(__FILE__)."/Tpl.function.php");
 class Tpl{

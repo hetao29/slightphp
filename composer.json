@@ -14,8 +14,9 @@
         }
     ],
 	"autoload":{
+		"files":["SlightPHP.php"],
 		"psr-4":{
-			"":["./","plugins/"]
+			"":["plugins/"]
 		}
 	}
 }

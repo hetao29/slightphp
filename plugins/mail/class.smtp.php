@@ -33,6 +33,7 @@
  * @author Chris Ryan
  */
 
+namespace SlightPHP;
 class SMTP {
   /**
    *  SMTP server port
@@ -1108,6 +1109,3 @@ class SMTP {
   }
 
 }
-
-
- ?>

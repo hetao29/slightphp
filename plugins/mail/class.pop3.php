@@ -46,6 +46,7 @@
  * @author Richard Davey
  */
 
+namespace SlightPHP;
 class POP3 {
   /**
    * Default POP3 port
@@ -391,4 +392,3 @@ class POP3 {
 
   //  End of class
 }
-?>

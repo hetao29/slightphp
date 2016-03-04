@@ -21,7 +21,7 @@ require_once(SLIGHTPHP_PLUGINS_DIR."/db/Db.php");
 /**
  * @package SlightPHP
  */
-class SDb extends Db{
+class SDb extends SlightPHP\Db{
 	private static $_config;
 
 	static function setConfigFile($file){

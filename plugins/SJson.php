@@ -14,61 +14,30 @@
 +-----------------------------------------------------------------------+
 }}}*/
 
-if(function_exists("json_encode")):
+/**
+ * @package SlightPHP
+ */
+class SJson{
 	/**
-	 * @package SlightPHP
+	 * encode object to json
+	 *
+	 * @param    mixed  $object
+	 * @return   string  json
+	 * @access   public
 	 */
-	class SJson{
-	   /**
-		* encode object to json
-		*
-		* @param    mixed  $object
-		* @return   string  json
-		* @access   public
-		*/
-		public static function encode($object){
-			return json_encode($object);
-		}
-		/**
-		 * decode string to json object
-		 *
-		 * @param	string $str
-		 * @return mixed object
-		 * @access public
-		 */
-
-		public static function decode($str,$assoc=false){
-			return json_decode($str,$assoc);
-		}
+	public static function encode($object,$options = 0){
+		return json_encode($object, $options);
 	}
+	/**
+	 * decode string to json object
+	 *
+	 * @param	string $str
+	 * @return mixed object
+	 * @access public
+	 */
 
-else:
-	if(!defined("SLIGHTPHP_PLUGINS_DIR"))define("SLIGHTPHP_PLUGINS_DIR",dirname(__FILE__));
-	require_once(SLIGHTPHP_PLUGINS_DIR."/json/json.php");
-	class SJson{
-	   /**
-		* encode object to json
-		*
-		* @param    mixed  $object
-		* @return   string  json
-		* @access   public
-		*/
-		public static function encode($object){
-			$json = new Json;
-			return $json->encode($object);
-		}
-		/**
-		 * decode string to json object
-		 *
-		 * @param	string $str
-		 * @return mixed object
-		 * @access public
-		 */
-
-		public static function decode($str,$assoc=false){
-			$json = new Json;
-			return $json->decode($str);
-		}
+	public static function decode($str, $options = 0){
+		return json_decode($str,$options);
 	}
-endif;
-?>
+}
+

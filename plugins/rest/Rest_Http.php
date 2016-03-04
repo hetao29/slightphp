@@ -18,6 +18,7 @@
  * @package SlightPHP
  * @subpackage SRest
  */
+namespace SlightPHP;
 class Rest_Http{
 	static private $_servers	=	array();
 	static private $_serverCt	=	0;

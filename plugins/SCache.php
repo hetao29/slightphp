@@ -20,7 +20,7 @@
 if(!defined("SLIGHTPHP_PLUGINS_DIR"))define("SLIGHTPHP_PLUGINS_DIR",dirname(__FILE__));
 require_once(SLIGHTPHP_PLUGINS_DIR."/SConfig.php");
 require_once(SLIGHTPHP_PLUGINS_DIR."/cache/Cache_MemCache.php");
-class SCache extends Cache_MemCache{
+class SCache extends \SlightPHP\Cache_MemCache{
 	public function __construct(){
 		parent::__construct();
 	}

@@ -19,7 +19,7 @@ require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."sphinx/sphinxapi.php");
 /**
  * @package SlightPHP
  */
-class SSphinx extends SphinxClient{
+class SSphinx extends SlightPHP\SphinxClient{
 	private $_page=1;
 
 	function setPage($page){
@@ -31,4 +31,3 @@ class SSphinx extends SphinxClient{
 		$this->SetLimits (($this->_page-1)*$this->_limit,$this->_limit);
 	}
 }
-?>

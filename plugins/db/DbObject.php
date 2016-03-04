@@ -18,6 +18,7 @@
  * @package SlightPHP
  * @subpackage SDb
  */
+namespace SlightPHP;
 abstract class DbObject{
 	abstract function init($params=array());
 	abstract function setCount($count);
@@ -33,4 +34,3 @@ abstract class DbObject{
 	abstract function execute($sql);
 
 }
-?>

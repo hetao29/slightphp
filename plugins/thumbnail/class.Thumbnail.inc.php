@@ -28,6 +28,7 @@
 * @package Thumbnail
 * @version 2.001
 */
+namespace SlightPHP;
 class Thumbnail {
 
 	/*-------------------*/
@@ -448,4 +449,3 @@ class Thumbnail {
 		return (string) $this->image_path;
 	} // end function
 } // end class Thumbnail
-?>

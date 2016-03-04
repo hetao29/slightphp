@@ -43,6 +43,7 @@
  * SimpleCaptcha class
  *
  */
+namespace SlightPHP;
 class SimpleCaptcha {
 
     /** Width of the image */
@@ -443,20 +444,3 @@ class SimpleCaptcha {
         imagedestroy($this->im);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-?>

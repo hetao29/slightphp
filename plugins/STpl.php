@@ -19,7 +19,7 @@ require_once(SLIGHTPHP_PLUGINS_DIR."/tpl/Tpl.php");
 /**
  * @package SlightPHP
  */
-class STpl extends Tpl{
+class STpl extends SlightPHP\Tpl{
 	static $engine;
 	/**
 	 * @deprecated , 新版本请使用 display

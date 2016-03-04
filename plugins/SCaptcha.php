@@ -19,7 +19,7 @@ require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."captcha/captcha.php");
 /**
  * @package SlightPHP
  */
-class SCaptcha extends SimpleCaptcha{
+class SCaptcha extends SlightPHP\SimpleCaptcha{
 	static $session_prefix="SCaptcha_";
 	function __construct(){
 		$this->wordsFile = "";
@@ -52,4 +52,3 @@ class SCaptcha extends SimpleCaptcha{
 		
 
 }
-?>

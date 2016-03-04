@@ -17,7 +17,7 @@
  * @package SlightPHP
  * @subpackage SCache
  */
-
+namespace SlightPHP;
 abstract class CacheObject{
 	abstract function init($params=array());
 	abstract function set($key,$value,$timestamp=-1);
@@ -25,4 +25,3 @@ abstract class CacheObject{
 	abstract function del($key);
 
 }
-?>

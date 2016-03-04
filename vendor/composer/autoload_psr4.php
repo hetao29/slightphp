@@ -6,5 +6,5 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    '' => array($baseDir . '/', $baseDir . '/plugins'),
+    '' => array($baseDir . '/plugins'),
 );

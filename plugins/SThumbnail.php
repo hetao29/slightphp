@@ -20,7 +20,7 @@ require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."thumbnail/class.WMThumbnail.
 /**
  * @package SlightPHP
  */
-class SThumbnail extends WMThumbnail{
+class SThumbnail extends SlightPHP\WMThumbnail{
 	/**
 	 * 生成文件
 	 * 
@@ -53,4 +53,3 @@ class SThumbnail extends WMThumbnail{
 		return $result;
 	}
 }
-?>

@@ -19,7 +19,7 @@
 if(!defined("SLIGHTPHP_PLUGINS_DIR"))define("SLIGHTPHP_PLUGINS_DIR",dirname(__FILE__));
 require_once(SLIGHTPHP_PLUGINS_DIR."/SConfig.php");
 require_once(SLIGHTPHP_PLUGINS_DIR."/rest/Rest_Http.php");
-class SRestClient extends Rest_Http{
+class SRestClient extends SlightPHP\Rest_Http{
 	private static $_config;
 	static function setConfigFile($file){
 		self::$_config = new SConfig;
