@@ -1,7 +1,12 @@
 # SlightPHP 高效的PHP敏捷开发框架
 
-### v3.0支持composer
-  - 安装方法 ，新增 composer.json，然后 composer install就可以了
+### v3.0支持composer,同时需要php5.3及以上
+  - 安装方法一 ，执行下面的命令
+```bash
+composer require "hetao29/slightphp:dev-master"
+```
+
+  - 安装方法二 ，新增 composer.json，然后 composer install就可以了
 ```json
 {
     "require": {
@@ -9,6 +14,12 @@
     }
 }
 ```
+
+  - 优化，默认我们已经做了加载优化，你也可以手动执行一次
+```bash
+composer dump-autoload --optimize
+```
+
   - v2.0升级方法 ，加载SlightPHP.php改成如下方法就可以了，自定义slightphp_path的路径
 ```php
 <?php
@@ -16,7 +27,7 @@
 require_once($slightphp_path."/vendor/autoload.php");
 
 ```
-  - 老版本请大家使用v2.0版本
+  - v2.0版本支持php4,php5,php7等主要版本
   
 ###pecl 模块支持php7
   - 最新更新，支持php7模块
