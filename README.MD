@@ -25,8 +25,8 @@ composer dump-autoload --optimize
 <?php
 //require_once($slightphp_path."/SlightPHP.php"); #不用这个方法了
 require_once($slightphp_path."/vendor/autoload.php");
-
 ```
+
   - v2.0版本支持php4,php5,php7等主要版本
   
 ###pecl 模块支持php7
