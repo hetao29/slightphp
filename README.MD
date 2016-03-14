@@ -31,9 +31,13 @@ require_once($slightphp_path."/vendor/autoload.php");
   
 ### pecl 模块支持php7
   - 最新更新，支持php7模块
+  - 支持composer
+  - 更简单方便的命令行执行模式
   
 ### 主要特点：
   - 独有的"框架"与"plugins"分离方式，与现在主流框架完全不同，把核心框架与其它功能独立分开，灵活性大，耦合度小，很方便移植 
+  - v3.0支持composer管理和加载
+  - 支持命令行模式,只需要在执行代码里时定义 $_SERVER['REQUEST_URI'] 的值，就可以简单通过命令行执行框架代码和逻辑
   - 框架本身核心代码非常小，速度快效率极高，更支持php模块方式加载（请编译pecl目录下的源码，或者直接编译到php里）
   - 框架支持nginx,lighttpd,apache,iis等web服务器
   - 插件SDb 支持mysql,mysqli,pdo,mssql,oracle等主流数据库，同时更支持数据库读写库分离，特适合大流量网站
