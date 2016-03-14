@@ -52,10 +52,17 @@ require_once($slightphp_path."/vendor/autoload.php");
 
 ```php
 <?php
+//加载方式1，直接加载框架
 require_once("SlightPHP.php");
-//或者你也可以用动态库方式 dl("slightphp.so");
+
+//加载方式2，使用扩展，或者直接编译进PHP也可以
+//dl("slightphp.so");
 //或者在php.ini里增加（如果不支持dl的话）
 //extension = slightphp.so
+
+//加载方式3，使用composer的autoload
+//require_once("vendor/autoload.php");
+
 SlightPHP::run();
 ?>
 ```
