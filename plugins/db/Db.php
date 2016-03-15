@@ -458,7 +458,7 @@ class Db{
 							\PDO::ATTR_PERSISTENT => true
 						)
 					);
-				}catch(Exception $e){
+				}catch(\Exception $e){
 					if(defined("DEBUG")){
 						trigger_error("CONNECT DATABASE ERROR ( ".$e->getMessage()." ) ",E_USER_WARNING);
 					}else{
