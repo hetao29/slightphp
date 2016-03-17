@@ -55,7 +55,7 @@ class SError{
 		"30719"=>"E_ALL",
 		);
 
-	public static function exception_handler(Exception $e){
+	public static function exception_handler($e){//PHP7 Throwable
 		if(SError::$CONSOLE)		echo SError::getErrorHtml($e->getTrace(),$e);
 		if(SError::$LOG){
 			$log = SError::getErrorText($e->getTrace(),$e);
@@ -67,7 +67,6 @@ class SError{
 	public static function fatal_handler() {
 		$error = error_get_last();
 		if($error != NULL){
-print_r($error);
 			if(SError::$CONSOLE)		echo SError::getFatalHtml($error);
 			if(SError::$LOG){
 				$log = SError::getFatalText($error);
