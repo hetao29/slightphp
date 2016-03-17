@@ -112,15 +112,15 @@ class SConfig{
 			foreach($matches as $m){
 				if(empty($m[1]))continue;
 				$_data = self::_getKV($m[2]);
-				if(!isset($result->$m[1])){
+				if(!isset($result->{$m[1]})){
 					if(!is_array($result)){
-						$result->$m[1] = $_data;
+						$result->{$m[1]} = $_data;
 					}
 				}else{
-					if(is_array($result->$m[1])){
-						array_push($result->$m[1],$_data);
+					if(is_array($result->{$m[1]})){
+						array_push($result->{$m[1]},$_data);
 					}else{
-						$result->$m[1] = array($result->$m[1],$_data);
+						$result->{$m[1]} = array($result->{$m[1]},$_data);
 					}
 				}
 				self::_split($m[2], $_data);
