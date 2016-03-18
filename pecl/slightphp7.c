@@ -357,9 +357,9 @@ PHP_METHOD(slightphp, run)
 					php_url *resource=NULL;
 					resource = php_url_parse(Z_STRVAL_P(token));
 					if(resource != NULL && resource->path != NULL){
-						ZVAL_STRING(path,resource->path,1);
+						ZVAL_STRING(path,resource->path);
 					}else{
-						path = *token;
+						path = token;
 					}
 					if (resource) {
 						php_url_free(resource);	
