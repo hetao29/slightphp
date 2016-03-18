@@ -22,6 +22,7 @@
 #include "php.h"
 #include <regex.h>
 #include "ext/standard/info.h"
+#include "ext/standard/url.h"
 #include "php_slightphp.h"
 
 
@@ -324,15 +325,25 @@ PHP_METHOD(slightphp, run)
 			int s = Z_STRLEN_P(path);
 			if(s==0){
 				zend_is_auto_global("_SERVER", sizeof("_SERVER") - 1 TSRMLS_CC);
-				if(zend_hash_find(Z_ARRVAL_P(PG(http_globals)[TRACK_VARS_GET]), 
+				if(zend_hash_find(Z_ARRVAL_P(PG(http_globals)[TRACK_VARS_SERVER]), 
 							"PATH_INFO", sizeof("PATH_INFO"), (void **) &token) == SUCCESS
 				){
 					path = *token;
 				}else if(zend_hash_find(Z_ARRVAL_P(PG(http_globals)[TRACK_VARS_SERVER]), 
-							"PATH_INFO", sizeof("PATH_INFO"), (void **) &token) == SUCCESS
+							"REQUEST_URI", sizeof("REQUEST_URI"), (void **) &token) == SUCCESS
 				){
-					path = *token;
+					php_url *resource=NULL;
+					resource = php_url_parse(Z_STRVAL_PP(token));
+					if(resource != NULL && resource->path != NULL){
+						ZVAL_STRING(path,resource->path,1);
+					}else{
+						path = *token;
+					}
+					if (resource) {
+						php_url_free(resource);	
+					}
 				}
+
 			}
 		}
 		//}}}
@@ -646,7 +657,7 @@ PHP_MINFO_FUNCTION(slightphp)
 {
 	php_info_print_table_start();
 	php_info_print_table_colspan_header(2,"SlightPHP Framework");
-	php_info_print_table_row(2, "Version", "1.1 stable(2015-12-10)" );
+	php_info_print_table_row(2, "Version", "3.0 stable(2016-3-18)" );
 	php_info_print_table_row(2, "Authors", "hetao@hetao.name" );
 	php_info_print_table_row(2, "Supports", "https://github.com/hetao29/slightphp" );
 	php_info_print_table_end();

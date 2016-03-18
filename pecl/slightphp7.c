@@ -22,6 +22,7 @@
 #include "php.h"
 #include <regex.h>
 #include "ext/standard/info.h"
+#include "ext/standard/url.h"
 #include "php_slightphp7.h"
 
 static void print_flat_hash(HashTable *ht) /* {{{ */
@@ -348,10 +349,21 @@ PHP_METHOD(slightphp, run)
 			zend_string *server = zend_string_init("_SERVER", sizeof("_SERVER") - 1, 0);
 			zend_is_auto_global(server);
 			zval *server_vars;
+			zval *token= NULL;
 			if ((server_vars = zend_hash_find(&EG(symbol_table), server)) != NULL && Z_TYPE_P(server_vars) == IS_ARRAY){
 				if((path = zend_hash_str_find(Z_ARRVAL_P(server_vars), "PATH_INFO", sizeof("PATH_INFO")-1))!=NULL && Z_TYPE_P(path) == IS_STRING) {
-				}else if((path = zend_hash_str_find(Z_ARRVAL_P(server_vars), "REQUEST_URI", sizeof("REQUEST_URI")-1))!=NULL && Z_TYPE_P(path) == IS_STRING) {
+				}else if((token = zend_hash_str_find(Z_ARRVAL_P(server_vars), "REQUEST_URI", sizeof("REQUEST_URI")-1))!=NULL && Z_TYPE_P(path) == IS_STRING) {
 				}
+					php_url *resource=NULL;
+					resource = php_url_parse(Z_STRVAL_P(token));
+					if(resource != NULL && resource->path != NULL){
+						ZVAL_STRING(path,resource->path,1);
+					}else{
+						path = *token;
+					}
+					if (resource) {
+						php_url_free(resource);	
+					}
 			}
 
 
@@ -677,7 +689,7 @@ PHP_MINFO_FUNCTION(slightphp)
 {
 	php_info_print_table_start();
 	php_info_print_table_colspan_header(2,"SlightPHP Framework");
-	php_info_print_table_row(2, "Version", "1.1 stable(2015-12-10)" );
+	php_info_print_table_row(2, "Version", "3.0 stable(2016-3-18)" );
 	php_info_print_table_row(2, "Authors", "hetao@hetao.name" );
 	php_info_print_table_row(2, "Supports", "https://github.com/hetao29/slightphp" );
 	php_info_print_table_end();
