@@ -1,7 +1,7 @@
 <?php
 
 //
-// $Id$
+// $Id: sphinxapi.php 2758 2011-04-04 11:10:44Z kevg $
 //
 
 //
@@ -30,7 +30,7 @@ define ( "SEARCHD_COMMAND_STATUS",		5 );
 define ( "SEARCHD_COMMAND_FLUSHATTRS",	7 );
 
 /// current client-side command implementation versions
-define ( "VER_COMMAND_SEARCH",		0x119 );
+define ( "VER_COMMAND_SEARCH",		0x118 );
 define ( "VER_COMMAND_EXCERPT",		0x103 );
 define ( "VER_COMMAND_UPDATE",		0x102 );
 define ( "VER_COMMAND_KEYWORDS",	0x100 );
@@ -62,8 +62,7 @@ define ( "SPH_RANK_PROXIMITY",		4 );
 define ( "SPH_RANK_MATCHANY",		5 );
 define ( "SPH_RANK_FIELDMASK",		6 );
 define ( "SPH_RANK_SPH04",			7 );
-define ( "SPH_RANK_EXPR",			8 );
-define ( "SPH_RANK_TOTAL",			9 );
+define ( "SPH_RANK_TOTAL",			8 );
 
 /// known sort modes
 define ( "SPH_SORT_RELEVANCE",		0 );
@@ -86,8 +85,7 @@ define ( "SPH_ATTR_BOOL",			4 );
 define ( "SPH_ATTR_FLOAT",			5 );
 define ( "SPH_ATTR_BIGINT",			6 );
 define ( "SPH_ATTR_STRING",			7 );
-define ( "SPH_ATTR_MULTI",			0x40000001 );
-define ( "SPH_ATTR_MULTI64",			0x40000002 );
+define ( "SPH_ATTR_MULTI",			0x40000000 );
 
 /// known grouping functions
 define ( "SPH_GROUPBY_DAY",			0 );
@@ -408,7 +406,6 @@ class SphinxClient
 	var $_anchor;		///< geographical anchor point
 	var $_indexweights;	///< per-index weights
 	var $_ranker;		///< ranking mode (default is SPH_RANK_PROXIMITY_BM25)
-	var $_rankexpr;		///< ranking mode expression (for SPH_RANK_EXPR)
 	var $_maxquerytime;	///< max query time, milliseconds (default is 0, do not limit)
 	var $_fieldweights;	///< per-field-name weights
 	var $_overrides;	///< per-query attribute values overrides
@@ -428,7 +425,7 @@ class SphinxClient
 	/////////////////////////////////////////////////////////////////////////////
 
 	/// create a new client object and fill defaults
-	function SphinxClient ()
+	function __construct()
 	{
 		// per-client-object settings
 		$this->_host		= "localhost";
@@ -457,7 +454,6 @@ class SphinxClient
 		$this->_anchor		= array ();
 		$this->_indexweights= array ();
 		$this->_ranker		= SPH_RANK_PROXIMITY_BM25;
-		$this->_rankexpr	= "";
 		$this->_maxquerytime= 0;
 		$this->_fieldweights= array();
 		$this->_overrides 	= array();
@@ -740,12 +736,10 @@ class SphinxClient
 	}
 
 	/// set ranking mode
-	function SetRankingMode ( $ranker, $rankexpr="" )
+	function SetRankingMode ( $ranker )
 	{
 		assert ( $ranker>=0 && $ranker<SPH_RANK_TOTAL );
-		assert ( is_string($rankexpr) );
 		$this->_ranker = $ranker;
-		$this->_rankexpr = $rankexpr;
 	}
 
 	/// set matches sorting mode
@@ -988,10 +982,7 @@ class SphinxClient
 		$this->_MBPush ();
 
 		// build request
-		$req = pack ( "NNNN", $this->_offset, $this->_limit, $this->_mode, $this->_ranker );
-		if ( $this->_ranker==SPH_RANK_EXPR )
-			$req .= pack ( "N", strlen($this->_rankexpr) ) . $this->_rankexpr;
-		$req .= pack ( "N", $this->_sort ); // (deprecated) sort mode
+		$req = pack ( "NNNNN", $this->_offset, $this->_limit, $this->_mode, $this->_ranker, $this->_sort ); // mode and limits
 		$req .= pack ( "N", strlen($this->_sortby) ) . $this->_sortby;
 		$req .= pack ( "N", strlen($query) ) . $query; // query itself
 		$req .= pack ( "N", count($this->_weights) ); // weights
@@ -1244,7 +1235,7 @@ class SphinxClient
 
 					// handle everything else as unsigned ints
 					list(,$val) = unpack ( "N*", substr ( $response, $p, 4 ) ); $p += 4;
-					if ( $type==SPH_ATTR_MULTI )
+					if ( $type & SPH_ATTR_MULTI )
 					{
 						$attrvals[$attr] = array ();
 						$nvalues = $val;
@@ -1252,16 +1243,6 @@ class SphinxClient
 						{
 							list(,$val) = unpack ( "N*", substr ( $response, $p, 4 ) ); $p += 4;
 							$attrvals[$attr][] = sphFixUint($val);
-						}
-					} else if ( $type==SPH_ATTR_MULTI64 )
-					{
-						$attrvals[$attr] = array ();
-						$nvalues = $val;
-						while ( $nvalues>0 && $p<$max )
-						{
-							$val = sphUnpackU64 ( substr ( $response, $p, 8 ) ); $p += 8;
-							$attrvals[$attr][] = strval( $val ); // FIXME!!! sphFixUint returns MVA values as string so It to
-							$nvalues -= 2;
 						}
 					} else if ( $type==SPH_ATTR_STRING )
 					{
@@ -1707,5 +1688,5 @@ class SphinxClient
 }
 
 //
-// $Id$
+// $Id: sphinxapi.php 2758 2011-04-04 11:10:44Z kevg $
 //
