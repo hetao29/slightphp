@@ -67,7 +67,7 @@ class SError{
 	public static function fatal_handler() {
 		$error = error_get_last();
 		if($error != NULL){
-			$log = SError::getFatal($e->getTrace(),$e);
+			$log = SError::getFatal($error);
 			if(SError::$CONSOLE)		echo $log;
 			if(SError::$LOG){
 				if(!empty(SError::$LOGFILE)){
