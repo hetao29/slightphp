@@ -111,7 +111,7 @@ class Db{
 			}
 		}
 		$this->_key = $this->engine.":".$this->host.":".$this->user.":".$this->password.":".$this->database.":".$this->port;
-		if(!isset(Db::$_globals[$this->_key])) Db::$_globals[$this->_key] = "";
+		if(!isset(Db::$_globals[$this->_key])) Db::$_globals[$this->_key] = false;
 	}
 	/**
 	 * is count 
@@ -350,17 +350,20 @@ class Db{
 			}
 		}
 		//}}}
-		if(empty(Db::$_globals[$this->_key])){
-			$this->__connect($forceReconnect=true);
-		}
 		if(defined("DEBUG")){
 			trigger_error("{$this->engine} ( $sql )");
 		}
+		if(!Db::$_globals[$this->_key]){
+			if($this->__connect()===false){
+				return false;
+			}
+		}
 		if($this->engine=="mysql"){
 			$result = mysql_query($sql,Db::$_globals[$this->_key]);
-			if(!$result){
+			if($result===false){
 				$this->error['code']=mysql_errno(Db::$_globals[$this->_key]);
 				$this->error['msg']=mysql_error(Db::$_globals[$this->_key]);
+				unset(Db::$_globals[$this->_key]);
 			}elseif($sql_mode==2){//查询模式
 				$data=array();
 				while($row=mysql_fetch_array($result,MYSQL_ASSOC)){ $data[]=$row; }
@@ -376,6 +379,7 @@ class Db{
 			if(!$result){
 				$this->error['code']=Db::$_globals[$this->_key]->errno;
 				$this->error['msg'] =Db::$_globals[$this->_key]->error;
+				unset(Db::$_globals[$this->_key]);
 			}elseif($sql_mode==2){
 				$data=array();
 				while($row= $result->fetch_assoc()){$data[]=$row;};
@@ -387,26 +391,23 @@ class Db{
 			}
 		}else{
 			$stmt = Db::$_globals[$this->_key]->prepare($sql);
-			if(!$stmt){
-				$this->error['code']=Db::$_globals[$this->_key]->errorCode ();
-				$this->error['msg']=Db::$_globals[$this->_key]->errorInfo ();
-			}
-			if($stmt->execute ()){
-				if($sql_mode==2){
-					return $stmt->fetchAll (\PDO::FETCH_ASSOC );
-				}elseif($sql_mode==3){
-					return Db::$_globals[$this->_key]->lastInsertId();
-				}else{
-					return $stmt->rowCount();
+			if($stmt){
+				if($stmt->execute ()){
+					if($sql_mode==2){
+						return $stmt->fetchAll (\PDO::FETCH_ASSOC );
+					}elseif($sql_mode==3){
+						return Db::$_globals[$this->_key]->lastInsertId();
+					}else{
+						return $stmt->rowCount();
+					}
 				}
-			}else{
-				$this->error['code']=$stmt->errorCode ();
-				$this->error['msg']=$stmt->errorInfo ();
 			}
+			$this->error['code']=Db::$_globals[$this->_key]->errorCode ();
+			$this->error['msg']=Db::$_globals[$this->_key]->errorInfo ();
+			unset(Db::$_globals[$this->_key]);
+
 		}
-		if(defined("DEBUG")){
-			trigger_error("DB ERROR!!! ( ".var_export($this->error['msg'],true)." ), CODE( {$this->error['code']} )",E_USER_WARNING);
-		}
+		trigger_error("DB QUERY ERROR (".var_export($this->error['msg'],true)."), CODE({$this->error['code']}), SQL({$sql})",E_USER_WARNING);
 		return false;
 	}
 	/**
@@ -418,59 +419,56 @@ class Db{
 		return $this->__query($sql);
 	}
 
-	private function __connect($forceReconnect=false){
-		if(empty(Db::$_globals[$this->_key]) || $forceReconnect){
-			if(!empty(Db::$_globals[$this->_key])){
-				unset(Db::$_globals[$this->_key]);
+	private function __connect(){
+		if($this->engine=="mysql"){
+			Db::$_globals[$this->_key] = mysql_connect($this->host.":".$this->port,$this->user,$this->password,true);
+			if(!Db::$_globals[$this->_key]){
+				if(defined("DEBUG")){
+					trigger_error("CONNECT DATABASE ERROR ( ".mysql_error()." ) ",E_USER_WARNING);
+				}else{
+					trigger_error("CONNECT DATABASE ERROR!!!",E_USER_WARNING);
+				}
+				return false;
 			}
-			if($this->engine=="mysql"){
-				Db::$_globals[$this->_key] = mysql_connect($this->host.":".$this->port,$this->user,$this->password,true);
-				if(!Db::$_globals[$this->_key]){
-					if(defined("DEBUG")){
-						trigger_error("CONNECT DATABASE ERROR ( ".mysql_error()." ) ",E_USER_WARNING);
-					}else{
-						trigger_error("CONNECT DATABASE ERROR!!!",E_USER_WARNING);
-					}
-					return false;
+			if($this->database!=""){
+				mysql_select_db($this->database,Db::$_globals[$this->_key]);
+			}
+		}elseif($this->engine=="mysqli"){
+			Db::$_globals[$this->_key] = new \mysqli($this->host,$this->user,$this->password,$this->database,$this->port);
+			if(Db::$_globals[$this->_key]->connect_errno) {
+				if(defined("DEBUG")){
+					trigger_error("CONNECT DATABASE ERROR ( ".Db::$_globals[$this->_key]->connect_error." ) ",E_USER_WARNING);
+				}else{
+					trigger_error("CONNECT DATABASE ERROR!!!",E_USER_WARNING);
 				}
-				if($this->database!=""){
-					mysql_select_db($this->database,Db::$_globals[$this->_key]);
+				unset(Db::$_globals[$this->_key]);
+				return false;
+			}
+		}else{
+			$tmp = explode("_",$this->engine);
+			$driver =$tmp[1];
+			try{
+				Db::$_globals[$this->_key] = new \PDO(
+					$driver .":dbname=".$this->database.";host=".$this->host.";port=".$this->port,
+					$this->user,
+					$this->password,
+					array(
+						\PDO::ATTR_PERSISTENT => true
+					)
+				);
+			}catch(\Exception $e){
+				if(defined("DEBUG")){
+					trigger_error("CONNECT DATABASE ERROR ( ".$e->getMessage()." ) ",E_USER_WARNING);
+				}else{
+					trigger_error("CONNECT DATABASE ERROR!!!",E_USER_WARNING);
 				}
-			}elseif($this->engine=="mysqli"){
-				Db::$_globals[$this->_key] = new \mysqli($this->host,$this->user,$this->password,$this->database,$this->port);
-				if(Db::$_globals[$this->_key]->connect_errno) {
-					if(defined("DEBUG")){
-						trigger_error("CONNECT DATABASE ERROR ( ".Db::$_globals[$this->_key]->connect_error." ) ",E_USER_WARNING);
-					}else{
-						trigger_error("CONNECT DATABASE ERROR!!!",E_USER_WARNING);
-					}
-					return false;
-				}
-			}else{
-				$tmp = explode("_",$this->engine);
-				$driver =$tmp[1];
-				try{
-					Db::$_globals[$this->_key] = new \PDO(
-						$driver .":dbname=".$this->database.";host=".$this->host.";port=".$this->port,
-						$this->user,
-						$this->password,
-						array(
-							\PDO::ATTR_PERSISTENT => true
-						)
-					);
-				}catch(\Exception $e){
-					if(defined("DEBUG")){
-						trigger_error("CONNECT DATABASE ERROR ( ".$e->getMessage()." ) ",E_USER_WARNING);
-					}else{
-						trigger_error("CONNECT DATABASE ERROR!!!",E_USER_WARNING);
-					}
-					return false;
-				}
+				return false;
 			}
 		}
 		if(!empty($this->charset)){
 			$this->execute("SET NAMES ".$this->charset);
 		}
+		return true;
 	}
 	private function __quote($condition,$split="AND"){
 		$condiStr = "";
