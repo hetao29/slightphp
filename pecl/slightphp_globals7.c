@@ -16,11 +16,11 @@ int debug(char*format,...){
 	TSRMLS_FETCH();
 	zval *_debug_flag = zend_read_static_property(slightphp_ce_ptr,"_debug",sizeof("_debug")-1,1 );
 	convert_to_long(_debug_flag);
+	int size;
 	if(Z_LVAL_P(_debug_flag))
 	{
 		va_list args;
 		char *buffer;
-		int size;
 		TSRMLS_FETCH();
 
 		va_start(args, format);
@@ -31,6 +31,7 @@ int debug(char*format,...){
 		va_end(args);
 	}
 	zval_dtor(_debug_flag);
+	return size;
 }
 
 
@@ -44,7 +45,6 @@ int slightphp_load(zval*appDir,zval*zone,zval*class_name TSRMLS_DC){
 			DEFAULT_SLASH,
 			Z_STRVAL_P(class_name)
 		);
-	debug("%s",inc_filename);
 	zval file_name;
 	ZVAL_STRING(&file_name,inc_filename);
 	efree(inc_filename);
@@ -61,10 +61,8 @@ int slightphp_load(zval*appDir,zval*zone,zval*class_name TSRMLS_DC){
 	return FAILURE;
 }
 int slightphp_loadFile(char*file_name TSRMLS_DC){
-	int dummy = 1;
 	zend_file_handle file_handle;
 	int ret;
-	//debug("file[%s] not exists",file_name);
 
 	if(zend_stream_open(file_name, &file_handle )==SUCCESS){;
 		if (!file_handle.opened_path) {
@@ -87,10 +85,14 @@ int slightphp_run(zval*zone,zval*class_name,zval*method,zval*return_value, int p
 	zval object;
 
 	char *real_classname;
-	spprintf(&real_classname,0,"%s_%s",Z_STRVAL_P(zone),Z_STRVAL_P(class_name));
+	spprintf(&real_classname,0,"%s_%s",
+			Z_STRVAL_P(zone),
+			Z_STRVAL_P(class_name)
+			);
 
-	zval real_classname_zval;
-	ZVAL_STRING(&real_classname_zval, real_classname);
+
+	zend_string * real_classname_zval = zend_string_init(real_classname, strlen(real_classname), 1);
+	zend_string * real_classname_check = zend_string_tolower(real_classname_zval);
 	efree(real_classname);
 
 	char *real_method;
@@ -101,12 +103,12 @@ int slightphp_run(zval*zone,zval*class_name,zval*method,zval*return_value, int p
 	efree(real_method);
 
 	zend_class_entry * ce = NULL;//, **pce;
-	ce = zend_hash_find_ptr(EG(class_table),Z_STR_P(&real_classname_zval));
+	ce = zend_hash_find_ptr(EG(class_table),real_classname_check);
+	zend_string_release(real_classname_check);
 	if(ce == NULL){
-		debug("class[%s] not exists",Z_STRVAL(real_classname_zval));
-		zval_dtor(&real_classname_zval);
+		debug("class[%s] not exists",ZSTR_VAL(real_classname_zval));
+		zend_string_release(real_classname_zval);
 		zval_dtor(&real_method_zval);
-		zval_dtor(&object);
 		return FAILURE;
 	} else {
 		object_init_ex(&object,ce);
@@ -122,14 +124,14 @@ int slightphp_run(zval*zone,zval*class_name,zval*method,zval*return_value, int p
 		}   
 		int r=call_user_function(NULL, &object, &real_method_zval, return_value, param_count, params );
 		if(r!=SUCCESS){
-			debug("method[%s] not exists in class[%s]",Z_STRVAL(real_method_zval),Z_STRVAL(real_classname_zval));
-			zval_dtor(&real_classname_zval);
+			debug("method[%s] not exists in class[%s]",Z_STRVAL(real_method_zval),ZSTR_VAL(real_classname_zval));
+		zend_string_release(real_classname_zval);
 			zval_dtor(&real_method_zval);
 			zval_dtor(&object);
 			return FAILURE;
 		}
 	}
-	zval_dtor(&real_classname_zval);
+	zend_string_release(real_classname_zval);
 	zval_dtor(&real_method_zval);
 	zval_dtor(&object);
 	return SUCCESS;

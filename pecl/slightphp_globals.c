@@ -12,24 +12,25 @@
   | Supports: http://www.slightphp.com                                    |
   +-----------------------------------------------------------------------+
   }}}*/
-int debug(char*format,...){
-		TSRMLS_FETCH();
+size_t debug(char*format,...){
+		//TSRMLS_FETCH();
+	size_t cc;
 		zval *_debug_flag = zend_read_static_property(slightphp_ce_ptr,"_debug",sizeof("_debug")-1,1 TSRMLS_CC);
 		convert_to_long(_debug_flag);
 		if(Z_LVAL_P(_debug_flag))
 		{
 				va_list args;
 				char *buffer;
-				int size;
-				TSRMLS_FETCH();
+				//TSRMLS_FETCH();
 
 				va_start(args, format);
-				size = vspprintf(&buffer, 0, format, args);
+				cc = vspprintf(&buffer, 0, format, args);
 				_php_error_log(0,buffer,NULL,NULL TSRMLS_CC);
 				zend_printf("<!--slightphp debug:%s-->",buffer);
 				efree(buffer);
 				va_end(args);
 		}
+		return (cc);
 }
 
 
