@@ -125,7 +125,7 @@ int slightphp_run(zval*zone,zval*class_name,zval*method,zval*return_value, int p
 		int r=call_user_function(NULL, &object, &real_method_zval, return_value, param_count, params );
 		if(r!=SUCCESS){
 			debug("method[%s] not exists in class[%s]",Z_STRVAL(real_method_zval),ZSTR_VAL(real_classname_zval));
-		zend_string_release(real_classname_zval);
+			zend_string_release(real_classname_zval);
 			zval_dtor(&real_method_zval);
 			zval_dtor(&object);
 			return FAILURE;

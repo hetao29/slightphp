@@ -284,17 +284,17 @@ RETURN_FALSE;
  */
 PHP_METHOD(slightphp, __construct)
 {
-		zend_class_entry * _this_ce;
-		zval * _this_zval;
+		//zend_class_entry * _this_ce;
+		//zval * _this_zval;
 
-		zval * version = NULL;
+		//zval * version = NULL;
 
-		if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|z/", &version) == FAILURE) {
-				return;
-		}
+		//if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|z/", &version) == FAILURE) {
+		//		return;
+		//}
 
-		_this_zval = getThis();
-		_this_ce = Z_OBJCE_P(_this_zval);
+		//_this_zval = getThis();
+		//_this_ce = Z_OBJCE_P(_this_zval);
 }
 /* }}} __construct */
 
@@ -390,7 +390,7 @@ PHP_METHOD(slightphp, run)
 				}
 				efree(regex);
 				//}}}
-				int n_elems = zend_hash_num_elements(Z_ARRVAL_P(path_array));
+				//int n_elems = zend_hash_num_elements(Z_ARRVAL_P(path_array));
 				if(zend_hash_index_find(Z_ARRVAL_P(path_array), 0, (void **)&token) != FAILURE) {
 						zone = *token;
 				}

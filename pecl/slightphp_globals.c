@@ -85,9 +85,15 @@ int slightphp_run(zval*zone,zval*class_name,zval*method,zval*return_value, int p
 		char *real_classname;
 		spprintf(&real_classname,0,"%s_%s",Z_STRVAL_P(zone),Z_STRVAL_P(class_name));
 
+		char *real_classname_lower = zend_str_tolower_dup(real_classname,strlen(real_classname));
+
 		zval real_classname_zval;
 		ZVAL_STRING(&real_classname_zval, real_classname, 1);
+
+		zval real_classname_check;
+		ZVAL_STRING(&real_classname_check, real_classname_lower, 1);
 		efree(real_classname);
+		efree(real_classname_lower);
 
 		char *real_method;
 		spprintf(&real_method,0,"page%s",Z_STRVAL_P(method));
@@ -97,8 +103,11 @@ int slightphp_run(zval*zone,zval*class_name,zval*method,zval*return_value, int p
 		efree(real_method);
 
 		zend_class_entry * ce = NULL, **pce;
-		if(zend_hash_find(EG(class_table),Z_STRVAL(real_classname_zval),Z_STRLEN(real_classname_zval)+1,(void **)&pce)==FAILURE){
+		if(zend_hash_find(EG(class_table),Z_STRVAL(real_classname_check),Z_STRLEN(real_classname_check)+1,(void **)&pce)==FAILURE){
 				debug("class[%s] not exists",Z_STRVAL(real_classname_zval));
+				zval_dtor(&real_classname_zval);
+				zval_dtor(&real_classname_check);
+				zval_dtor(&real_method_zval);
 				return FAILURE;
 		} else {
 
@@ -115,9 +124,12 @@ int slightphp_run(zval*zone,zval*class_name,zval*method,zval*return_value, int p
         		    	}           
 						zval_dtor(&tmp_method);
         		}   
-				zval_dtor(&c_ret);
 				int r=call_user_function(NULL, &object, &real_method_zval, return_value, param_count, params TSRMLS_CC);
-				zval_ptr_dtor(&object);
+				zval_dtor(object);
+				zval_dtor(&c_ret);
+				zval_dtor(&real_classname_zval);
+				zval_dtor(&real_classname_check);
+				zval_dtor(&real_method_zval);
 				if(r!=SUCCESS){
 						debug("method[%s] not exists in class[%s]",Z_STRVAL(real_method_zval),Z_STRVAL(real_classname_zval));
 						return FAILURE;
