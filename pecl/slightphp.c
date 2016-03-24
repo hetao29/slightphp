@@ -211,7 +211,7 @@ PHP_METHOD(slightphp, getZoneAlias)
 
 PHP_METHOD(slightphp, setDebug)
 {
-		int _debug;
+		long _debug=0;
 		if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &_debug) == FAILURE) {
 				RETURN_FALSE;
 		}
