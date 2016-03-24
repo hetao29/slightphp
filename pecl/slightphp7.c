@@ -214,7 +214,7 @@ PHP_METHOD(slightphp, getZoneAlias)
 
 PHP_METHOD(slightphp, setDebug)
 {
-	int _debug;
+	zend_long _debug;
 	if (zend_parse_parameters(ZEND_NUM_ARGS() , "l", &_debug) == FAILURE) {
 		RETURN_FALSE;
 	}
@@ -420,6 +420,13 @@ PHP_METHOD(slightphp, run)
 	if(slightphp_load(appDir,zone,page ) == SUCCESS){
 		if(slightphp_run(zone,page,entry,return_value,1,params )==SUCCESS){
 			zval_dtor(&path_array);
+			if(appDir)zval_dtor(appDir);
+			if(zone)zval_dtor(zone);
+			if(page)zval_dtor(page);
+			if(entry)zval_dtor(entry);
+			if(zoneAlias)zval_dtor(zoneAlias);
+			if(path)zval_dtor(path);
+			zval_dtor(params);
 			RETURN_ZVAL(return_value,1,0);
 		};
 	}

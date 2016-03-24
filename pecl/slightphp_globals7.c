@@ -16,7 +16,7 @@ int debug(char*format,...){
 	TSRMLS_FETCH();
 	zval *_debug_flag = zend_read_static_property(slightphp_ce_ptr,"_debug",sizeof("_debug")-1,1 );
 	convert_to_long(_debug_flag);
-	int size;
+	int size=0;
 	if(Z_LVAL_P(_debug_flag))
 	{
 		va_list args;
