@@ -1,5 +1,9 @@
 # SlightPHP 高效的PHP敏捷开发框架
 
+### v3.1更新如下
+  - 更新pecl，更好支持php7，php5
+  - 优化SDb,SRedis，增加错误连接重置，可以更好的支持WorkerMan
+
 ### v3.0支持composer,同时需要php5.3及以上
   - 安装方法一 ，执行下面的命令
 ```bash
