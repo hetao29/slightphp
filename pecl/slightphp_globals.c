@@ -119,7 +119,7 @@ int slightphp_run(zval*zone,zval*class_name,zval*method,zval*return_value, int p
         		if (ce->constructor) {
 						zval tmp_method;
         		        ZVAL_STRING(&tmp_method, ce->constructor->common.function_name, 1);
-        		        if(call_user_function(NULL, &object, &tmp_method, &c_ret, 0, NULL TSRMLS_CC)!=SUCCESS){
+        		        if(call_user_function(NULL, &object, &tmp_method, &c_ret, param_count, params TSRMLS_CC)!=SUCCESS){
 								php_error_docref(NULL TSRMLS_CC, E_ERROR, "Error calling constructor");
         		    	}           
 						zval_dtor(&tmp_method);

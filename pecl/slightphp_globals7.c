@@ -116,7 +116,7 @@ int slightphp_run(zval*zone,zval*class_name,zval*method,zval*return_value, int p
 			zval c_ret;
 			zval tmp_method;
 			ZVAL_STRING(&tmp_method, ZEND_CONSTRUCTOR_FUNC_NAME);
-			if(call_user_function(NULL, &object, &tmp_method, &c_ret, 0, NULL )!=SUCCESS){
+			if(call_user_function(NULL, &object, &tmp_method, &c_ret, param_count, params )!=SUCCESS){
 				php_error_docref(NULL , E_ERROR, "Error calling constructor");
 			}           
 			zval_dtor(&tmp_method);
