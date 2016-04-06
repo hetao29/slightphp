@@ -324,25 +324,48 @@ PHP_METHOD(slightphp, run)
 			path = zend_read_static_property(slightphp_ce_ptr,"pathInfo",sizeof("pathInfo")-1,1 TSRMLS_CC);
 			int s = Z_STRLEN_P(path);
 			if(s==0){
-				zend_is_auto_global("_SERVER", sizeof("_SERVER") - 1 TSRMLS_CC);
-				if(zend_hash_find(Z_ARRVAL_P(PG(http_globals)[TRACK_VARS_SERVER]), 
-							"PATH_INFO", sizeof("PATH_INFO"), (void **) &token) == SUCCESS
-				){
-					path = *token;
-				}else if(zend_hash_find(Z_ARRVAL_P(PG(http_globals)[TRACK_VARS_SERVER]), 
-							"REQUEST_URI", sizeof("REQUEST_URI"), (void **) &token) == SUCCESS
-				){
-					php_url *resource=NULL;
-					resource = php_url_parse(Z_STRVAL_PP(token));
-					if(resource != NULL && resource->path != NULL){
-						ZVAL_STRING(path,resource->path,1);
-					}else{
-						path = *token;
-					}
-					if (resource) {
-						php_url_free(resource);	
-					}
+				//zend_is_auto_global("_SERVER", sizeof("_SERVER") - 1 TSRMLS_CC);
+				if(PG(http_globals)[TRACK_VARS_SERVER]){
+						debug("LINE[%d]",__LINE__);
 				}
+				if(zend_is_auto_global(ZEND_STRL("_SERVER") TSRMLS_CC)){
+						debug("LINE[%d]",__LINE__);
+				}
+				//zend_print_flat_zval_r(PG(http_globals));
+				if(PG(http_globals)[TRACK_VARS_SERVER] || zend_is_auto_global(ZEND_STRL("_SERVER") TSRMLS_CC)){
+						debug("LINE[%d]",__LINE__);
+					if(zend_hash_find(Z_ARRVAL_P(PG(http_globals)[TRACK_VARS_SERVER]), 
+								"PATH_INFO", sizeof("PATH_INFO"), (void **) &token) == SUCCESS
+					  ){
+						debug("LINE[%d]",__LINE__);
+						path = *token;
+					}else if(zend_hash_find(Z_ARRVAL_P(PG(http_globals)[TRACK_VARS_SERVER]), 
+								"REQUEST_URI", sizeof("REQUEST_URI"), (void **) &token) == SUCCESS
+							){
+						debug("LINE[%d]",__LINE__);
+						php_url *resource=NULL;
+						resource = php_url_parse(Z_STRVAL_PP(token));
+						if(resource != NULL && resource->path != NULL){
+							ZVAL_STRING(path,resource->path,1);
+						}else{
+							path = *token;
+						}
+						if (resource) {
+							php_url_free(resource);	
+						}
+					}else{
+					if(zend_hash_find(&EG(symbol_table), 
+								"REQUEST_URI", sizeof("REQUEST_URI"), (void **) &token) == SUCCESS
+					  ){
+						debug("LINE[%d]",__LINE__);
+					  }else{
+						debug("LINE[%d]",__LINE__);
+					  }
+						debug("LINE[%d]",__LINE__);
+					}
+				}else{
+						debug("LINE[%d]",__LINE__);
+						}
 
 			}
 		}

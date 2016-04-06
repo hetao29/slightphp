@@ -14,7 +14,7 @@
   }}}*/
 int debug(char*format,...){
 		TSRMLS_FETCH();
-	int cc;
+		int cc=0;
 		zval *_debug_flag = zend_read_static_property(slightphp_ce_ptr,"_debug",sizeof("_debug")-1,1 TSRMLS_CC);
 		convert_to_long(_debug_flag);
 		if(Z_LVAL_P(_debug_flag))
@@ -30,7 +30,7 @@ int debug(char*format,...){
 				efree(buffer);
 				va_end(args);
 		}
-		return (cc);
+		return cc;
 }
 
 
