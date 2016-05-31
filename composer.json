@@ -1,0 +1,21 @@
+{
+    "name": "hetao29/slightphp",
+    "description": "SlightPHP PHP FrameWork",
+    "keywords": ["php", "framework", "slightphp"],
+    "homepage": "https://github.com/hetao29/slightphp",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "hetao",
+            "email": "hetao@hetao.name",
+            "homepage": "https://github.com/hetao29"
+        }
+    ],
+	"autoload":{
+		"files":["SlightPHP.php"],
+		"psr-4":{
+			"":["plugins/"]
+		}
+	}
+}

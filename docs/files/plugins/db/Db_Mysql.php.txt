@@ -18,6 +18,7 @@
  * @package SlightPHP
  * @subpackage SDb
  */
+namespace SlightPHP;
 class Db_Mysql extends DbObject{
 	/**
 	 * 
@@ -123,7 +124,7 @@ class Db_Mysql extends DbObject{
 	function setPage($page)
 	{
 		if(!is_numeric($page) || $page<1){$page=1;}
-		$this->page=$page;
+	$this->page=$page;
 	}
 	/**
 	 * page size
@@ -133,7 +134,7 @@ class Db_Mysql extends DbObject{
 	function setLimit($limit)
 	{
 		if(!is_numeric($limit) || $limit<0){$limit=0;}
-		$this->limit=$limit;
+	$this->limit=$limit;
 	}
 	/**
 	 * group by sql
@@ -170,54 +171,54 @@ class Db_Mysql extends DbObject{
 	 */
 	function select($table,$condition="",$item="*",$groupby="",$orderby="",$leftjoin=""){
 		if($item==""){$item="*";}
-		if(is_array($table)){
-			for($i=0;$i<count($table);$i++)
-			{
-				$tmp[]=trim($table[$i]);
-			}
-			$table=@implode(" , ",$tmp);
-		}else{
-			$table=trim($table);
+	if(is_array($table)){
+		for($i=0;$i<count($table);$i++)
+		{
+			$tmp[]=trim($table[$i]);
 		}
+		$table=@implode(" , ",$tmp);
+	}else{
+		$table=trim($table);
+	}
 
-		if(is_array($item)&&!empty($item)){
-			$item ="`".@implode("` , `",$item)."`";
+	if(is_array($item)&&!empty($item)){
+		$item ="`".@implode("` , `",$item)."`";
+	}
+	$condiStr = $this->__quote($condition);
+	if($condiStr!=""){
+		$condiStr=" WHERE ".$condiStr;
+	}
+	$join="";
+	if(is_array($leftjoin)){
+		foreach ($leftjoin as $key=>$value){
+			$join.=" LEFT JOIN $key ON $value ";
 		}
-		$condiStr = $this->__quote($condition);
-		if($condiStr!=""){
-			$condiStr=" WHERE ".$condiStr;
-		}
-		$join="";
-		if(is_array($leftjoin)){
-			foreach ($leftjoin as $key=>$value){
-				$join.=" LEFT JOIN $key ON $value ";
-			}
-		}
+	}
 
-		$this->groupby  =$groupby!=""?$groupby:$this->groupby;
-		$this->orderby  =$orderby!=""?$orderby:$this->orderby;
-		$orderby_sql="";
-		$orderby_sql_tmp = array();
-		if(is_array($orderby)){
-			foreach($orderby as $key=>$value){
-				if(!is_numeric($key)){
-					$orderby_sql_tmp[]=$key." ".$value;
-				}
+	$this->groupby  =$groupby!=""?$groupby:$this->groupby;
+	$this->orderby  =$orderby!=""?$orderby:$this->orderby;
+	$orderby_sql="";
+	$orderby_sql_tmp = array();
+	if(is_array($orderby)){
+		foreach($orderby as $key=>$value){
+			if(!is_numeric($key)){
+				$orderby_sql_tmp[]=$key." ".$value;
 			}
-		}else{
-			$orderby_sql=$this->orderby;
 		}
-		if(count($orderby_sql_tmp)>0){
-			$orderby_sql=" ORDER BY ".implode(",",$orderby_sql_tmp);
-		}
-		$limit="";
-		if($this->limit!=0){
-			$limit    =($this->page-1)*$this->limit;
-			$limit ="LIMIT $limit,$this->limit";
-		}
-		$this->sql="SELECT $item FROM $table $join $condiStr $groupby $orderby_sql $limit";
-		$this->countsql="SELECT count(1) totalSize FROM $table $join $condiStr $groupby";
-		return $this->query($this->sql,$this->countsql);
+	}else{
+		$orderby_sql=$this->orderby;
+	}
+	if(count($orderby_sql_tmp)>0){
+		$orderby_sql=" ORDER BY ".implode(",",$orderby_sql_tmp);
+	}
+	$limit="";
+	if($this->limit!=0){
+		$limit    =($this->page-1)*$this->limit;
+		$limit ="LIMIT $limit,$this->limit";
+	}
+	$this->sql="SELECT $item FROM $table $join $condiStr $groupby $orderby_sql $limit";
+	$this->countsql="SELECT count(1) totalSize FROM $table $join $condiStr $groupby";
+	return $this->query($this->sql,$this->countsql);
 	}
 	/**
 	 * 
@@ -236,7 +237,7 @@ class Db_Mysql extends DbObject{
 		$this->setCount(false);
 		$data=$this->select($table,$condition,$item,$groupby,$orderby,$leftjoin);
 		if(isset($data->items[0]))
-		return $data->items[0];
+			return $data->items[0];
 		else return false;
 
 	}
@@ -288,8 +289,8 @@ class Db_Mysql extends DbObject{
 	 * @param array $item 
 	 * @param array $update ,egarray("key"=>value,"key2"=>value2")
 	 * this param may be BUG
-		 insert into zone_user_online values(2,'','','','',now(),now()) on duplicate key update onlineactivetime=CURRENT_TIMESTAMP;
-	 * @return int InsertID
+	 insert into zone_user_online values(2,'','','','',now(),now()) on duplicate key update onlineactivetime=CURRENT_TIMESTAMP;
+	* @return int InsertID
 	 */
 	function insert($table,$item="",$isreplace=false,$isdelayed=false,$update=array())
 	{
@@ -324,7 +325,7 @@ class Db_Mysql extends DbObject{
 	 * @param string $sql
 	 * @return DbData object
 	 */
-	
+
 	function query($sql,$countsql="")
 	{
 		$data = new DbData;
@@ -402,7 +403,7 @@ class Db_Mysql extends DbObject{
 		if(!$result){
 			$this->error['code']=mysql_errno();
 			$this->error['msg']=mysql_error();
-			
+
 			return false;
 		}else{
 			return $result;
@@ -441,31 +442,5 @@ class Db_Mysql extends DbObject{
 			return "`$k`";
 		}
 	}
-		/*
-			function __quote($condition,$split="AND"){
-				$condiStr = "";
-				if(is_array($condition)){
-					$v1=array();
-					foreach($condition as $k=>$v)
-					{
-						if(!is_numeric($k))
-						{
-							$v1[]="`".$k."`"." = '".mysql_escape_string($v)."'";
-}else{
-	$v1[]=($v);
 }
-					}
-					if(count($v1)>0)
-					{
-						$condiStr=implode(" ".$split." ",$v1);
-
-					}
-					}else{
-						$condiStr=$condition;
-					}
-					return $condiStr;
-					}
-		 */
-}
-?>
 

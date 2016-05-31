@@ -230,7 +230,9 @@ final class SlightPHP{
 				}elseif(!empty($_SERVER['REQUEST_URI'])){
 					$url = $_SERVER["REQUEST_URI"];
 				}
-				$url = preg_replace("/(\/+)/","/",$_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT']."/".$url);
+				if(isset($_SERVER['SERVER_NAME']) && isset($_SERVER['SERVER_PORT'])){
+					$url = preg_replace("/(\/+)/","/",$_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT']."/".$url);
+				}
 				$url_parsed = parse_url($url, PHP_URL_PATH);
 				if(!empty($url_parsed)){
 					$url = $url_parsed;

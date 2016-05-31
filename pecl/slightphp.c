@@ -22,6 +22,7 @@
 #include "php.h"
 #include <regex.h>
 #include "ext/standard/info.h"
+#include "ext/standard/url.h"
 #include "php_slightphp.h"
 
 
@@ -210,7 +211,7 @@ PHP_METHOD(slightphp, getZoneAlias)
 
 PHP_METHOD(slightphp, setDebug)
 {
-		int _debug;
+		long _debug=0;
 		if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &_debug) == FAILURE) {
 				RETURN_FALSE;
 		}
@@ -283,17 +284,17 @@ RETURN_FALSE;
  */
 PHP_METHOD(slightphp, __construct)
 {
-		zend_class_entry * _this_ce;
-		zval * _this_zval;
+		//zend_class_entry * _this_ce;
+		//zval * _this_zval;
 
-		zval * version = NULL;
+		//zval * version = NULL;
 
-		if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|z/", &version) == FAILURE) {
-				return;
-		}
+		//if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|z/", &version) == FAILURE) {
+		//		return;
+		//}
 
-		_this_zval = getThis();
-		_this_ce = Z_OBJCE_P(_this_zval);
+		//_this_zval = getThis();
+		//_this_ce = Z_OBJCE_P(_this_zval);
 }
 /* }}} __construct */
 
@@ -323,16 +324,49 @@ PHP_METHOD(slightphp, run)
 			path = zend_read_static_property(slightphp_ce_ptr,"pathInfo",sizeof("pathInfo")-1,1 TSRMLS_CC);
 			int s = Z_STRLEN_P(path);
 			if(s==0){
-				zend_is_auto_global("_SERVER", sizeof("_SERVER") - 1 TSRMLS_CC);
-				if(zend_hash_find(Z_ARRVAL_P(PG(http_globals)[TRACK_VARS_GET]), 
-							"PATH_INFO", sizeof("PATH_INFO"), (void **) &token) == SUCCESS
-				){
-					path = *token;
-				}else if(zend_hash_find(Z_ARRVAL_P(PG(http_globals)[TRACK_VARS_SERVER]), 
-							"PATH_INFO", sizeof("PATH_INFO"), (void **) &token) == SUCCESS
-				){
-					path = *token;
+				//zend_is_auto_global("_SERVER", sizeof("_SERVER") - 1 TSRMLS_CC);
+				if(PG(http_globals)[TRACK_VARS_SERVER]){
+						debug("LINE[%d]",__LINE__);
 				}
+				if(zend_is_auto_global(ZEND_STRL("_SERVER") TSRMLS_CC)){
+						debug("LINE[%d]",__LINE__);
+				}
+				//zend_print_flat_zval_r(PG(http_globals));
+				if(PG(http_globals)[TRACK_VARS_SERVER] || zend_is_auto_global(ZEND_STRL("_SERVER") TSRMLS_CC)){
+						debug("LINE[%d]",__LINE__);
+					if(zend_hash_find(Z_ARRVAL_P(PG(http_globals)[TRACK_VARS_SERVER]), 
+								"PATH_INFO", sizeof("PATH_INFO"), (void **) &token) == SUCCESS
+					  ){
+						debug("LINE[%d]",__LINE__);
+						path = *token;
+					}else if(zend_hash_find(Z_ARRVAL_P(PG(http_globals)[TRACK_VARS_SERVER]), 
+								"REQUEST_URI", sizeof("REQUEST_URI"), (void **) &token) == SUCCESS
+							){
+						debug("LINE[%d]",__LINE__);
+						php_url *resource=NULL;
+						resource = php_url_parse(Z_STRVAL_PP(token));
+						if(resource != NULL && resource->path != NULL){
+							ZVAL_STRING(path,resource->path,1);
+						}else{
+							path = *token;
+						}
+						if (resource) {
+							php_url_free(resource);	
+						}
+					}else{
+					if(zend_hash_find(&EG(symbol_table), 
+								"REQUEST_URI", sizeof("REQUEST_URI"), (void **) &token) == SUCCESS
+					  ){
+						debug("LINE[%d]",__LINE__);
+					  }else{
+						debug("LINE[%d]",__LINE__);
+					  }
+						debug("LINE[%d]",__LINE__);
+					}
+				}else{
+						debug("LINE[%d]",__LINE__);
+						}
+
 			}
 		}
 		//}}}
@@ -379,7 +413,7 @@ PHP_METHOD(slightphp, run)
 				}
 				efree(regex);
 				//}}}
-				int n_elems = zend_hash_num_elements(Z_ARRVAL_P(path_array));
+				//int n_elems = zend_hash_num_elements(Z_ARRVAL_P(path_array));
 				if(zend_hash_index_find(Z_ARRVAL_P(path_array), 0, (void **)&token) != FAILURE) {
 						zone = *token;
 				}
@@ -646,7 +680,7 @@ PHP_MINFO_FUNCTION(slightphp)
 {
 	php_info_print_table_start();
 	php_info_print_table_colspan_header(2,"SlightPHP Framework");
-	php_info_print_table_row(2, "Version", "1.1 stable(2015-12-10)" );
+	php_info_print_table_row(2, "Version", "3.0 stable(2016-3-18)" );
 	php_info_print_table_row(2, "Authors", "hetao@hetao.name" );
 	php_info_print_table_row(2, "Supports", "https://github.com/hetao29/slightphp" );
 	php_info_print_table_end();

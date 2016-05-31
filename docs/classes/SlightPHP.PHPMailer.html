@@ -1,0 +1,3732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <meta charset="utf-8"/>
+    <title>SlightPHP framework Documentation</title>
+    <meta name="author" content=""/>
+    <meta name="description" content=""/>
+
+    <link href="../css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
+    <link href="../css/font-awesome.min.css" rel="stylesheet">
+    <link href="../css/prism.css" rel="stylesheet" media="all"/>
+    <link href="../css/template.css" rel="stylesheet" media="all"/>
+    
+    <!--[if lt IE 9]>
+    <script src="../js/html5.js"></script>
+    <![endif]-->
+    <script src="../js/jquery-1.11.0.min.js"></script>
+    <script src="../js/ui/1.10.4/jquery-ui.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/jquery.smooth-scroll.js"></script>
+    <script src="../js/prism.min.js"></script>
+    <!-- TODO: Add http://jscrollpane.kelvinluck.com/ to style the scrollbars for browsers not using webkit-->
+    <script type="text/javascript">
+    function loadExternalCodeSnippets() {
+        Array.prototype.slice.call(document.querySelectorAll('pre[data-src]')).forEach(function (pre) {
+            var src = pre.getAttribute('data-src');
+            var extension = (src.match(/\.(\w+)$/) || [, ''])[1];
+            var language = 'php';
+
+            var code = document.createElement('code');
+            code.className = 'language-' + language;
+
+            pre.textContent = '';
+
+            code.textContent = 'Loading…';
+
+            pre.appendChild(code);
+
+            var xhr = new XMLHttpRequest();
+
+            xhr.open('GET', src, true);
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4) {
+
+                    if (xhr.status < 400 && xhr.responseText) {
+                        code.textContent = xhr.responseText;
+
+                        Prism.highlightElement(code);
+                    }
+                    else if (xhr.status >= 400) {
+                        code.textContent = '✖ Error ' + xhr.status + ' while fetching file: ' + xhr.statusText;
+                    }
+                    else {
+                        code.textContent = '✖ Error: File does not exist or is empty';
+                    }
+                }
+            };
+
+            xhr.send(null);
+        });
+    }
+
+    $(document).ready(function(){
+        loadExternalCodeSnippets();
+    });
+    $('#source-view').on('shown', function () {
+        loadExternalCodeSnippets();
+    })
+</script>
+
+    <link rel="shortcut icon" href="../images/favicon.ico"/>
+    <link rel="apple-touch-icon" href="../images/apple-touch-icon.png"/>
+    <link rel="apple-touch-icon" sizes="72x72" href="../images/apple-touch-icon-72x72.png"/>
+    <link rel="apple-touch-icon" sizes="114x114" href="../images/apple-touch-icon-114x114.png"/>
+</head>
+<body>
+
+<div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <i class="icon-ellipsis-vertical"></i>
+            </a>
+            <a class="brand" href="../index.html">SlightPHP framework Documentation</a>
+
+            <div class="nav-collapse">
+                <ul class="nav pull-right">
+                                        <li class="dropdown">
+                        <a href="../index.html" class="dropdown-toggle" data-toggle="dropdown">
+                            API Documentation <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                                                        <li><a href="../namespaces/SlightPHP.html">\SlightPHP</a></li>
+                                                    </ul>
+                    </li>
+                                        <li class="dropdown" id="charts-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            Charts <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="../graphs/class.html">
+                                    <i class="icon-list-alt"></i>&#160;Class hierarchy diagram
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="dropdown" id="reports-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            Reports <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="../reports/errors.html">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <i class="icon-list-alt"></i>&#160;Errors <span class="label label-info pull-right">770</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="../reports/markers.html">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <i class="icon-list-alt"></i>&#160;Markers <span class="label label-info pull-right">1</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="../reports/deprecated.html">
+                                                                                                                                                                                        <i class="icon-list-alt"></i>&#160;Deprecated <span class="label label-info pull-right">1</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!--<div class="go_to_top">-->
+    <!--<a href="#___" style="color: inherit">Back to top&#160;&#160;<i class="icon-upload icon-white"></i></a>-->
+    <!--</div>-->
+</div>
+
+<div id="___" class="container-fluid">
+        <section class="row-fluid">
+        <div class="span2 sidebar">
+                                <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-1907334864"></a>
+                                <a href="../namespaces/default.html" style="margin-left: 30px; padding-left: 0">\</a>
+            </div>
+            <div id="namespace-1907334864" class="accordion-body collapse in">
+                <div class="accordion-inner">
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-175720636"></a>
+                                <a href="../namespaces/SlightPHP.html" style="margin-left: 30px; padding-left: 0">SlightPHP</a>
+            </div>
+            <div id="namespace-175720636" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/SlightPHP.Cache_APC.html">Cache_APC</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.Cache_Memcache.html">Cache_Memcache</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.Cache_MemcacheEngine.html">Cache_MemcacheEngine</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.Cache_MemcacheObject.html">Cache_MemcacheObject</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.CacheObject.html">CacheObject</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.Db.html">Db</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.Db_Mysql.html">Db_Mysql</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.Db_PDO.html">Db_PDO</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.DbData.html">DbData</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.DbObject.html">DbObject</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.PHPMailer.html">PHPMailer</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.POP3.html">POP3</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.Rest_Http.html">Rest_Http</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.SMTP.html">SMTP</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.SphinxClient.html">SphinxClient</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.Thumbnail.html">Thumbnail</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.Tpl.html">Tpl</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.WMThumbnail.html">WMThumbnail</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/SCache.html">SCache</a></li>
+                                                    <li class="class"><a href="../classes/SCaptcha.html">SCaptcha</a></li>
+                                                    <li class="class"><a href="../classes/SConfig.html">SConfig</a></li>
+                                                    <li class="class"><a href="../classes/SDb.html">SDb</a></li>
+                                                    <li class="class"><a href="../classes/SError.html">SError</a></li>
+                                                    <li class="class"><a href="../classes/SHttp.html">SHttp</a></li>
+                                                    <li class="class"><a href="../classes/SJson.html">SJson</a></li>
+                                                    <li class="class"><a href="../classes/SLanguage.html">SLanguage</a></li>
+                                                    <li class="class"><a href="../classes/SlightPHP.html">SlightPHP</a></li>
+                                                    <li class="class"><a href="../classes/SLog.html">SLog</a></li>
+                                                    <li class="class"><a href="../classes/SLunar.html">SLunar</a></li>
+                                                    <li class="class"><a href="../classes/SMail.html">SMail</a></li>
+                                                    <li class="class"><a href="../classes/SRedis.html">SRedis</a></li>
+                                                    <li class="class"><a href="../classes/SRestClient.html">SRestClient</a></li>
+                                                    <li class="class"><a href="../classes/SRestServer.html">SRestServer</a></li>
+                                                    <li class="class"><a href="../classes/SRoute.html">SRoute</a></li>
+                                                    <li class="class"><a href="../classes/SSphinx.html">SSphinx</a></li>
+                                                    <li class="class"><a href="../classes/STpl.html">STpl</a></li>
+                                                    <li class="class"><a href="../classes/SUtil.html">SUtil</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        </div>
+    </section>
+    <section class="row-fluid">
+        <div class="span10 offset2">
+            <div class="row-fluid">
+                <div class="span8 content class">
+                    <nav>
+                                                <a href="../namespaces/SlightPHP.html">\SlightPHP</a> <i class="icon-level-up"></i>
+                                            </nav>
+                    <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal"><i class="icon-code"></i></a>
+
+                    <h1><small>\SlightPHP</small>PHPMailer</h1>
+                    <p><em></em></p>
+                    
+                    
+                                        
+                    <section id="summary">
+                        <h2>Summary</h2>
+                        <section class="row-fluid heading">
+                            <section class="span4">
+                                <a href="#methods">Methods</a>
+                            </section>
+                            <section class="span4">
+                                <a href="#properties">Properties</a>
+                            </section>
+                            <section class="span4">
+                                <a href="#constants">Constants</a>
+                            </section>
+                        </section>
+                        <section class="row-fluid public">
+                            <section class="span4">
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_IsHTML" class="">IsHTML()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_IsSMTP" class="">IsSMTP()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_IsMail" class="">IsMail()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_IsSendmail" class="">IsSendmail()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_IsQmail" class="">IsQmail()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_AddAddress" class="">AddAddress()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_AddCC" class="">AddCC()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_AddBCC" class="">AddBCC()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_AddReplyTo" class="">AddReplyTo()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_Send" class="">Send()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_SendmailSend" class="">SendmailSend()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_MailSend" class="">MailSend()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_SmtpSend" class="">SmtpSend()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_SmtpConnect" class="">SmtpConnect()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_SmtpClose" class="">SmtpClose()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_SetLanguage" class="">SetLanguage()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_AddrAppend" class="">AddrAppend()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_AddrFormat" class="">AddrFormat()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_WrapText" class="">WrapText()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_UTF8CharBoundary" class="">UTF8CharBoundary()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_SetWordWrap" class="">SetWordWrap()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_CreateHeader" class="">CreateHeader()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_GetMailMIME" class="">GetMailMIME()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_CreateBody" class="">CreateBody()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_GetBoundary" class="">GetBoundary()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_EndBoundary" class="">EndBoundary()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_SetMessageType" class="">SetMessageType()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_HeaderLine" class="">HeaderLine()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_TextLine" class="">TextLine()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_AddAttachment" class="">AddAttachment()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_AttachAll" class="">AttachAll()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_EncodeFile" class="">EncodeFile()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_EncodeString" class="">EncodeString()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_EncodeHeader" class="">EncodeHeader()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_HasMultiBytes" class="">HasMultiBytes()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_Base64EncodeWrapMB" class="">Base64EncodeWrapMB()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_EncodeQP" class="">EncodeQP()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_EncodeQ" class="">EncodeQ()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_AddStringAttachment" class="">AddStringAttachment()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_AddEmbeddedImage" class="">AddEmbeddedImage()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_InlineImageExists" class="">InlineImageExists()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_ClearAddresses" class="">ClearAddresses()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_ClearCCs" class="">ClearCCs()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_ClearBCCs" class="">ClearBCCs()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_ClearReplyTos" class="">ClearReplyTos()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_ClearAllRecipients" class="">ClearAllRecipients()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_ClearAttachments" class="">ClearAttachments()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_ClearCustomHeaders" class="">ClearCustomHeaders()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_IsError" class="">IsError()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_AddCustomHeader" class="">AddCustomHeader()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_MsgHTML" class="">MsgHTML()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method__mime_types" class="">_mime_types()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_set" class="">set()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_getFile" class="">getFile()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_SecureHeader" class="">SecureHeader()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_Sign" class="">Sign()</a><br />
+                                                            </section>
+                            <section class="span4">
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#property_Priority" class="">$Priority</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#property_CharSet" class="">$CharSet</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#property_ContentType" class="">$ContentType</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#property_Encoding" class="">$Encoding</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#property_ErrorInfo" class="">$ErrorInfo</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#property_From" class="">$From</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#property_FromName" class="">$FromName</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#property_Sender" class="">$Sender</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#property_Subject" class="">$Subject</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#property_Body" class="">$Body</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#property_AltBody" class="">$AltBody</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#property_WordWrap" class="">$WordWrap</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#property_Mailer" class="">$Mailer</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#property_Sendmail" class="">$Sendmail</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#property_PluginDir" class="">$PluginDir</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#property_Version" class="">$Version</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#property_ConfirmReadingTo" class="">$ConfirmReadingTo</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#property_Hostname" class="">$Hostname</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#property_MessageID" class="">$MessageID</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#property_Host" class="">$Host</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#property_Port" class="">$Port</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#property_Helo" class="">$Helo</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#property_SMTPSecure" class="">$SMTPSecure</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#property_SMTPAuth" class="">$SMTPAuth</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#property_Username" class="">$Username</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#property_Password" class="">$Password</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#property_Timeout" class="">$Timeout</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#property_SMTPDebug" class="">$SMTPDebug</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#property_SMTPKeepAlive" class="">$SMTPKeepAlive</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#property_SingleTo" class="">$SingleTo</a><br />
+                                                            </section>
+                            <section class="span4">
+                                                                    <em>No constants found</em>
+                                                            </section>
+                        </section>
+                        <section class="row-fluid protected">
+                            <section class="span4">
+                                                                    <em>No protected methods found</em>
+                                                            </section>
+                            <section class="span4">
+                                                                    <em>No protected properties found</em>
+                                                            </section>
+                            <section class="span4">
+                                <em>N/A</em>
+                            </section>
+                        </section>
+                        <section class="row-fluid private">
+                            <section class="span4">
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_SetError" class="">SetError()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_RFCDate" class="">RFCDate()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_ServerHostname" class="">ServerHostname()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_Lang" class="">Lang()</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#method_FixEOL" class="">FixEOL()</a><br />
+                                                            </section>
+                            <section class="span4">
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#property_smtp" class="">$smtp</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#property_to" class="">$to</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#property_cc" class="">$cc</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#property_bcc" class="">$bcc</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#property_ReplyTo" class="">$ReplyTo</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#property_attachment" class="">$attachment</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#property_CustomHeader" class="">$CustomHeader</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#property_message_type" class="">$message_type</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#property_boundary" class="">$boundary</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#property_language" class="">$language</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#property_error_count" class="">$error_count</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#property_LE" class="">$LE</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#property_sign_cert_file" class="">$sign_cert_file</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#property_sign_key_file" class="">$sign_key_file</a><br />
+                                                                    <a href="../classes/SlightPHP.PHPMailer.html#property_sign_key_pass" class="">$sign_key_pass</a><br />
+                                                            </section>
+                            <section class="span4">
+                                <em>N/A</em>
+                            </section>
+                        </section>
+                    </section>
+                </div>
+                <aside class="span4 detailsbar">
+                                        
+                    
+                    <dl>
+                        <dt>File</dt>
+                            <dd><a href="../files/plugins.mail.class.phpmailer.html"><div class="path-wrapper">plugins/mail/class.phpmailer.php</div></a></dd>
+                                                <dt>Package</dt>
+                            <dd><div class="namespace-wrapper">Default</div></dd>
+                                                <dt>Class hierarchy</dt>
+                            <dd class="hierarchy">
+                                                                                                                                                                    <div class="namespace-wrapper">\SlightPHP\PHPMailer</div>
+                            </dd>
+
+                        
+                        
+                        
+                        
+                                                                        </dl>
+                    <h2>Tags</h2>
+                    <table class="table table-condensed">
+                                            <tr><td colspan="2"><em>None found</em></td></tr>
+                                        </table>
+                </aside>
+            </div>
+
+                        
+                                    <a id="properties" name="properties"></a>
+            <div class="row-fluid">
+                <div class="span8 content class">
+                    <h2>Properties</h2>
+                </div>
+                <aside class="span4 detailsbar"></aside>
+            </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_Priority" name="property_Priority" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$Priority</h3>
+                <pre class="signature">$Priority : integer</pre>
+                <p><em>Email priority (1 = High, 3 = Normal, 5 = low).</em></p>
+                
+
+                                <h4>Type</h4>
+                integer
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_CharSet" name="property_CharSet" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$CharSet</h3>
+                <pre class="signature">$CharSet : string</pre>
+                <p><em>Sets the CharSet of the message.</em></p>
+                
+
+                                <h4>Type</h4>
+                string
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_ContentType" name="property_ContentType" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$ContentType</h3>
+                <pre class="signature">$ContentType : string</pre>
+                <p><em>Sets the Content-type of the message.</em></p>
+                
+
+                                <h4>Type</h4>
+                string
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_Encoding" name="property_Encoding" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$Encoding</h3>
+                <pre class="signature">$Encoding : string</pre>
+                <p><em>Sets the Encoding of the message. Options for this are &quot;8bit&quot;,
+&quot;7bit&quot;, &quot;binary&quot;, &quot;base64&quot;, and &quot;quoted-printable&quot;.</em></p>
+                
+
+                                <h4>Type</h4>
+                string
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_ErrorInfo" name="property_ErrorInfo" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$ErrorInfo</h3>
+                <pre class="signature">$ErrorInfo : string</pre>
+                <p><em>Holds the most recent mailer error message.</em></p>
+                
+
+                                <h4>Type</h4>
+                string
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_From" name="property_From" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$From</h3>
+                <pre class="signature">$From : string</pre>
+                <p><em>Sets the From email address for the message.</em></p>
+                
+
+                                <h4>Type</h4>
+                string
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_FromName" name="property_FromName" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$FromName</h3>
+                <pre class="signature">$FromName : string</pre>
+                <p><em>Sets the From name of the message.</em></p>
+                
+
+                                <h4>Type</h4>
+                string
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_Sender" name="property_Sender" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$Sender</h3>
+                <pre class="signature">$Sender : string</pre>
+                <p><em>Sets the Sender email (Return-Path) of the message.  If not empty,
+will be sent via -f to sendmail or as &#039;MAIL FROM&#039; in smtp mode.</em></p>
+                
+
+                                <h4>Type</h4>
+                string
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_Subject" name="property_Subject" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$Subject</h3>
+                <pre class="signature">$Subject : string</pre>
+                <p><em>Sets the Subject of the message.</em></p>
+                
+
+                                <h4>Type</h4>
+                string
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_Body" name="property_Body" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$Body</h3>
+                <pre class="signature">$Body : string</pre>
+                <p><em>Sets the Body of the message.  This can be either an HTML or text body.</em></p>
+                <p>If HTML then run IsHTML(true).</p>
+
+                                <h4>Type</h4>
+                string
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_AltBody" name="property_AltBody" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$AltBody</h3>
+                <pre class="signature">$AltBody : string</pre>
+                <p><em>Sets the text-only body of the message.  This automatically sets the
+email to multipart/alternative.  This body can be read by mail
+clients that do not have HTML email capability such as mutt. Clients
+that can read HTML will view the normal Body.</em></p>
+                
+
+                                <h4>Type</h4>
+                string
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_WordWrap" name="property_WordWrap" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$WordWrap</h3>
+                <pre class="signature">$WordWrap : integer</pre>
+                <p><em>Sets word wrapping on the body of the message to a given number of
+characters.</em></p>
+                
+
+                                <h4>Type</h4>
+                integer
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_Mailer" name="property_Mailer" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$Mailer</h3>
+                <pre class="signature">$Mailer : string</pre>
+                <p><em>Method to send mail: (&quot;mail&quot;, &quot;sendmail&quot;, or &quot;smtp&quot;).</em></p>
+                
+
+                                <h4>Type</h4>
+                string
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_Sendmail" name="property_Sendmail" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$Sendmail</h3>
+                <pre class="signature">$Sendmail : string</pre>
+                <p><em>Sets the path of the sendmail program.</em></p>
+                
+
+                                <h4>Type</h4>
+                string
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_PluginDir" name="property_PluginDir" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$PluginDir</h3>
+                <pre class="signature">$PluginDir : string</pre>
+                <p><em>Path to PHPMailer plugins.  This is now only useful if the SMTP class
+is in a different directory than the PHP include path.</em></p>
+                
+
+                                <h4>Type</h4>
+                string
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_Version" name="property_Version" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$Version</h3>
+                <pre class="signature">$Version : string</pre>
+                <p><em>Holds PHPMailer version.</em></p>
+                
+
+                                <h4>Type</h4>
+                string
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_ConfirmReadingTo" name="property_ConfirmReadingTo" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$ConfirmReadingTo</h3>
+                <pre class="signature">$ConfirmReadingTo : string</pre>
+                <p><em>Sets the email address that a reading confirmation will be sent.</em></p>
+                
+
+                                <h4>Type</h4>
+                string
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_Hostname" name="property_Hostname" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$Hostname</h3>
+                <pre class="signature">$Hostname : string</pre>
+                <p><em>Sets the hostname to use in Message-Id and Received headers
+and as default HELO string. If empty, the value returned
+by SERVER_NAME is used or &#039;localhost.localdomain&#039;.</em></p>
+                
+
+                                <h4>Type</h4>
+                string
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_MessageID" name="property_MessageID" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$MessageID</h3>
+                <pre class="signature">$MessageID : string</pre>
+                <p><em>Sets the message ID to be used in the Message-Id header.</em></p>
+                <p>If empty, a unique id will be generated.</p>
+
+                                <h4>Type</h4>
+                string
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_Host" name="property_Host" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$Host</h3>
+                <pre class="signature">$Host : string</pre>
+                <p><em>Sets the SMTP hosts.  All hosts must be separated by a
+semicolon.  You can also specify a different port
+for each host by using this format: [hostname:port]
+(e.g. &quot;smtp1.example.com:25;smtp2.example.com&quot;).</em></p>
+                <p>Hosts will be tried in order.</p>
+
+                                <h4>Type</h4>
+                string
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_Port" name="property_Port" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$Port</h3>
+                <pre class="signature">$Port : integer</pre>
+                <p><em>Sets the default SMTP server port.</em></p>
+                
+
+                                <h4>Type</h4>
+                integer
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_Helo" name="property_Helo" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$Helo</h3>
+                <pre class="signature">$Helo : string</pre>
+                <p><em>Sets the SMTP HELO of the message (Default is $Hostname).</em></p>
+                
+
+                                <h4>Type</h4>
+                string
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_SMTPSecure" name="property_SMTPSecure" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$SMTPSecure</h3>
+                <pre class="signature">$SMTPSecure : string</pre>
+                <p><em>Sets connection prefix.</em></p>
+                <p>Options are &quot;&quot;, &quot;ssl&quot; or &quot;tls&quot;</p>
+
+                                <h4>Type</h4>
+                string
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_SMTPAuth" name="property_SMTPAuth" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$SMTPAuth</h3>
+                <pre class="signature">$SMTPAuth : boolean</pre>
+                <p><em>Sets SMTP authentication. Utilizes the Username and Password variables.</em></p>
+                
+
+                                <h4>Type</h4>
+                boolean
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_Username" name="property_Username" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$Username</h3>
+                <pre class="signature">$Username : string</pre>
+                <p><em>Sets SMTP username.</em></p>
+                
+
+                                <h4>Type</h4>
+                string
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_Password" name="property_Password" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$Password</h3>
+                <pre class="signature">$Password : string</pre>
+                <p><em>Sets SMTP password.</em></p>
+                
+
+                                <h4>Type</h4>
+                string
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_Timeout" name="property_Timeout" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$Timeout</h3>
+                <pre class="signature">$Timeout : integer</pre>
+                <p><em>Sets the SMTP server timeout in seconds. This function will not
+work with the win32 version.</em></p>
+                
+
+                                <h4>Type</h4>
+                integer
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_SMTPDebug" name="property_SMTPDebug" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$SMTPDebug</h3>
+                <pre class="signature">$SMTPDebug : boolean</pre>
+                <p><em>Sets SMTP class debugging on or off.</em></p>
+                
+
+                                <h4>Type</h4>
+                boolean
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_SMTPKeepAlive" name="property_SMTPKeepAlive" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$SMTPKeepAlive</h3>
+                <pre class="signature">$SMTPKeepAlive : boolean</pre>
+                <p><em>Prevents the SMTP connection from being closed after each mail
+sending.  If this is set to true then to close the connection
+requires an explicit call to SmtpClose().</em></p>
+                
+
+                                <h4>Type</h4>
+                boolean
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_SingleTo" name="property_SingleTo" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$SingleTo</h3>
+                <pre class="signature">$SingleTo : boolean</pre>
+                <p><em>Provides the ability to have the TO field process individual
+emails, instead of sending to entire TO addresses</em></p>
+                
+
+                                <h4>Type</h4>
+                boolean
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_smtp" name="property_smtp" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$smtp</h3>
+                <pre class="signature">$smtp : </pre>
+                <p><em></em></p>
+                
+
+                                <h4>Type</h4>
+                
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_to" name="property_to" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$to</h3>
+                <pre class="signature">$to : </pre>
+                <p><em></em></p>
+                
+
+                                <h4>Type</h4>
+                
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_cc" name="property_cc" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$cc</h3>
+                <pre class="signature">$cc : </pre>
+                <p><em></em></p>
+                
+
+                                <h4>Type</h4>
+                
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_bcc" name="property_bcc" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$bcc</h3>
+                <pre class="signature">$bcc : </pre>
+                <p><em></em></p>
+                
+
+                                <h4>Type</h4>
+                
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_ReplyTo" name="property_ReplyTo" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$ReplyTo</h3>
+                <pre class="signature">$ReplyTo : </pre>
+                <p><em></em></p>
+                
+
+                                <h4>Type</h4>
+                
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_attachment" name="property_attachment" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$attachment</h3>
+                <pre class="signature">$attachment : </pre>
+                <p><em></em></p>
+                
+
+                                <h4>Type</h4>
+                
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_CustomHeader" name="property_CustomHeader" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$CustomHeader</h3>
+                <pre class="signature">$CustomHeader : </pre>
+                <p><em></em></p>
+                
+
+                                <h4>Type</h4>
+                
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_message_type" name="property_message_type" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$message_type</h3>
+                <pre class="signature">$message_type : </pre>
+                <p><em></em></p>
+                
+
+                                <h4>Type</h4>
+                
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_boundary" name="property_boundary" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$boundary</h3>
+                <pre class="signature">$boundary : </pre>
+                <p><em></em></p>
+                
+
+                                <h4>Type</h4>
+                
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_language" name="property_language" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$language</h3>
+                <pre class="signature">$language : </pre>
+                <p><em></em></p>
+                
+
+                                <h4>Type</h4>
+                
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_error_count" name="property_error_count" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$error_count</h3>
+                <pre class="signature">$error_count : </pre>
+                <p><em></em></p>
+                
+
+                                <h4>Type</h4>
+                
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_LE" name="property_LE" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$LE</h3>
+                <pre class="signature">$LE : </pre>
+                <p><em></em></p>
+                
+
+                                <h4>Type</h4>
+                
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_sign_cert_file" name="property_sign_cert_file" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$sign_cert_file</h3>
+                <pre class="signature">$sign_cert_file : </pre>
+                <p><em></em></p>
+                
+
+                                <h4>Type</h4>
+                
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_sign_key_file" name="property_sign_key_file" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$sign_key_file</h3>
+                <pre class="signature">$sign_key_file : </pre>
+                <p><em></em></p>
+                
+
+                                <h4>Type</h4>
+                
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_sign_key_pass" name="property_sign_key_pass" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$sign_key_pass</h3>
+                <pre class="signature">$sign_key_pass : </pre>
+                <p><em></em></p>
+                
+
+                                <h4>Type</h4>
+                
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                            
+                                    <a id="methods" name="methods"></a>
+            <div class="row-fluid">
+                <div class="span8 content class"><h2>Methods</h2></div>
+                <aside class="span4 detailsbar"></aside>
+            </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_IsHTML" name="method_IsHTML" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">IsHTML()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">IsHTML(boolean  <span class="argument">$bool</span>) : void</pre>
+                <p><em>Sets message type to HTML.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>boolean</td>
+                                <td>$bool </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_IsSMTP" name="method_IsSMTP" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">IsSMTP()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">IsSMTP() : void</pre>
+                <p><em>Sets Mailer to send message using SMTP.</em></p>
+                
+
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_IsMail" name="method_IsMail" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">IsMail()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">IsMail() : void</pre>
+                <p><em>Sets Mailer to send message using PHP mail() function.</em></p>
+                
+
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_IsSendmail" name="method_IsSendmail" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">IsSendmail()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">IsSendmail() : void</pre>
+                <p><em>Sets Mailer to send message using the $Sendmail program.</em></p>
+                
+
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_IsQmail" name="method_IsQmail" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">IsQmail()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">IsQmail() : void</pre>
+                <p><em>Sets Mailer to send message using the qmail MTA.</em></p>
+                
+
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_AddAddress" name="method_AddAddress" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">AddAddress()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">AddAddress(string  <span class="argument">$address</span>, string  <span class="argument">$name = &#039;&#039;</span>) : void</pre>
+                <p><em>Adds a &quot;To&quot; address.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$address </td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$name </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_AddCC" name="method_AddCC" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">AddCC()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">AddCC(string  <span class="argument">$address</span>, string  <span class="argument">$name = &#039;&#039;</span>) : void</pre>
+                <p><em>Adds a &quot;Cc&quot; address. Note: this function works
+with the SMTP mailer on win32, not with the &quot;mail&quot;
+mailer.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$address </td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$name </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_AddBCC" name="method_AddBCC" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">AddBCC()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">AddBCC(string  <span class="argument">$address</span>, string  <span class="argument">$name = &#039;&#039;</span>) : void</pre>
+                <p><em>Adds a &quot;Bcc&quot; address. Note: this function works
+with the SMTP mailer on win32, not with the &quot;mail&quot;
+mailer.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$address </td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$name </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_AddReplyTo" name="method_AddReplyTo" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">AddReplyTo()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">AddReplyTo(string  <span class="argument">$address</span>, string  <span class="argument">$name = &#039;&#039;</span>) : void</pre>
+                <p><em>Adds a &quot;Reply-to&quot; address.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$address </td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$name </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_Send" name="method_Send" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">Send()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">Send() : boolean</pre>
+                <p><em>Creates message and assigns Mailer. If the message is
+not sent successfully then it returns false.  Use the ErrorInfo
+variable to view description of the error.</em></p>
+                
+
+                
+                
+                                    <h4>Returns</h4>
+                    boolean
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_SendmailSend" name="method_SendmailSend" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">SendmailSend()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">SendmailSend(  <span class="argument">$header</span>,   <span class="argument">$body</span>) : boolean</pre>
+                <p><em>Sends mail using the $Sendmail program.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$header </td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td></td>
+                                <td>$body </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    boolean
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_MailSend" name="method_MailSend" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">MailSend()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">MailSend(  <span class="argument">$header</span>,   <span class="argument">$body</span>) : boolean</pre>
+                <p><em>Sends mail using the PHP mail() function.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$header </td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td></td>
+                                <td>$body </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    boolean
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_SmtpSend" name="method_SmtpSend" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">SmtpSend()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">SmtpSend(  <span class="argument">$header</span>,   <span class="argument">$body</span>) : boolean</pre>
+                <p><em>Sends mail via SMTP using PhpSMTP (Author:
+Chris Ryan).  Returns bool.  Returns false if there is a
+bad MAIL FROM, RCPT, or DATA input.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$header </td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td></td>
+                                <td>$body </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    boolean
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_SmtpConnect" name="method_SmtpConnect" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">SmtpConnect()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">SmtpConnect() : boolean</pre>
+                <p><em>Initiates a connection to an SMTP server.  Returns false if the
+operation failed.</em></p>
+                
+
+                
+                
+                                    <h4>Returns</h4>
+                    boolean
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_SmtpClose" name="method_SmtpClose" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">SmtpClose()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">SmtpClose() : void</pre>
+                <p><em>Closes the active SMTP session if one exists.</em></p>
+                
+
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_SetLanguage" name="method_SetLanguage" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">SetLanguage()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">SetLanguage(string  <span class="argument">$lang_type = &#039;en&#039;</span>, string  <span class="argument">$lang_path = &#039;language/&#039;</span>) : boolean</pre>
+                <p><em>Sets the language for all class error messages.  Returns false
+if it cannot load the language file.  The default language type
+is English.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$lang_type </td>
+                                <td><p>Type of language (e.g. Portuguese: &quot;br&quot;)</p></td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$lang_path </td>
+                                <td><p>Path to the language file directory</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    boolean
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_AddrAppend" name="method_AddrAppend" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">AddrAppend()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">AddrAppend(  <span class="argument">$type</span>,   <span class="argument">$addr</span>) : string</pre>
+                <p><em>Creates recipient headers.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$type </td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td></td>
+                                <td>$addr </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    string
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_AddrFormat" name="method_AddrFormat" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">AddrFormat()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">AddrFormat(  <span class="argument">$addr</span>) : string</pre>
+                <p><em>Formats an address correctly.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$addr </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    string
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_WrapText" name="method_WrapText" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">WrapText()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">WrapText(  <span class="argument">$message</span>,   <span class="argument">$length</span>,   <span class="argument">$qp_mode = false</span>) : string</pre>
+                <p><em>Wraps message for use with mailers that do not
+automatically perform wrapping and for quoted-printable.</em></p>
+                <p>Original written by philippe.</p>
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$message </td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td></td>
+                                <td>$length </td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td></td>
+                                <td>$qp_mode </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    string
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_UTF8CharBoundary" name="method_UTF8CharBoundary" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">UTF8CharBoundary()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">UTF8CharBoundary(string  <span class="argument">$encodedText</span>, integer  <span class="argument">$maxLength</span>) : integer</pre>
+                <p><em>Finds last character boundary prior to maxLength in a utf-8
+quoted (printable) encoded string.</em></p>
+                <p>Original written by Colin Brown.</p>
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$encodedText </td>
+                                <td><p>utf-8 QP text</p></td>
+                            </tr>
+                                                    <tr>
+                                <td>integer</td>
+                                <td>$maxLength </td>
+                                <td><p>find last character boundary prior to this length</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    integer
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_SetWordWrap" name="method_SetWordWrap" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">SetWordWrap()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">SetWordWrap() : void</pre>
+                <p><em>Set the body wrapping.</em></p>
+                
+
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_CreateHeader" name="method_CreateHeader" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">CreateHeader()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">CreateHeader() : string</pre>
+                <p><em>Assembles message header.</em></p>
+                
+
+                
+                
+                                    <h4>Returns</h4>
+                    string
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_GetMailMIME" name="method_GetMailMIME" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">GetMailMIME()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">GetMailMIME() : string</pre>
+                <p><em>Returns the message MIME.</em></p>
+                
+
+                
+                
+                                    <h4>Returns</h4>
+                    string
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_CreateBody" name="method_CreateBody" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">CreateBody()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">CreateBody() : string</pre>
+                <p><em>Assembles the message body.  Returns an empty string on failure.</em></p>
+                
+
+                
+                
+                                    <h4>Returns</h4>
+                    string
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_GetBoundary" name="method_GetBoundary" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">GetBoundary()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">GetBoundary(  <span class="argument">$boundary</span>,   <span class="argument">$charSet</span>,   <span class="argument">$contentType</span>,   <span class="argument">$encoding</span>) </pre>
+                <p><em>Returns the start of a message boundary.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$boundary </td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td></td>
+                                <td>$charSet </td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td></td>
+                                <td>$contentType </td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td></td>
+                                <td>$encoding </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_EndBoundary" name="method_EndBoundary" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">EndBoundary()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">EndBoundary(  <span class="argument">$boundary</span>) </pre>
+                <p><em>Returns the end of a message boundary.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$boundary </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_SetMessageType" name="method_SetMessageType" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">SetMessageType()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">SetMessageType() : void</pre>
+                <p><em>Sets the message type.</em></p>
+                
+
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_HeaderLine" name="method_HeaderLine" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">HeaderLine()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">HeaderLine(  <span class="argument">$name</span>,   <span class="argument">$value</span>) </pre>
+                <p><em></em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$name </td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td></td>
+                                <td>$value </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_TextLine" name="method_TextLine" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">TextLine()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">TextLine(  <span class="argument">$value</span>) : string</pre>
+                <p><em>Returns a formatted mail line.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$value </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    string
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_AddAttachment" name="method_AddAttachment" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">AddAttachment()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">AddAttachment(string  <span class="argument">$path</span>, string  <span class="argument">$name = &#039;&#039;</span>, string  <span class="argument">$encoding = &#039;base64&#039;</span>, string  <span class="argument">$type = &#039;application/octet-stream&#039;</span>) : boolean</pre>
+                <p><em>Adds an attachment from a path on the filesystem.</em></p>
+                <p>Returns false if the file could not be found
+or accessed.</p>
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$path </td>
+                                <td><p>Path to the attachment.</p></td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$name </td>
+                                <td><p>Overrides the attachment name.</p></td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$encoding </td>
+                                <td><p>File encoding (see $Encoding).</p></td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$type </td>
+                                <td><p>File extension (MIME) type.</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    boolean
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_AttachAll" name="method_AttachAll" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">AttachAll()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">AttachAll() : string</pre>
+                <p><em>Attaches all fs, string, and binary attachments to the message.</em></p>
+                <p>Returns an empty string on failure.</p>
+
+                
+                
+                                    <h4>Returns</h4>
+                    string
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_EncodeFile" name="method_EncodeFile" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">EncodeFile()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">EncodeFile(  <span class="argument">$path</span>,   <span class="argument">$encoding = &#039;base64&#039;</span>) : string</pre>
+                <p><em>Encodes attachment in requested format.  Returns an
+empty string on failure.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$path </td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td></td>
+                                <td>$encoding </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    string
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_EncodeString" name="method_EncodeString" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">EncodeString()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">EncodeString(  <span class="argument">$str</span>,   <span class="argument">$encoding = &#039;base64&#039;</span>) : string</pre>
+                <p><em>Encodes string to requested format. Returns an
+empty string on failure.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$str </td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td></td>
+                                <td>$encoding </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    string
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_EncodeHeader" name="method_EncodeHeader" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">EncodeHeader()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">EncodeHeader(  <span class="argument">$str</span>,   <span class="argument">$position = &#039;text&#039;</span>) : string</pre>
+                <p><em>Encode a header string to best of Q, B, quoted or none.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$str </td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td></td>
+                                <td>$position </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    string
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_HasMultiBytes" name="method_HasMultiBytes" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">HasMultiBytes()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">HasMultiBytes(string  <span class="argument">$str</span>) : boolean</pre>
+                <p><em>Checks if a string contains multibyte characters.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$str </td>
+                                <td><p>multi-byte text to wrap encode</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    boolean
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_Base64EncodeWrapMB" name="method_Base64EncodeWrapMB" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">Base64EncodeWrapMB()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">Base64EncodeWrapMB(string  <span class="argument">$str</span>) : string</pre>
+                <p><em>Correctly encodes and wraps long multibyte strings for mail headers
+without breaking lines within a character.</em></p>
+                <p>Adapted from a function by paravoid at <a href="http://uk.php.net/manual/en/function.mb-encode-mimeheader.php">http://uk.php.net/manual/en/function.mb-encode-mimeheader.php</a></p>
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$str </td>
+                                <td><p>multi-byte text to wrap encode</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    string
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_EncodeQP" name="method_EncodeQP" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">EncodeQP()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">EncodeQP(  <span class="argument">$input = &#039;&#039;</span>, integer  <span class="argument">$line_max = 76</span>,   <span class="argument">$space_conv = false</span>) : string</pre>
+                <p><em>Encode string to quoted-printable.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$input </td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td>integer</td>
+                                <td>$line_max </td>
+                                <td><p>Number of chars allowed on a line before wrapping</p></td>
+                            </tr>
+                                                    <tr>
+                                <td></td>
+                                <td>$space_conv </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    string
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_EncodeQ" name="method_EncodeQ" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">EncodeQ()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">EncodeQ(  <span class="argument">$str</span>,   <span class="argument">$position = &#039;text&#039;</span>) : string</pre>
+                <p><em>Encode string to q encoding.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$str </td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td></td>
+                                <td>$position </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    string
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_AddStringAttachment" name="method_AddStringAttachment" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">AddStringAttachment()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">AddStringAttachment(string  <span class="argument">$string</span>, string  <span class="argument">$filename</span>, string  <span class="argument">$encoding = &#039;base64&#039;</span>, string  <span class="argument">$type = &#039;application/octet-stream&#039;</span>) : void</pre>
+                <p><em>Adds a string or binary attachment (non-filesystem) to the list.</em></p>
+                <p>This method can be used to attach ascii or binary data,
+such as a BLOB record from a database.</p>
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$string </td>
+                                <td><p>String attachment data.</p></td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$filename </td>
+                                <td><p>Name of the attachment.</p></td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$encoding </td>
+                                <td><p>File encoding (see $Encoding).</p></td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$type </td>
+                                <td><p>File extension (MIME) type.</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_AddEmbeddedImage" name="method_AddEmbeddedImage" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">AddEmbeddedImage()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">AddEmbeddedImage(string  <span class="argument">$path</span>, string  <span class="argument">$cid</span>, string  <span class="argument">$name = &#039;&#039;</span>, string  <span class="argument">$encoding = &#039;base64&#039;</span>, string  <span class="argument">$type = &#039;application/octet-stream&#039;</span>) : boolean</pre>
+                <p><em>Adds an embedded attachment.  This can include images, sounds, and
+just about any other document.  Make sure to set the $type to an
+image type.  For JPEG images use &quot;image/jpeg&quot; and for GIF images
+use &quot;image/gif&quot;.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$path </td>
+                                <td><p>Path to the attachment.</p></td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$cid </td>
+                                <td><p>Content ID of the attachment.  Use this to identify
+the Id for accessing the image in an HTML form.</p></td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$name </td>
+                                <td><p>Overrides the attachment name.</p></td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$encoding </td>
+                                <td><p>File encoding (see $Encoding).</p></td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$type </td>
+                                <td><p>File extension (MIME) type.</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    boolean
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_InlineImageExists" name="method_InlineImageExists" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">InlineImageExists()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">InlineImageExists() : boolean</pre>
+                <p><em>Returns true if an inline attachment is present.</em></p>
+                
+
+                
+                
+                                    <h4>Returns</h4>
+                    boolean
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_ClearAddresses" name="method_ClearAddresses" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">ClearAddresses()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">ClearAddresses() : void</pre>
+                <p><em>Clears all recipients assigned in the TO array.  Returns void.</em></p>
+                
+
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_ClearCCs" name="method_ClearCCs" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">ClearCCs()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">ClearCCs() : void</pre>
+                <p><em>Clears all recipients assigned in the CC array.  Returns void.</em></p>
+                
+
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_ClearBCCs" name="method_ClearBCCs" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">ClearBCCs()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">ClearBCCs() : void</pre>
+                <p><em>Clears all recipients assigned in the BCC array.  Returns void.</em></p>
+                
+
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_ClearReplyTos" name="method_ClearReplyTos" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">ClearReplyTos()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">ClearReplyTos() : void</pre>
+                <p><em>Clears all recipients assigned in the ReplyTo array.  Returns void.</em></p>
+                
+
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_ClearAllRecipients" name="method_ClearAllRecipients" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">ClearAllRecipients()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">ClearAllRecipients() : void</pre>
+                <p><em>Clears all recipients assigned in the TO, CC and BCC
+array.  Returns void.</em></p>
+                
+
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_ClearAttachments" name="method_ClearAttachments" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">ClearAttachments()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">ClearAttachments() : void</pre>
+                <p><em>Clears all previously set filesystem, string, and binary
+attachments.  Returns void.</em></p>
+                
+
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_ClearCustomHeaders" name="method_ClearCustomHeaders" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">ClearCustomHeaders()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">ClearCustomHeaders() : void</pre>
+                <p><em>Clears all custom headers.  Returns void.</em></p>
+                
+
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_IsError" name="method_IsError" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">IsError()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">IsError() : boolean</pre>
+                <p><em>Returns true if an error occurred.</em></p>
+                
+
+                
+                
+                                    <h4>Returns</h4>
+                    boolean
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_AddCustomHeader" name="method_AddCustomHeader" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">AddCustomHeader()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">AddCustomHeader(  <span class="argument">$custom_header</span>) : void</pre>
+                <p><em>Adds a custom header.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$custom_header </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_MsgHTML" name="method_MsgHTML" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">MsgHTML()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">MsgHTML(  <span class="argument">$message</span>,   <span class="argument">$basedir = &#039;&#039;</span>) : \SlightPHP\$message</pre>
+                <p><em>Evaluates the message and returns modifications for inline images and backgrounds</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$message </td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td></td>
+                                <td>$basedir </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    \SlightPHP\$message
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method__mime_types" name="method__mime_types" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">_mime_types()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">_mime_types(  <span class="argument">$ext = &#039;&#039;</span>) : \SlightPHP\mime</pre>
+                <p><em>Gets the mime type of the embedded or inline image</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$ext </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    \SlightPHP\mime
+                                            &mdash; <p>type of ext</p>
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_set" name="method_set" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">set()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">set(string  <span class="argument">$name</span>, mixed  <span class="argument">$value = &#039;&#039;</span>) </pre>
+                <p><em>Set (or reset) Class Objects (variables)</em></p>
+                <p>Usage Example:
+$page-&gt;set('X-Priority', '3');</p>
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$name </td>
+                                <td><p>Parameter Name</p></td>
+                            </tr>
+                                                    <tr>
+                                <td>mixed</td>
+                                <td>$value </td>
+                                <td><p>Parameter Value
+NOTE: will not work with arrays, there are no arrays to set/reset</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getFile" name="method_getFile" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">getFile()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getFile(string  <span class="argument">$filename</span>) </pre>
+                <p><em>Read a file from a supplied filename and return it.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$filename </td>
+                                <td><p>Parameter File Name</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_SecureHeader" name="method_SecureHeader" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">SecureHeader()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">SecureHeader(string  <span class="argument">$str</span>) : string</pre>
+                <p><em>Strips newlines to prevent header injection.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$str </td>
+                                <td><p>String</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    string
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_Sign" name="method_Sign" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">Sign()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">Sign(  <span class="argument">$cert_filename</span>, string  <span class="argument">$key_filename</span>, string  <span class="argument">$key_pass</span>) </pre>
+                <p><em>Set the private key file and password to sign the message.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$cert_filename </td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$key_filename </td>
+                                <td><p>Parameter File Name</p></td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$key_pass </td>
+                                <td><p>Password for private key</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_SetError" name="method_SetError" class="anchor"></a>
+            <article class="method">
+                <h3 class="private ">SetError()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">SetError(  <span class="argument">$msg</span>) : void</pre>
+                <p><em>Adds the error message to the error container.</em></p>
+                <p>Returns void.</p>
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$msg </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_RFCDate" name="method_RFCDate" class="anchor"></a>
+            <article class="method">
+                <h3 class="private ">RFCDate()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">RFCDate() : string</pre>
+                <p><em>Returns the proper RFC 822 formatted date.</em></p>
+                
+
+                
+                
+                                    <h4>Returns</h4>
+                    string
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                            <span class="label label-info">static</span>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_ServerHostname" name="method_ServerHostname" class="anchor"></a>
+            <article class="method">
+                <h3 class="private ">ServerHostname()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">ServerHostname() : string</pre>
+                <p><em>Returns the server hostname or &#039;localhost.localdomain&#039; if unknown.</em></p>
+                
+
+                
+                
+                                    <h4>Returns</h4>
+                    string
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_Lang" name="method_Lang" class="anchor"></a>
+            <article class="method">
+                <h3 class="private ">Lang()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">Lang(  <span class="argument">$key</span>) : string</pre>
+                <p><em>Returns a message in the appropriate language.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$key </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    string
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_FixEOL" name="method_FixEOL" class="anchor"></a>
+            <article class="method">
+                <h3 class="private ">FixEOL()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">FixEOL(  <span class="argument">$str</span>) : string</pre>
+                <p><em>Changes every end of line from CR or LF to CRLF.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$str </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    string
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    </div>
+    </section>
+
+    <div id="source-view" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="source-view-label" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="source-view-label">class.phpmailer.php</h3>
+        </div>
+        <div class="modal-body">
+            <pre data-src="../files/plugins/mail/class.phpmailer.php.txt" class="language-php line-numbers"></pre>
+        </div>
+    </div>
+
+    <footer class="row-fluid">
+        <section class="span10 offset2">
+            <section class="row-fluid">
+                <section class="span10 offset1">
+                    <section class="row-fluid footer-sections">
+                        <section class="span4">
+                                                        <h1><i class="icon-code"></i></h1>
+                            <div>
+                                <ul>
+                                                                            <li><a href="../namespaces/SlightPHP.html">\SlightPHP</a></li>
+                                                                    </ul>
+                            </div>
+                        </section>
+                        <section class="span4">
+                                                        <h1><i class="icon-bar-chart"></i></h1>
+                            <div>
+                                <ul>
+                                    <li><a href="../graphs/class.html">Class Hierarchy Diagram</a></li>
+                                </ul>
+                            </div>
+                        </section>
+                        <section class="span4">
+                                                        <h1><i class="icon-pushpin"></i></h1>
+                            <div>
+                                <ul>
+                                    <li><a href="../reports/errors.html">Errors</a></li>
+                                    <li><a href="../reports/markers.html">Markers</a></li>
+                                </ul>
+                            </div>
+                        </section>
+                    </section>
+                </section>
+            </section>
+            <section class="row-fluid">
+                <section class="span10 offset1">
+                    <hr />
+                    Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and authored
+                    on March 4th, 2016 at 11:58.
+                </section>
+            </section>
+        </section>
+    </footer>
+</div>
+
+</body>
+</html>

@@ -22,9 +22,11 @@
 #include "php.h"
 #include <regex.h>
 #include "ext/standard/info.h"
+#include "ext/standard/url.h"
 #include "php_slightphp7.h"
 
-static void print_flat_hash(HashTable *ht) /* {{{ */
+/*
+static void print_flat_hash(HashTable *ht) 
 {
 	zval *tmp;
 	zend_string *string_key;
@@ -45,6 +47,7 @@ static void print_flat_hash(HashTable *ht) /* {{{ */
 		zend_print_flat_zval_r(tmp);
 	} ZEND_HASH_FOREACH_END();
 }
+*/
 
 typedef struct _op_item{
 	time_t op_mtime;
@@ -66,7 +69,7 @@ static zend_class_entry * slightphp_ce_ptr = NULL;
 PHP_METHOD(slightphp, setAppDir)
 {
 	char* appDir;
-	int appDir_len;
+	size_t appDir_len;
 	if (zend_parse_parameters(ZEND_NUM_ARGS() , "s", &appDir,&appDir_len) == FAILURE) {
 		RETURN_FALSE;
 	}
@@ -79,7 +82,7 @@ PHP_METHOD(slightphp, setAppDir)
 PHP_METHOD(slightphp, setPathInfo)
 {
 	char* pathInfo;
-	int pathInfo_len;
+	size_t pathInfo_len;
 	if (zend_parse_parameters(ZEND_NUM_ARGS() , "s", &pathInfo,&pathInfo_len) == FAILURE) {
 		RETURN_FALSE;
 	}
@@ -99,31 +102,11 @@ PHP_METHOD(slightphp, getAppDir)
 }
 /* }}} getAppDir */
 
-/*
-   PHP_METHOD(slightphp, setPluginsDir)
-   {
-   char * pluginsDir = NULL;
-   int pluginsDir_len;
-   if (zend_parse_parameters(ZEND_NUM_ARGS() , "s", &pluginsDir,&pluginsDir_len) == FAILURE) {
-   RETURN_FALSE;
-   }
-//if (Z_TYPE_P(pluginsDir)!= IS_STRING){ RETURN_FALSE; }
-
-zend_update_static_property_string(slightphp_ce_ptr, "pluginsDir", sizeof("pluginsDir")-1, pluginsDir );
-RETURN_TRUE;
-}
-PHP_METHOD(slightphp, getPluginsDir)
-{
-zval *data = zend_read_static_property(slightphp_ce_ptr,"pluginsDir",sizeof("pluginsDir")-1,1 );
-RETURN_ZVAL(data,1,0);
-}
- */
-
 
 PHP_METHOD(slightphp, setDefaultZone)
 {
 	char* defaultZone= NULL;
-	int defaultZone_len;
+	size_t defaultZone_len;
 	if (zend_parse_parameters(ZEND_NUM_ARGS() , "s", &defaultZone,&defaultZone_len) == FAILURE) {
 		RETURN_FALSE;
 	}
@@ -142,7 +125,7 @@ PHP_METHOD(slightphp, getDefaultZone)
 PHP_METHOD(slightphp, setDefaultPage)
 {
 	char * defaultPage= NULL;
-	int defaultPage_len;
+	size_t defaultPage_len;
 	if (zend_parse_parameters(ZEND_NUM_ARGS() , "s", &defaultPage,&defaultPage_len) == FAILURE) {
 		RETURN_FALSE;
 	}
@@ -161,7 +144,7 @@ PHP_METHOD(slightphp, getDefaultPage)
 PHP_METHOD(slightphp, setDefaultEntry)
 {
 	char * defaultEntry= NULL;
-	int defaultEntry_len;
+	size_t defaultEntry_len;
 	if (zend_parse_parameters(ZEND_NUM_ARGS() , "s", &defaultEntry,&defaultEntry_len) == FAILURE) {
 		RETURN_FALSE;
 	}
@@ -179,7 +162,7 @@ PHP_METHOD(slightphp, getDefaultEntry)
 PHP_METHOD(slightphp, setSplitFlag)
 {
 	char * splitFlag = NULL;
-	int splitFlag_len;
+	size_t splitFlag_len;
 	if (zend_parse_parameters(ZEND_NUM_ARGS() , "s", &splitFlag, &splitFlag_len) == FAILURE) {
 		RETURN_FALSE;
 	}
@@ -196,7 +179,7 @@ PHP_METHOD(slightphp, getSplitFlag)
 PHP_METHOD(slightphp, setZoneAlias)
 {
 	char *zone, *alias;
-	int zone_len, alias_len;
+	size_t zone_len, alias_len;
 	if (zend_parse_parameters(ZEND_NUM_ARGS() , "ss", &zone, &zone_len, &alias ,&alias_len) == FAILURE) {
 		RETURN_FALSE;
 	}
@@ -214,14 +197,13 @@ PHP_METHOD(slightphp, setZoneAlias)
 PHP_METHOD(slightphp, getZoneAlias)
 {
 	char * zone= NULL;
-	int zone_len;
+	size_t zone_len;
 	if (zend_parse_parameters(ZEND_NUM_ARGS() , "s", &zone, &zone_len) == FAILURE) {
 		RETURN_FALSE;
 	}
 	zval *zoneAlias = zend_read_static_property(slightphp_ce_ptr,"zoneAlias",sizeof("zoneAlias")-1,1 );
 	if(!zoneAlias || Z_TYPE_P(zoneAlias)!=IS_ARRAY){ RETURN_FALSE; }
 	zval *token;
-	//if((token = zend_hash_find(Z_ARRVAL_P(zoneAlias),zone)) != NULL) {
 	if((token = zend_hash_find(Z_ARRVAL_P(zoneAlias),zend_string_init(zone, strlen(zone) , 0))) != NULL) {
 		*return_value = *token;
 		zval_copy_ctor(return_value);
@@ -232,7 +214,7 @@ PHP_METHOD(slightphp, getZoneAlias)
 
 PHP_METHOD(slightphp, setDebug)
 {
-	int _debug;
+	zend_long _debug;
 	if (zend_parse_parameters(ZEND_NUM_ARGS() , "l", &_debug) == FAILURE) {
 		RETURN_FALSE;
 	}
@@ -247,75 +229,21 @@ PHP_METHOD(slightphp, getDebug)
 }
 
 
-/* {{{ proto int loadFile(mixed filepath)
- */
-/*
-   PHP_METHOD(slightphp, loadFile)
-   {
-   zval * filepath = NULL;
-   if (zend_parse_parameters(ZEND_NUM_ARGS() , "z/", &filepath) == FAILURE) {
-   RETURN_FALSE;
-   }
-   if (Z_TYPE_P(filepath)!= IS_STRING){
-   RETURN_FALSE;
-   }
-
-   if(slightphp_loadFile(filepath )==SUCCESS){
-   RETURN_TRUE;
-   }else{
-   RETURN_FALSE;
-   }
-   }
- */
-/* }}} loadFile */
-
-
-
-/* {{{ proto int loadPlugin(mixed pluginName)
- */
-/*
-   PHP_METHOD(slightphp, loadPlugin)
-   {
-//zval * pluginName = NULL;
-char * pluginName = NULL;
-int pluginName_len;
-if (zend_parse_parameters(ZEND_NUM_ARGS() , "s", &pluginName,&pluginName_len) == FAILURE) {
-RETURN_FALSE;
-}	
-
-zval *pluginsDir = zend_read_static_property(slightphp_ce_ptr,"pluginsDir",sizeof("pluginsDir")-1,1 );
-char*inc_filename;
-spprintf(&inc_filename,0,"%s%c%s.class.php",Z_STRVAL_P(pluginsDir),DEFAULT_SLASH,pluginName);
-zval file_name;
-ZVAL_STRING(&file_name,inc_filename,1);
-if(slightphp_loadFile(&file_name )==SUCCESS){;
-efree(inc_filename);
-RETURN_TRUE;
-}else{
-efree(inc_filename);
-RETURN_FALSE;
-}
-}
- */
-/* }}} loadPlugin */
-
-
-
 /* {{{ proto void __construct([mixed version])
  */
 PHP_METHOD(slightphp, __construct)
 {
-	zend_class_entry * _this_ce;
-	zval * _this_zval;
+	//zend_class_entry * _this_ce;
+	//zval * _this_zval;
 
-	zval * version = NULL;
+	//zval * version = NULL;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() , "|z/", &version) == FAILURE) {
-		return;
-	}
+	//if (zend_parse_parameters(ZEND_NUM_ARGS() , "|z/", &version) == FAILURE) {
+	//	return;
+	//}
 
-	_this_zval = getThis();
-	_this_ce = Z_OBJCE_P(_this_zval);
+	//_this_zval = getThis();
+	//_this_ce = Z_OBJCE_P(_this_zval);
 }
 /* }}} __construct */
 
@@ -334,6 +262,7 @@ PHP_METHOD(slightphp, run)
 	//{{{
 	int isPart;
 	zval * path = NULL;
+	zval path_7;
 	if (ZEND_NUM_ARGS()>0 && zend_parse_parameters(ZEND_NUM_ARGS() , "z/", &path) != FAILURE) {
 		if (Z_TYPE_P(path)!= IS_STRING){
 			RETURN_FALSE;
@@ -348,13 +277,28 @@ PHP_METHOD(slightphp, run)
 			zend_string *server = zend_string_init("_SERVER", sizeof("_SERVER") - 1, 0);
 			zend_is_auto_global(server);
 			zval *server_vars;
+			zval *token= NULL;
 			if ((server_vars = zend_hash_find(&EG(symbol_table), server)) != NULL && Z_TYPE_P(server_vars) == IS_ARRAY){
 				if((path = zend_hash_str_find(Z_ARRVAL_P(server_vars), "PATH_INFO", sizeof("PATH_INFO")-1))!=NULL && Z_TYPE_P(path) == IS_STRING) {
-				}else if((path = zend_hash_str_find(Z_ARRVAL_P(server_vars), "REQUEST_URI", sizeof("REQUEST_URI")-1))!=NULL && Z_TYPE_P(path) == IS_STRING) {
+				}else if((token = zend_hash_str_find(Z_ARRVAL_P(server_vars), "REQUEST_URI", sizeof("REQUEST_URI")-1))!=NULL && Z_TYPE_P(token) == IS_STRING) {
+					php_url *resource=NULL;
+					resource = php_url_parse(Z_STRVAL_P(token));
+					if(resource != NULL && resource->path != NULL){
+						ZVAL_STRING(&path_7, resource->path);
+						path = &path_7;
+					}else{
+						path = token;
+					}
+					if (resource) {
+						php_url_free(resource);	
+					}
 				}
 			}
 
 
+			zend_string_release(server);
+			if(server_vars)zval_dtor(server_vars);
+			if(token)zval_dtor(token);
 		}
 		//zend_print_flat_zval_r(path);
 	}
@@ -400,9 +344,9 @@ PHP_METHOD(slightphp, run)
 			regfree(&re);
 		}
 		efree(regex);
-		print_flat_hash(Z_ARRVAL_P(&path_array));
+		//print_flat_hash(Z_ARRVAL_P(&path_array));
 		//}}}
-		int n_elems = zend_hash_num_elements(Z_ARRVAL_P(&path_array));
+		//int n_elems = zend_hash_num_elements(Z_ARRVAL_P(&path_array));
 		if((zone = zend_hash_index_find(Z_ARRVAL_P(&path_array), 0)) != NULL ) {
 		}
 		if((page = zend_hash_index_find(Z_ARRVAL_P(&path_array), 1)) != NULL ) {
@@ -433,9 +377,9 @@ PHP_METHOD(slightphp, run)
 		zend_string *string_key= NULL;
 		HashPosition pos;
 
-		zval *entry2;
+		zval *entry2=NULL;
 		zend_hash_internal_pointer_reset_ex(Z_ARRVAL_P(zoneAlias), &pos);
-		while (pos = zend_hash_get_current_data_ex(Z_ARRVAL_P(zoneAlias), (void *)entry2 ) == SUCCESS) {
+		while ((pos = zend_hash_get_current_data_ex(Z_ARRVAL_P(zoneAlias), (void *)entry2 ) == SUCCESS)) {
 			if(strcmp(Z_STRVAL_P(entry2) ,Z_STRVAL_P(zone))==0){
 				switch (pos = zend_hash_get_current_key_ex(Z_ARRVAL_P(zoneAlias), &string_key, &num_key,&pos)) {
 					case HASH_KEY_IS_STRING:
@@ -476,17 +420,24 @@ PHP_METHOD(slightphp, run)
 	if(slightphp_load(appDir,zone,page ) == SUCCESS){
 		if(slightphp_run(zone,page,entry,return_value,1,params )==SUCCESS){
 			zval_dtor(&path_array);
+			if(appDir)zval_dtor(appDir);
+			if(zone)zval_dtor(zone);
+			if(page)zval_dtor(page);
+			if(entry)zval_dtor(entry);
+			if(zoneAlias)zval_dtor(zoneAlias);
+			if(path)zval_dtor(path);
+			zval_dtor(params);
 			RETURN_ZVAL(return_value,1,0);
 		};
 	}
-	zval_dtor(appDir);
-	zval_dtor(params);
-	zval_dtor(zone);
-	zval_dtor(page);
-	zval_dtor(entry);
-	zval_dtor(zoneAlias);
-	zval_dtor(path);
+	if(appDir)zval_dtor(appDir);
+	if(zone)zval_dtor(zone);
+	if(page)zval_dtor(page);
+	if(entry)zval_dtor(entry);
+	if(zoneAlias)zval_dtor(zoneAlias);
+	if(path)zval_dtor(path);
 	zval_dtor(&path_array);
+	zval_dtor(params);
 	RETURN_FALSE;
 }
 /* }}} run */
@@ -538,7 +489,7 @@ static void class_init_slightphp(TSRMLS_D)
 	/* {{{ Property registration */
 
 	zend_declare_property_string(slightphp_ce_ptr, 
-			"appDir", 6, ".", 
+			"appDir", sizeof("appDir")-1 , ".", 
 			ZEND_ACC_STATIC|ZEND_ACC_PUBLIC );
 
 	zend_declare_property_string(slightphp_ce_ptr, 
@@ -677,7 +628,7 @@ PHP_MINFO_FUNCTION(slightphp)
 {
 	php_info_print_table_start();
 	php_info_print_table_colspan_header(2,"SlightPHP Framework");
-	php_info_print_table_row(2, "Version", "1.1 stable(2015-12-10)" );
+	php_info_print_table_row(2, "Version", "3.0 stable(2016-3-18)" );
 	php_info_print_table_row(2, "Authors", "hetao@hetao.name" );
 	php_info_print_table_row(2, "Supports", "https://github.com/hetao29/slightphp" );
 	php_info_print_table_end();

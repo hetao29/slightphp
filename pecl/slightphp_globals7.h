@@ -15,6 +15,7 @@
 #ifdef HAVE_CONFIG_H
 	#include "config.h"
 #endif
+#include <ext/standard/basic_functions.h>
 
 int debug(char*format,...);
 int slightphp_load(zval*appDir,zval*zone,zval*class_name TSRMLS_DC);

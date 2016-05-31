@@ -18,6 +18,7 @@
  * @package SlightPHP
  * @subpackage SCache
  */
+namespace SlightPHP;
 class Cache_APC extends CacheObject{
 	function init($params=array()){}
 	/**
@@ -51,4 +52,3 @@ class Cache_APC extends CacheObject{
 	}
 
 }
-?>

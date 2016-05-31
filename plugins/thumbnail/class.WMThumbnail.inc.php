@@ -15,6 +15,7 @@
 /**
 * include base class
 */
+namespace SlightPHP;
 require_once 'class.Thumbnail.inc.php';
 
 /**
@@ -302,4 +303,3 @@ class WMThumbnail extends Thumbnail {
 	} // end function
 	*/
 } // end class CachedThumbnail
-?>

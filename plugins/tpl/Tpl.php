@@ -17,6 +17,7 @@
 /**
  * @package SlightPHP \STpl
  */
+namespace SlightPHP;
 require_once(dirname(__FILE__)."/Tpl.modifier.php");
 require_once(dirname(__FILE__)."/Tpl.function.php");
 class Tpl{
@@ -56,7 +57,7 @@ class Tpl{
 		//替换特殊字符
 		self::$_tmpData=array();
 		self::$_tmpIndex=0;
-		$content = preg_replace_callback("/([\'\"])(.+?)\\1/m",array("Tpl","_tmpData"),$content);
+		$content = preg_replace_callback("/([\'\"])(.+?)\\1/m",array("SlightPHP\Tpl","_tmpData"),$content);
 		//{{{if,elseif,/if; foreach,/foreach; for,/for
 		$pattern = "/^(if|foreach|for)(([\s|\(]+)(.+))/msi";
 		$content = preg_replace_callback($pattern,create_function('$m','$t = trim($m[3]);$v = trim($m[2]);if(empty($t)){return "{$m[1]}($v){";}else{return "{$m[1]}$v{";}'),$content);
@@ -71,7 +72,7 @@ class Tpl{
 		//{fun ($param1,$param2,"param3")}
 		$pattern = "/^(\w+)\\s+(.*)/ms";
 		do{
-			$content = preg_replace_callback($pattern,array("Tpl","_matchfunction"),$content,-1,$ct);
+			$content = preg_replace_callback($pattern,array("SlightPHP\Tpl","_matchfunction"),$content,-1,$ct);
 		}while(0);
 		//modifier，支持多种格式，与多极modifier
 		//{$v|modifer}
@@ -79,11 +80,11 @@ class Tpl{
 		//{'v'|modifer:1:2|modifer:3}
 		$pattern = "/(.+?)\\|([^\\|]+)/ms";
 		do{
-			$content = preg_replace_callback($pattern,array("Tpl","_matchmodifier"),$content,-1,$ct);
+			$content = preg_replace_callback($pattern,array("SlightPHP\Tpl","_matchmodifier"),$content,-1,$ct);
 		}while($ct);
 		//{{{替换变量,加ECHO
 		$patterns = array('/\$(\w+)/ms','/^(?!(if|else|for|foreach|elseif))(\w+)([^\=]+)$/ms');
-		$replacements=array('Tpl::$_tpl_vars["\1"]','echo \\0');
+		$replacements=array('SlightPHP\Tpl::$_tpl_vars["\1"]','echo \\0');
 		$content = preg_replace($patterns,$replacements,$content);
 		//还原特殊字符
 		$content = str_replace(array_keys(self::$_tmpData),self::$_tmpData,$content);
@@ -140,7 +141,7 @@ class Tpl{
 		$pattern="/{$left_delimiter_quote}\*(.*)\*{$right_delimiter_quota}/msU";
 		$content = preg_replace($pattern,"<?php /*\\1*/?>",$content);
 		$pattern="/{$left_delimiter_quote}([\S].*){$right_delimiter_quota}/msU";
-		return preg_replace_callback($pattern,array("Tpl",'_match'),$content);
+		return preg_replace_callback($pattern,array("SlightPHP\Tpl",'_match'),$content);
 	}
 	private static $_tmpData;
 	private static $_tmpIndex=0;

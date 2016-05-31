@@ -18,6 +18,7 @@
  * @package SlightPHP
  * @subpackage SDb
  */
+namespace SlightPHP;
 class Db_PDO extends DbObject{
 	/**
 	 * 
@@ -483,4 +484,3 @@ class Db_PDO extends DbObject{
 		return $condiStr;
 	}
 }
-?>

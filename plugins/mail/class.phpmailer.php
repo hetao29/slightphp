@@ -32,6 +32,7 @@
  * @author Andy Prevost
  * @copyright 2004 - 2008 Andy Prevost
  */
+namespace SlightPHP;
 class PHPMailer {
 
   /////////////////////////////////////////////////
@@ -1894,4 +1895,3 @@ class PHPMailer {
   }
 }
 
-?>

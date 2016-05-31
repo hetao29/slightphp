@@ -14,22 +14,23 @@
   }}}*/
 int debug(char*format,...){
 		TSRMLS_FETCH();
+		int cc=0;
 		zval *_debug_flag = zend_read_static_property(slightphp_ce_ptr,"_debug",sizeof("_debug")-1,1 TSRMLS_CC);
 		convert_to_long(_debug_flag);
 		if(Z_LVAL_P(_debug_flag))
 		{
 				va_list args;
 				char *buffer;
-				int size;
 				TSRMLS_FETCH();
 
 				va_start(args, format);
-				size = vspprintf(&buffer, 0, format, args);
+				cc = vspprintf(&buffer, 0, format, args);
 				_php_error_log(0,buffer,NULL,NULL TSRMLS_CC);
 				zend_printf("<!--slightphp debug:%s-->",buffer);
 				efree(buffer);
 				va_end(args);
 		}
+		return cc;
 }
 
 
@@ -57,7 +58,7 @@ int slightphp_load(zval*appDir,zval*zone,zval*class_name TSRMLS_DC){
 		return FAILURE;
 }
 int slightphp_loadFile(char*file_name TSRMLS_DC){
-		int dummy = 1;
+		//int dummy = 1;
 		zend_file_handle file_handle;
 		int ret;
 
@@ -84,9 +85,15 @@ int slightphp_run(zval*zone,zval*class_name,zval*method,zval*return_value, int p
 		char *real_classname;
 		spprintf(&real_classname,0,"%s_%s",Z_STRVAL_P(zone),Z_STRVAL_P(class_name));
 
+		char *real_classname_lower = zend_str_tolower_dup(real_classname,strlen(real_classname));
+
 		zval real_classname_zval;
 		ZVAL_STRING(&real_classname_zval, real_classname, 1);
+
+		zval real_classname_check;
+		ZVAL_STRING(&real_classname_check, real_classname_lower, 1);
 		efree(real_classname);
+		efree(real_classname_lower);
 
 		char *real_method;
 		spprintf(&real_method,0,"page%s",Z_STRVAL_P(method));
@@ -96,8 +103,11 @@ int slightphp_run(zval*zone,zval*class_name,zval*method,zval*return_value, int p
 		efree(real_method);
 
 		zend_class_entry * ce = NULL, **pce;
-		if(zend_hash_find(EG(class_table),Z_STRVAL(real_classname_zval),Z_STRLEN(real_classname_zval)+1,(void **)&pce)==FAILURE){
+		if(zend_hash_find(EG(class_table),Z_STRVAL(real_classname_check),Z_STRLEN(real_classname_check)+1,(void **)&pce)==FAILURE){
 				debug("class[%s] not exists",Z_STRVAL(real_classname_zval));
+				zval_dtor(&real_classname_zval);
+				zval_dtor(&real_classname_check);
+				zval_dtor(&real_method_zval);
 				return FAILURE;
 		} else {
 
@@ -109,14 +119,17 @@ int slightphp_run(zval*zone,zval*class_name,zval*method,zval*return_value, int p
         		if (ce->constructor) {
 						zval tmp_method;
         		        ZVAL_STRING(&tmp_method, ce->constructor->common.function_name, 1);
-        		        if(call_user_function(NULL, &object, &tmp_method, &c_ret, 0, NULL TSRMLS_CC)!=SUCCESS){
+        		        if(call_user_function(NULL, &object, &tmp_method, &c_ret, param_count, params TSRMLS_CC)!=SUCCESS){
 								php_error_docref(NULL TSRMLS_CC, E_ERROR, "Error calling constructor");
         		    	}           
 						zval_dtor(&tmp_method);
         		}   
-				zval_dtor(&c_ret);
 				int r=call_user_function(NULL, &object, &real_method_zval, return_value, param_count, params TSRMLS_CC);
-				zval_ptr_dtor(&object);
+				zval_dtor(object);
+				zval_dtor(&c_ret);
+				zval_dtor(&real_classname_zval);
+				zval_dtor(&real_classname_check);
+				zval_dtor(&real_method_zval);
 				if(r!=SUCCESS){
 						debug("method[%s] not exists in class[%s]",Z_STRVAL(real_method_zval),Z_STRVAL(real_classname_zval));
 						return FAILURE;

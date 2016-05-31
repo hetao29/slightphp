@@ -18,6 +18,7 @@
  * @package SlightPHP
  * @subpackage SDb
  */
+namespace SlightPHP;
 class DbData{
 	/**
 	 * @var int
@@ -49,4 +50,3 @@ class DbData{
 	var $items;//array(array(),array());
 
 }
-?>

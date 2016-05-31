@@ -18,6 +18,7 @@
  * @package SlightPHP
  * @subpackage SDb
  */
+namespace SlightPHP;
 class Db{
 	/**
 	 * 
@@ -392,7 +393,7 @@ class Db{
 			}
 			if($stmt->execute ()){
 				if($sql_mode==2){
-					return $stmt->fetchAll (PDO::FETCH_ASSOC );
+					return $stmt->fetchAll (\PDO::FETCH_ASSOC );
 				}elseif($sql_mode==3){
 					return Db::$_globals[$this->_key]->lastInsertId();
 				}else{
@@ -436,7 +437,7 @@ class Db{
 					mysql_select_db($this->database,Db::$_globals[$this->_key]);
 				}
 			}elseif($this->engine=="mysqli"){
-				Db::$_globals[$this->_key] = new mysqli($this->host,$this->user,$this->password,$this->database,$this->port);
+				Db::$_globals[$this->_key] = new \mysqli($this->host,$this->user,$this->password,$this->database,$this->port);
 				if(Db::$_globals[$this->_key]->connect_errno) {
 					if(defined("DEBUG")){
 						trigger_error("CONNECT DATABASE ERROR ( ".Db::$_globals[$this->_key]->connect_error." ) ",E_USER_WARNING);
@@ -449,7 +450,14 @@ class Db{
 				$tmp = explode("_",$this->engine);
 				$driver =$tmp[1];
 				try{
-					Db::$_globals[$this->_key] = new PDO($driver .":dbname=".$this->database.";host=".$this->host.";port=".$this->port,$this->user,$this->password);
+					Db::$_globals[$this->_key] = new \PDO(
+						$driver .":dbname=".$this->database.";host=".$this->host.";port=".$this->port,
+						$this->user,
+						$this->password,
+						array(
+							\PDO::ATTR_PERSISTENT => true
+						)
+					);
 				}catch(Exception $e){
 					if(defined("DEBUG")){
 						trigger_error("CONNECT DATABASE ERROR ( ".$e->getMessage()." ) ",E_USER_WARNING);
@@ -518,5 +526,4 @@ class Db{
 		return $r;
 	}
 }
-?>
 

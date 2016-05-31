@@ -5,16 +5,11 @@ define("ROOT_WWW",			ROOT."/www");
 define("ROOT_APP",			ROOT."/app");
 define("ROOT_CONFIG",		ROOT."/config");
 define("ROOT_SLIGHTPHP",	ROOT."/../");
-define("ROOT_PLIGUNS",		ROOT."/../plugins");
-require_once(ROOT_SLIGHTPHP."/SlightPHP.php");
+require_once(ROOT_SLIGHTPHP."/vendor/autoload.php");
 //{{{
-function __autoload($class){
-	if($class{0}=="S"){
-		$file = ROOT_PLIGUNS."/$class.class.php";
-	}else{
-		$file = SlightPHP::$appDir."/".str_replace("_","/",$class).".class.php";
-	}
-	if(file_exists($file)) return require_once($file);
-}
-spl_autoload_register('__autoload');
+spl_autoload_register(function($class){
+	$file = SlightPHP::$appDir."/".str_replace("_","/",$class).".class.php";
+	if(is_file($file)) return require_once($file);
+
+});
 //}}}
