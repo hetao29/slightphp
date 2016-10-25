@@ -1,7 +1,7 @@
 # Workerman 和 Slightphp 结合#
 
 
-```
+```php
 require_once(ROOT_LIBS."/Workerman-master/Autoloader.php");
 
 use Workerman\Worker;
