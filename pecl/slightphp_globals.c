@@ -35,8 +35,8 @@ int debug(char*format,...){
 
 
 int slightphp_load(zval*appDir,zval*zone,zval*class_name TSRMLS_DC){
+		int ret = FAILURE;
 		char*inc_filename;
-		int ret;
 		spprintf(&inc_filename,0,"%s%c%s%c%s.page.php",
 						Z_STRVAL_P(appDir),
 						DEFAULT_SLASH,
@@ -51,33 +51,30 @@ int slightphp_load(zval*appDir,zval*zone,zval*class_name TSRMLS_DC){
 		char resolved_path_buff[MAXPATHLEN];
 		if (VCWD_REALPATH(Z_STRVAL(file_name), resolved_path_buff)) {
 				ret = slightphp_loadFile((char*)&resolved_path_buff TSRMLS_CC);
-				return ret;
 		}else{
 				debug("file[%s] not exists",Z_STRVAL(file_name));
 		}
-		return FAILURE;
+		zval_dtor(&file_name);
+		return ret;
 }
 int slightphp_loadFile(char*file_name TSRMLS_DC){
-		//int dummy = 1;
-		zend_file_handle file_handle;
 		int ret;
+		zend_file_handle file_handle;
 
-		if(zend_stream_open(file_name, &file_handle TSRMLS_CC)==SUCCESS){;
-				if (!file_handle.opened_path) {
-						file_handle.opened_path = estrndup(file_name, strlen(file_name));
-				}
-				if(file_handle.opened_path) {
-						if(zend_hash_exists(&EG(included_files),file_handle.opened_path, strlen(file_handle.opened_path)+1)){
-								zend_destroy_file_handle(&file_handle TSRMLS_CC);
-								return SUCCESS;
-						}else{
-								ret = zend_execute_scripts(ZEND_REQUIRE_ONCE TSRMLS_CC, NULL, 1, &file_handle);
-								zend_destroy_file_handle(&file_handle TSRMLS_CC);
-								return ret;
-						}
-				}
+		file_handle.type = ZEND_HANDLE_FILENAME;
+		file_handle.handle.fd = 0;
+		file_handle.filename = file_name;
+		file_handle.opened_path = NULL;
+		file_handle.free_filename = 0;
+
+		if(zend_hash_exists(&EG(included_files),file_name, strlen(file_name)+1)){
+				return SUCCESS;
+		}else{
+				zend_try {
+						ret = zend_execute_scripts(ZEND_INCLUDE TSRMLS_CC, NULL, 1, &file_handle);
+				} zend_end_try();
 		}
-		return FAILURE;
+		return ret;
 }
 int slightphp_run(zval*zone,zval*class_name,zval*method,zval*return_value, int param_count,zval * params[] TSRMLS_DC){
 		zval *object;
@@ -116,6 +113,9 @@ int slightphp_run(zval*zone,zval*class_name,zval*method,zval*return_value, int p
 				object_init_ex(object,ce);
 				zval c_ret;
 				INIT_ZVAL(c_ret);
+
+
+
         		if (ce->constructor) {
 						zval tmp_method;
         		        ZVAL_STRING(&tmp_method, ce->constructor->common.function_name, 1);
@@ -125,7 +125,7 @@ int slightphp_run(zval*zone,zval*class_name,zval*method,zval*return_value, int p
 						zval_dtor(&tmp_method);
         		}   
 				int r=call_user_function(NULL, &object, &real_method_zval, return_value, param_count, params TSRMLS_CC);
-				zval_dtor(object);
+				zval_ptr_dtor(&object);
 				zval_dtor(&c_ret);
 				zval_dtor(&real_classname_zval);
 				zval_dtor(&real_classname_check);
