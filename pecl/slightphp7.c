@@ -270,9 +270,7 @@ PHP_METHOD(slightphp, run)
 		isPart = 1;
 	}else{
 		isPart = 0;
-		path = zend_read_static_property(slightphp_ce_ptr,"pathInfo",sizeof("pathInfo")-1,1 );
-		int s = Z_STRLEN_P(path);
-		if(s==0){
+		{
 
 			zend_string *server = zend_string_init("_SERVER", sizeof("_SERVER") - 1, 0);
 			zend_is_auto_global(server);
@@ -425,7 +423,7 @@ PHP_METHOD(slightphp, run)
 			if(page)zval_dtor(page);
 			if(entry)zval_dtor(entry);
 			if(zoneAlias)zval_dtor(zoneAlias);
-			if(path)zval_dtor(path);
+			if(path);zval_ptr_dtor(path);
 			zval_dtor(params);
 			RETURN_ZVAL(return_value,1,0);
 		};
@@ -435,7 +433,7 @@ PHP_METHOD(slightphp, run)
 	if(page)zval_dtor(page);
 	if(entry)zval_dtor(entry);
 	if(zoneAlias)zval_dtor(zoneAlias);
-	if(path)zval_dtor(path);
+	if(path);zval_ptr_dtor(path);
 	zval_dtor(&path_array);
 	zval_dtor(params);
 	RETURN_FALSE;

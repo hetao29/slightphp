@@ -12,7 +12,7 @@
   | Supports: http://www.slightphp.com                                    |
   +-----------------------------------------------------------------------+
   }}}*/
-int debug(char*format,...){
+int debug(char*format,... TSRMLS_DC){
 	TSRMLS_FETCH();
 	zval *_debug_flag = zend_read_static_property(slightphp_ce_ptr,"_debug",sizeof("_debug")-1,1 );
 	convert_to_long(_debug_flag);
@@ -63,23 +63,21 @@ int slightphp_load(zval*appDir,zval*zone,zval*class_name TSRMLS_DC){
 int slightphp_loadFile(char*file_name TSRMLS_DC){
 	zend_file_handle file_handle;
 	int ret;
-
-	if(zend_stream_open(file_name, &file_handle )==SUCCESS){;
-		if (!file_handle.opened_path) {
-			file_handle.opened_path = zend_string_init(file_name, strlen(file_name),0 );
-		}
-		if(file_handle.opened_path) {
-			if(zend_hash_exists(&EG(included_files),file_handle.opened_path)){
-				zend_destroy_file_handle(&file_handle );
-				return SUCCESS;
-			}else{
-				ret = zend_execute_scripts(ZEND_REQUIRE_ONCE , NULL, 1, &file_handle);
-				zend_destroy_file_handle(&file_handle );
-				return ret;
-			}
-		}
+	file_handle.type = ZEND_HANDLE_FILENAME;
+	file_handle.filename = file_name;
+	file_handle.opened_path = NULL;
+	file_handle.free_filename = 0;
+	zend_string * real_file_name= zend_string_init(file_name, strlen(file_name), 1);
+	if(zend_hash_exists(&EG(included_files),real_file_name)){
+		zend_string_release(real_file_name);
+		return SUCCESS;
+	}else{
+		zend_try {
+			ret = zend_execute_scripts(ZEND_INCLUDE, NULL, 1, &file_handle);
+		} zend_end_try();
 	}
-	return FAILURE;
+	zend_string_release(real_file_name);
+	return ret;
 }
 int slightphp_run(zval*zone,zval*class_name,zval*method,zval*return_value, int param_count,zval params[] TSRMLS_DC){
 	zval object;
