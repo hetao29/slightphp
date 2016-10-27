@@ -107,6 +107,7 @@ int slightphp_run(zval*zone,zval*class_name,zval*method,zval*return_value, int p
 		debug("class[%s] not exists",ZSTR_VAL(real_classname_zval));
 		zend_string_release(real_classname_zval);
 		zval_dtor(&real_method_zval);
+		zval_dtor(&object);
 		return FAILURE;
 	} else {
 		object_init_ex(&object,ce);
@@ -127,6 +128,7 @@ int slightphp_run(zval*zone,zval*class_name,zval*method,zval*return_value, int p
 			zval_dtor(&real_method_zval);
 			zval_dtor(&object);
 			return FAILURE;
+
 		}
 	}
 	zend_string_release(real_classname_zval);
@@ -135,7 +137,7 @@ int slightphp_run(zval*zone,zval*class_name,zval*method,zval*return_value, int p
 	return SUCCESS;
 }
 
-int preg_quote(zval *in_str,zval*out_str){
+int preg_quote(zval *in_str,zval*out_str TSRMLS_DC){
 	if(Z_STRLEN_P(in_str)==0){
 		return 0;
 	}
