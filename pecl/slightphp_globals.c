@@ -12,7 +12,7 @@
   | Supports: http://www.slightphp.com                                    |
   +-----------------------------------------------------------------------+
   }}}*/
-int debug(char*format,...){
+int debug(char*format,... TSRMLS_DC){
 		TSRMLS_FETCH();
 		int cc=0;
 		zval *_debug_flag = zend_read_static_property(slightphp_ce_ptr,"_debug",sizeof("_debug")-1,1 TSRMLS_CC);
@@ -100,6 +100,9 @@ int slightphp_run(zval*zone,zval*class_name,zval*method,zval*return_value, int p
 		efree(real_method);
 
 		zend_class_entry * ce = NULL, **pce;
+
+
+
 		if(zend_hash_find(EG(class_table),Z_STRVAL(real_classname_check),Z_STRLEN(real_classname_check)+1,(void **)&pce)==FAILURE){
 				debug("class[%s] not exists",Z_STRVAL(real_classname_zval));
 				zval_dtor(&real_classname_zval);
@@ -138,7 +141,7 @@ int slightphp_run(zval*zone,zval*class_name,zval*method,zval*return_value, int p
 		return SUCCESS;
 }
 
-int preg_quote(zval *in_str,zval*out_str){
+int preg_quote(zval *in_str,zval*out_str TSRMLS_DC){
 		if(Z_STRLEN_P(in_str)==0){
 				return 0;
 		}

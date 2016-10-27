@@ -310,7 +310,7 @@ PHP_METHOD(slightphp, run)
 
 		zval **token;
 		zval **server_vars ,**path_info;
-		zval path_array;
+		zval *path_array;
 
 		//{{{
 		int isPart;
@@ -322,28 +322,33 @@ PHP_METHOD(slightphp, run)
 				isPart = 1;
 		}else{
 			isPart = 0;
-			MAKE_STD_ZVAL(path);
 			php_url *resource=NULL;
 			zend_is_auto_global("_SERVER", sizeof("_SERVER") - 1 TSRMLS_CC);
 			if (zend_hash_find(&EG(symbol_table), "_SERVER", sizeof("_SERVER"), (void **) &server_vars) == SUCCESS && Z_TYPE_PP(server_vars) == IS_ARRAY){
 				if(zend_hash_find(Z_ARRVAL_PP(server_vars), "PATH_INFO", sizeof("PATH_INFO"), (void **) &path_info)==SUCCESS && Z_TYPE_PP(path_info) == IS_STRING) {
-					resource = php_url_parse(Z_STRVAL_PP(path_info));
 				}else if(zend_hash_find(Z_ARRVAL_PP(server_vars), "REQUEST_URI", sizeof("REQUEST_URI"), (void **) &path_info)==SUCCESS && Z_TYPE_PP(path_info) == IS_STRING) {
-					resource = php_url_parse(Z_STRVAL_PP(path_info));
-				}else{
 				}
 			}
-			if(resource){
-				if(resource != NULL && resource->path != NULL){
-					ZVAL_STRING(path,resource->path,1);
+			if(path_info){
+				if(*(Z_STRVAL_PP(path_info)+1) == '/'){
+					resource = php_url_parse(Z_STRVAL_PP(path_info)+1);
 				}else{
-					path = *path_info;
+					resource = php_url_parse(Z_STRVAL_PP(path_info)+1);
 				}
-				php_url_free(resource);	
+				if(resource != NULL){
+					MAKE_STD_ZVAL(path);
+					if(resource->path != NULL){
+						ZVAL_STRING(path,resource->path,1);
+					}else{
+						ZVAL_STRING(path,Z_STRVAL_PP(path_info),1);
+					}
+					php_url_free(resource);	
+				}
 			}
 		}
 		//}}}
-		array_init(&path_array);
+		MAKE_STD_ZVAL(path_array);
+		array_init(path_array);
 
 		if (path){
 				//{{{
@@ -371,26 +376,26 @@ PHP_METHOD(slightphp, run)
 								}else if (subs[0].rm_so == 0 && subs[0].rm_eo == 0) {
 								}else{
 										size = subs[0].rm_so;
-										add_next_index_stringl(&path_array, strp, size, 1);
+										add_next_index_stringl(path_array, strp, size, 1);
 										strp += size;
 
 								}
 						}
 						if (!err || err == REG_NOMATCH) {
 								size = endp - strp;
-								if(size>0) add_next_index_stringl(&path_array, strp, size, 1);
+								if(size>0) add_next_index_stringl(path_array, strp, size, 1);
 						}
 						regfree(&re);
 				}
 				efree(regex);
 				//}}}
-				if(zend_hash_index_find(Z_ARRVAL(path_array), 0, (void **)&token) != FAILURE) {
+				if(zend_hash_index_find(Z_ARRVAL_P(path_array), 0, (void **)&token) != FAILURE) {
 						zone = *token;
 				}
-				if(zend_hash_index_find(Z_ARRVAL(path_array), 1, (void **)&token) != FAILURE) {
+				if(zend_hash_index_find(Z_ARRVAL_P(path_array), 1, (void **)&token) != FAILURE) {
 						page = *token;
 				}
-				if(zend_hash_index_find(Z_ARRVAL(path_array), 2, (void **)&token) != FAILURE) {
+				if(zend_hash_index_find(Z_ARRVAL_P(path_array), 2, (void **)&token) != FAILURE) {
 						entry = *token;
 				}
 				zval_dtor(&quotedFlag);
@@ -398,15 +403,15 @@ PHP_METHOD(slightphp, run)
 		}
 		if(!zone){
 				zone = zend_read_static_property(slightphp_ce_ptr,"defaultZone",sizeof("defaultZone")-1,1 TSRMLS_CC);
-				zend_hash_next_index_insert(Z_ARRVAL(path_array),&zone,sizeof(zval*),NULL);
+				add_next_index_string(path_array, Z_STRVAL_P(zone), 1);
 		}
 		if(!page){
 				page = zend_read_static_property(slightphp_ce_ptr,"defaultPage",sizeof("defaultPage")-1,1 TSRMLS_CC);
-				zend_hash_next_index_insert(Z_ARRVAL(path_array),&page,sizeof(zval*),NULL);
+				add_next_index_string(path_array, Z_STRVAL_P(page), 1);
 		}
 		if(!entry){
 				entry = zend_read_static_property(slightphp_ce_ptr,"defaultEntry",sizeof("defaultEntry")-1,1 TSRMLS_CC);
-				zend_hash_next_index_insert(Z_ARRVAL(path_array),&entry,sizeof(zval*),NULL);
+				add_next_index_string(path_array, Z_STRVAL_P(entry), 1);
 		}
 		//{{{
 		zval *zoneAlias = zend_read_static_property(slightphp_ce_ptr,"zoneAlias",sizeof("zoneAlias")-1,1 TSRMLS_CC);
@@ -443,26 +448,21 @@ PHP_METHOD(slightphp, run)
 				  ){
 						debug("part ignored [%s]",Z_STRVAL_P(path));
 						zval_ptr_dtor(&path);
-						zval_dtor(&path_array);
+						zval_ptr_dtor(&path_array);
 						return;
 				}
 		}
 
 		zval *appDir = zend_read_static_property(slightphp_ce_ptr,"appDir",sizeof("appDir")-1,1 TSRMLS_CC);
-
-		zval *params[1];
-		params[0]=&path_array;
-
-
 		if(slightphp_load(appDir,zone,page TSRMLS_CC) == SUCCESS){
-				if(slightphp_run(zone,page,entry,return_value,1,params TSRMLS_CC)==SUCCESS){
-					zval_ptr_dtor(&path);
-					zval_dtor(&path_array);
-					RETURN_ZVAL(return_value,1,0);
+				if(slightphp_run(zone,page,entry,return_value,1,&path_array TSRMLS_CC)==SUCCESS){
+					if(path)zval_ptr_dtor(&path);
+					zval_ptr_dtor(&path_array);
+					RETURN_ZVAL(return_value,0,0);
 				};
 		}
-		zval_ptr_dtor(&path);
-		zval_dtor(&path_array);
+		if(path)zval_ptr_dtor(&path);
+		zval_ptr_dtor(&path_array);
 		RETURN_FALSE;
 }
 /* }}} run */
