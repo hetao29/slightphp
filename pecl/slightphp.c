@@ -333,7 +333,7 @@ PHP_METHOD(slightphp, run)
 				if(*(Z_STRVAL_PP(path_info)+1) == '/'){
 					resource = php_url_parse(Z_STRVAL_PP(path_info)+1);
 				}else{
-					resource = php_url_parse(Z_STRVAL_PP(path_info)+1);
+					resource = php_url_parse(Z_STRVAL_PP(path_info));
 				}
 				if(resource != NULL){
 					MAKE_STD_ZVAL(path);
