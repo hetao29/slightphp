@@ -330,11 +330,15 @@ PHP_METHOD(slightphp, run)
 				}
 			}
 			if(path_info){
-				if(*(Z_STRVAL_PP(path_info)+1) == '/'){
-					resource = php_url_parse(Z_STRVAL_PP(path_info)+1);
-				}else{
-					resource = php_url_parse(Z_STRVAL_PP(path_info));
+				/* Skip leading / */
+				int len = Z_STRLEN_PP(path_info);
+				int start=0;
+				for(start=0;start<len;start++){
+					if(*(Z_STRVAL_PP(path_info)+start) != '/'){
+						break;
+					}
 				}
+				resource = php_url_parse(Z_STRVAL_PP(path_info)+start);
 				if(resource != NULL){
 					MAKE_STD_ZVAL(path);
 					if(resource->path != NULL){

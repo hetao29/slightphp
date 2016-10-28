@@ -271,35 +271,37 @@ PHP_METHOD(slightphp, run)
 		isPart = 1;
 	}else{
 		isPart = 0;
-		{
+		php_url *resource=NULL;
 
-			zend_string *server = zend_string_init("_SERVER", sizeof("_SERVER") - 1, 0);
-			zend_is_auto_global(server);
-			zval *server_vars;
-			zval *path_info= NULL;
-			if ((server_vars = zend_hash_find(&EG(symbol_table), server)) != NULL && Z_TYPE_P(server_vars) == IS_ARRAY){
-				if((path_info = zend_hash_str_find(Z_ARRVAL_P(server_vars), "PATH_INFO", sizeof("PATH_INFO")-1))!=NULL && Z_TYPE_P(path_info) == IS_STRING) {
-				}else if((path_info= zend_hash_str_find(Z_ARRVAL_P(server_vars), "REQUEST_URI", sizeof("REQUEST_URI")-1))!=NULL && Z_TYPE_P(path_info) == IS_STRING) {
+		zend_string *server = zend_string_init("_SERVER", sizeof("_SERVER") - 1, 0);
+		zend_is_auto_global(server);
+		zval *server_vars;
+		zval *path_info= NULL;
+		if ((server_vars = zend_hash_find(&EG(symbol_table), server)) != NULL && Z_TYPE_P(server_vars) == IS_ARRAY){
+			if((path_info = zend_hash_str_find(Z_ARRVAL_P(server_vars), "PATH_INFO", sizeof("PATH_INFO")-1))!=NULL && Z_TYPE_P(path_info) == IS_STRING) {
+			}else if((path_info= zend_hash_str_find(Z_ARRVAL_P(server_vars), "REQUEST_URI", sizeof("REQUEST_URI")-1))!=NULL && Z_TYPE_P(path_info) == IS_STRING) {
+			}
+			if(path_info){
+				/* Skip leading / */
+				int len = Z_STRLEN_P(path_info);
+				int start=0;
+				for(start=0;start<len;start++){
+					if(*(Z_STRVAL_P(path_info)+start) != '/'){
+						break;
+					}
 				}
-				if(path_info){
-					php_url *resource=NULL;
-					if(*(Z_STRVAL_P(path_info)+1) == '/'){
-						resource = php_url_parse(Z_STRVAL_P(path_info)+1);
+				resource = php_url_parse(Z_STRVAL_P(path_info)+start);
+				if(resource != NULL){
+					if(resource->path != NULL){
+						ZVAL_STRING(&path,resource->path);
 					}else{
-						resource = php_url_parse(Z_STRVAL_P(path_info));
+						ZVAL_STRING(&path,Z_STRVAL_P(path_info));
 					}
-					if(resource != NULL){
-						if(resource->path != NULL){
-							ZVAL_STRING(&path,resource->path);
-						}else{
-							ZVAL_STRING(&path,Z_STRVAL_P(path_info));
-						}
-						php_url_free(resource);	
-					}
+					php_url_free(resource);	
 				}
 			}
-			zend_string_release(server);
 		}
+		zend_string_release(server);
 		//zend_print_flat_zval_r(path);
 	}
 	//}}}
