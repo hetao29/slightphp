@@ -43,7 +43,7 @@ require_once($slightphp_path."/vendor/autoload.php");
   - 支持composer(3.0及以上)
   - 支持php7(3.0及以上)
   - 支持pecl的模块加载 请编译pecl目录下的源码，或者直接编译到php里
-  - 支持命令行(cli)模式 只需要在执行代码里时定义 SlightPHP::setPathInfo($path_info) 的值，可以用于WorkerMan等PHP 服务端项目
+  - 支持命令行(cli)模式 可以直接执行SlightPHP::run($path_info) ，可以用于WorkerMan,Swoole 等PHP 服务端项目
   - 框架本身核心代码非常小
   - 框架支持nginx,lighttpd,apache,iis等web服务器
   - 插件SDb 支持mysql,mysqli,pdo,mssql,oracle等主流数据库，同时更支持数据库读写库分离，特适合大流量网站

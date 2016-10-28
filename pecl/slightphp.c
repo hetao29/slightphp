@@ -309,7 +309,7 @@ PHP_METHOD(slightphp, run)
 		zval *entry=NULL;
 
 		zval **token;
-		zval **server_vars ,**path_info;
+		zval **server_vars;
 		zval *path_array;
 
 		//{{{
@@ -322,47 +322,57 @@ PHP_METHOD(slightphp, run)
 				isPart = 1;
 		}else{
 			isPart = 0;
-			php_url *resource=NULL;
+			zval ** path_s = NULL;
 			zend_is_auto_global("_SERVER", sizeof("_SERVER") - 1 TSRMLS_CC);
 			if (zend_hash_find(&EG(symbol_table), "_SERVER", sizeof("_SERVER"), (void **) &server_vars) == SUCCESS && Z_TYPE_PP(server_vars) == IS_ARRAY){
-				if(zend_hash_find(Z_ARRVAL_PP(server_vars), "PATH_INFO", sizeof("PATH_INFO"), (void **) &path_info)==SUCCESS && Z_TYPE_PP(path_info) == IS_STRING) {
-				}else if(zend_hash_find(Z_ARRVAL_PP(server_vars), "REQUEST_URI", sizeof("REQUEST_URI"), (void **) &path_info)==SUCCESS && Z_TYPE_PP(path_info) == IS_STRING) {
-				}
-			}
-			if(path_info){
-				/* Skip leading / */
-				int len = Z_STRLEN_PP(path_info);
-				int start=0;
-				for(start=0;start<len;start++){
-					if(*(Z_STRVAL_PP(path_info)+start) != '/'){
-						break;
-					}
-				}
-				resource = php_url_parse(Z_STRVAL_PP(path_info)+start);
-				if(resource != NULL){
-					MAKE_STD_ZVAL(path);
-					if(resource->path != NULL){
-						ZVAL_STRING(path,resource->path,1);
-					}else{
-						ZVAL_STRING(path,Z_STRVAL_PP(path_info),1);
-					}
-					php_url_free(resource);	
+				if(zend_hash_find(Z_ARRVAL_PP(server_vars), "PATH_INFO", sizeof("PATH_INFO"), (void **) &path_s)==SUCCESS && Z_TYPE_PP(path_s) == IS_STRING) {
+					path=*path_s;
+					//
+				}else if(zend_hash_find(Z_ARRVAL_PP(server_vars), "REQUEST_URI", sizeof("REQUEST_URI"), (void **) &path_s)==SUCCESS && Z_TYPE_PP(path_s) == IS_STRING) {
+					path=*path_s;
+					//
+				}else{
+					debug("path not set in params or server.path_info, server.request_uri");
+					RETURN_FALSE;
 				}
 			}
 		}
+		/* Skip leading / */
+		int len = Z_STRLEN_P(path);
+		int start=0;
+		for(start=0;start<len;start++){
+			if(*(Z_STRVAL_P(path)+start) != '/'){
+				break;
+			}
+		}
+		zval *url;
+		php_url *resource=NULL;
+		resource = php_url_parse(Z_STRVAL_P(path)+start);
+		if(resource != NULL){
+			MAKE_STD_ZVAL(url);
+			if(resource->path != NULL){
+				ZVAL_STRING(url,resource->path,1);
+			}else{
+				ZVAL_STRING(url,Z_STRVAL_P(path),1);
+			}
+			php_url_free(resource);	
+		}else{
+			ZVAL_STRING(url,Z_STRVAL_P(path),1);
+		}
+		zend_update_static_property(slightphp_ce_ptr,"pathInfo",sizeof("pathInfo")-1,url TSRMLS_CC);
 		//}}}
 		MAKE_STD_ZVAL(path_array);
 		array_init(path_array);
 
-		if (path){
+		{
 				//{{{
 				zval quotedFlag;
 				regex_t re;
 				char	*regex;
 				regmatch_t subs[1];
 				int err,size;
-				char *strp = Z_STRVAL_P(path);
-				char *endp = strp + Z_STRLEN_P(path);
+				char *strp = Z_STRVAL_P(url);
+				char *endp = strp + Z_STRLEN_P(url);
 				zval *splitFlag = zend_read_static_property(slightphp_ce_ptr,"splitFlag",sizeof("splitFlag")-1,1 TSRMLS_CC);
 
 				if(preg_quote(splitFlag,&quotedFlag)>0){
@@ -450,8 +460,8 @@ PHP_METHOD(slightphp, run)
 								&&
 								strcmp(Z_STRVAL_P(entry),Z_STRVAL_P(zend_read_static_property(slightphp_ce_ptr,"entry",sizeof("entry")-1,1 TSRMLS_CC)))==0 
 				  ){
-						debug("part ignored [%s]",Z_STRVAL_P(path));
-						zval_ptr_dtor(&path);
+						debug("part ignored [%s]",Z_STRVAL_P(url));
+						zval_ptr_dtor(&url);
 						zval_ptr_dtor(&path_array);
 						return;
 				}
@@ -460,12 +470,12 @@ PHP_METHOD(slightphp, run)
 		zval *appDir = zend_read_static_property(slightphp_ce_ptr,"appDir",sizeof("appDir")-1,1 TSRMLS_CC);
 		if(slightphp_load(appDir,zone,page TSRMLS_CC) == SUCCESS){
 				if(slightphp_run(zone,page,entry,return_value,1,&path_array TSRMLS_CC)==SUCCESS){
-					if(path)zval_ptr_dtor(&path);
+					zval_ptr_dtor(&url);
 					zval_ptr_dtor(&path_array);
 					RETURN_ZVAL(return_value,0,0);
 				};
 		}
-		if(path)zval_ptr_dtor(&path);
+		zval_ptr_dtor(&url);
 		zval_ptr_dtor(&path_array);
 		RETURN_FALSE;
 }

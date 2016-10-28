@@ -216,33 +216,32 @@ final class SlightPHP{
 		$path_array = array();
 		if(!empty($path)){
 			$isPart = true;
-			if($path[0]=="/")$path=substr($path,1);
-			$path_array = preg_split("/[$splitFlag\/]/",$path,-1);
 		}else{
 			$isPart = false;
-			if(!empty(self::$pathInfo)){
-				$url = self::$pathInfo;
+			if(!empty($_SERVER['PATH_INFO'])){
+				$path= $_SERVER["PATH_INFO"];
+			}elseif(!empty($_SERVER['REQUEST_URI'])){
+				$path= $_SERVER["REQUEST_URI"];
 			}else{
-				if(!empty($_GET["PATH_INFO"])){
-					$url = $_GET["PATH_INFO"];
-				}elseif(!empty($_SERVER['PATH_INFO'])){
-					$url = $_SERVER["PATH_INFO"];
-				}elseif(!empty($_SERVER['REQUEST_URI'])){
-					$url = $_SERVER["REQUEST_URI"];
-				}
-				if(isset($_SERVER['SERVER_NAME']) && isset($_SERVER['SERVER_PORT'])){
-					$url = preg_replace("/(\/+)/","/",$_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT']."/".$url);
-				}
-				$url_parsed = parse_url($url, PHP_URL_PATH);
-				if(!empty($url_parsed)){
-					$url = $url_parsed;
-				}
-			}
-			if(!empty($url)){
-				if($url[0]=="/")$url=substr($url,1);
-				$path_array = preg_split("/[$splitFlag\/]/",$url,-1);
+				self::debug("path not set in params or server.path_info, server.request_uri");
+				return false;
 			}
 		}
+		/* Skip leading / */
+		$len = strlen($path);
+		$start=0;
+		for($start=0;$start<$len;$start++){
+			if($path[$start]!='/')break;
+		}
+
+		$url_parsed = parse_url(substr($path,$start), PHP_URL_PATH);
+		if(!empty($url_parsed)){
+			$url = $url_parsed;
+		}else{
+			$url=$path;
+		}
+		self::$pathInfo=$url;
+		$path_array = preg_split("/[$splitFlag\/]/",$url,-1);
 
 		$zone	= !empty($path_array[0]) ? $path_array[0] : self::$defaultZone ;
 		$page	= !empty($path_array[1]) ? $path_array[1] : self::$defaultPage ;

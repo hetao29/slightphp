@@ -261,54 +261,57 @@ PHP_METHOD(slightphp, run)
 
 	//{{{
 	int isPart;
-	zval path;
-	zval * path_p = NULL;
-	if (ZEND_NUM_ARGS()>0 && zend_parse_parameters(ZEND_NUM_ARGS() , "z/", &path_p) != FAILURE) {
-		if (Z_TYPE_P(path_p)!= IS_STRING){
+	zval *path;
+	if (ZEND_NUM_ARGS()>0 && zend_parse_parameters(ZEND_NUM_ARGS() , "z/", &path) != FAILURE) {
+		if (Z_TYPE_P(path)!= IS_STRING){
 			RETURN_FALSE;
 		}
-		ZVAL_COPY_VALUE(&path,path_p);
 		isPart = 1;
 	}else{
 		isPart = 0;
-		php_url *resource=NULL;
 
 		zend_string *server = zend_string_init("_SERVER", sizeof("_SERVER") - 1, 0);
 		zend_is_auto_global(server);
 		zval *server_vars;
-		zval *path_info= NULL;
 		if ((server_vars = zend_hash_find(&EG(symbol_table), server)) != NULL && Z_TYPE_P(server_vars) == IS_ARRAY){
-			if((path_info = zend_hash_str_find(Z_ARRVAL_P(server_vars), "PATH_INFO", sizeof("PATH_INFO")-1))!=NULL && Z_TYPE_P(path_info) == IS_STRING) {
-			}else if((path_info= zend_hash_str_find(Z_ARRVAL_P(server_vars), "REQUEST_URI", sizeof("REQUEST_URI")-1))!=NULL && Z_TYPE_P(path_info) == IS_STRING) {
-			}
-			if(path_info){
-				/* Skip leading / */
-				int len = Z_STRLEN_P(path_info);
-				int start=0;
-				for(start=0;start<len;start++){
-					if(*(Z_STRVAL_P(path_info)+start) != '/'){
-						break;
-					}
-				}
-				resource = php_url_parse(Z_STRVAL_P(path_info)+start);
-				if(resource != NULL){
-					if(resource->path != NULL){
-						ZVAL_STRING(&path,resource->path);
-					}else{
-						ZVAL_STRING(&path,Z_STRVAL_P(path_info));
-					}
-					php_url_free(resource);	
-				}
+			if((path= zend_hash_str_find(Z_ARRVAL_P(server_vars), "PATH_INFO", sizeof("PATH_INFO")-1))!=NULL && Z_TYPE_P(path) == IS_STRING) {
+			//
+			}else if((path= zend_hash_str_find(Z_ARRVAL_P(server_vars), "REQUEST_URI", sizeof("REQUEST_URI")-1))!=NULL && Z_TYPE_P(path) == IS_STRING) {
+			//
+			}else{
+				debug("path not set in params or server.path_info, server.request_uri");
+				RETURN_FALSE;
 			}
 		}
 		zend_string_release(server);
-		//zend_print_flat_zval_r(path);
 	}
+	/* Skip leading / */
+	int len = Z_STRLEN_P(path);
+	int start=0;
+	for(start=0;start<len;start++){
+		if(*(Z_STRVAL_P(path)+start) != '/'){
+			break;
+		}
+	}
+	zval url;
+	php_url *resource=NULL;
+	resource = php_url_parse(Z_STRVAL_P(path)+start);
+	if(resource != NULL){
+		if(resource->path != NULL){
+			ZVAL_STRING(&url,resource->path);
+		}else{
+			ZVAL_STRING(&url,Z_STRVAL_P(path));
+		}
+		php_url_free(resource);	
+	}else{
+		ZVAL_STRING(&url,Z_STRVAL_P(path));
+	}
+	zend_update_static_property(slightphp_ce_ptr,"pathInfo",sizeof("pathInfo")-1,&url TSRMLS_CC);
+	//zend_print_flat_zval_r(path);
 	//}}}
 
 	array_init(&path_array);
 
-	//if( path )
 	{
 		//{{{
 		zval quotedFlag;
@@ -316,8 +319,8 @@ PHP_METHOD(slightphp, run)
 		char	*regex;
 		regmatch_t subs[1];
 		int err,size;
-		char *strp = Z_STRVAL(path);
-		char *endp = strp + Z_STRLEN(path);
+		char *strp = Z_STRVAL(url);
+		char *endp = strp + Z_STRLEN(url);
 		zval *splitFlag = zend_read_static_property(slightphp_ce_ptr,"splitFlag",sizeof("splitFlag")-1,1 );
 
 		if(preg_quote(splitFlag,&quotedFlag)>0){
@@ -348,9 +351,7 @@ PHP_METHOD(slightphp, run)
 		}
 		efree(regex);
 		zval_dtor(&quotedFlag);
-		//print_flat_hash(Z_ARRVAL_P(&path_array));
 		//}}}
-		//int n_elems = zend_hash_num_elements(Z_ARRVAL_P(&path_array));
 		if((zone = zend_hash_index_find(Z_ARRVAL(path_array), 0)) != NULL ) {
 		}
 		if((page = zend_hash_index_find(Z_ARRVAL(path_array), 1)) != NULL ) {
@@ -371,7 +372,6 @@ PHP_METHOD(slightphp, run)
 		entry = zend_read_static_property(slightphp_ce_ptr,"defaultEntry",sizeof("defaultEntry")-1,1 );
 		add_next_index_string(&path_array, Z_STRVAL_P(entry));
 	}
-	//zend_print_flat_zval_r(zone);
 	//{{{
 	zval *zoneAlias = zend_read_static_property(slightphp_ce_ptr,"zoneAlias",sizeof("zoneAlias")-1,1 );
 	if(zoneAlias && Z_TYPE_P(zoneAlias)==IS_ARRAY){
@@ -407,7 +407,7 @@ PHP_METHOD(slightphp, run)
 				&&
 				strcmp(Z_STRVAL_P(entry),Z_STRVAL_P(zend_read_static_property(slightphp_ce_ptr,"entry",sizeof("entry")-1,1 )))==0 
 		  ){
-			debug("part ignored [%s]",Z_STRVAL(path));
+			debug("part ignored [%s]",Z_STRVAL(url));
 			return;
 		}
 	}
@@ -417,12 +417,12 @@ PHP_METHOD(slightphp, run)
 		zval ret;
 		if(slightphp_run(zone,page,entry,&ret,1,&path_array)==SUCCESS){
 			zval_dtor(&path_array);
-			zval_dtor(&path);
+			zval_dtor(&url);
 			RETURN_ZVAL(&ret,0,1);
 		};
 		zval_dtor(&ret);
 	}
-	zval_dtor(&path);
+	zval_dtor(&url);
 	zval_dtor(&path_array);
 	RETURN_FALSE;
 }
