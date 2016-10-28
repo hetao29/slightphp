@@ -270,20 +270,18 @@ PHP_METHOD(slightphp, run)
 	}else{
 		isPart = 0;
 
-		zend_string *server = zend_string_init("_SERVER", sizeof("_SERVER") - 1, 0);
-		zend_is_auto_global(server);
+		zend_is_auto_global_str(ZEND_STRL("_SERVER"));
 		zval *server_vars;
-		if ((server_vars = zend_hash_find(&EG(symbol_table), server)) != NULL && Z_TYPE_P(server_vars) == IS_ARRAY){
-			if((path= zend_hash_str_find(Z_ARRVAL_P(server_vars), "PATH_INFO", sizeof("PATH_INFO")-1))!=NULL && Z_TYPE_P(path) == IS_STRING) {
+		if ((server_vars = zend_hash_str_find(&EG(symbol_table), ZEND_STRL("_SERVER"))) != NULL && Z_TYPE_P(server_vars) == IS_ARRAY){
+			if((path= zend_hash_str_find(Z_ARRVAL_P(server_vars), ZEND_STRL("PATH_INFO")))!=NULL && Z_TYPE_P(path) == IS_STRING) {
 			//
-			}else if((path= zend_hash_str_find(Z_ARRVAL_P(server_vars), "REQUEST_URI", sizeof("REQUEST_URI")-1))!=NULL && Z_TYPE_P(path) == IS_STRING) {
+			}else if((path= zend_hash_str_find(Z_ARRVAL_P(server_vars), ZEND_STRL("REQUEST_URI")))!=NULL && Z_TYPE_P(path) == IS_STRING) {
 			//
 			}else{
 				debug("path not set in params or server.path_info, server.request_uri");
 				RETURN_FALSE;
 			}
 		}
-		zend_string_release(server);
 	}
 	/* Skip leading / */
 	int len = Z_STRLEN_P(path);

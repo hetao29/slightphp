@@ -323,12 +323,12 @@ PHP_METHOD(slightphp, run)
 		}else{
 			isPart = 0;
 			zval ** path_s = NULL;
-			zend_is_auto_global("_SERVER", sizeof("_SERVER") - 1 TSRMLS_CC);
-			if (zend_hash_find(&EG(symbol_table), "_SERVER", sizeof("_SERVER"), (void **) &server_vars) == SUCCESS && Z_TYPE_PP(server_vars) == IS_ARRAY){
-				if(zend_hash_find(Z_ARRVAL_PP(server_vars), "PATH_INFO", sizeof("PATH_INFO"), (void **) &path_s)==SUCCESS && Z_TYPE_PP(path_s) == IS_STRING) {
+			zend_is_auto_global(ZEND_STRL("_SERVER") TSRMLS_CC);
+			if (zend_hash_find(&EG(symbol_table), ZEND_STRS("_SERVER"), (void **) &server_vars) == SUCCESS && Z_TYPE_PP(server_vars) == IS_ARRAY){
+				if(zend_hash_find(Z_ARRVAL_PP(server_vars), ZEND_STRS("PATH_INFO"), (void **) &path_s)==SUCCESS && Z_TYPE_PP(path_s) == IS_STRING) {
 					path=*path_s;
 					//
-				}else if(zend_hash_find(Z_ARRVAL_PP(server_vars), "REQUEST_URI", sizeof("REQUEST_URI"), (void **) &path_s)==SUCCESS && Z_TYPE_PP(path_s) == IS_STRING) {
+				}else if(zend_hash_find(Z_ARRVAL_PP(server_vars), ZEND_STRS("REQUEST_URI"), (void **) &path_s)==SUCCESS && Z_TYPE_PP(path_s) == IS_STRING) {
 					path=*path_s;
 					//
 				}else{
