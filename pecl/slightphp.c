@@ -428,6 +428,7 @@ PHP_METHOD(slightphp, run)
 				add_next_index_string(path_array, Z_STRVAL_P(entry), 1);
 		}
 		//{{{
+		zval *zone_alias=NULL;
 		zval *zoneAlias = zend_read_static_property(slightphp_ce_ptr,"zoneAlias",sizeof("zoneAlias")-1,1 TSRMLS_CC);
 		if(zoneAlias && Z_TYPE_P(zoneAlias)==IS_ARRAY){
 				char *string_key;uint str_key_len;ulong num_key;
@@ -438,14 +439,14 @@ PHP_METHOD(slightphp, run)
 						if(strcmp(Z_STRVAL_PP(entry2) ,Z_STRVAL_P(zone))==0){
 								switch (zend_hash_get_current_key_ex(Z_ARRVAL_P(zoneAlias), &string_key, &str_key_len, &num_key, 0, &pos)) {
 										case HASH_KEY_IS_STRING:
-												ZVAL_STRING(zone,string_key,1);
+												MAKE_STD_ZVAL(zone_alias);
+												ZVAL_STRING(zone_alias,string_key,0);
+												zone=zone_alias;
 												break;
 								}
 						}
 						zend_hash_move_forward_ex(Z_ARRVAL_P(zoneAlias), &pos);
 				}
-				if(entry2)zval_ptr_dtor(entry2);
-				if(string_key)efree(string_key);
 		}
 		//}}}
 		if(!isPart){
@@ -461,6 +462,7 @@ PHP_METHOD(slightphp, run)
 								strcmp(Z_STRVAL_P(entry),Z_STRVAL_P(zend_read_static_property(slightphp_ce_ptr,"entry",sizeof("entry")-1,1 TSRMLS_CC)))==0 
 				  ){
 						debug("part ignored [%s]",Z_STRVAL_P(url));
+						if(zone_alias)zval_ptr_dtor(&zone_alias);
 						zval_ptr_dtor(&url);
 						zval_ptr_dtor(&path_array);
 						return;
@@ -470,11 +472,13 @@ PHP_METHOD(slightphp, run)
 		zval *appDir = zend_read_static_property(slightphp_ce_ptr,"appDir",sizeof("appDir")-1,1 TSRMLS_CC);
 		if(slightphp_load(appDir,zone,page TSRMLS_CC) == SUCCESS){
 				if(slightphp_run(zone,page,entry,return_value,1,&path_array TSRMLS_CC)==SUCCESS){
+					if(zone_alias)zval_ptr_dtor(&zone_alias);
 					zval_ptr_dtor(&url);
 					zval_ptr_dtor(&path_array);
 					RETURN_ZVAL(return_value,0,0);
 				};
 		}
+		if(zone_alias)zval_ptr_dtor(&zone_alias);
 		zval_ptr_dtor(&url);
 		zval_ptr_dtor(&path_array);
 		RETURN_FALSE;
