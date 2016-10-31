@@ -1,5 +1,9 @@
 # SlightPHP 高效的PHP敏捷开发框架
 
+### v3.2更新如下
+  - 解决pecl在Workerman里不关闭文件，并有部分内存泄露的问题
+  - 优化一些算法，run($path)和request_uri的一致
+
 ### v3.1更新如下
   - 更新pecl，更好支持php7，php5
   - 优化SDb,SRedis，增加错误连接重置，可以更好的支持[WorkerMan](https://github.com/hetao29/slightphp/blob/master/wiki/Workerman.md),[Swoole](https://github.com/hetao29/slightphp/blob/master/wiki/Swoole.md)
