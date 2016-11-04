@@ -76,14 +76,14 @@ class DbPDO implements DbEngine{
 	public function query($sql){
 		if(!$this->_pdo)return false;
 		$this->_stmt = $this->_pdo->prepare($sql);
-		if($this->_stmt){
+		if($this->_stmt && $this->_stmt->execute ()!==false){
 			return true;
 		}
-		trigger_error("PDO QUERY ERROR ( ".$e->getMessage()." ) ",E_USER_WARNING);
+		trigger_error("PDO QUERY ERROR ( ".$sql." ) ",E_USER_WARNING);
 		return false;
 	}
 	public function getAll(){
-		if($this->_stmt && $this->_stmt->execute ()){
+		if($this->_stmt){
 			return $this->_stmt->fetchAll (\PDO::FETCH_ASSOC );
 		}
 		return false;

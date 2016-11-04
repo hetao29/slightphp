@@ -107,9 +107,11 @@ class Db{
 				if(defined("DEBUG")){
 					trigger_error("{$this->_engine_name} ( ".var_export($this->error,true).")");
 				}
+				unset(Db::$_globals[$this->_key]);
 				return false;
+			}else{
+				Db::$_globals[$this->_key] = $this->engine;
 			}
-			Db::$_globals[$this->_key] = $this->engine;
 		}else{
 			$this->engine = Db::$_globals[$this->_key];
 		}
@@ -357,19 +359,21 @@ class Db{
 		}
 		
 		$result = $this->engine->query($sql);
-		if($result===false){
-			$this->error['code']=$this->engine->errno();
-			$this->error['msg']=$this->engine->error();
-			unset(Db::$_globals[$this->_key]);
-		}elseif($sql_mode==2){//查询模式
-			$data=array();
-			return $this->engine->getAll();
-			return $data;
-		}elseif($sql_mode==3){//插入模式
-			return $this->engine->lastId();
-		}else{
-			return $this->engine->count();
+
+		if($result){
+			if($sql_mode==2){//查询模式
+				if(($data=$this->engine->getAll())!==false){
+					return $data;
+				}
+			}elseif($sql_mode==3){//插入模式
+				return $this->engine->lastId();
+			}else{
+				return $this->engine->count();
+			}
 		}
+		$this->error['code']=$this->engine->errno();
+		$this->error['msg']=$this->engine->error();
+		unset(Db::$_globals[$this->_key]);
 		trigger_error("DB QUERY ERROR (".var_export($this->error['msg'],true)."), CODE({$this->error['code']}), SQL({$sql})",E_USER_WARNING);
 		return false;
 	}
