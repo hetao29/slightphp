@@ -16,7 +16,6 @@
 if(!defined("SLIGHTPHP_PLUGINS_DIR"))define("SLIGHTPHP_PLUGINS_DIR",dirname(__FILE__));
 require_once(SLIGHTPHP_PLUGINS_DIR."/SConfig.php");
 require_once(SLIGHTPHP_PLUGINS_DIR."/db/DbData.php");
-require_once(SLIGHTPHP_PLUGINS_DIR."/db/DbObject.php");
 require_once(SLIGHTPHP_PLUGINS_DIR."/db/Db.php");
 /**
  * @package SlightPHP
