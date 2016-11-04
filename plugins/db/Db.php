@@ -24,7 +24,7 @@ class Db{
 	 * 
 	 */
 	private $engine;
-	private $_engine_name="mysql";
+	private $_engine_name="pdo_mysql";
 	private $_allow_engines=array(
 			"mysql","mysqli",
 			"pdo_mysql","pdo_sqlite","pdo_cubrid",
@@ -83,7 +83,9 @@ class Db{
 	 */
 	public function init($params){
 		if(is_object($params))$params=(array)$params;
-		if(isset($params['engine'])){
+		if(!isset($params['engine']) || !in_array($params['engine'],$this->_allow_engines)){
+			$params['engine']=$this->_engine_name;
+		}else{
 			$this->__setEngine($params['engine']);
 		}
 		$this->_key = implode("|",$params);
