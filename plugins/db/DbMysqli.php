@@ -67,27 +67,43 @@ class DbMysqli implements DbEngine{
 		return true;
 	}
 	public function query($sql){
-			$this->_result= $this->_mysqli->query($sql);
-			if($this->_result){
-				return true;
-			}
+		if($this->_mysqli->connect_errno){
 			return false;
+		}
+		$this->_result= $this->_mysqli->query($sql);
+		if($this->_result){
+			return true;
+		}
+		return false;
 	}
 	public function getAll(){
+		if(!$this->_result)return false;
 		$data=array();
 		while($row= $this->_result->fetch_assoc()){$data[]=$row;};
 		return $data;
 	}
 	public function count(){
+		if($this->_mysqli->connect_errno){
+			return false;
+		}
 		return $this->_mysqli->affected_rows;
 	}
 	public function lastId(){
+		if($this->_mysqli->connect_errno){
+			return false;
+		}
 		return $this->_mysqli->insert_id;
 	}
 	public function error(){
+		if($this->_mysqli->connect_error){
+			return $this->_mysqli->connect_error;
+		}
 		return $this->_mysqli->error;
 	}
 	public function errno(){
+		if($this->_mysqli->connect_errno){
+			return $this->_mysqli->connect_errno;
+		}
 		return $this->_mysqli->errno;
 	}
 }

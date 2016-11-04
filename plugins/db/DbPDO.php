@@ -26,10 +26,10 @@ class DbPDO implements DbEngine{
 
 	private $_engine;
 
-	private $_host;
-	private $_port;
-	private $_user;
-	private $_password;
+	private $_host="localhost";
+	private $_port="3306";
+	private $_user="root";
+	private $_password="";
 	private $_database;
 
 	private $_persistent;
@@ -65,11 +65,7 @@ class DbPDO implements DbEngine{
 				)
 			);
 		}catch(\PDOException  $e){
-			if(defined("DEBUG")){
-				trigger_error("CONNECT DATABASE ERROR ( ".$e->getMessage()." ) ",E_USER_WARNING);
-			}else{
-				trigger_error("CONNECT DATABASE ERROR!!!",E_USER_WARNING);
-			}
+			trigger_error("CONNECT DATABASE ERROR ( ".$e->getMessage()." ) ",E_USER_WARNING);
 			return false;
 		}
 		if(!empty($this->_charset)){
@@ -78,28 +74,34 @@ class DbPDO implements DbEngine{
 		return true;
 	}
 	public function query($sql){
-			$this->_stmt = $this->_pdo->prepare($sql);
-			if($this->_stmt){
-				return true;
-			}
-			return false;
+		if(!$this->_pdo)return false;
+		$this->_stmt = $this->_pdo->prepare($sql);
+		if($this->_stmt){
+			return true;
+		}
+		trigger_error("PDO QUERY ERROR ( ".$e->getMessage()." ) ",E_USER_WARNING);
+		return false;
 	}
 	public function getAll(){
-		if($this->_stmt->execute ()){
+		if($this->_stmt && $this->_stmt->execute ()){
 			return $this->_stmt->fetchAll (\PDO::FETCH_ASSOC );
 		}
 		return false;
 	}
 	public function count(){
+		if(!$this->_stmt)return false;
 		return $this->_stmt->rowCount();
 	}
 	public function lastId(){
+		if(!$this->_pdo)return false;
 		return $this->_pdo->lastInsertId();
 	}
 	public function error(){
+		if(!$this->_pdo)return false;
 		return $this->_pdo->errorInfo();
 	}
 	public function errno(){
+		if(!$this->_pdo)return false;
 		return $this->_pdo->errorCode();
 	}
 }
