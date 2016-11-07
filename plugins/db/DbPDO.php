@@ -51,6 +51,12 @@ class DbPDO implements DbEngine{
 		foreach($params as $key=>$value){
 			$this->{"_".$key} = $value;
 		}
+
+		/**
+		 * fix pdo bug
+		 * https://bugs.php.net/bug.php?id=73475
+		 */
+		if($this->_persistent && $this->_password == ""){$this->_password=null;}
 	}
 	public function connect(){
 		$tmp = explode("_",$this->_engine);
