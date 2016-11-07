@@ -26,8 +26,8 @@ class DbMysql implements DbEngine{
 
 	private $_engine;
 
-	private $_host;
-	private $_port;
+	private $_host="localhost";
+	private $_port="3306";
 	private $_user;
 	private $_password;
 	private $_database;

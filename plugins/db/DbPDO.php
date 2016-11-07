@@ -28,8 +28,8 @@ class DbPDO implements DbEngine{
 
 	private $_host="localhost";
 	private $_port="3306";
-	private $_user="root";
-	private $_password="";
+	private $_user;
+	private $_password;
 	private $_database;
 
 	private $_persistent;
