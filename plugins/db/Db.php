@@ -383,7 +383,7 @@ class Db{
 	 * @return boolean|int|array
 	 */
 	public function execute($sql){
-		return $this->engine->query($sql);
+		return $this->__query($sql);
 	}
 
 	private function __quote($condition,$split="AND"){
