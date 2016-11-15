@@ -73,12 +73,12 @@ int slightphp_run(zval*zone,zval*class_name,zval*method,zval*return_value, int p
 		ce = *pce;
 		MAKE_STD_ZVAL(object);
 		object_init_ex(object,ce);
-		INIT_ZVAL(c_ret);
 
 
 
 		if (ce->constructor) {
 			zval c_ret;
+			INIT_ZVAL(c_ret);
 			zval tmp_method;
 			S_ZVAL_STRING(&tmp_method, ce->constructor->common.function_name);
 			if(call_user_function(NULL, &object, &tmp_method, &c_ret, param_count, params TSRMLS_CC)!=SUCCESS){
