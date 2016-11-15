@@ -12,10 +12,11 @@
   | Supports: http://www.slightphp.com                                    |
   +-----------------------------------------------------------------------+
   }}}*/
-int slightphp_loadFile(char*file_name TSRMLS_DC){
-	int ret;
-	zend_file_handle file_handle;
+  
 
+int slightphp_loadFile(char*file_name TSRMLS_DC){
+	zend_file_handle file_handle;
+	int ret;
 	file_handle.type = ZEND_HANDLE_FILENAME;
 	file_handle.handle.fd = 0;
 	file_handle.filename = file_name;
@@ -35,6 +36,7 @@ int slightphp_loadFile(char*file_name TSRMLS_DC){
 
 int slightphp_run(zval*zone,zval*class_name,zval*method,zval*return_value, int param_count,zval * params[] TSRMLS_DC){
 	zval *object;
+	int r;
 
 	char *real_classname;
 	spprintf(&real_classname,0,"%s_%s",Z_STRVAL_P(zone),Z_STRVAL_P(class_name));
@@ -84,17 +86,16 @@ int slightphp_run(zval*zone,zval*class_name,zval*method,zval*return_value, int p
 			}           
 			zval_dtor(&tmp_method);
 		}   
-		int r=call_user_function(NULL, &object, &real_method_zval, return_value, param_count, params TSRMLS_CC);
-		zval_ptr_dtor(&object);
+		r=call_user_function(NULL, &object, &real_method_zval, return_value, param_count, params TSRMLS_CC);
 		zval_dtor(&c_ret);
-		zval_dtor(&real_classname_zval);
-		zval_dtor(&real_classname_check);
-		zval_dtor(&real_method_zval);
 		if(r!=SUCCESS){
 			debug("method[%s] not exists in class[%s]",Z_STRVAL(real_method_zval),Z_STRVAL(real_classname_zval));
-			return FAILURE;
 		}
 	}
-	return SUCCESS;
+	zval_ptr_dtor(&object);
+	zval_dtor(&real_classname_zval);
+	zval_dtor(&real_classname_check);
+	zval_dtor(&real_method_zval);
+	return r;
 }
 
