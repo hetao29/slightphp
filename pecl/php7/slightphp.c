@@ -23,7 +23,7 @@
 #include <regex.h>
 #include "ext/standard/info.h"
 #include "ext/standard/url.h"
-#include "php_slightphp7.h"
+#include "php_slightphp.h"
 
 /*
 static void print_flat_hash(HashTable *ht) 
@@ -58,8 +58,8 @@ typedef struct _op_item{
 /* {{{ Class slightphp */
 
 static zend_class_entry * slightphp_ce_ptr = NULL;
-#include "slightphp_globals7.h"
-#include "slightphp_globals7.c"
+#include "slightphp_globals.h"
+#include "slightphp_globals.c"
 
 /* {{{ Methods */
 

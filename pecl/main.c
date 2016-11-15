@@ -1,6 +1,6 @@
 #include <main/php_version.h>
 #if PHP_MAJOR_VERSION == 5
-#include "slightphp.c"
+#include "php5/slightphp.c"
 #else
-#include "slightphp7.c"
+#include "php7/slightphp.c"
 #endif
