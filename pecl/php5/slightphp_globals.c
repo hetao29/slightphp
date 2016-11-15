@@ -12,7 +12,7 @@
   | Supports: http://www.slightphp.com                                    |
   +-----------------------------------------------------------------------+
   }}}*/
-  
+
 
 int slightphp_loadFile(char*file_name TSRMLS_DC){
 	zend_file_handle file_handle;
@@ -73,29 +73,29 @@ int slightphp_run(zval*zone,zval*class_name,zval*method,zval*return_value, int p
 		ce = *pce;
 		MAKE_STD_ZVAL(object);
 		object_init_ex(object,ce);
-		zval c_ret;
 		INIT_ZVAL(c_ret);
 
 
 
 		if (ce->constructor) {
+			zval c_ret;
 			zval tmp_method;
 			S_ZVAL_STRING(&tmp_method, ce->constructor->common.function_name);
 			if(call_user_function(NULL, &object, &tmp_method, &c_ret, param_count, params TSRMLS_CC)!=SUCCESS){
 				php_error_docref(NULL TSRMLS_CC, E_ERROR, "Error calling constructor");
 			}           
 			zval_dtor(&tmp_method);
+			zval_dtor(&c_ret);
 		}   
 		r=call_user_function(NULL, &object, &real_method_zval, return_value, param_count, params TSRMLS_CC);
-		zval_dtor(&c_ret);
 		if(r!=SUCCESS){
 			debug("method[%s] not exists in class[%s]",Z_STRVAL(real_method_zval),Z_STRVAL(real_classname_zval));
 		}
 	}
-	zval_ptr_dtor(&object);
 	zval_dtor(&real_classname_zval);
 	zval_dtor(&real_classname_check);
 	zval_dtor(&real_method_zval);
+	zval_ptr_dtor(&object);
 	return r;
 }
 

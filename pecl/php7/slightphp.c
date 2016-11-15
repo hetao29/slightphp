@@ -26,28 +26,28 @@
 #include "php_slightphp.h"
 
 /*
-static void print_flat_hash(HashTable *ht) 
-{
-	zval *tmp;
-	zend_string *string_key;
-	zend_ulong num_key;
-	int i = 0;
+   static void print_flat_hash(HashTable *ht) 
+   {
+   zval *tmp;
+   zend_string *string_key;
+   zend_ulong num_key;
+   int i = 0;
 
-	ZEND_HASH_FOREACH_KEY_VAL_IND(ht, num_key, string_key, tmp) {
-		if (i++ > 0) {
-			ZEND_PUTS(",");
-		}
-		ZEND_PUTS("[");
-		if (string_key) {
-			ZEND_WRITE(ZSTR_VAL(string_key), ZSTR_LEN(string_key));
-		} else {
-			zend_printf(ZEND_ULONG_FMT, num_key);
-		}
-		ZEND_PUTS("] => ");
-		zend_print_flat_zval_r(tmp);
-	} ZEND_HASH_FOREACH_END();
-}
-*/
+   ZEND_HASH_FOREACH_KEY_VAL_IND(ht, num_key, string_key, tmp) {
+   if (i++ > 0) {
+   ZEND_PUTS(",");
+   }
+   ZEND_PUTS("[");
+   if (string_key) {
+   ZEND_WRITE(ZSTR_VAL(string_key), ZSTR_LEN(string_key));
+   } else {
+   zend_printf(ZEND_ULONG_FMT, num_key);
+   }
+   ZEND_PUTS("] => ");
+   zend_print_flat_zval_r(tmp);
+   } ZEND_HASH_FOREACH_END();
+   }
+   */
 
 typedef struct _op_item{
 	time_t op_mtime;
@@ -65,7 +65,7 @@ static zend_class_entry * slightphp_ce_ptr = NULL;
 
 
 /* {{{ proto void setAppDir(mixed appDir)
- */
+*/
 PHP_METHOD(slightphp, setAppDir)
 {
 	char* appDir;
@@ -78,7 +78,7 @@ PHP_METHOD(slightphp, setAppDir)
 }
 /* }}} setAppDir */
 /* {{{ proto void setPathInfo(mixed pathInfo)
- */
+*/
 PHP_METHOD(slightphp, setPathInfo)
 {
 	char* pathInfo;
@@ -94,7 +94,7 @@ PHP_METHOD(slightphp, setPathInfo)
 
 
 /* {{{ proto mixed getAppDir()
- */
+*/
 PHP_METHOD(slightphp, getAppDir)
 {
 	zval *data = zend_read_static_property(slightphp_ce_ptr,"appDir",sizeof("appDir")-1,1 );
@@ -230,7 +230,7 @@ PHP_METHOD(slightphp, getDebug)
 
 
 /* {{{ proto void __construct([mixed version])
- */
+*/
 PHP_METHOD(slightphp, __construct)
 {
 	//zend_class_entry * _this_ce;
@@ -250,7 +250,7 @@ PHP_METHOD(slightphp, __construct)
 
 
 /* {{{ proto void run()
- */
+*/
 PHP_METHOD(slightphp, run)
 {
 	zval *zone=NULL;
@@ -274,9 +274,9 @@ PHP_METHOD(slightphp, run)
 		zval *server_vars;
 		if ((server_vars = zend_hash_str_find(&EG(symbol_table), ZEND_STRL("_SERVER"))) != NULL && Z_TYPE_P(server_vars) == IS_ARRAY){
 			if((path= zend_hash_str_find(Z_ARRVAL_P(server_vars), ZEND_STRL("PATH_INFO")))!=NULL && Z_TYPE_P(path) == IS_STRING) {
-			//
+				//
 			}else if((path= zend_hash_str_find(Z_ARRVAL_P(server_vars), ZEND_STRL("REQUEST_URI")))!=NULL && Z_TYPE_P(path) == IS_STRING) {
-			//
+				//
 			}else{
 				debug("path not set in params or server.path_info, server.request_uri");
 				RETURN_FALSE;
@@ -546,7 +546,7 @@ static zend_module_dep slightphp_deps[] = {
 /* }}} */
 
 /* {{{ slightphp_module_entry
- */
+*/
 zend_module_entry slightphp_module_entry = {
 #if ZEND_EXTENSION_API_NO >= 220050617
 	STANDARD_MODULE_HEADER_EX, NULL,
