@@ -20,5 +20,9 @@
 int debug(char*format,... TSRMLS_DC);
 int slightphp_load(zval*appDir,zval*zone,zval*class_name TSRMLS_DC);
 int slightphp_loadFile(char*file_name TSRMLS_DC);
+#if PHP_MAJOR_VERSION == 5
 int slightphp_run (zval*zone,zval*class_name,zval*method,zval*return_value ,int param_count,zval *params[] TSRMLS_DC);
+#else
+int slightphp_run (zval*zone,zval*class_name,zval*method,zval*return_value ,int param_count,zval params[] TSRMLS_DC);
+#endif
 int preg_quote(zval *in_str,zval*out_str TSRMLS_DC);
