@@ -24,10 +24,11 @@
 <b>插件测试：</b>
 <ul class="test" style="border: 1px solid #A7D6E0;padding:10px;">
 	<li><a href="index.smarty" target="_blank">SGui (模板smarty)</a></li>
-	<li><a href="index.db" target="_blank">SDb (数据库)</a></li>
+	<li><a href="index.db.test" target="_blank">SDb (数据库)</a></li>
 	<li><a href="index.dbconfig" target="_blank">SDb (数据库配置文件)</a></li>
 	<li><a href="index.error" target="_blank">SError (可视化错误显示)</a></li>
-	<li><a href="index.cache" target="_blank">SCache (缓存)</a></li>
+	<li><a href="index.cache" target="_blank">SCache (memcache 缓存)</a></li>
+	<li><a href="index.redis" target="_blank">SRedis (redis缓存)</a></li>
 	<li><a href="index.captcha" target="_blank">SCaptcha (验证码)</a></li>
 	<li><a href="index.json" target="_blank">SJson (json)</a></li>
 	<li><a href="index.thumbnail" target="_blank">SThumbnail (缩略图)</a></li>

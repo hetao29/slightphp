@@ -1,38 +1,18 @@
 <?php
-/*
-drop table if exists test;
-CREATE TABLE `test` (
-  `id` int not null primary key auto_increment,
-  `name` varchar(30) default NULL,
-  `password` varchar(30) default NULL,
-  KEY `name` (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-*/
-$db = SDb::getDbEngine("mysql");
-$db = SDb::getDbEngine("pdo_mysql");
-if(!$db){
-	die("DbEngine not exits");
+class index_db{
+	public function pageTest($inPath){
+		$db = new index_db_user;
+		if($db->init()){
+			echo "create table ok<br />\n";
+		}else{
+			echo "table exists<br />\n";
+		};
+		$id = $db->add();
+		echo "add data , id $id<br />\n";
+		$data=$db->get($id);
+		print_r($data);
+		$data=$db->getAll();
+		echo "all data :<br />\n";
+		print_r($data);
+	}
 }
-$db->init(array(
-	"host"=>"localhost",
-	"user"=>"root",
-	"password"=>"",
-	"database"=>"test")
-);
-//插入记录
-print_r($db->insert($table = "test",$items=array("name"=>"testName","password"=>"testPassword")));
-//检索一个
-print_r($db->selectOne($table = "test",$condition=array(),$items=array("name")));
-//按条件检索一个
-print_r($db->selectOne($table = "test",$condition=array("id"=>1),$items=array("*")));
-//搜索全部
-$db->setLimit(-1);
-print_r($db->select($table = "test",$condition=array(),$items=array("*")));
-//按页检索
-$db->setPage(2);
-$db->setLimit(5);
-//是否算总数
-$db->setCount(true);
-print_r($db->select($table = "test",$condition=array(),$items=array("*")));
-
-?>
