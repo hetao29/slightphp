@@ -11,6 +11,9 @@
 ### v3.0支持composer,同时需要php5.3及以上
   - 安装方法一 ，执行下面的命令
 ```bash
+//使用中国镜像
+composer config -g repo.packagist composer https://packagist.phpcomposer.com
+//下载安装最新
 composer require "hetao29/slightphp:dev-master"
 ```
 
@@ -227,7 +230,7 @@ location ~ \.php$ {
 ```
 
 ### Version
-2.0.1 beta
+3.2
 
-**Free Software, Hell Yeah!**
+**Free Software, MIT License!**
 
