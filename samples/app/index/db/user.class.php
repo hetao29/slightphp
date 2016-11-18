@@ -18,8 +18,15 @@ class index_db_user{
 	function get($id){
 		return $this->_db->selectOne($table = "test",$condition=array("id"=>$id),$items=array("id","name","password"));
 	}
+	/**
+	 * ORM
+	 */
+	function getV2($id){
+		$this->_db->setTable("test");//设置表名
+		$this->_db->id=$id;//设置条件
+		return $this->_db->get();//获取数据
+	}
 	function getAll(){
 		return $this->_db->select($table = "test",$condition=array(),$items=array("id","name","password"));
 	}
 }
-?>
