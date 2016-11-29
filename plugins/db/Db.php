@@ -24,6 +24,7 @@ class Db{
 	 * 
 	 */
 	private $engine;
+	private $params;
 	private $_engine_name="pdo_mysql";
 	private $_allow_engines=array(
 			"mysql","mysqli",
@@ -81,8 +82,17 @@ class Db{
 	 * @param bool $params.persistent 
 	 * @param int $param.port=3306
 	 */
+	private function _reInit(){
+		if(empty($this->params)){
+			return false;
+		}
+		return $this->init($this->params);
+	}
 	public function init($params){
 		if(is_object($params))$params=(array)$params;
+
+		$this->params=$params;
+
 		if(!isset($params['engine']) || !in_array($params['engine'],$this->_allow_engines)){
 			$params['engine']=$this->_engine_name;
 		}else{
@@ -337,7 +347,7 @@ class Db{
 	 * @return Array $result  || Boolean false
 	 */
 
-	private function __query($sql){
+	private function __query($sql, $retry=false){
 		//{{{
 		//SQL MODE 默认为DELETE，INSERT，REPLACE 或 UPDATE,不需要返回值
 		$sql_mode = 1;//1.更新模式 2.查询模式 3.插入模式
@@ -374,6 +384,10 @@ class Db{
 		$this->error['code']=$this->engine->errno();
 		$this->error['msg']=$this->engine->error();
 		unset(Db::$_globals[$this->_key]);
+		if($retry===false && ($this->error['code']=='2006' || $this->error['code']=='00000')){//mysqli 2006, pdo 00000
+			$this->_reInit();
+			return $this->__query($sql,true);
+		}
 		trigger_error("DB QUERY ERROR (".var_export($this->error['msg'],true)."), CODE({$this->error['code']}), SQL({$sql})",E_USER_WARNING);
 		return false;
 	}
