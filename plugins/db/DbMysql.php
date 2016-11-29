@@ -34,6 +34,7 @@ class DbMysql implements DbEngine{
 
 	private $_persistent;
 	private $_charset;
+	public $connectionError=false;
 	/**
 	 * construct
 	 *
@@ -87,6 +88,12 @@ class DbMysql implements DbEngine{
 		return mysql_error($this->_mysql);
 	}
 	public function errno(){
-		return mysql_errno($this->_mysql);
+		$error = mysql_errno($this->_mysql);
+		if($error=='2006'){
+			$this->connectionError=true;
+		}else{
+			$this->connectionError=false;
+		}
+		return $error;
 	}
 }

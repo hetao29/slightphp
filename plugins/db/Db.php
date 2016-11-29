@@ -384,7 +384,7 @@ class Db{
 		$this->error['code']=$this->engine->errno();
 		$this->error['msg']=$this->engine->error();
 		unset(Db::$_globals[$this->_key]);
-		if($retry===false && ($this->error['code']=='2006' || $this->error['code']=='00000')){//mysqli 2006, pdo 00000
+		if($retry===false && $this->engine->connectionError){
 			$this->_reInit();
 			return $this->__query($sql,true);
 		}

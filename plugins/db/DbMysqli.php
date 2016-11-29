@@ -34,6 +34,7 @@ class DbMysqli implements DbEngine{
 
 	private $_persistent;
 	private $_charset;
+	public $connectionError=false;
 	/**
 	 * construct
 	 *
@@ -101,9 +102,17 @@ class DbMysqli implements DbEngine{
 		return $this->_mysqli->error;
 	}
 	public function errno(){
+		$error=0;
 		if($this->_mysqli->connect_errno){
-			return $this->_mysqli->connect_errno;
+			$error = $this->_mysqli->connect_errno;
+		}else{
+			$error = $this->_mysqli->errno;
 		}
-		return $this->_mysqli->errno;
+		if($error=='2006'){
+			$this->connectionError=true;
+		}else{
+			$this->connectionError=false;
+		}
+		return $error;
 	}
 }

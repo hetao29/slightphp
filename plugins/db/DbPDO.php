@@ -34,6 +34,7 @@ class DbPDO implements DbEngine{
 
 	private $_persistent;
 	private $_charset;
+	public $connectionError=false;
 	/**
 	 * construct
 	 *
@@ -108,6 +109,12 @@ class DbPDO implements DbEngine{
 	}
 	public function errno(){
 		if(!$this->_pdo)return false;
-		return $this->_pdo->errorCode();
+		$error = $this->_pdo->errorCode();
+		if($error=='00000'){
+			$this->connectionError=true;
+		}else{
+			$this->connectionError=false;
+		}
+		return $error;
 	}
 }
