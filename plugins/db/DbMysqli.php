@@ -58,8 +58,17 @@ class DbMysqli implements DbEngine{
 		if($this->_persistent){
 			$host="p:".$this->_host;
 		}
-		$this->_mysqli = new \mysqli($host,$this->_user,$this->_password,$this->_database,$this->_port);
-		if($this->_mysqli->connect_errno){
+		$retry=3;
+		for($i=0;$i<$retry;$i++){
+			$this->_mysqli = new \mysqli($host,$this->_user,$this->_password,$this->_database,$this->_port);
+			if($this->_mysqli->connect_errno){
+				$this->_mysqli=null;
+				trigger_error("CONNECT DATABASE ERROR ,RETRY $i ,( ".$e->getMessage()." ) ",E_USER_WARNING);
+			}else{
+				break;
+			}
+		}
+		if(!$this->_mysqli>){
 			return false;
 		}
 		if(!empty($this->_charset)){
