@@ -62,25 +62,17 @@ class DbPDO implements DbEngine{
 	public function connect(){
 		$tmp = explode("_",$this->_engine);
 		$driver =$tmp[1];
-		$retry=3;
-		for($i=0;$i<$retry;$i++){
-			try{
-				$this->_pdo = new \PDO(
-					$driver .":dbname=".$this->_database.";host=".$this->_host.";port=".$this->_port,
-					$this->_user,
-					$this->_password,
-					array(
-						\PDO::ATTR_PERSISTENT => $this->_persistent,
-						\PDO::ATTR_ERRMODE    => \PDO::ERRMODE_EXCEPTION
-					)
-				);
-				break;
-			}catch(\PDOException  $e){
-				$this->_pdo=null;
-				trigger_error("CONNECT DATABASE ERROR ,RETRY $i ,( ".$e->getMessage()." ) ",E_USER_WARNING);
-			}
-		}
-		if(!$this->_pdo){
+		try{
+			$this->_pdo = new \PDO(
+				$driver .":dbname=".$this->_database.";host=".$this->_host.";port=".$this->_port,
+				$this->_user,
+				$this->_password,
+				array(
+					\PDO::ATTR_PERSISTENT => $this->_persistent
+				)
+			);
+		}catch(\PDOException  $e){
+			trigger_error("CONNECT DATABASE ERROR ( ".$e->getMessage()." ) ",E_USER_WARNING);
 			return false;
 		}
 		if(!empty($this->_charset)){
