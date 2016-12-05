@@ -112,12 +112,19 @@ class DbPDO implements DbEngine{
 	}
 	public function error(){
 		if(!$this->_pdo)return false;
+		if($this->_stmt){
+			return $this->_stmt->errorInfo();
+		}
 		return $this->_pdo->errorInfo();
 	}
 	public function errno(){
 		if(!$this->_pdo)return false;
-		$error = $this->_pdo->errorCode();
-		if($error=='00000'){
+		if($this->_stmt){
+			$error = $this->_stmt->errorCode();
+		}else{
+			$error = $this->_pdo->errorCode();
+		}
+		if($error=='HY000'){
 			$this->connectionError=true;
 		}else{
 			$this->connectionError=false;
