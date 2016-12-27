@@ -91,40 +91,13 @@ class Db{
 	public function init($params){
 		if(is_object($params))$params=(array)$params;
 
-		$this->params=$params;
 
 		if(!isset($params['engine']) || !in_array($params['engine'],$this->_allow_engines)){
 			$params['engine']=$this->_engine_name;
-		}else{
-			$this->__setEngine($params['engine']);
 		}
+		$this->params=$params;
+		$this->__setEngine($params['engine']);
 		$this->_key = implode("|",$params);
-		if(!isset(Db::$_globals[$this->_key])){
-			if($this->_engine_name == "mysql"){
-				require_once(SLIGHTPHP_PLUGINS_DIR."/db/DbMysql.php");
-				$this->engine = new \SlightPHP\DbMysql($params);
-			}elseif($this->_engine_name =="mysqli"){
-				require_once(SLIGHTPHP_PLUGINS_DIR."/db/DbMysqli.php");
-				$this->engine = new \SlightPHP\DbMysqli($params);
-			}else{
-				require_once(SLIGHTPHP_PLUGINS_DIR."/db/DbPDO.php");
-				$this->engine = new \SlightPHP\DbPDO($params);
-			}
-			$this->engine->init($params);
-			if($this->engine->connect()===false){
-				$this->error['code']=$this->engine->errno();
-				$this->error['msg']=$this->engine->error();
-				if(defined("DEBUG")){
-					trigger_error("{$this->_engine_name} ( ".var_export($this->error,true).")");
-				}
-				unset(Db::$_globals[$this->_key]);
-				return false;
-			}else{
-				Db::$_globals[$this->_key] = $this->engine;
-			}
-		}else{
-			$this->engine = Db::$_globals[$this->_key];
-		}
 		return true;
 	}
 	/**
@@ -367,6 +340,33 @@ class Db{
 		if(defined("DEBUG")){
 			trigger_error("{$this->_engine_name} ( $sql )");
 		}
+		//Connect
+		if(!isset(Db::$_globals[$this->_key])){
+			if($this->_engine_name == "mysql"){
+				require_once(SLIGHTPHP_PLUGINS_DIR."/db/DbMysql.php");
+				$this->engine = new \SlightPHP\DbMysql($this->params);
+			}elseif($this->_engine_name =="mysqli"){
+				require_once(SLIGHTPHP_PLUGINS_DIR."/db/DbMysqli.php");
+				$this->engine = new \SlightPHP\DbMysqli($this->params);
+			}else{
+				require_once(SLIGHTPHP_PLUGINS_DIR."/db/DbPDO.php");
+				$this->engine = new \SlightPHP\DbPDO($this->params);
+			}
+			$this->engine->init($this->params);
+			if($this->engine->connect()===false){
+				$this->error['code']=$this->engine->errno();
+				$this->error['msg']=$this->engine->error();
+				if(defined("DEBUG")){
+					trigger_error("{$this->_engine_name} ( ".var_export($this->error,true).")");
+				}
+				unset(Db::$_globals[$this->_key]);
+				return false;
+			}else{
+				Db::$_globals[$this->_key] = $this->engine;
+			}
+		}else{
+			$this->engine = Db::$_globals[$this->_key];
+		}
 		
 		$result = $this->engine->query($sql);
 
@@ -384,6 +384,7 @@ class Db{
 		$this->error['code']=$this->engine->errno();
 		$this->error['msg']=$this->engine->error();
 		unset(Db::$_globals[$this->_key]);
+
 		if($retry===false && $this->engine->connectionError){
 			$this->_reInit();
 			return $this->__query($sql,true);
