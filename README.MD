@@ -197,7 +197,8 @@ SlightPHP::setAppDir("/home/www/myAppdir");
 
 #### 插件导航 
 
-文档地址：https://github.com/hetao29/slightphp/tree/master/wiki  
+Wiki文档地址：https://github.com/hetao29/slightphp/tree/master/wiki  
+API文档地址：http://hetao29.github.io/slightphp/
   
 STpl 模板插件 https://github.com/hetao29/slightphp/blob/master/wiki/STpl.md  
 SDb 数据库插件 https://github.com/hetao29/slightphp/blob/master/wiki/SDb.md  
