@@ -16,16 +16,20 @@
 if(!defined("SLIGHTPHP_PLUGINS_DIR"))define("SLIGHTPHP_PLUGINS_DIR",dirname(__FILE__));
 require_once(SLIGHTPHP_PLUGINS_DIR."/SConfig.php");
 require_once(SLIGHTPHP_PLUGINS_DIR."/db/DbData.php");
-require_once(SLIGHTPHP_PLUGINS_DIR."/db/DbObject.php");
 require_once(SLIGHTPHP_PLUGINS_DIR."/db/Db.php");
 /**
  * @package SlightPHP
  */
 class SDb extends SlightPHP\Db{
-	private static $_config;
+	private static $_config_file;
 
+	/**
+	 * set global db config file
+	 * @param string $file
+	 * @return void
+	 */
 	static function setConfigFile($file){
-		self::$_config = $file;
+		self::$_config_file = $file;
 	}
 	/**
 	 * @param string $zone
@@ -33,7 +37,7 @@ class SDb extends SlightPHP\Db{
 	 * @return array
 	 */
 	static function getConfig($zone=null,$type="main"){
-		$config = SConfig::getConfig(self::$_config,$zone);
+		$config = SConfig::getConfig(self::$_config_file,$zone);
 		if(isset($config->$type)){
 			return $config->$type;
 		}elseif(isset($config->main)){
@@ -42,22 +46,28 @@ class SDb extends SlightPHP\Db{
 		return;
 	}
 	/**
-	 * 切换数据库配置文件
+	 * @deprecated use setConfig
+	 */
+	public function useConfig($zone,$type="main"){
+		return self::setConfig($zone,$type);
+	}
+	/**
+	 * 设置数据库配置文件
 	 * @param string $zone
 	 * @param string $type	main|query
 	 * @return array
 	 */
-	function useConfig($zone,$type="main"){
+	public function setConfig($zone,$type="main"){
 		$config = self::getConfig($zone,$type);
 		if(is_object($config)){
-			self::init($config);
+			return parent::init($config);
 		}elseif(is_array($config)){
-			self::init($config[array_rand($config)]);
+			return parent::init($config[array_rand($config)]);
 		}
 	}
 
 	private $foreign_keys =array();
-	private $table_name=""; //表名，默认和 类名 user 一样
+	private $table_name=""; //表名
 
 
 	/**
@@ -96,6 +106,10 @@ class SDb extends SlightPHP\Db{
 	public function __construct($table_name="",$config=array()){
 		if(!empty($table_name))$this->table_name = $table_name;
 		if(!empty($config))parent::init($config);
+		$this->_fields=new stdclass;
+	}
+	public function setTable($table_name){
+		$this->table_name = $table_name;
 	}
 	/*
 	 * 按条件获取所有信息
@@ -174,7 +188,7 @@ class SDb extends SlightPHP\Db{
 	/**
 	 * 删除信息,可以连带外键一起删除
 	 **/
-	function del($foreign_info=false){
+	public function del($foreign_info=false){
 		if(!empty($this->_fields)){
 			$condition=array();
 			foreach($this->_fields as $k=>$v){

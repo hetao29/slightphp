@@ -20,30 +20,67 @@ require_once(SLIGHTPHP_PLUGINS_DIR."/tpl/Tpl.php");
  * @package SlightPHP
  */
 class STpl extends SlightPHP\Tpl{
-	static $engine;
 	/**
-	 * @deprecated , 新版本请使用 display
-	 * render a .tpl
+	 * 设置强制编译
+	 */
+	public static function setForceCompile($force_compile=false){
+		parent::$force_compile=$force_compile;
+	}
+	/**
+	 * 安全模式，禁止编译php代码
+	 */
+	public static function setSafeMode($safe_mode=true){
+		parent::$safe_mode=$safe_mode;
+	}
+	/**
+	 * 设置模板代码的左右分割符号
+	 */
+	public static function setDelimter($left="{", $right="}"){
+		parent::$left_delimiter=$left;
+		parent::$right_delimiter=$right;
+	}
+	/**
+	 * 设置模板编译路径
+	 */
+	public static function setCompileDir($path=""){
+		if($path==""){
+			parent::$compile_dir = SlightPHP::$appDir.DIRECTORY_SEPARATOR."templates_c";
+		}else{
+			parent::$compile_dir = $path;
+		}
+	}
+	/**
+	 * 设置模板文件路径
+	 */
+	public static function setTemplateDir($path=""){
+		if($path==""){
+			parent::$template_dir= SlightPHP::$appDir.DIRECTORY_SEPARATOR."templates";
+		}else{
+			parent::$template_dir= $path;
+		}
+	}
+	/**
+	 * 渲染模板
 	 */
 	public function render($tpl,$parames=array()){
-		parent::$compile_dir = SlightPHP::$appDir.DIRECTORY_SEPARATOR."templates_c";
-		parent::$template_dir= SlightPHP::$appDir.DIRECTORY_SEPARATOR."templates";
-		parent::$left_delimiter='{';
-		parent::$right_delimiter='}';
+		if(parent::$template_dir==""){
+			self::setTemplateDir();
+		}
+		if(parent::$compile_dir==""){
+			self::setCompileDir();
+		}
+		if(parent::$left_delimiter=="" || parent::$right_delimiter==""){
+			self::setDelimter(parent::$left_delimiter,parent::$right_delimiter);
+		}
 		parent::assign($parames);
 		return parent::fetch("$tpl");
 	}
 
 	/**
-	 * like as render except delimiter 
+	 * 别名 render
 	 */
 	public function display($tpl,$parames=array()){
-		parent::$compile_dir = SlightPHP::$appDir.DIRECTORY_SEPARATOR."templates_c";
-		parent::$template_dir= SlightPHP::$appDir.DIRECTORY_SEPARATOR."templates";
-		parent::$left_delimiter='<{';
-		parent::$right_delimiter='}>';
-		parent::assign($parames);
-		return parent::fetch("$tpl");
+		return $this->render($tpl, $parames);
 	}
 	/**
 	 * 302 redirect

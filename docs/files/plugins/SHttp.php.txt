@@ -235,8 +235,8 @@ class SHttp{
 						"Referer: $url\r\n" .
 						"Connection: Close\r\n" .
 						(!empty($cookies)?"Cookie: ".self::cookie_build($cookies)."\r\n":"").
-						"Content-type: application/x-www-form-urlencoded\r\n" . 
-						"Content-length: ".strlen($content)."\r\n",
+						"Content-Type: application/x-www-form-urlencoded\r\n" . 
+						"Content-Length: ".strlen($content)."\r\n",
 						'content' => $content
 			)
 

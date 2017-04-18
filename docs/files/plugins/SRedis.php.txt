@@ -27,7 +27,7 @@ class SRedis{
 	private static $_config;
 	private static $_rc;
 	private static $_instances=array();
-	
+
 	static function setConfigFile($file){
 		self::$_config = $file;
 	}
@@ -78,10 +78,24 @@ class SRedis{
 		return self::$_rc = self::$_instances[$key] = new RedisArray($hosts,$options);
 	}
 	public function __call($name,$args){
-		return call_user_func_array(array(self::$_rc,$name),$args);
+		try{
+			if(self::$_rc) return call_user_func_array(array(self::$_rc,$name),$args);
+		}catch(RedisException $e){
+			self::$_instances=null;
+			self::$_rc=null;
+			trigger_error($e);
+		}
+		return false;
 	}
 	public static function __callStatic($name,$args){
-		return call_user_func_array(array(self::$_rc,$name),$args);
+		try{
+			if(self::$_rc) return call_user_func_array(array(self::$_rc,$name),$args);
+		}catch(RedisException $e){
+			self::$_instances=null;
+			self::$_rc=null;
+			trigger_error($e);
+		}
+		return false;
 	}
 }
 
