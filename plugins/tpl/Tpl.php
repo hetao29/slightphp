@@ -22,10 +22,10 @@ require_once(dirname(__FILE__)."/Tpl.modifier.php");
 require_once(dirname(__FILE__)."/Tpl.function.php");
 class Tpl{
 	static $_tpl_vars             = array();
-	static $left_delimiter  =  '{';
-	static $right_delimiter =  '}';
-	static $template_dir    =  'templates';
-	static $compile_dir     =  'templates_c';
+	static $left_delimiter  =  '';//{
+	static $right_delimiter =  '';//}
+	static $template_dir    =  '';//templates
+	static $compile_dir     =  '';//templates_c
 	static $force_compile   =  false;
 	static $safe_mode = true;
 	static function assign($tpl_var, $value = null){
