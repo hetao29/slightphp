@@ -22,13 +22,51 @@ require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."thumbnail/class.WMThumbnail.
  */
 class SThumbnail extends SlightPHP\WMThumbnail{
 	/**
-	 * 生成文件
+	 * spanned file
 	 * 
 	 * @param $fileName
 	 */
 	var $image_type = 3;
-	public function genFile($fileName,$quality = 100) {
-		$image = parent::returnThumbnail();
+	public function imageflip(&$image,$mode) {
+		if(function_exists("imageflip")){
+			imageflip($image,$mode);
+		}else{
+			return $image;
+		}
+	}
+	public function genFile($fileName,$quality = 100,$orientation= 0) {
+        $image = parent::returnThumbnail();
+		if($orientation>=1 && $orientation<=8){
+			switch($orientation) {
+			case 1:
+				break;
+			case 2:
+				self::imageflip($image , 1);
+				break;
+			case 3:
+				$image = imagerotate($image,180,0);
+				break;
+			case 4:
+				self::imageflip($image , 2);
+				break;
+			case 5:
+				self::imageflip($image , 2);
+				$image = imagerotate($image,-90,0);
+				break;
+			case 6:
+				$image = imagerotate($image,-90,0);
+				break;
+			case 7:
+				self::imageflip($image , 1);
+				$image = imagerotate($image,-90,0);
+				break;
+			case 8:
+				$image = imagerotate($image,90,0);
+				break;
+			}
+			imagealphablending($image, true); 
+			imagesavealpha($image, true); 
+		}
 		$result = false;
 	    if (!empty($image)){
 		    switch ($this->image_type) {
