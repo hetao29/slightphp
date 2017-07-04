@@ -23,7 +23,7 @@ status tinyint(4) default 1,
 PRIMARY KEY  (id),
 unique key email(email),
 unique key name(name)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 
 CREATE TABLE user_profile (
 user_id int(11) NOT NULL,
@@ -31,7 +31,7 @@ address varchar(32) default "",
 phone varchar(100) default "",
 mobile varchar(32) default "",
 PRIMARY KEY  (user_id)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 
 ```
 
@@ -44,7 +44,6 @@ $db->init(
  "database"=>"test",
  "password"=>"",
  "port"=>3306,
- "charset"=>"utf8",
  "engine"=>"mysql"
 )
 );
@@ -54,7 +53,7 @@ $db->init(
   * database 数据库名
   * password 数据库密码
   * port 端口号，默认3306
-  * charset 就是字符集，可以是utf8,gbk,gb2312等数据库支持的字符集
+  * charset 就是字符集，可以是utf8,utf8mb4,gbk,gb2312等数据库支持的字符集
   * engine  是数据库驱动引擎，有这么多
 （
 "mysql","mysqli",
@@ -294,7 +293,6 @@ int|boolean|Array execute($sql);
 ```
 print_r (  $db->execute("show databases") );
 print_r (  $db->execute("select * from user") );
-var_dump(  $db->execute("set names utf8") );
 if(!  $db->execute("select * from userx") ){
         print_r($db->error());
 };
@@ -371,7 +369,6 @@ user{
                 user root;
                 database test;
                 password ;
-                charset utf8;
         }
         query{
                 host localhost;

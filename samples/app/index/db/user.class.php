@@ -9,7 +9,7 @@ class index_db_user{
 		$this->_db->useConfig($zone,"main");
 	}
 	function init(){
-		$sql="CREATE TABLE IF NOT EXISTS `test` ( `id` int not null primary key auto_increment, `name` varchar(300) default NULL, `password` varchar(300) default NULL, KEY `name` (`name`)) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
+		$sql="CREATE TABLE IF NOT EXISTS `test` ( `id` int not null primary key auto_increment, `name` varchar(300) default NULL, `password` varchar(300) default NULL, KEY `name` (`name`));";
 		return $this->_db->execute($sql);
 	}
 	function add(){
