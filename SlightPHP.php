@@ -241,7 +241,7 @@ final class SlightPHP{
 			$url=$path;
 		}
 		self::$pathInfo=$url;
-		$path_array = preg_split("/[$splitFlag\/]/",$url,-1);
+		$path_array = preg_split("/[$splitFlag\/]/",$url,-1,PREG_SPLIT_NO_EMPTY);
 
 		$zone	= !empty($path_array[0]) ? $path_array[0] : self::$defaultZone ;
 		$page	= !empty($path_array[1]) ? $path_array[1] : self::$defaultPage ;
