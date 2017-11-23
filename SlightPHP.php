@@ -238,7 +238,7 @@ final class SlightPHP{
 		if(!empty($url_parsed)){
 			$url = $url_parsed;
 		}else{
-			$url=$path;
+			$url="";
 		}
 		self::$pathInfo=$url;
 		$path_array = preg_split("/[$splitFlag\/]/",$url,-1,PREG_SPLIT_NO_EMPTY);
