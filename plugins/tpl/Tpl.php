@@ -60,7 +60,15 @@ class Tpl{
 		$content = preg_replace_callback("/([\'\"])(.+?)\\1/m",array("SlightPHP\Tpl","_tmpData"),$content);
 		//{{{if,elseif,/if; foreach,/foreach; for,/for
 		$pattern = "/^(if|foreach|for)(([\s|\(]+)(.+))/msi";
-		$content = preg_replace_callback($pattern,create_function('$m','$t = trim($m[3]);$v = trim($m[2]);if(empty($t)){return "{$m[1]}($v){";}else{return "{$m[1]}$v{";}'),$content);
+		$content = preg_replace_callback($pattern,function($m){
+			$t = trim($m[3]);
+			$v = trim($m[2]);
+			if(empty($t)){
+				return "{$m[1]}($v){";
+			}else{
+				return "{$m[1]}$v{";
+			}
+		},$content);
 		$patterns = array("/^(elseif)([\s*|\\(].*)/msi","/^(else)/msUi","/^\/(if|foreach|for)/msi");
 		$replacements=array('}\\1(\\2){','}\\1{','}');
 		$content = preg_replace($patterns,$replacements,$content);
