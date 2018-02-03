@@ -10,24 +10,28 @@
 下面的比较在完全相同的环境下，同时使用了part这样的扩展方法，并且是一个相对全面的TPL的比较，数据是每秒响应请求数，值越大效果越好，下面的数据是10次运算后的平均值：
 
   * 无APC强制编译(force\_compile)比较
-|**STpl**|**Smarty2.6**|**Smarty3**|
-|:-------|:------------|:----------|
-|104.70|55.60|8.26|
+  <table>
+    <tr><td>STpl</td><td>Smarty2.6</td><td>Smarty3</td></tr>
+    <tr><td>104.70</td><td>55.60</td><td>8.26</td></tr>
+  </table>
 
   * 无APC普通运算比较
-|**STpl**|**Smarty2.6**|**Smarty3**|
-|:-------|:------------|:----------|
-|305.45|198.99|132.25|
+  <table>
+    <tr><td>STpl</td><td>Smarty2.6</td><td>Smarty3</td></tr>
+    <tr><td>305.45</td><td>198.99</td><td>132.25</td></tr>
+  </table>
 
   * 有APC强制编译(force\_compile)比较
-|**STpl**|**Smarty2.6**|**Smarty3**|
-|:-------|:------------|:----------|
-|141.55|82.07|8.97|
+  <table>
+    <tr><td>STpl</td><td>Smarty2.6</td><td>Smarty3</td></tr>
+    <tr><td>141.55</td><td>82.07</td><td>8.97</td></tr>
+  </table>
 
   * 有APC普通运算比较
-|**STpl**|**Smarty2.6**|**Smarty3**|
-|:-------|:------------|:----------|
-|913.34|684.53|592.46|
+  <table>
+    <tr><td>STpl</td><td>Smarty2.6</td><td>Smarty3</td></tr>
+    <tr><td>913.34</td><td>684.53</td><td>592.46</td></tr>
+  </table>
 
 
 # 使用方法 #
