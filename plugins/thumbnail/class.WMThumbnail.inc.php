@@ -159,8 +159,22 @@ class WMThumbnail extends Thumbnail {
 	* @uses $position
 	*/
 	public function addLogo($logo = '', $position = 3, $margin = 1) {
-		if (file_exists($logo) && ($position > 0 && $position < 6)) {
+		if (is_file($logo) && ($position > 0 && $position < 6)) {
 			$this->logos[] = array('path' => trim($logo), 'pos' => $position, 'margin' => $margin);
+		} // end if
+	} // end function
+
+	/**
+	* sets the position of the logo /watermark
+	*
+	* @param string $logo  path/filename of the logo
+	* @param array $position array("x"=>0,"y"=>0,"width"=>log_width,"height"=>log_height);
+	* @return void
+	* @uses $position
+	*/
+	public function addAbsoluteLogo($logo = '', $position = array()) {
+		if (is_file($logo) && is_array($position)) {
+			$this->logos[] = array('path' => trim($logo), 'pos' => $position);
 		} // end if
 	} // end function
 
@@ -184,40 +198,49 @@ class WMThumbnail extends Thumbnail {
 		imagealphablending($this->thumbnail, true);
 	    foreach ($this->logos as $logo) {
 			if (strlen(trim($logo['path'])) > 0) {
-				$this->readWMImage($logo['path']);
-			    $start_pos_x = $this->thumbnail_width - $logo['margin'] - $this->wm_image_width;
-			    $start_pos_y = $this->thumbnail_height - $logo['margin'] - $this->wm_image_height;
-			    switch ($logo['pos']) {
-			        case 1: // left-top
-			            imagecopy($this->thumbnail, $this->wm_image,
-			            		  $logo['margin'], $logo['margin'], 0, 0,
-			            		  $this->wm_image_width,
-			            		  $this->wm_image_height);
-			            break;
-			        case 2: // right-top
-			            imagecopy($this->thumbnail, $this->wm_image, $start_pos_x,
-			            		  $logo['margin'], 0, 0, $this->wm_image_width,
-			            		  $this->wm_image_height);
-			            break;
-			        case 3: // right-bottom
-			            imagecopy($this->thumbnail, $this->wm_image, $start_pos_x,
-			            		  $start_pos_y, 0, 0, $this->wm_image_width,
-			            		  $this->wm_image_height);
-			            break;
-			        case 4: // left-bottom
-			            imagecopy($this->thumbnail, $this->wm_image,
-			            		  $logo['margin'], $start_pos_y, 0, 0,
-			            		  $this->wm_image_width, $this->wm_image_height);
-			            break;
-			        case 5: // center
-			        default:
-						$middle_x = ($this->thumbnail_width >> 1) - ($this->wm_image_width >> 1);
-						$middle_y = ($this->thumbnail_height >> 1) - ($this->wm_image_height >> 1);
-			            imagecopy($this->thumbnail, $this->wm_image, $middle_x,
-			            		  $middle_y, 0, 0, $this->wm_image_width,
-			            		  $this->wm_image_height);
-			            break;
-			    } // end switch
+                $this->readWMImage($logo['path']);
+                if(is_numeric($logo['pos'])){
+                    $start_pos_x = $this->thumbnail_width - $logo['margin'] - $this->wm_image_width;
+                    $start_pos_y = $this->thumbnail_height - $logo['margin'] - $this->wm_image_height;
+                    switch ($logo['pos']) {
+                    case 1: // left-top
+                        imagecopy($this->thumbnail, $this->wm_image,
+                            $logo['margin'], $logo['margin'], 0, 0,
+                            $this->wm_image_width,
+                            $this->wm_image_height);
+                        break;
+                    case 2: // right-top
+                        imagecopy($this->thumbnail, $this->wm_image, $start_pos_x,
+                            $logo['margin'], 0, 0, $this->wm_image_width,
+                            $this->wm_image_height);
+                        break;
+                    case 3: // right-bottom
+                        imagecopy($this->thumbnail, $this->wm_image, $start_pos_x,
+                            $start_pos_y, 0, 0, $this->wm_image_width,
+                            $this->wm_image_height);
+                        break;
+                    case 4: // left-bottom
+                        imagecopy($this->thumbnail, $this->wm_image,
+                            $logo['margin'], $start_pos_y, 0, 0,
+                            $this->wm_image_width, $this->wm_image_height);
+                        break;
+                    case 5: // center
+                    default:
+                    $middle_x = ($this->thumbnail_width >> 1) - ($this->wm_image_width >> 1);
+                    $middle_y = ($this->thumbnail_height >> 1) - ($this->wm_image_height >> 1);
+                    imagecopy($this->thumbnail, $this->wm_image, $middle_x,
+                        $middle_y, 0, 0, $this->wm_image_width,
+                        $this->wm_image_height);
+                    break;
+                    } // end switch
+                }elseif(is_array($logo['pos'])){
+                    $x = !empty($logo['pos']['x']) ? $logo['pos']['x']: 0;
+                    $y = !empty($logo['pos']['y']) ? $logo['pos']['y']: 0;
+                    $width = !empty($logo['pos']['width']) ? $logo['pos']['width']: $this->wm_image_width;
+                    $height= !empty($logo['pos']['height']) ? $logo['pos']['height']: $this->wm_image_height;
+                    imagecopyresampled($this->thumbnail, $this->wm_image, $x, $y, 0, 0, 
+                        $width, $height, $this->wm_image_width,$this->wm_image_height);
+                }
 				unset($this->wm_image);
 			} // end if
 		} // end foreach
