@@ -68,7 +68,7 @@ $db->init(
   * insert 方法
 
 ```
-boolean|int insert($table,$item="",$isreplace=false,$isdelayed=false,$update=array());
+boolean|int insert($table,$item="",$isreplace=false,$isdelayed=false,$update=array(),$ignore=false);
 ```
 
 |**参数**|**类型**|**必须**|**默认**|**说明**|
@@ -78,6 +78,7 @@ boolean|int insert($table,$item="",$isreplace=false,$isdelayed=false,$update=arr
 |$isreplace| boolean |  | false | 碰到重复字段，是否用替换模式，用replace代替insert|
 |$isdelayed | boolean |  |false |是否延迟插入|
 |$update | string|array|object |  |  |和$item的格式一样，碰到重复时要更新字,格式参照下面select里定义|
+|$ignore | boolean |  |false |是否忽略插入错误，注意，当为true时，如果因为unique key原因插入失败，会返回0，而不是false|
 
   * 返回值 boolean|int
 如果false，失败;如果是普通插入，返回lastInsertId,如果设置了$isreplace或者$update的值，请用!==false判断是否成功
