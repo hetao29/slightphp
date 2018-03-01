@@ -33,6 +33,7 @@ final class SlightPHP{
 	 * @var string
 	 */
 	public static $zone;
+
 	/**
 	 * @var string
 	 */
@@ -43,19 +44,23 @@ final class SlightPHP{
 	 * @var string
 	 */
 	public static $page;
+
 	/**
 	 * @var string
 	 */
 	public static $defaultPage="page";
+
 	/**
 	 * current entry
 	 * @var string
 	 */
 	public static $entry;
+
 	/**
 	 * @var string
 	 */
 	public static $defaultEntry="entry";
+
 	/**
 	 * split flag of zone,classs,method
 	 *
@@ -79,12 +84,38 @@ final class SlightPHP{
 		self::$zoneAlias[$zone]=$alias;
 		return true;
 	}
+
 	/**
 	 * @param string $zone
 	 * @return string | boolean
 	 */
 	public static function getZoneAlias($zone){
 		return isset(self::$zoneAlias[$zone]) ? self::$zoneAlias[$zone] : false;
+	}
+	
+	/**
+	 * pageAlias
+	 *
+	 * @var array
+	 */
+	public static $pageAlias;
+
+	/**
+	 * @param string $page
+	 * @param string $alias
+	 * @return boolean
+	 */
+	public static function setPageAlias($page,$alias){
+		self::$pageAlias[$page]=$alias;
+		return true;
+	}
+
+	/**
+	 * @param string $page
+	 * @return string | boolean
+	 */
+	public static function getPageAlias($page){
+		return isset(self::$pageAlias[$page]) ? self::$pageAlias[$page] : false;
 	}
 	
 	/**
@@ -249,6 +280,9 @@ final class SlightPHP{
 
 		if(self::$zoneAlias && ($key = array_search($zone,self::$zoneAlias))!==false){
 			$zone = $key;
+		}
+		if(self::$pageAlias && ($key = array_search($page,self::$pageAlias))!==false){
+			$page = $key;
 		}
 		if(!$isPart){
 			self::$zone	= $zone;
