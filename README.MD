@@ -129,9 +129,10 @@ http://localhost/index.php/user/profile/update
 如果加了这代码
 ```php
 SlightPHP::setZoneAlias("user","u");
+SlightPHP::setPageAlias("profile","p");
 ```
 你访问这个地址
-http://localhost/index.php/u/profile/update
+http://localhost/index.php/u/p/update
 和http://localhost/index.php/user/profile/update
 会是一样的效果
 它的作用是增加user一个别名u
