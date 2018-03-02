@@ -178,6 +178,25 @@ ZEND_BEGIN_ARG_INFO_EX(slightphp__getZoneAlias_args, ZEND_SEND_BY_VAL, ZEND_RETU
   ZEND_ARG_INFO(0, zone)
 ZEND_END_ARG_INFO()
 
+
+
+PHP_METHOD(slightphp, setPageAlias);
+#if PHP_MAJOR_VERSION==5 && PHP_MINOR_VERSION<=2
+static  
+#endif
+ZEND_BEGIN_ARG_INFO_EX(slightphp__setPageAlias_arg, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, 1)
+  ZEND_ARG_INFO(0, page)
+  ZEND_ARG_INFO(0, alias)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(slightphp, getPageAlias);
+#if PHP_MAJOR_VERSION==5 && PHP_MINOR_VERSION<=2
+static
+#endif
+ZEND_BEGIN_ARG_INFO_EX(slightphp__getPageAlias_args, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, 0)
+  ZEND_ARG_INFO(0, page)
+ZEND_END_ARG_INFO()
+
 PHP_METHOD(slightphp, __construct);
 #if PHP_MAJOR_VERSION==5 && PHP_MINOR_VERSION<=2
 static  

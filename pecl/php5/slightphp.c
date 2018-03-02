@@ -209,6 +209,42 @@ PHP_METHOD(slightphp, getZoneAlias)
 	}
 }
 
+PHP_METHOD(slightphp, setPageAlias)
+{
+	char *page, *alias;
+	int page_len, alias_len;
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ss", &page, &page_len, &alias ,&alias_len) == FAILURE) {
+		RETURN_FALSE;
+	}
+	zval *pageAlias = zend_read_static_property(slightphp_ce_ptr,"pageAlias",sizeof("pageAlias")-1,1 TSRMLS_CC);
+	if(!pageAlias){ RETURN_FALSE; }
+
+	if(Z_TYPE_P(pageAlias)!=IS_ARRAY){
+		array_init(pageAlias);
+	}
+	add_assoc_string(pageAlias,page,alias,1);
+	zend_update_static_property(slightphp_ce_ptr,"pageAlias",sizeof("pageAlias")-1,pageAlias TSRMLS_CC);
+	RETURN_TRUE;
+}
+
+PHP_METHOD(slightphp, getPageAlias)
+{
+	char * page= NULL;
+	int page_len;
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &page, &page_len) == FAILURE) {
+		RETURN_FALSE;
+	}
+	zval *pageAlias = zend_read_static_property(slightphp_ce_ptr,"pageAlias",sizeof("pageAlias")-1,1 TSRMLS_CC);
+	if(!pageAlias || Z_TYPE_P(pageAlias)!=IS_ARRAY){ RETURN_FALSE; }
+	zval **token;
+	if(zend_hash_find(Z_ARRVAL_P(pageAlias),page, page_len+1, (void**)&token) == SUCCESS) {
+		*return_value = **token;
+		zval_copy_ctor(return_value);
+	}else{
+		RETURN_FALSE;
+	}
+}
+
 PHP_METHOD(slightphp, setDebug)
 {
 	long _debug=0;
@@ -449,6 +485,28 @@ PHP_METHOD(slightphp, run)
 		}
 	}
 	//}}}
+	//{{{
+	zval *page_alias=NULL;
+	zval *pageAlias = zend_read_static_property(slightphp_ce_ptr,"pageAlias",sizeof("pageAlias")-1,1 TSRMLS_CC);
+	if(pageAlias && Z_TYPE_P(pageAlias)==IS_ARRAY){
+		char *string_key;uint str_key_len;ulong num_key;
+		HashPosition pos;
+		zval **entry2;
+		zend_hash_internal_pointer_reset_ex(Z_ARRVAL_P(pageAlias), &pos);
+		while (zend_hash_get_current_data_ex(Z_ARRVAL_P(pageAlias), (void **)&entry2, &pos) == SUCCESS) {
+			if(strcmp(Z_STRVAL_PP(entry2) ,Z_STRVAL_P(page))==0){
+				switch (zend_hash_get_current_key_ex(Z_ARRVAL_P(pageAlias), &string_key, &str_key_len, &num_key, 0, &pos)) {
+					case HASH_KEY_IS_STRING:
+						MAKE_STD_ZVAL(page_alias);
+						ZVAL_STRING(page_alias,string_key,0);
+						page=page_alias;
+						break;
+				}
+			}
+			zend_hash_move_forward_ex(Z_ARRVAL_P(pageAlias), &pos);
+		}
+	}
+	//}}}
 	if(!isPart){
 		zend_update_static_property(slightphp_ce_ptr,"zone",sizeof("zone")-1,zone TSRMLS_CC);
 		zend_update_static_property(slightphp_ce_ptr,"page",sizeof("page")-1,page TSRMLS_CC);
@@ -463,6 +521,7 @@ PHP_METHOD(slightphp, run)
 		  ){
 			debug("part ignored [%s]",Z_STRVAL_P(url));
 			if(zone_alias)zval_ptr_dtor(&zone_alias);
+			if(page_alias)zval_ptr_dtor(&page_alias);
 			zval_ptr_dtor(&url);
 			zval_ptr_dtor(&path_array);
 			return;
@@ -473,12 +532,14 @@ PHP_METHOD(slightphp, run)
 	if(slightphp_load(appDir,zone,page TSRMLS_CC) == SUCCESS){
 		if(slightphp_run(zone,page,entry,return_value,1,&path_array TSRMLS_CC)==SUCCESS){
 			if(zone_alias)zval_ptr_dtor(&zone_alias);
+			if(page_alias)zval_ptr_dtor(&page_alias);
 			zval_ptr_dtor(&url);
 			zval_ptr_dtor(&path_array);
 			RETURN_ZVAL(return_value,0,0);
 		};
 	}
 	if(zone_alias)zval_ptr_dtor(&zone_alias);
+	if(page_alias)zval_ptr_dtor(&page_alias);
 	zval_ptr_dtor(&url);
 	zval_ptr_dtor(&path_array);
 	RETURN_FALSE;
@@ -512,6 +573,9 @@ static zend_function_entry slightphp_methods[] = {
 
 		PHP_ME(slightphp, setZoneAlias, slightphp__setZoneAlias_arg, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
 		PHP_ME(slightphp, getZoneAlias, NULL, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
+
+		PHP_ME(slightphp, setPageAlias, slightphp__setPageAlias_arg, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
+		PHP_ME(slightphp, getPageAlias, NULL, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
 		//PHP_ME(slightphp, loadFile, slightphp__loadFile_args, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
 		//PHP_ME(slightphp, loadPlugin, slightphp__loadPlugin_args, /**/ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
 		PHP_ME(slightphp, __construct, NULL, /**/ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
@@ -570,9 +634,12 @@ static void class_init_slightphp(TSRMLS_D)
 			"splitFlag", 9, "/", 
 			ZEND_ACC_STATIC|ZEND_ACC_PUBLIC TSRMLS_CC);
 
-
 	zend_declare_property_null(slightphp_ce_ptr, 
 			"zoneAlias", sizeof("zoneAlias")-1,
+			ZEND_ACC_STATIC|ZEND_ACC_PUBLIC TSRMLS_CC);
+
+	zend_declare_property_null(slightphp_ce_ptr, 
+			"pageAlias", sizeof("pageAlias")-1,
 			ZEND_ACC_STATIC|ZEND_ACC_PUBLIC TSRMLS_CC);
 
 	zend_declare_property_long(slightphp_ce_ptr, 
