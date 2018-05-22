@@ -19,6 +19,4 @@ require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."mail/class.phpmailer.php");
  * @package SlightPHP
  */
 class SMail extends SlightPHP\PHPMailer{
-	function SMail(){
-	}
 }
