@@ -41,9 +41,7 @@ class SHttp{
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
 		curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
-		if($returnHeader){
-			curl_setopt($ch, CURLOPT_HEADER, true);
-		}
+		curl_setopt($ch, CURLOPT_HEADER, true);
 		$data = curl_exec($ch);
 		$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 		$headerSize = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
@@ -159,9 +157,7 @@ class SHttp{
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
 		curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
-		if($returnHeader){
-			curl_setopt($ch, CURLOPT_HEADER, true);
-		}
+		curl_setopt($ch, CURLOPT_HEADER, true);
 		$data = curl_exec($ch);
 		$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 		$headerSize = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
