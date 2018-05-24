@@ -46,9 +46,9 @@ class SHttp{
 		}
 		$data = curl_exec($ch);
 		$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		$headerSize = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
 		curl_close($ch);
 		if ($httpcode == '200') {
-			$headerSize = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
 			$header = substr($data, 0, $headerSize);
 			$body = substr($data, $headerSize);
 			if($returnHeader){
@@ -164,9 +164,9 @@ class SHttp{
 		}
 		$data = curl_exec($ch);
 		$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		$headerSize = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
 		curl_close($ch);
 		if ($httpcode == '200') {
-			$headerSize = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
 			$header = substr($data, 0, $headerSize);
 			$body = substr($data, $headerSize);
 			if($returnHeader){
