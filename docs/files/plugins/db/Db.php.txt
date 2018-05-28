@@ -292,12 +292,16 @@ class Db{
 	 * @param string|array|object $update
 	 * @return int|boolean int(lastInsertId or affectedRows)
 	 */
-	public function insert($table,$item="",$isreplace=false,$isdelayed=false,$update=array()){
+	public function insert($table,$item="",$isreplace=false,$isdelayed=false,$update=array(),$ignore=false){
 		$table = $this->__array2string($table);
 		if($isreplace==true){
 			$command="REPLACE";
 		}else{
-			$command="INSERT";
+			if($ignore){
+				$command="INSERT IGNORE";
+			}else{
+				$command="INSERT";
+			}
 		}
 		if($isdelayed==true){
 			$command.=" DELAYED ";

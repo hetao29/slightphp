@@ -592,17 +592,15 @@ class PHPMailer {
     /* Retry while there is no connection */
     while($index < count($hosts) && $connection == false) {
       $hostinfo = array();
-      if(eregi('^(.+):([0-9]+)$', $hosts[$index], $hostinfo)) {
+      if(preg_match('/^(.+):([0-9]+)$/i', $hosts[$index], $hostinfo)) {
         $host = $hostinfo[1];
         $port = $hostinfo[2];
       } else {
         $host = $hosts[$index];
         $port = $this->Port;
       }
-
       $tls = ($this->SMTPSecure == 'tls');
       $ssl = ($this->SMTPSecure == 'ssl');
-
       if($this->smtp->Connect(($ssl ? 'ssl://':'').$host, $port, $this->Timeout)) {
 
         $hello = ($this->Helo != '' ? $this->Hello : $this->ServerHostname());

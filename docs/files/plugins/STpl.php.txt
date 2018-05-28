@@ -70,7 +70,7 @@ class STpl extends SlightPHP\Tpl{
 			self::setCompileDir();
 		}
 		if(parent::$left_delimiter=="" || parent::$right_delimiter==""){
-			self::setDelimter(parent::$left_delimiter,parent::$right_delimiter);
+			self::setDelimter();
 		}
 		parent::assign($parames);
 		return parent::fetch("$tpl");
