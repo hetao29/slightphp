@@ -322,18 +322,21 @@ class SLog
     }
 
     /**
-     * @param $info
+     * @param $args
      */
-    public static function write($info)
+    public static function write(...$args)
     {
-        if (is_object($info) || is_array($info)) {
-            $infoText = var_export($info, true);
-        } elseif (is_bool($info)) {
-            $infoText = $info ? "true" : "false";
-        } else {
-            $infoText = $info;
-        }
-        $infoText = "[".date("Y-m-d H:i:s")."] ".$infoText;
+		$data="";
+		foreach($args as $info){
+			if (is_object($info) || is_array($info)) {
+				$data .= " ".var_export($info, true);
+			} elseif (is_bool($info)) {
+				$data .= " ".$info ? "true" : "false";
+			} else {
+				$data .= " ".$info;
+			}
+		}
+        $infoText = "[".date("Y-m-d H:i:s")."]".$data;
 
         if (!empty(SLog::$LOGFILE)) {
             error_log($infoText."\r\n", 3, SLog::$LOGFILE);
