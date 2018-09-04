@@ -326,26 +326,25 @@ class SLog
      */
     public static function write(...$args)
     {
-		$data="";
-		foreach($args as $info){
-			if (is_object($info) || is_array($info)) {
-				$data .= " ".var_export($info, true);
-			} elseif (is_bool($info)) {
-				$data .= " ".$info ? "true" : "false";
-			} else {
-				$data .= " ".$info;
-			}
-		}
-        $infoText = "[".date("Y-m-d H:i:s")."]".$data;
+	$data="";
+	foreach($args as $info){
+	    if (is_object($info) || is_array($info)) {
+		$data .= " ".var_export($info, true);
+	    } elseif (is_bool($info)) {
+		$data .= " ".($info ? "true" : "false");
+	    } else {
+		$data .= " ".$info;
+	    }
+	}
+	$infoText = "[".date("Y-m-d H:i:s")."]".$data;
 
-        if (!empty(SLog::$LOGFILE)) {
-            error_log($infoText."\r\n", 3, SLog::$LOGFILE);
-        } else {
-            error_log($infoText);
-        }
+	if (!empty(SLog::$LOGFILE)) {
+	    error_log($infoText."\r\n", 3, SLog::$LOGFILE);
+	} else {
+	    error_log($infoText);
+	}
 
-        if (SLog::$CONSOLE)
-            echo "<!--\n".$infoText."\n-->";
+	if (SLog::$CONSOLE)
+	    echo "<!--\n".$infoText."\n-->";
     }
 }
-
