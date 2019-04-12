@@ -249,7 +249,9 @@ final class SlightPHP{
 			$isPart = true;
 		}else{
 			$isPart = false;
-			if(!empty($_SERVER['PATH_INFO'])){
+			if(!empty(self::$pathInfo)){
+				$path= self::$pathInfo;
+			}elseif(!empty($_SERVER['PATH_INFO'])){
 				$path= $_SERVER["PATH_INFO"];
 			}elseif(!empty($_SERVER['REQUEST_URI'])){
 				$path= $_SERVER["REQUEST_URI"];
@@ -271,7 +273,6 @@ final class SlightPHP{
 		}else{
 			$url="";
 		}
-		self::$pathInfo=$url;
 		$path_array = preg_split("/[$splitFlag\/]/",$url,-1,PREG_SPLIT_NO_EMPTY);
 
 		$zone	= !empty($path_array[0]) ? $path_array[0] : self::$defaultZone ;
