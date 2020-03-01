@@ -19,7 +19,7 @@
  */
 class SLog
 {
-	public static $CONSOLE = true;
+	public static $CONSOLE = false;
 
 	public static $LOG = false;
 
