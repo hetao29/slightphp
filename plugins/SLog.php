@@ -24,6 +24,11 @@ class SLog
 	public static $LOG = false;
 
 	public static $LOGFILE = "";
+	/**
+	 *
+	 * @param string $LOGTYPE text/json
+	 */
+	public static $LOGTYPE="text";
 
 	/**
 	 * @var array
@@ -76,7 +81,11 @@ class SLog
 		}
 		foreach($args as $info){
 			if (is_object($info) || is_array($info)) {
-				$data .= " ".var_export($info, true);
+				if(self::$LOGTYPE=="json"){
+					$data .= " ".json_encode($info);
+				}else{
+					$data .= " ".var_export($info, true);
+				}
 			} elseif (is_bool($info)) {
 				$data .= " ".($info ? "true" : "false");
 			} else {
