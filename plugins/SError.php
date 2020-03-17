@@ -208,7 +208,7 @@ class SError{
 		}
 		if(SError::$LOG){
 			if(!empty(SError::$LOGFILE)){
-				error_log($ct,3,SError::$LOGFILE);
+				error_log($ct."\n",3,SError::$LOGFILE);
 			}else error_log($ct);
 		}
 	}
