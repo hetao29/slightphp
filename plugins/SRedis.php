@@ -22,11 +22,19 @@
 if(!defined("SLIGHTPHP_PLUGINS_DIR"))define("SLIGHTPHP_PLUGINS_DIR",dirname(__FILE__));
 require_once(SLIGHTPHP_PLUGINS_DIR."/SConfig.php");
 class SRedis{
+	private static $_config;
+	/**
+	 * 当前使用的resouce
+	 */
+	private static $_resource;
+	/**
+	 *
+	 */
+	private static $_resources;
+	private static $_instances=array();
+
 	public function __construct(){
 	}
-	private static $_config;
-	private static $_rc;
-	private static $_instances=array();
 
 	static function setConfigFile($file){
 		self::$_config = $file;
@@ -52,8 +60,9 @@ class SRedis{
 	static function useConfig($zone,$type="host"){
 		$key = $zone.":".$type;
 		if(isset(self::$_instances[$key])){
-			self::$_rc = self::$_instances[$key];
-			return self::$_rc;
+			return self::$_instances[$key];
+		}else{
+			self::$_instances[$key] = new self;
 		}
 		$hosts=array();
 		$options=array();
@@ -75,24 +84,27 @@ class SRedis{
 				}
 			}
 		}
-		return self::$_rc = self::$_instances[$key] = new RedisArray($hosts,$options);
+		self::$_resource = self::$_resources[$key] = new RedisArray($hosts,$options);
+		return self::$_instances[$key];
 	}
 	public function __call($name,$args){
 		try{
-			if(self::$_rc) return call_user_func_array(array(self::$_rc,$name),$args);
+			if(self::$_resource) return call_user_func_array(array(self::$_resource,$name),$args);
 		}catch(RedisException $e){
 			self::$_instances=null;
-			self::$_rc=null;
+			self::$_resources=null;
+			self::$_resource=null;
 			trigger_error($e);
 		}
 		return false;
 	}
 	public static function __callStatic($name,$args){
 		try{
-			if(self::$_rc) return call_user_func_array(array(self::$_rc,$name),$args);
+			if(self::$_resource) return call_user_func_array(array(self::$_resource,$name),$args);
 		}catch(RedisException $e){
 			self::$_instances=null;
-			self::$_rc=null;
+			self::$_resources=null;
+			self::$_resource=null;
 			trigger_error($e);
 		}
 		return false;
