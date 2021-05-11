@@ -206,18 +206,18 @@ class Db{
 		$result = $this->__query($sql);
 		if($result!==false){
 			$data = new DbData;
-			$data->page = $this->page;
-			$data->limit = $this->limit;
+			$data->page = (int)$this->page;
+			$data->limit = (int)$this->limit;
 			$data->items= $result;
-			$data->pageSize = count($data->items);
+			$data->pageSize = (int)count($data->items);
 			//{{{
 			if($this->count==true){
 				$countsql="SELECT count(1) totalSize FROM ($table)$join $condiStr $groupby";
 				$result_count = $this->__query($countsql);
 				if(!empty($result_count[0])){
-					$data->totalSize = $result_count[0]['totalSize'];
+					$data->totalSize = (int)$result_count[0]['totalSize'];
 					if($this->limit>0){
-						$data->totalPage = ceil($data->totalSize/$data->limit);
+						$data->totalPage = (int)ceil($data->totalSize/$data->limit);
 					}else{
 						$data->totalPage = 1;
 					}
@@ -225,7 +225,7 @@ class Db{
 			}
 			//}}}
 			$end = microtime(true);
-			$data->totalSecond = $end-$start;
+			$data->totalSecond = (int)$end-$start;
 			$result = $data;
 		}
 		//{{{reset 
