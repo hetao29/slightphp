@@ -346,10 +346,7 @@ class Db{
 		}
 		//Connect
 		if(!isset(Db::$_globals[$this->_key])){
-			if($this->_engine_name == "mysql"){
-				require_once(SLIGHTPHP_PLUGINS_DIR."/db/DbMysql.php");
-				$this->engine = new \SlightPHP\DbMysql($this->params);
-			}elseif($this->_engine_name =="mysqli"){
+			if($this->_engine_name == "mysql" || $this->_engine_name =="mysqli"){
 				require_once(SLIGHTPHP_PLUGINS_DIR."/db/DbMysqli.php");
 				$this->engine = new \SlightPHP\DbMysqli($this->params);
 			}else{

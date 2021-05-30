@@ -62,6 +62,7 @@ class DbMysqli implements DbEngine{
 		if($this->_mysqli->connect_errno){
 			return false;
 		}
+		$this->_mysqli->options(MYSQLI_OPT_INT_AND_FLOAT_NATIVE,true);
 		if(!empty($this->_charset)){
 			$this->_mysqli->query("SET NAMES ".$this->_charset);
 		}
