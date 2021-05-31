@@ -63,23 +63,24 @@ class DbPDO implements DbEngine{
 		$tmp = explode("_",$this->_engine);
 		$driver =$tmp[1];
 		try{
+			$options = array(
+				\PDO::ATTR_PERSISTENT => $this->_persistent,
+				\PDO::ATTR_STRINGIFY_FETCHES => false,
+				\PDO::ATTR_EMULATE_PREPARES => false,
+				\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
+			);
+			if(!empty($this->_charset)){
+				$options[\PDO::MYSQL_ATTR_INIT_COMMAND]="SET CHARACTER SET {$this->_charset}, NAMES {$this->_charset}";
+			}
 			$this->_pdo = new \PDO(
 				$driver .":dbname=".$this->_database.";host=".$this->_host.";port=".$this->_port,
 				$this->_user,
 				$this->_password,
-				array(
-					\PDO::ATTR_PERSISTENT => $this->_persistent,
-					\PDO::ATTR_STRINGIFY_FETCHES => false,
-					\PDO::ATTR_EMULATE_PREPARES => false,
-					\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
-				)
+				$options,
 			);
 		}catch(\PDOException  $e){
 			trigger_error("CONNECT DATABASE ERROR ( ".$e->getMessage()." ) ",E_USER_WARNING);
 			return false;
-		}
-		if(!empty($this->_charset)){
-			$this->_pdo->exec("SET NAMES ".$this->_charset);
 		}
 		return true;
 	}

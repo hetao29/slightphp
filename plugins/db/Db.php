@@ -25,7 +25,7 @@ class Db{
 	 */
 	private $engine;
 	private $params;
-	private $_engine_name="pdo_mysql";
+	private $_engine_name="mysql";
 	private $_allow_engines=array(
 			"mysql","mysqli",
 			"pdo_mysql","pdo_sqlite","pdo_cubrid",
@@ -346,12 +346,12 @@ class Db{
 		}
 		//Connect
 		if(!isset(Db::$_globals[$this->_key])){
-			if($this->_engine_name == "mysql" || $this->_engine_name =="mysqli"){
-				require_once(SLIGHTPHP_PLUGINS_DIR."/db/DbMysqli.php");
-				$this->engine = new \SlightPHP\DbMysqli($this->params);
-			}else{
+			if(strpos($this->_engine_name ,"pdo_") === 0){
 				require_once(SLIGHTPHP_PLUGINS_DIR."/db/DbPDO.php");
 				$this->engine = new \SlightPHP\DbPDO($this->params);
+			}else{
+				require_once(SLIGHTPHP_PLUGINS_DIR."/db/DbMysqli.php");
+				$this->engine = new \SlightPHP\DbMysqli($this->params);
 			}
 			$this->engine->init($this->params);
 			if($this->engine->connect()===false){
