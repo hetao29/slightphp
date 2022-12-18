@@ -1,7 +1,7 @@
 # SlightPHP 高效的PHP敏捷开发框架
 
-### 支持composer,同时需要php5.3及以上
-  - 安装方法一 ，执行下面的命令
+### 安装方法
+  - 方法一 ，执行下面的命令
 ```bash
 //使用中国镜像
 composer config -g repo.packagist composer https://packagist.phpcomposer.com
@@ -9,28 +9,20 @@ composer config -g repo.packagist composer https://packagist.phpcomposer.com
 composer require "hetao29/slightphp:dev-master"
 ```
 
-  - 安装方法二 ，新增 composer.json，然后 composer install就可以了
+  - 方法二 ，新增 composer.json，然后 composer install就可以了
 ```json
 {
     "require": {
         "hetao29/slightphp": "dev-master"
+    },
+    "repositories": {
+        "packagist": {
+             "type": "composer",
+             "url": "https://mirrors.aliyun.com/composer/"
+        }
     }
 }
 ```
-
-  - 优化，默认我们已经做了加载优化，你也可以手动执行一次
-```bash
-composer dump-autoload --optimize
-```
-
-  - v2.0升级方法 ，加载SlightPHP.php改成如下方法就可以了，自定义slightphp_path的路径
-```php
-<?php
-//require_once($slightphp_path."/SlightPHP.php"); #不用这个方法了
-require_once($slightphp_path."/vendor/autoload.php");
-```
-
-  - v2.0版本支持php4,php5,php7等主要版本
   
 ### pecl 模块支持php7
   - 最新更新，支持php7模块
@@ -58,7 +50,7 @@ require_once($slightphp_path."/vendor/autoload.php");
 ```php
 <?php
 //加载方式1，直接加载框架
-require_once("SlightPHP.php");
+//require_once("SlightPHP.php");
 
 //加载方式2，使用扩展，或者直接编译进PHP也可以
 //dl("slightphp.so");
@@ -66,7 +58,7 @@ require_once("SlightPHP.php");
 //extension = slightphp.so
 
 //加载方式3，使用composer的autoload
-//require_once("vendor/autoload.php");
+require_once("vendor/autoload.php");
 
 SlightPHP::run();
 ?>
