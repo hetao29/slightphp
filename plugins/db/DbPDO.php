@@ -67,6 +67,7 @@ class DbPDO implements DbEngine{
 				\PDO::ATTR_PERSISTENT => $this->_persistent,
 				\PDO::ATTR_STRINGIFY_FETCHES => false,
 				\PDO::ATTR_EMULATE_PREPARES => false,
+				\PDO::ATTR_ERRMODE => \PDO::ERRMODE_WARNING,
 				\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
 			);
 			if(!empty($this->_charset)){
