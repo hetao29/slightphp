@@ -298,7 +298,7 @@ final class SlightPHP{
 			$url="";
 		}
 		/* file type */
-		$type   = !empty($_SERVER['REQUSET_TYPE'])? strtolower(trim($_SERVER['REQUSET_TYPE'])) : self::$defaultType;
+		$type   = !empty($_SERVER['HTTP_REQUEST_TYPE'])? strtolower(trim($_SERVER['HTTP_REQUEST_TYPE'])) : self::$defaultType;
 
 		$path_array = preg_split("/[$splitFlag\/]/",$url,-1,PREG_SPLIT_NO_EMPTY);
 		$zone	= !empty($path_array[0]) ? $path_array[0] : self::$defaultZone ;
