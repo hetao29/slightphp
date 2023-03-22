@@ -51,6 +51,12 @@ final class SlightPHP{
 	public static $defaultPage="page";
 
 	/**
+	 * default file type, like $defaultZone.$defaultType.php
+	 * @var string
+	 */
+	public static $defaultType="page";
+
+	/**
 	 * current entry
 	 * @var string
 	 */
@@ -140,7 +146,7 @@ final class SlightPHP{
 	}
 	/**
 	 * defaultClass set
-	 * 
+	 *
 	 * @param string $page
 	 * @return boolean
 	 */
@@ -149,12 +155,30 @@ final class SlightPHP{
 		return true;
 	}
 	/**
-	 * getDefaultClass get
-	 * 
+	 * defaultPage get
+	 *
 	 * @return string
 	 */
 	public static function getDefaultPage(){
 		return self::$defaultPage;
+	}
+	/**
+	 * defaultType set
+	 *
+	 * @param string $page
+	 * @return boolean
+	 */
+	public static function setDefaultType($type){
+		self::$defaultType= $type;
+		return true;
+	}
+	/**
+	 * defaultType get
+	 *
+	 * @return string
+	 */
+	public static function getDefaultType(){
+		return self::$defaultType;
 	}
 	/**
 	 * defaultMethod set
@@ -273,8 +297,10 @@ final class SlightPHP{
 		}else{
 			$url="";
 		}
-		$path_array = preg_split("/[$splitFlag\/]/",$url,-1,PREG_SPLIT_NO_EMPTY);
+		/* file type */
+		$type   = !empty($_SERVER['REQUSET_TYPE'])? strtolower(trim($_SERVER['REQUSET_TYPE'])) : self::$defaultType;
 
+		$path_array = preg_split("/[$splitFlag\/]/",$url,-1,PREG_SPLIT_NO_EMPTY);
 		$zone	= !empty($path_array[0]) ? $path_array[0] : self::$defaultZone ;
 		$page	= !empty($path_array[1]) ? $path_array[1] : self::$defaultPage ;
 		$entry	= !empty($path_array[2]) ? $path_array[2] : self::$defaultEntry ;
@@ -296,14 +322,14 @@ final class SlightPHP{
 			}
 		}
 
-		$app_file = self::$appDir . DIRECTORY_SEPARATOR . $zone . DIRECTORY_SEPARATOR . $page . ".page.php";
+		$app_file = self::$appDir . DIRECTORY_SEPARATOR . $zone . DIRECTORY_SEPARATOR . $page . ".{$type}.php";
 		if(!is_file($app_file)){
 			self::debug("file[$app_file] does not exists");
 			return false;
 		}else{
 			require_once(realpath($app_file));
 		}
-		$method = "Page".$entry;
+		$method = $type.$entry;
 		$classname = $zone ."_". $page;
 		
 		if(!class_exists($classname,false)){
