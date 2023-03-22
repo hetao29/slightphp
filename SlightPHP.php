@@ -312,6 +312,7 @@ final class SlightPHP{
 			$page = $key;
 		}
 		if(!$isPart){
+			self::$type = $type;
 			self::$zone	= $zone;
 			self::$page	= $page;
 			self::$entry	= $entry;
