@@ -51,6 +51,12 @@ final class SlightPHP{
 	public static $defaultPage="page";
 
 	/**
+	 * current type
+	 * @var string
+	 */
+	public static $type;
+
+	/**
 	 * default file type, like $defaultZone.$defaultType.php
 	 * @var string
 	 */
