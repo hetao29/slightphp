@@ -35,7 +35,7 @@ class SHttp{
 	 * @return string | array
 	 */
 
-	public static function get( $url, $params=array(), $cookies=array(), $returnHeader=false, $timeout=5){
+	public static function get( $url, $params=array(), $cookies=array(), $returnHeader=false, $timeout=5, $headers=array()){
 		$client = self::getInstance();
 		$request =[
 			'timeout' => $timeout
@@ -47,6 +47,9 @@ class SHttp{
 			$domain = parse_url($url, PHP_URL_HOST);
 			$jar = \GuzzleHttp\Cookie\CookieJar::fromArray($cookies, $domain);
 			$request['cookies'] = $jar;
+		}
+		if(!empty($headers)){
+			$request['headers'] = $headers;
 		}
 		$res = $client->request('GET', $url, $request);
 		$body = (string)$res->getBody();
@@ -65,7 +68,7 @@ class SHttp{
 	 * @param boolean $returnHeader
 	 * @return string | array
 	 */
-	public static function post( $url, $params=array(), $cookies=array(), $returnHeader=false, $timeout=5){
+	public static function post( $url, $params=array(), $cookies=array(), $returnHeader=false, $timeout=5, $headers=array()){
 		$client = self::getInstance();
 		$request =[
 			'timeout' => $timeout
@@ -79,6 +82,9 @@ class SHttp{
 			$domain = parse_url($url, PHP_URL_HOST);
 			$jar = \GuzzleHttp\Cookie\CookieJar::fromArray($cookies, $domain);
 			$request['cookies'] = $jar;
+		}
+		if(!empty($headers)){
+			$request['headers'] = $headers;
 		}
 		$res = $client->request('POST', $url, $request);
 		$body = (string)$res->getBody();
