@@ -212,15 +212,16 @@ class Db{
 			$data->pageSize = (int)count($data->items);
 			//{{{
 			if($this->count==true){
-				$countsql="SELECT count(1) totalSize FROM ($table)$join $condiStr $groupby";
-				$result_count = $this->__query($countsql);
-				if(!empty($result_count[0])){
-					$data->totalSize = (int)$result_count[0]['totalSize'];
-					if($this->limit>0){
+				if($this->limit>0){
+					$countsql="SELECT count(1) totalSize FROM ($table)$join $condiStr $groupby";
+					$result_count = $this->__query($countsql);
+					if(!empty($result_count[0])){
+						$data->totalSize = (int)$result_count[0]['totalSize'];
 						$data->totalPage = (int)ceil($data->totalSize/$data->limit);
-					}else{
-						$data->totalPage = 1;
 					}
+				}else{
+					$data->totalSize = $data->pageSize;
+					$data->totalPage = 1;
 				}
 			}
 			//}}}
