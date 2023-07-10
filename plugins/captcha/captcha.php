@@ -107,6 +107,8 @@ class SimpleCaptcha {
     public $Yamplitude = 14;
     public $Xperiod    = 11;
     public $Xamplitude = 5;
+    public $GdBgColor = "";
+    public $GdFgColor = "";
 
     /** letter rotation clockwise */
     public $maxRotation = 8;
@@ -347,7 +349,7 @@ class SimpleCaptcha {
         $fontSizefactor = 1+($lettersMissing*0.09);
 
         // Text generation (char by char)
-        $x      = 20*$this->scale;
+        $x      = round(20*$this->scale);
         $y      = round(($this->height*27/40)*$this->scale);
         $length = strlen($text);
         for ($i=0; $i<$length; $i++) {
@@ -363,7 +365,7 @@ class SimpleCaptcha {
             $coords = imagettftext($this->im, $fontsize, $degree,
                 $x, $y,
                 $this->GdFgColor, $fontfile, $letter);
-            $x += ($coords[2]-$x) + ($fontcfg['spacing']*$this->scale);
+            $x += round(($coords[2]-$x) + ($fontcfg['spacing']*$this->scale));
         }
     }
 
@@ -374,11 +376,11 @@ class SimpleCaptcha {
      */
     protected function WaveImage() {
         // X-axis wave generation
-        $xp = $this->scale*$this->Xperiod*rand(1,3);
+        $xp = round($this->scale*$this->Xperiod*rand(1,3));
         $k = rand(0, 100);
         for ($i = 0; $i < ($this->width*$this->scale); $i++) {
             imagecopy($this->im, $this->im,
-                $i-1, sin($k+$i/$xp) * ($this->scale*$this->Xamplitude),
+                $i-1, round(sin($k+$i/$xp) * ($this->scale*$this->Xamplitude)),
                 $i, 0, 1, $this->height*$this->scale);
         }
 
@@ -387,7 +389,7 @@ class SimpleCaptcha {
         $yp = $this->scale*$this->Yperiod*rand(1,2);
         for ($i = 0; $i < ($this->height*$this->scale); $i++) {
             imagecopy($this->im, $this->im,
-                sin($k+$i/$yp) * ($this->scale*$this->Yamplitude), $i-1,
+                round(sin($k+$i/$yp) * ($this->scale*$this->Yamplitude)), $i-1,
                 0, $i, $this->width*$this->scale, 1);
         }
     }
