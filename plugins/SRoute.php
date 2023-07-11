@@ -34,7 +34,7 @@ class SRoute{
         }
         private static function parse(){
                 $splitFlag = SlightPHP::getSplitFlag();
-                $splitFlag = $splitFlag{0};
+                $splitFlag = $splitFlag[0];
                 foreach(self::$_Routes as $route){
                         $pattern = $route['pattern'];
                         foreach($route as $k=>$v){
