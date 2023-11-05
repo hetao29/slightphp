@@ -413,8 +413,12 @@ class Db{
 					if(strpos($k,".")===false){
 						$k = $this->__addsqlslashes($k);
 					}
-					$v = addslashes($v);
-					$v1[]="$k = \"$v\"";
+					if(!is_null($v)){
+						$v = addslashes($v);
+						$v1[]="$k = \"$v\"";
+					}else{
+						$v1[]="$k = NULL";
+					}
 				}else{
 					$v1[]=($v);
 				}
