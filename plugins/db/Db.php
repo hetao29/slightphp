@@ -25,9 +25,9 @@ class Db{
 	 */
 	private $engine;
 	private $params;
-	private $_engine_name="mysql";
+	private $_engine_name="pdo_mysql";
 	private $_allow_engines=array(
-			"mysql","mysqli",
+			"mysqli",
 			"pdo_mysql","pdo_sqlite","pdo_cubrid",
 			"pdo_dblib","pdo_firebird","pdo_ibm",
 			"pdo_informix","pdo_sqlsrv","pdo_oci",
