@@ -347,12 +347,16 @@ class Db{
 		}
 		//Connect
 		if(!isset(Db::$_globals[$this->_key])){
-			if(strpos($this->_engine_name ,"pdo_") === 0){
+			if(extension_loaded('pdo')){
 				require_once(SLIGHTPHP_PLUGINS_DIR."/db/DbPDO.php");
 				$this->engine = new \SlightPHP\DbPDO($this->params);
-			}else{
+			}elseif(extension_loaded('mysqli')){
 				require_once(SLIGHTPHP_PLUGINS_DIR."/db/DbMysqli.php");
 				$this->engine = new \SlightPHP\DbMysqli($this->params);
+			}else{
+				trigger_error("pdo and mysqli extension not exists",E_USER_ERROR);
+				unset(Db::$_globals[$this->_key]);
+				return false;
 			}
 			$this->engine->init($this->params);
 			if($this->engine->connect()===false){
