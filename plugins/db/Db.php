@@ -19,6 +19,8 @@
  * @subpackage SDb
  */
 namespace SlightPHP;
+require_once(SLIGHTPHP_PLUGINS_DIR."/db/DbPDO.php");
+require_once(SLIGHTPHP_PLUGINS_DIR."/db/DbMysqli.php");
 class Db{
 	/**
 	 * 
@@ -27,12 +29,12 @@ class Db{
 	private $params;
 	private $_engine_name="pdo_mysql";
 	private $_allow_engines=array(
-			"mysqli",
-			"pdo_mysql","pdo_sqlite","pdo_cubrid",
-			"pdo_dblib","pdo_firebird","pdo_ibm",
-			"pdo_informix","pdo_sqlsrv","pdo_oci",
-			"pdo_odbc","pdo_pgsql","pdo_4d"
-			);
+		"mysqli",
+		"pdo_mysql","pdo_sqlite","pdo_cubrid",
+		"pdo_dblib","pdo_firebird","pdo_ibm",
+		"pdo_informix","pdo_sqlsrv","pdo_oci",
+		"pdo_odbc","pdo_pgsql","pdo_4d"
+	);
 	private $_key;
 
 	/**
@@ -53,9 +55,8 @@ class Db{
 	 */
 	private $error=array('code'=>0,'msg'=>"");
 	/**
-	 * @var array $_globals
+	 *
 	 */
-	static $_globals;
 	function __construct($engineName="mysql"){
 		$this->__setEngine($engineName);
 	}
@@ -346,34 +347,24 @@ class Db{
 			trigger_error("{$this->_engine_name} ( $sql )");
 		}
 		//Connect
-		if(!isset(Db::$_globals[$this->_key])){
-			if(extension_loaded('pdo')){
-				require_once(SLIGHTPHP_PLUGINS_DIR."/db/DbPDO.php");
-				$this->engine = new \SlightPHP\DbPDO($this->params);
-			}elseif(extension_loaded('mysqli')){
-				require_once(SLIGHTPHP_PLUGINS_DIR."/db/DbMysqli.php");
-				$this->engine = new \SlightPHP\DbMysqli($this->params);
-			}else{
-				trigger_error("pdo and mysqli extension not exists",E_USER_ERROR);
-				unset(Db::$_globals[$this->_key]);
-				return false;
-			}
-			$this->engine->init($this->params);
-			if($this->engine->connect()===false){
-				$this->error['code']=$this->engine->errno();
-				$this->error['msg']=$this->engine->error();
-				if(defined("DEBUG")){
-					trigger_error("{$this->_engine_name} ( ".var_export($this->error,true).")");
-				}
-				unset(Db::$_globals[$this->_key]);
-				return false;
-			}else{
-				Db::$_globals[$this->_key] = $this->engine;
-			}
+		if(extension_loaded('pdo')){
+			$this->engine = new \SlightPHP\DbPDO($this->params);
+		}elseif(extension_loaded('mysqli')){
+			$this->engine = new \SlightPHP\DbMysqli($this->params);
 		}else{
-			$this->engine = Db::$_globals[$this->_key];
+			trigger_error("pdo and mysqli extension not exists",E_USER_ERROR);
+			return false;
 		}
-		
+		$this->engine->init($this->params);
+		if($this->engine->connect()===false){
+			$this->error['code']=$this->engine->errno();
+			$this->error['msg']=$this->engine->error();
+			if(defined("DEBUG")){
+				trigger_error("{$this->_engine_name} ( ".var_export($this->error,true).")");
+			}
+			return false;
+		}
+
 		$result = $this->engine->query($sql);
 
 		if($result){
@@ -389,7 +380,6 @@ class Db{
 		}
 		$this->error['code']=$this->engine->errno();
 		$this->error['msg']=$this->engine->error();
-		unset(Db::$_globals[$this->_key]);
 
 		if($retry===false && $this->engine->connectionError){
 			$this->_reInit();

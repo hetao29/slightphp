@@ -22,29 +22,24 @@
 if(!defined("SLIGHTPHP_PLUGINS_DIR"))define("SLIGHTPHP_PLUGINS_DIR",dirname(__FILE__));
 require_once(SLIGHTPHP_PLUGINS_DIR."/SConfig.php");
 class SRedis{
-	private static $_config;
+	private static $hosts=array();
+	private static $options=array();
+	private static $_configFile;
 	/**
 	 * 当前使用的resouce
 	 */
-	private static $_resource;
-	/**
-	 *
-	 */
-	private static $_resources;
-	private static $_instances=array();
-
 	public function __construct(){
 	}
 
 	static function setConfigFile($file){
-		self::$_config = $file;
+		self::$_configFile = $file;
 	}
 	/**
 	 * @param string $zone
 	 * @return array
 	 */
 	static function getConfig($zone=null,$type="host"){
-		$config = SConfig::getConfig(self::$_config,$zone);
+		$config = SConfig::getConfig(self::$_configFile,$zone);
 		if(isset($config->$type)){
 			return $config->$type;
 		}elseif(isset($config->host)){
@@ -58,53 +53,41 @@ class SRedis{
 	 * @return array
 	 */
 	static function useConfig($zone,$type="host"){
-		$key = $zone.":".$type;
-		if(isset(self::$_instances[$key])){
-			return self::$_instances[$key];
-		}else{
-			self::$_instances[$key] = new self;
-		}
-		$hosts=array();
-		$options=array();
 		$config = self::getConfig($zone,$type);
 		if(empty($config)){
-			trigger_error("the redis hosts is not set in config file(".self::$_config.")");
+			trigger_error("the redis hosts is not set in config file(".self::$_configFile.")");
 			return false;
 		}
+		self::$hosts=[];
+		self::$options=[];
 		if(is_array($config)){
-			$hosts=$config;
+			self::$hosts=$config;
 		}else{
-			$hosts[]=$config;
+			self::$hosts[]=$config;
 		}
 		$config = self::getConfig($zone,"options");
 		if(!empty($config)){
 			if(is_object($config)){
 				foreach ($config as $k=>$v){
-					$options[$k]=$v;
+					self::$options[$k]=$v;
 				}
 			}
 		}
-		self::$_resource = self::$_resources[$key] = new RedisArray($hosts,$options);
-		return self::$_instances[$key];
 	}
 	public function __call($name,$args){
 		try{
-			if(self::$_resource) return call_user_func_array(array(self::$_resource,$name),$args);
+			$redis = new RedisArray(self::$hosts,self::$options);
+			return call_user_func_array(array($redis,$name),$args);
 		}catch(RedisException $e){
-			self::$_instances=null;
-			self::$_resources=null;
-			self::$_resource=null;
 			trigger_error($e);
 		}
 		return false;
 	}
 	public static function __callStatic($name,$args){
 		try{
-			if(self::$_resource) return call_user_func_array(array(self::$_resource,$name),$args);
+			$redis = new RedisArray(self::$hosts,self::$options);
+			return call_user_func_array(array($redis,$name),$args);
 		}catch(RedisException $e){
-			self::$_instances=null;
-			self::$_resources=null;
-			self::$_resource=null;
 			trigger_error($e);
 		}
 		return false;
