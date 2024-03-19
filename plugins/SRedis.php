@@ -73,6 +73,7 @@ class SRedis{
 				}
 			}
 		}
+		return new RedisArray(self::$hosts,self::$options);
 	}
 	public function __call($name,$args){
 		try{
