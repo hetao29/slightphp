@@ -24,11 +24,31 @@ require_once(SLIGHTPHP_PLUGINS_DIR."/SConfig.php");
 class SRedis{
 	private static $hosts=array();
 	private static $options=array();
+	private static $engine="";
 	private static $_configFile;
+	//
+	private $_redis;
 	/**
 	 * 当前使用的resouce
 	 */
-	public function __construct(){
+	public function __construct(array $hosts,array $options,$engine=""){
+		if($engine=="cluster"){
+			//https://github.com/phpredis/phpredis/blob/develop/cluster.md
+			$this->_redis = new RedisCluster(NULL,$hosts,
+				$options['timeout']??0,
+				$options['read_timeout']??0,
+				$options['persistent']??false,
+				$options['auth']??NULL,
+				$options['context']??NULL
+			);
+		}elseif($engine=="sentinel"){
+			//https://github.com/phpredis/phpredis/blob/develop/sentinel.md
+			$this->_redis = new RedisArray(self::$hosts,self::$options);
+		}else{
+			//https://github.com/phpredis/phpredis/blob/develop/arrays.md
+			$this->_redis = new RedisArray(self::$hosts,self::$options);
+		}
+		return $this->_redis;
 	}
 
 	static function setConfigFile($file){
@@ -45,7 +65,7 @@ class SRedis{
 		}elseif(isset($config->host)){
 			return $config->host;
 		}
-		return;
+		return NULL;
 	}
 	/**
 	 * 切换配置文件
@@ -65,6 +85,7 @@ class SRedis{
 		}else{
 			self::$hosts[]=$config;
 		}
+		self::$engine = self::getConfig($zone,"engine");
 		$config = self::getConfig($zone,"options");
 		if(!empty($config)){
 			if(is_object($config)){
@@ -73,12 +94,11 @@ class SRedis{
 				}
 			}
 		}
-		return new RedisArray(self::$hosts,self::$options);
+		return new self(self::$hosts,self::$options,self::$engine);
 	}
 	public function __call($name,$args){
 		try{
-			$redis = new RedisArray(self::$hosts,self::$options);
-			return call_user_func_array(array($redis,$name),$args);
+			return call_user_func_array(array($this->_redis,$name),$args);
 		}catch(RedisException $e){
 			trigger_error($e);
 		}
@@ -86,7 +106,7 @@ class SRedis{
 	}
 	public static function __callStatic($name,$args){
 		try{
-			$redis = new RedisArray(self::$hosts,self::$options);
+			$redis = new self(self::$hosts,self::$options,self::$engine);
 			return call_user_func_array(array($redis,$name),$args);
 		}catch(RedisException $e){
 			trigger_error($e);
