@@ -1,19 +1,30 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<phpdoc>
-	<title>SlightPHP framework Documentation</title>
-	<parser>
-		<target>/home/hetao/slightphp/</target>
-		 <encoding>utf8</encoding>
-		 <extensions>
-			 <extension>php</extension>
-		 </extensions>
-	</parser>
-	<transformer>
-	    <target>/home/hetao/slightphp/docs_new</target>
-	</transformer>
-	<files>
-		<directory>/home/hetao/slightphp/</directory>
-		<ignore>vendor/,doc/,pecl/,samples/,js/,example-form.php,plugins/mail/examples/,plugins/smarty/,plugins/smarty3/,plugins/mail/language/,plugins/mail/phpdoc/,plugins/mail/test/,*test*</ignore>
-
-	</files>
-</phpdoc>
+<phpdocumentor
+	configVersion="3"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="https://www.phpdoc.org"
+	xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/phpDocumentor/phpDocumentor/master/data/xsd/phpdoc.xsd"
+	>
+<paths>
+	<output>/home/hetao/slightphp/docs_new</output>
+</paths>
+<version number="3.0.0">
+	<api format="php">
+		<source dsn="/home/hetao/slightphp/">
+			<path>plugins/</path>
+			<path>.</path>
+		</source>
+		<ignore hidden="true" symlinks="true">
+			<path>vendor/**/*</path>
+			<path>docs/*</path>
+			<path>docs_new/*</path>
+			<path>samples/</path>
+			<path>wiki/*</path>
+			<path>plugins/mail/**/*</path>
+			<path>plugins/captcha/*</path>
+			<path>plugins/sphinx/*</path>
+			<path>plugins/thumbnail/*</path>
+		</ignore>
+	</api>
+</version>
+</phpdocumentor>
