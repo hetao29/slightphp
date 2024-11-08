@@ -24,16 +24,8 @@ composer require "hetao29/slightphp:dev-master"
 }
 ```
   
-### pecl 模块支持php7
-  - 最新更新，支持php7模块
-  - 支持composer
-  - 更简单方便的命令行执行模式
-  
 ### 主要特点：
-  - 独有的"框架"与"plugins"分离方式，与现在主流框架完全不同，把核心框架与其它功能独立分开，灵活性大，耦合度小，很方便移植 
-  - 支持composer(3.0及以上)
-  - 支持php7(3.0及以上)
-  - 支持pecl的模块加载 请编译pecl目录下的源码，或者直接编译到php里
+  - 独有的"框架"与"plugins"分离方式，与现在主流框架完全不同，把核心框架与其它功能独立分开，灵活性大，耦合度小，很方便移植
   - 支持命令行(cli)模式 可以直接执行SlightPHP::run($path_info) ，可以用于WorkerMan,Swoole 等PHP 服务端项目
   - 框架本身核心代码非常小
   - 框架支持nginx,lighttpd,apache,iis等web服务器
@@ -52,12 +44,7 @@ composer require "hetao29/slightphp:dev-master"
 //加载方式1，直接加载框架
 //require_once("SlightPHP.php");
 
-//加载方式2，使用扩展，或者直接编译进PHP也可以
-//dl("slightphp.so");
-//或者在php.ini里增加（如果不支持dl的话）
-//extension = slightphp.so
-
-//加载方式3，使用composer的autoload
+//加载方式2，使用composer的autoload
 require_once("vendor/autoload.php");
 
 SlightPHP::run();
@@ -214,7 +201,7 @@ location ~ \.php$ {
 ```
 
 ### Version
-3.2
+3.7
 
 **Free Software, MIT License!**
 
