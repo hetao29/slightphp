@@ -22,6 +22,7 @@ namespace SlightPHP;
 require_once(SLIGHTPHP_PLUGINS_DIR."/db/DbEngine.php");
 class DbMysqli implements DbEngine{
 	private $_mysqli;
+	private $_stmt;
 	private $_result;
 
 	private $_engine;
@@ -53,6 +54,11 @@ class DbMysqli implements DbEngine{
 			$this->{"_".$key} = $value;
 		}
 	}
+	public function __destruct(){
+		if($this->_stmt){
+			$this->_stmt->close();
+		}
+	}
 	public function connect(){
 		$host = $this->_host;
 		if($this->_persistent){
@@ -68,46 +74,60 @@ class DbMysqli implements DbEngine{
 		}
 		return true;
 	}
-	public function query($sql){
+	public function query($sql, $params=[]){
 		if($this->_mysqli->connect_errno){
 			return false;
 		}
-		$this->_result= $this->_mysqli->query($sql);
-		if($this->_result){
-			return true;
+		$this->_stmt = $this->_mysqli->prepare($sql);
+		if($this->_stmt===false){
+			return false;
 		}
-		return false;
+		$r = $this->_stmt->execute($params);
+		if($r===false){
+			return false;
+		}
+		$this->_result = $this->_stmt->get_result();
+		return true;
 	}
 	public function getAll(){
 		if(!$this->_result)return false;
-		$data=array();
-		while($row= $this->_result->fetch_assoc()){$data[]=$row;};
-		return $data;
+		return $this->_result->fetch_all(MYSQLI_ASSOC);
 	}
 	public function count(){
 		if($this->_mysqli->connect_errno){
 			return false;
 		}
-		return $this->_mysqli->affected_rows;
+		if(!$this->_stmt)return false;
+		return $this->_stmt->affected_rows;
+	}
+	public function escape($str){
+		if($this->_mysqli->connect_errno){
+			return false;
+		}
+		return $this->_mysqli->real_escape_string($str);
 	}
 	public function lastId(){
 		if($this->_mysqli->connect_errno){
 			return false;
 		}
-		return $this->_mysqli->insert_id;
+		if(!$this->_stmt)return false;
+		return $this->_stmt->insert_id;
 	}
 	public function error(){
 		if($this->_mysqli->connect_error){
 			return $this->_mysqli->connect_error;
 		}
-		return $this->_mysqli->error;
+		if(!$this->_stmt)return false;
+		return $this->_stmt->error;
 	}
 	public function errno(){
 		$error=0;
 		if($this->_mysqli->connect_errno){
 			$error = $this->_mysqli->connect_errno;
 		}else{
-			$error = $this->_mysqli->errno;
+			if($this->_stmt){
+				$error = $this->_stmt->errno;
+			}
 		}
 		if($error=='2006'){
 			$this->connectionError=true;

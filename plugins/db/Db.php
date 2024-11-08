@@ -92,13 +92,30 @@ class Db{
 	public function init($params){
 		if(is_object($params))$params=(array)$params;
 
-
 		if(!isset($params['engine']) || !in_array($params['engine'],$this->_allow_engines)){
 			$params['engine']=$this->_engine_name;
 		}
 		$this->params=$params;
 		$this->__setEngine($params['engine']);
 		$this->_key = implode("|",$params);
+
+		if($this->_engine_name=="mysqli" && extension_loaded('mysqli')){
+			$this->engine = new \SlightPHP\DbMysqli($this->params);
+		}elseif(extension_loaded('pdo')){
+			$this->engine = new \SlightPHP\DbPDO($this->params);
+		}else{
+			trigger_error("pdo and mysqli extension not exists",E_USER_ERROR);
+			return false;
+		}
+		$this->engine->init($this->params);
+		if($this->engine->connect()===false){
+			$this->error['code']=$this->engine->errno();
+			$this->error['msg']=$this->engine->error();
+			if(defined("DEBUG")){
+				trigger_error("{$this->_engine_name} ( ".var_export($this->error,true).")");
+			}
+			return false;
+		}
 		return true;
 	}
 	/**
@@ -146,7 +163,7 @@ class Db{
 		//TABLE
 		$table = $this->__array2string($table,true);
 		//condition
-		$condiStr = $this->__quote($condition,"AND");
+		$condiStr = $this->__quote($condition,"AND",$params);
 
 		if($condiStr!=""){
 			$condiStr=" WHERE ".$condiStr;
@@ -204,7 +221,7 @@ class Db{
 		$sql="SELECT $item FROM ($table) $join $condiStr $groupby $orderby_sql $limit_sql";
 		$start = microtime(true);
 
-		$result = $this->__query($sql);
+		$result = $this->__query($sql,false,$params);
 		if($result!==false){
 			$data = new DbData;
 			$data->page = (int)$this->page;
@@ -215,7 +232,7 @@ class Db{
 			if($this->count==true){
 				if($this->limit>0){
 					$countsql="SELECT count(1) totalSize FROM ($table)$join $condiStr $groupby";
-					$result_count = $this->__query($countsql);
+					$result_count = $this->__query($countsql,false,$params);
 					if(!empty($result_count[0])){
 						$data->totalSize = (int)$result_count[0]['totalSize'];
 						$data->totalPage = (int)ceil($data->totalSize/$data->limit);
@@ -260,13 +277,13 @@ class Db{
 	 */
 	public function update($table,$condition,$item){
 		$table = $this->__array2string($table);
-		$value = $this->__quote($item,",");
-		$condiStr = $this->__quote($condition,"AND");
+		$value = $this->__quote($item,",",$params);
+		$condiStr = $this->__quote($condition,"AND",$params2);
 		if($condiStr!=""){
 			$condiStr=" WHERE ".$condiStr;
 		}
 		$sql="UPDATE $table SET $value $condiStr";
-		return $this->__query($sql);
+		return $this->__query($sql,false,$this->merge_params($params,$params2));
 	}
 	/**
 	 * delete
@@ -277,12 +294,15 @@ class Db{
 	 */
 	public function delete($table,$condition){
 		$table = $this->__array2string($table);
-		$condiStr = $this->__quote($condition,"AND");
+		$condiStr = $this->__quote($condition,"AND",$params);
 		if($condiStr!=""){
 			$condiStr=" WHERE ".$condiStr;
 		}
 		$sql="DELETE FROM  $table $condiStr";
-		return $this->__query($sql);
+		return $this->__query($sql,false,$params);
+	}
+	public function escape($str){
+		return $this->engine->escape($str);
 	}
 	/**
 	 * insert
@@ -309,14 +329,24 @@ class Db{
 			$command.=" DELAYED ";
 		}
 
-		$f = $this->__quote($item,",");
+		$f = $this->__quote($item,",",$params);
 
 		$sql="$command INTO $table SET $f ";
-		$v = $this->__quote($update,",");
+		$v = $this->__quote($update,",",$params2);
 		if(!empty($v)){
 			$sql.="ON DUPLICATE KEY UPDATE $v";
 		}
-		return $this->__query($sql);
+		return $this->__query($sql,false,$this->merge_params($params,$params2));
+	}
+
+	/**
+	 * merge array
+	 */
+	private function merge_params(...$arr){
+		$arr = array_filter($arr,function($var){
+			return ($var && is_array($var)) ? true : false;
+		});
+		return array_merge(...$arr);
 	}
 
 	/**
@@ -326,7 +356,7 @@ class Db{
 	 * @return Array $result  || Boolean false
 	 */
 
-	private function __query($sql, $retry=false){
+	private function __query($sql, $retry=false, $params=[]){
 		//{{{
 		//SQL MODE 默认为DELETE，INSERT，REPLACE 或 UPDATE,不需要返回值
 		$sql_mode = 1;//1.更新模式 2.查询模式 3.插入模式
@@ -346,26 +376,8 @@ class Db{
 		if(defined("DEBUG")){
 			trigger_error("{$this->_engine_name} ( $sql )");
 		}
-		//Connect
-		if(extension_loaded('pdo')){
-			$this->engine = new \SlightPHP\DbPDO($this->params);
-		}elseif(extension_loaded('mysqli')){
-			$this->engine = new \SlightPHP\DbMysqli($this->params);
-		}else{
-			trigger_error("pdo and mysqli extension not exists",E_USER_ERROR);
-			return false;
-		}
-		$this->engine->init($this->params);
-		if($this->engine->connect()===false){
-			$this->error['code']=$this->engine->errno();
-			$this->error['msg']=$this->engine->error();
-			if(defined("DEBUG")){
-				trigger_error("{$this->_engine_name} ( ".var_export($this->error,true).")");
-			}
-			return false;
-		}
 
-		$result = $this->engine->query($sql);
+		$result = $this->engine->query($sql, $params);
 
 		if($result){
 			if($sql_mode==2){//查询模式
@@ -383,7 +395,7 @@ class Db{
 
 		if($retry===false && $this->engine->connectionError){
 			$this->_reInit();
-			return $this->__query($sql,true);
+			return $this->__query($sql,true,$params);
 		}
 		trigger_error("DB QUERY ERROR (".var_export($this->error['msg'],true)."), CODE({$this->error['code']}), SQL({$sql})",E_USER_WARNING);
 		return false;
@@ -397,7 +409,7 @@ class Db{
 		return $this->__query($sql);
 	}
 
-	private function __quote($condition,$split="AND"){
+	private function __quote($condition,$split="AND",&$params=[]){
 		$condiStr = "";
 		if(is_array($condition) || is_object($condition)){
 			$v1=array();
@@ -408,8 +420,8 @@ class Db{
 						$k = $this->__addsqlslashes($k);
 					}
 					if(!is_null($v)){
-						$v = addslashes($v);
-						$v1[]="$k = \"$v\"";
+						$params[]=$v;
+						$v1[]="$k = ?";
 					}else{
 						$v1[]="$k = NULL";
 					}

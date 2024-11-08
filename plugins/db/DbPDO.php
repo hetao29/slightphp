@@ -85,23 +85,25 @@ class DbPDO implements DbEngine{
 		}
 		return true;
 	}
-	public function query($sql){
+	public function query($sql,$params=[]){
 		if(!$this->_pdo)return false;
 		$this->_stmt = $this->_pdo->prepare($sql);
-		if($this->_stmt && $this->_stmt->execute ()!==false){
-			return true;
+		if($this->_stmt){
+			return $this->_stmt->execute($params);
 		}
 		return false;
 	}
 	public function getAll(){
-		if($this->_stmt){
-			return $this->_stmt->fetchAll (\PDO::FETCH_ASSOC );
-		}
-		return false;
+		if(!$this->_stmt)return false;
+		return $this->_stmt->fetchAll(\PDO::FETCH_ASSOC);
 	}
 	public function count(){
 		if(!$this->_stmt)return false;
 		return $this->_stmt->rowCount();
+	}
+	public function escape($str){
+		if(!$this->_pdo)return false;
+		return trim($this->_pdo->quote($str),"'");
 	}
 	public function lastId(){
 		if(!$this->_pdo)return false;
