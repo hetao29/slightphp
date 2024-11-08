@@ -1,7 +1,5 @@
 <?php
 /**
- * Script para la generación de CAPTCHAS
- *
  * @author  Jose Rodriguez <jose.rodriguez@exec.cl>
  * @license GPLv3
  * @link    http://code.google.com/p/cool-php-captcha
@@ -401,7 +399,6 @@ class SimpleCaptcha {
      * Reduce the image to the final size
      */
     protected function ReduceImage() {
-        // Reduzco el tamaño de la imagen
         $imResampled = imagecreatetruecolor($this->width, $this->height);
         imagecopyresampled($imResampled, $this->im,
             0, 0, 0, 0,

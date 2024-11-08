@@ -16,8 +16,6 @@
 
 /**
  * @package SlightPHP
- * SRedis is base on php5-redis(phpredis https://github.com/phpredis/phpredis)
- * use RedisArray , docs is on https://github.com/phpredis/phpredis/blob/master/arrays.markdown#readme
  */
 if(!defined("SLIGHTPHP_PLUGINS_DIR"))define("SLIGHTPHP_PLUGINS_DIR",dirname(__FILE__));
 require_once(SLIGHTPHP_PLUGINS_DIR."/SConfig.php");

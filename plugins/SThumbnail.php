@@ -15,15 +15,10 @@
 }}}*/
 
 /**
- * @deprecated
- * recommend https://github.com/Intervention/image
- */
-
-
-require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."thumbnail/class.WMThumbnail.inc.php");
-/**
  * @package SlightPHP
  */
+
+require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."thumbnail/class.WMThumbnail.inc.php");
 if (!function_exists('imageflip')) {
 	define('IMG_FLIP_HORIZONTAL', 0);
 	define('IMG_FLIP_VERTICAL', 1);

@@ -85,8 +85,6 @@ class Cache_File extends CacheObject{
 				flock($fp,LOCK_UN);
 				fclose($fp);
 				return unserialize($data);
-			}else{
-				//过期了，应该删除这个文件，但为了性能考虑，不删除
 			}
 		}
 		flock($fp,LOCK_UN);

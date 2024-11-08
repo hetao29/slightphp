@@ -13,6 +13,9 @@
 | Supports: http://www.slightphp.com                                    |
 +-----------------------------------------------------------------------+
 }}}*/
+/**
+ * @package SlightPHP
+ */
 class SConfig{
 	public static $CACHE=true;
 	/**
