@@ -90,6 +90,8 @@ class DbPDO implements DbEngine{
 		$this->_stmt = $this->_pdo->prepare($sql);
 		if($this->_stmt){
 			return $this->_stmt->execute($params);
+		}else{
+			trigger_error("CONNECT DATABASE ERROR ( ".implode("\n",$this->_pdo->errorInfo())." ) ",E_USER_WARNING);
 		}
 		return false;
 	}
@@ -100,6 +102,18 @@ class DbPDO implements DbEngine{
 	public function count(){
 		if(!$this->_stmt)return false;
 		return $this->_stmt->rowCount();
+	}
+	public function begin(){
+		if(!$this->_pdo)return false;
+		return $this->_pdo->beginTransaction();
+	}
+	public function commit(){
+		if(!$this->_pdo)return false;
+		return $this->_pdo->commit();
+	}
+	public function rollback(){
+		if(!$this->_pdo)return false;
+		return $this->_pdo->rollBack();
 	}
 	public function escape($str){
 		if(!$this->_pdo)return false;

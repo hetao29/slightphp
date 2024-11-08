@@ -120,6 +120,24 @@ class DbMysqli implements DbEngine{
 		if(!$this->_stmt)return false;
 		return $this->_stmt->error;
 	}
+	public function begin(){
+		if($this->_mysqli->connect_errno){
+			return false;
+		}
+		return $this->_mysqli->begin_transaction();
+	}
+	public function commit(){
+		if($this->_mysqli->connect_errno){
+			return false;
+		}
+		return $this->_mysqli->commit();
+	}
+	public function rollback(){
+		if($this->_mysqli->connect_errno){
+			return false;
+		}
+		return $this->_mysqli->rollback();
+	}
 	public function errno(){
 		$error=0;
 		if($this->_mysqli->connect_errno){

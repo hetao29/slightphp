@@ -405,8 +405,17 @@ class Db{
 	 * @param string $sql
 	 * @return boolean|int|array
 	 */
-	public function execute($sql){
-		return $this->__query($sql);
+	public function execute($sql,$params=[]){
+		return $this->__query($sql, false, $params);
+	}
+	public function begin(){
+		return $this->engine->begin();
+	}
+	public function commit(){
+		return $this->engine->commit();
+	}
+	public function rollback(){
+		return $this->engine->rollback();
 	}
 
 	private function __quote($condition,$split="AND",&$params=[]){
