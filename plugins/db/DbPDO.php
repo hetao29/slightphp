@@ -117,7 +117,8 @@ class DbPDO implements DbEngine{
 	}
 	public function escape($str){
 		if(!$this->_pdo)return false;
-		return trim($this->_pdo->quote($str),"'");
+		$str = $this->_pdo->quote($str);
+		return substr($str,1,strlen($str)-2);
 	}
 	public function lastId(){
 		if(!$this->_pdo)return false;
