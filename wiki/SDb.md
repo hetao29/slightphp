@@ -284,7 +284,7 @@ boolean|int delete($table,$condition="");
 # 执行原始SQL #
 
 ```
-int|boolean|Array execute($sql);
+int|boolean|Array execute($sql, $params=[]);
 ```
 
   * $sql 原始SQL
@@ -293,7 +293,7 @@ int|boolean|Array execute($sql);
 
 ```
 print_r (  $db->execute("show databases") );
-print_r (  $db->execute("select * from user") );
+print_r (  $db->execute("select * from user where name=?",['lili']) );
 if(!  $db->execute("select * from userx") ){
         print_r($db->error());
 };
