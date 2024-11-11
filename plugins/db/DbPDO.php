@@ -85,6 +85,10 @@ class DbPDO implements DbEngine{
 		}
 		return true;
 	}
+	public function exec($sql){
+		if(!$this->_pdo)return false;
+		return $this->_pdo->exec($sql);
+	}
 	public function query($sql,$params=[]){
 		if(!$this->_pdo)return false;
 		$this->_stmt = $this->_pdo->prepare($sql);

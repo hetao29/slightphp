@@ -221,7 +221,7 @@ class Db{
 		$sql="SELECT $item FROM ($table) $join $condiStr $groupby $orderby_sql $limit_sql";
 		$start = microtime(true);
 
-		$result = $this->__query($sql,$params);
+		$result = $this->__query($sql,false,$params);
 		if($result!==false){
 			$data = new DbData;
 			$data->page = (int)$this->page;
@@ -232,7 +232,7 @@ class Db{
 			if($this->count==true){
 				if($this->limit>0){
 					$countsql="SELECT count(1) totalSize FROM ($table)$join $condiStr $groupby";
-					$result_count = $this->__query($countsql,$params);
+					$result_count = $this->__query($countsql,false,$params);
 					if(!empty($result_count[0])){
 						$data->totalSize = (int)$result_count[0]['totalSize'];
 						$data->totalPage = (int)ceil($data->totalSize/$data->limit);
@@ -283,7 +283,7 @@ class Db{
 			$condiStr=" WHERE ".$condiStr;
 		}
 		$sql="UPDATE $table SET $value $condiStr";
-		return $this->__query($sql,$this->merge_params($params,$params2));
+		return $this->__query($sql,false,$this->merge_params($params,$params2));
 	}
 	/**
 	 * delete
@@ -299,7 +299,7 @@ class Db{
 			$condiStr=" WHERE ".$condiStr;
 		}
 		$sql="DELETE FROM  $table $condiStr";
-		return $this->__query($sql,$params);
+		return $this->__query($sql,false,$params);
 	}
 	public function escape($str){
 		return $this->engine->escape($str);
@@ -336,7 +336,7 @@ class Db{
 		if(!empty($v)){
 			$sql.="ON DUPLICATE KEY UPDATE $v";
 		}
-		return $this->__query($sql,$this->merge_params($params,$params2));
+		return $this->__query($sql,false,$this->merge_params($params,$params2));
 	}
 
 	/**
@@ -356,7 +356,7 @@ class Db{
 	 * @return Array $result  || Boolean false
 	 */
 
-	private function __query($sql, $params=[], $retry=false){
+	private function __query($sql, $retry=false, $params=[]){
 		//{{{
 		//SQL MODE 默认为DELETE，INSERT，REPLACE 或 UPDATE,不需要返回值
 		$sql_mode = 1;//1.更新模式 2.查询模式 3.插入模式
@@ -395,18 +395,27 @@ class Db{
 
 		if($retry===false && $this->engine->connectionError){
 			$this->_reInit();
-			return $this->__query($sql,$params,true);
+			return $this->__query($sql,true,$params);
 		}
 		trigger_error("DB QUERY ERROR (".var_export($this->error['msg'],true)."), CODE({$this->error['code']}), SQL({$sql})",E_USER_WARNING);
 		return false;
 	}
 	/**
-	 *
+	 * query sql and return data
 	 * @param string $sql
+	 * @param array $parameters
 	 * @return boolean|int|array
 	 */
-	public function execute($sql,$params=[]){
-		return $this->__query($sql, $params);
+	public function query($sql,$params=[]){
+		return $this->__query($sql, false, $params);
+	}
+	/**
+	 * execute sql(multi sql) 
+	 * @param string $sql
+	 * @return boolean
+	 */
+	public function execute($sql){
+		return $this->engine->exec($sql);
 	}
 	public function begin(){
 		return $this->engine->begin();

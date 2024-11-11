@@ -74,6 +74,12 @@ class DbMysqli implements DbEngine{
 		}
 		return true;
 	}
+	public function exec($sql){
+		if($this->_mysqli->connect_errno){
+			return false;
+		}
+		return $this->_mysqli->multi_query($sql);
+	}
 	public function query($sql, $params=[]){
 		if($this->_mysqli->connect_errno){
 			return false;
