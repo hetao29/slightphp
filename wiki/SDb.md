@@ -281,10 +281,10 @@ boolean|int delete($table,$condition="");
 
 如果为false就失败了，否则返回删除的记录数
 
-# 执行原始SQL #
+# 执行查询SQL #
 
 ```
-int|boolean|Array execute($sql, $params=[]);
+int|boolean|Array query($sql, $params=[]);
 ```
 
   * $sql 原始SQL
@@ -292,11 +292,25 @@ int|boolean|Array execute($sql, $params=[]);
   * 实例
 
 ```
-print_r (  $db->execute("show databases") );
-print_r (  $db->execute("select * from user where name=?",['lili']) );
-if(!  $db->execute("select * from userx") ){
+print_r (  $db->query("show databases") );
+print_r (  $db->query("select * from user where name=?",['lili']) );
+if(!  $db->query("select * from userx") ){
         print_r($db->error());
 };
+```
+
+# 执行SQL #
+
+```
+boolean execute($sql);
+```
+
+  * $sql 原始SQL，支持多条语句同时执行，用分号分开
+  * 返回值，如果为false就失败了，错误请看$db->error()信息
+  * 实例
+
+```
+print_r (  $db->execute("show databases") );
 ```
 
 # SDb数据库配置文件 #
