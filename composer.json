@@ -6,6 +6,7 @@
     "type": "library",
     "license": "MIT",
 	"require": {
+        "ext-PDO": "*",
 		"guzzlehttp/guzzle": ">=7.0"
     },
     "authors": [

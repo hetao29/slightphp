@@ -19,8 +19,7 @@
  * @subpackage SDb
  */
 namespace SlightPHP;
-require_once(SLIGHTPHP_PLUGINS_DIR."/db/DbEngine.php");
-class DbPDO implements DbEngine{
+class DbPDO{
 	private $_pdo;
 	private $_stmt;
 

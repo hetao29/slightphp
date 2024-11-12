@@ -1,6 +1,6 @@
 # 主要特性 #
 
-  * 支持多种数据底层驱动，如mysql,mysqli,pdo系列
+  * 基于PDO支持多种数据底层驱动
   * 支持读写，主从分离
   * 支持ORM，与外键查询与更新
   * 自动分页功能
@@ -44,7 +44,7 @@ $db->init(
  "database"=>"test",
  "password"=>"",
  "port"=>3306,
- "engine"=>"mysql"
+ "engine"=>"pdo_mysql"
 )
 );
 ```
@@ -56,12 +56,11 @@ $db->init(
   * charset 就是字符集，可以是utf8,utf8mb4,gbk,gb2312等数据库支持的字符集
   * engine  是数据库驱动引擎，有这么多
 （
-"mysql","mysqli",
 "pdo\_mysql","pdo\_sqlite","pdo\_cubrid",
 "pdo\_dblib","pdo\_firebird","pdo\_ibm",
 "pdo\_informix","pdo\_sqlsrv","pdo\_oci",
-"pdo\_odbc","pdo\_pgsql","pdo\_4d"
-），默认是用的"mysql"
+"pdo\_odbc","pdo\_pgsql"
+），默认是用的"pdo_mysql"
 
 
 # 数据插入 #
@@ -360,7 +359,7 @@ void useConfig($zone,$type="main")
 ;password 密码
 ;port 端口号
 ;charset  数据库字符集
-;engine 数据库驱动引擎，如mysql,mysqli等，详见上面
+;engine 数据库驱动引擎
 ;数据库配置有2种，一种是主库(main)，一种是查询库(query)
 ;你可以配置多个，按示例文件那样
 
@@ -614,7 +613,7 @@ class User extends SDb{
                         "user"=>"root",
                         "password"=>"",
                         "database"=>"test",
-                        "engine"=>"mysql");
+                        "engine"=>"pdo_mysql");
                 parent::__construct("user",$config);
                 $foreign_keys = array("id"=>" user_profile . user_id");
                 parent::setForeignKey($foreign_keys);
