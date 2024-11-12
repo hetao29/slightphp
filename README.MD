@@ -6,14 +6,14 @@
 //使用中国镜像
 composer config -g repo.packagist composer https://packagist.phpcomposer.com
 //下载安装最新
-composer require "hetao29/slightphp:dev-master"
+composer require "hetao29/slightphp:^4.0.0"
 ```
 
   - 方法二 ，新增 composer.json，然后 composer install就可以了
 ```json
 {
     "require": {
-        "hetao29/slightphp": "dev-master"
+        "hetao29/slightphp": "^4.0.0"
     },
     "repositories": {
         "packagist": {
