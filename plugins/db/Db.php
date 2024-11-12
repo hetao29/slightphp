@@ -412,12 +412,8 @@ class Db{
 						[$v,$k] = [$k,$v]; //swap
 					}
 					if($return_params!==NULL){
-						if($v!==NULL){
-							$return_params[]=$v;
-							$v="?";
-						}else{
-							$t="NULL";
-						}
+						$return_params[]=$v;
+						$v="?";
 					}
 					$tmp[]=$k.$split.$v;
 				}else{
