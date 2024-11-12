@@ -430,9 +430,7 @@ class Db{
 			$i=1;
 			foreach($condition as $k=>$v){
 				if(!is_int($k)){
-					if(strpos($k,".")===false){
-						$k = $this->__addsqlslashes($k);
-					}
+					$k = $this->__addsqlslashes($k);
 					if(!is_null($v)){
 						$params[]=$v;
 						$v1[]="$k = ?";
@@ -453,7 +451,7 @@ class Db{
 		return $condiStr;
 	}
 	private function __addsqlslashes($k){
-		if(strpos($k,"(")!==false || strpos($k,")")!==false || strpos($k,".")!==false){
+		if(strpos($k,".")!==false || strpos($k,"(")!==false || strpos($k,")")!==false){
 			return $k;
 		}else{
 			return "`$k`";
