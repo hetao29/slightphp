@@ -29,10 +29,9 @@ composer require "hetao29/slightphp:^4.0.0"
   - 支持命令行(cli)模式 可以直接执行SlightPHP::run($path_info) ，可以用于WorkerMan,Swoole 等PHP 服务端项目
   - 框架本身核心代码非常小
   - 框架支持nginx,lighttpd,apache,iis等web服务器
-  - 插件SDb 支持mysql,mysqli,pdo,mssql,oracle等主流数据库，同时更支持数据库读写库分离，特适合大流量网站
+  - 插件SDb，基于PDO支持mysql,mssql,oracle等主流数据库，同时更支持数据库读写库分离，特适合大流量网站
   - 插件SRoute 支持各种简洁路由支持，精简URL
   - 插件STpl模板类，高效与灵活，比Smarty轻量级不少！
-  - 插件SCache(memcache)采用consistent hashing算法，支持分布式服务与依赖KEY，同时也支持file,apc缓存
   - 其它更多灵活可定制的插件，请查看wiki或者samples下的例子
 
 ### Hello, world!
@@ -174,8 +173,7 @@ API文档地址：http://hetao29.github.io/slightphp/
   
 STpl 模板插件 https://github.com/hetao29/slightphp/blob/master/wiki/STpl.md  
 SDb 数据库插件 https://github.com/hetao29/slightphp/blob/master/wiki/SDb.md  
-  
-SCache 缓存Memcache,File,Apc插件 https://github.com/hetao29/slightphp/blob/master/wiki/SCache.md  
+
 SRedis 缓存Redis插件 https://github.com/hetao29/slightphp/blob/master/wiki/SRedis.md  
 SConfig 配置文件插件 https://github.com/hetao29/slightphp/blob/master/wiki/SConfig.md  
 SRoute 路由插件 https://github.com/hetao29/slightphp/blob/master/wiki/SRoute.md  
@@ -201,7 +199,7 @@ location ~ \.php$ {
 ```
 
 ### Version
-3.7
+4.0.0
 
 **Free Software, MIT License!**
 
