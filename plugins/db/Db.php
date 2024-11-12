@@ -62,17 +62,23 @@ class Db{
 	 *
 	 */
 	function __construct($engineName="mysql"){
-		$this->__setEngine($engineName);
+		$this->setEngine($engineName);
 	}
 	public function error(){
 		return $this->error;
 	}
-	private function __setEngine($engineName){
+	private function setEngine($engineName){
 		if(in_array($engineName,$this->allow_engines)){
 			$this->engine_name=$engineName;
 		}else{
 			die("Db engine: $engineName does not support!");
 		}
+	}
+	private function reInit(){
+		if(empty($this->params)){
+			return false;
+		}
+		return $this->init($this->params);
 	}
 	/**
 	 * construct
@@ -87,19 +93,13 @@ class Db{
 	 * @param bool $params.persistent 
 	 * @param int $param.port=3306
 	 */
-	private function _reInit(){
-		if(empty($this->params)){
-			return false;
-		}
-		return $this->init($this->params);
-	}
 	public function init($params){
 		if(is_object($params))$params=(array)$params;
 
 		if(!isset($params['engine']) || !in_array($params['engine'],$this->allow_engines)){
 			$params['engine']=$this->engine_name;
 		}
-		$this->__setEngine($params['engine']);
+		$this->setEngine($params['engine']);
 
 		$this->params=$params;
 		$this->engine = new \SlightPHP\DbPDO($this->params);
@@ -157,67 +157,50 @@ class Db{
 	 */
 	public function select($table,$condition="",$item="",$groupby="",$orderby="",$leftjoin=""){
 		//TABLE
-		$table = $this->__array2string($table,true);
+		$table = $this->buildsql($table,"AS");
 		//condition
-		$condiStr = $this->__quote($condition,"AND",$params);
-
-		if($condiStr!=""){
-			$condiStr=" WHERE ".$condiStr;
+		$params=[];
+		$condition_str="";
+		if(!empty($condition)){
+			$condition_str = "WHERE ".$this->buildsql($condition, "=", false, true, "AND",$params);
 		}
 		//ITEM
-		if(empty($item)){
-			$item="*";
+		if(!empty($item)){
+			$item = $this->buildsql($item,"AS");
 		}else{
-			$item  = $this->__array2string($item,true);
+			$item = "*";
 		}
 		//GROUPBY
+		$groupby_str="";
 		if(!empty($groupby)){
-			$groupby = "GROUP BY ".$this->__array2string($groupby);
+			$groupby_str= "GROUP BY ".$this->buildsql($groupby, "", true, false);
 		}
 		//LEFTJOIN
-		$join="";
+		$leftjoin_str="";
 		if(!empty($leftjoin)){
 			if(is_array($leftjoin) || is_object($leftjoin)){
 				foreach ($leftjoin as $key=>$value){
-					$join.=" LEFT JOIN $key ON $value ";
+					$leftjoin_str.=" LEFT JOIN $key ON $value ";
 				}
 			}else{
-				$join=" LEFT JOIN $leftjoin";
+				$leftjoin_str=" LEFT JOIN $leftjoin";
 			}
 		}
-		//{{{ ORDERBY
-		$orderby_sql="";
-		if(!empty($orderby )){
-			if(is_array($orderby) || is_object($orderby)){
-				$orderby_sql_tmp = array();
-				foreach($orderby as $key=>$value){
-					if(!is_int($key)){
-						$orderby_sql_tmp[]=$this->__addsqlslashes($key) ." ". $value;
-					}else{
-						$orderby_sql_tmp[]=$this->__addsqlslashes($value);
-					}
-				}
-				if(count($orderby_sql_tmp)>0){
-					$orderby_sql=" ORDER BY ".implode(",",$orderby_sql_tmp);
-				}
-			}else{
-				$orderby_sql=" ORDER BY $orderby";
-			}
+		//ORDERBY
+		$orderby_str="";
+		if(!empty($orderby)){
+			$orderby_str= "ORDER BY ".$this->buildsql($orderby, "", false);
 		}
-
-		/*
-		 */
-		//}}}
 
 		$limit_sql = "";
 		if($this->limit>0){
-			$limit    =($this->page-1)*$this->limit;
+			$limit     =($this->page-1)*$this->limit;
 			$limit_sql ="LIMIT $limit,$this->limit";
 		}
-		$sql="SELECT $item FROM ($table) $join $condiStr $groupby $orderby_sql $limit_sql";
+		$sql="SELECT $item FROM ($table) $leftjoin_str $condition_str $groupby_str $orderby_str $limit_sql";
 		$start = microtime(true);
 
-		$result = $this->__query($sql,false,$params);
+		$result = $this->query($sql,$params);
 		if($result!==false){
 			$data = new DbData;
 			$data->page = (int)$this->page;
@@ -227,8 +210,8 @@ class Db{
 			//{{{
 			if($this->count==true){
 				if($this->limit>0){
-					$countsql="SELECT count(1) totalSize FROM ($table)$join $condiStr $groupby";
-					$result_count = $this->__query($countsql,false,$params);
+					$countsql="SELECT count(1) totalSize FROM ($table) $leftjoin_str $condition_str $groupby_str";
+					$result_count = $this->query($countsql,$params);
 					if(!empty($result_count[0])){
 						$data->totalSize = (int)$result_count[0]['totalSize'];
 						$data->totalPage = (int)ceil($data->totalSize/$data->limit);
@@ -258,9 +241,7 @@ class Db{
 		$this->setLimit(1);
 		$this->setCount(false);
 		$data=$this->select($table,$condition,$item,$groupby,$orderby,$leftjoin);
-		if(isset($data->items[0]))
-			return $data->items[0];
-		else return false;
+		return $data->items[0]??false;
 	}
 
 	/**
@@ -272,14 +253,16 @@ class Db{
 	 * @return int|boolean
 	 */
 	public function update($table,$condition,$item){
-		$table = $this->__array2string($table);
-		$value = $this->__quote($item,",",$params);
-		$condiStr = $this->__quote($condition,"AND",$params2);
+		$table = $this->buildsql($table, "AS");
+		$params=[];
+		$params2=[];
+		$value = $this->buildsql($item, "=", false, true, ",",$params);
+		$condiStr = $this->buildsql($condition, "=", false, true, "AND",$params2);
 		if($condiStr!=""){
 			$condiStr=" WHERE ".$condiStr;
 		}
 		$sql="UPDATE $table SET $value $condiStr";
-		return $this->__query($sql,false,$this->merge_params($params,$params2));
+		return $this->query($sql,$this->merge_params($params,$params2));
 	}
 	/**
 	 * delete
@@ -289,13 +272,14 @@ class Db{
 	 * @return int|boolean
 	 */
 	public function delete($table,$condition){
-		$table = $this->__array2string($table);
-		$condiStr = $this->__quote($condition,"AND",$params);
+		$table = $this->buildsql($table, "AS");
+		$params=[];
+		$condiStr = $this->buildsql($condition, "=", false, true, "AND",$params);
 		if($condiStr!=""){
 			$condiStr=" WHERE ".$condiStr;
 		}
 		$sql="DELETE FROM  $table $condiStr";
-		return $this->__query($sql,false,$params);
+		return $this->query($sql,$params);
 	}
 	public function escape($str){
 		return $this->engine->escape($str);
@@ -311,7 +295,7 @@ class Db{
 	 * @return int|boolean int(lastInsertId or affectedRows)
 	 */
 	public function insert($table,$item="",$isreplace=false,$isdelayed=false,$update=array(),$ignore=false){
-		$table = $this->__array2string($table);
+		$table = $this->buildsql($table, "AS");
 		if($isreplace==true){
 			$command="REPLACE";
 		}else{
@@ -325,14 +309,16 @@ class Db{
 			$command.=" DELAYED ";
 		}
 
-		$f = $this->__quote($item,",",$params);
+		$params=[];
+		$params2=[];
+		$f = $this->buildsql($item, "=", false, true, ",",$params);
 
 		$sql="$command INTO $table SET $f ";
-		$v = $this->__quote($update,",",$params2);
+		$v = $this->buildsql($update, "=", false, true, ",",$params2);
 		if(!empty($v)){
 			$sql.="ON DUPLICATE KEY UPDATE $v";
 		}
-		return $this->__query($sql,false,$this->merge_params($params,$params2));
+		return $this->query($sql,$this->merge_params($params,$params2));
 	}
 
 	/**
@@ -346,13 +332,12 @@ class Db{
 	}
 
 	/**
-	 * query
-	 *
+	 * query sql and return data
 	 * @param string $sql
-	 * @return Array $result  || Boolean false
+	 * @param array $parameters
+	 * @return boolean|int|array
 	 */
-
-	private function __query($sql, $retry=false, $params=[]){
+	public function query($sql,$params=[], $retry=false){
 		//{{{
 		//SQL MODE 默认为DELETE，INSERT，REPLACE 或 UPDATE,不需要返回值
 		$sql_mode = 1;//1.更新模式 2.查询模式 3.插入模式
@@ -390,20 +375,11 @@ class Db{
 		$this->error['msg']=$this->engine->error();
 
 		if($retry===false && $this->engine->connectionError){
-			$this->_reInit();
-			return $this->__query($sql,true,$params);
+			$this->reInit();
+			return $this->query($sql,$params,true);
 		}
 		trigger_error("DB QUERY ERROR (".var_export($this->error['msg'],true)."), CODE({$this->error['code']}), SQL({$sql})",E_USER_WARNING);
 		return false;
-	}
-	/**
-	 * query sql and return data
-	 * @param string $sql
-	 * @param array $parameters
-	 * @return boolean|int|array
-	 */
-	public function query($sql,$params=[]){
-		return $this->__query($sql, false, $params);
 	}
 	/**
 	 * execute sql(multi sql) 
@@ -422,60 +398,34 @@ class Db{
 	public function rollback(){
 		return $this->engine->rollback();
 	}
-
-	private function __quote($condition,$split="AND",&$params=[]){
-		$condiStr = "";
-		if(is_array($condition) || is_object($condition)){
-			$v1=array();
-			$i=1;
-			foreach($condition as $k=>$v){
-				if(!is_int($k)){
-					$k = $this->__addsqlslashes($k);
-					if(!is_null($v)){
-						$params[]=$v;
-						$v1[]="$k = ?";
-					}else{
-						$v1[]="$k = NULL";
-					}
-				}else{
-					$v1[]=($v);
-				}
-			}
-			if(count($v1)>0){
-				$condiStr=implode(" ".$split." ",$v1);
-
-			}
-		}else{
-			$condiStr=$condition;
-		}
-		return $condiStr;
-	}
-	private function __addsqlslashes($k){
-		if(strpos($k,".")!==false || strpos($k,"(")!==false || strpos($k,")")!==false){
-			return $k;
-		}else{
-			return "`$k`";
-		}
-	}
-	private function __array2string($mixed,$alais=false){
-		$r="";
+	/**
+	 * @param bool $revert, orderby,conditon is false 
+	 * @param bool $alias, groupby is false 
+	 */
+	private function buildsql($mixed, $split="", $revert=true, $alias=true, $joinflag=",",&$return_params=NULL){
 		if(is_array($mixed) || is_object($mixed)){
+			$split = $split=="" ? " " : " {$split} ";
 			$tmp=array();
-			foreach($mixed as $k=>$t){
-				if($t!="*"){
-					if($alais && !is_int($k)){
-						$tmp[]=$this->__addsqlslashes($t)."  ".$this->__addsqlslashes($k);
-					}else{
-						$tmp[]=$this->__addsqlslashes($t);
+			foreach($mixed as $k=>$v){
+				if($alias && !is_int($k)){
+					if($revert){
+						[$v,$k] = [$k,$v]; //swap
 					}
+					if($return_params!==NULL){
+						if($v!==NULL){
+							$return_params[]=$v;
+							$v="?";
+						}else{
+							$t="NULL";
+						}
+					}
+					$tmp[]=$k.$split.$v;
 				}else{
-					$tmp[]="*";
+					$tmp[]=$v;
 				}
 			}
-			$r=implode(" , ",$tmp);
-		}else{
-			if($mixed!="*")$r=$this->__addsqlslashes($mixed);else $r="*";
+			$mixed=implode(" $joinflag ",$tmp);
 		}
-		return $r;
+		return $mixed;
 	}
 }
