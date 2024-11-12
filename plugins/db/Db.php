@@ -132,7 +132,7 @@ class Db{
 	 * @param int page 
 	 */
 	public function setPage($page){
-		if(!is_int($page) || $page<1){$page=1;}
+		if(!is_numeric($page) || $page<1){$page=1;}
 		$this->page=$page;
 	}
 	/**
@@ -141,7 +141,7 @@ class Db{
 	 * @param int limit ,0 is all
 	 */
 	public function setLimit($limit){
-		if(!is_int($limit) || $limit<0){$limit=0;}
+		if(!is_numeric($limit) || $limit<0){$limit=0;}
 		$this->limit=$limit;
 	}
 	/**
