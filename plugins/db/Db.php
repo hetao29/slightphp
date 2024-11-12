@@ -132,7 +132,7 @@ class Db{
 	 * @param int page 
 	 */
 	public function setPage($page){
-		if(!is_numeric($page) || $page<1){$page=1;}
+		if(!is_int($page) || $page<1){$page=1;}
 		$this->page=$page;
 	}
 	/**
@@ -141,7 +141,7 @@ class Db{
 	 * @param int limit ,0 is all
 	 */
 	public function setLimit($limit){
-		if(!is_numeric($limit) || $limit<0){$limit=0;}
+		if(!is_int($limit) || $limit<0){$limit=0;}
 		$this->limit=$limit;
 	}
 	/**
@@ -191,7 +191,7 @@ class Db{
 			if(is_array($orderby) || is_object($orderby)){
 				$orderby_sql_tmp = array();
 				foreach($orderby as $key=>$value){
-					if(!is_numeric($key)){
+					if(!is_int($key)){
 						$orderby_sql_tmp[]=$this->__addsqlslashes($key) ." ". $value;
 					}else{
 						$orderby_sql_tmp[]=$this->__addsqlslashes($value);
@@ -429,7 +429,7 @@ class Db{
 			$v1=array();
 			$i=1;
 			foreach($condition as $k=>$v){
-				if(!is_numeric($k)){
+				if(!is_int($k)){
 					if(strpos($k,".")===false){
 						$k = $this->__addsqlslashes($k);
 					}
@@ -465,7 +465,7 @@ class Db{
 			$tmp=array();
 			foreach($mixed as $k=>$t){
 				if($t!="*"){
-					if(!is_numeric($k) && $alais){
+					if($alais && !is_int($k)){
 						$tmp[]=$this->__addsqlslashes($t)."  ".$this->__addsqlslashes($k);
 					}else{
 						$tmp[]=$this->__addsqlslashes($t);
