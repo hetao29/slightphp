@@ -132,8 +132,8 @@ class Db{
 	 * @param int page 
 	 */
 	public function setPage($page){
-		if(!is_numeric($page) || $page<1){$page=1;}
-		$this->page=$page;
+		$page = intval($page);
+		$this->page = $page<1 ? 1 : $page;
 	}
 	/**
 	 * page size
@@ -141,8 +141,8 @@ class Db{
 	 * @param int limit ,0 is all
 	 */
 	public function setLimit($limit){
-		if(!is_numeric($limit) || $limit<0){$limit=0;}
-		$this->limit=$limit;
+		$limit = intval($limit);
+		$this->limit=$limit<0 ? 0 : $limit;
 	}
 	/**
 	 * select data from db
