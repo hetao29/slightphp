@@ -206,19 +206,19 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/SlightPHP-Db.html#property_error"
         },                {
-            "fqsen": "\\SlightPHP\\Db\u003A\u003A__setEngine\u0028\u0029",
-            "name": "__setEngine",
+            "fqsen": "\\SlightPHP\\Db\u003A\u003AsetEngine\u0028\u0029",
+            "name": "setEngine",
             "summary": "",
-            "url": "classes/SlightPHP-Db.html#method___setEngine"
+            "url": "classes/SlightPHP-Db.html#method_setEngine"
         },                {
-            "fqsen": "\\SlightPHP\\Db\u003A\u003A_reInit\u0028\u0029",
-            "name": "_reInit",
-            "summary": "construct",
-            "url": "classes/SlightPHP-Db.html#method__reInit"
+            "fqsen": "\\SlightPHP\\Db\u003A\u003AreInit\u0028\u0029",
+            "name": "reInit",
+            "summary": "",
+            "url": "classes/SlightPHP-Db.html#method_reInit"
         },                {
             "fqsen": "\\SlightPHP\\Db\u003A\u003Ainit\u0028\u0029",
             "name": "init",
-            "summary": "",
+            "summary": "construct",
             "url": "classes/SlightPHP-Db.html#method_init"
         },                {
             "fqsen": "\\SlightPHP\\Db\u003A\u003AsetCount\u0028\u0029",
@@ -271,30 +271,35 @@ Search.appendIndex(
             "summary": "merge\u0020array",
             "url": "classes/SlightPHP-Db.html#method_merge_params"
         },                {
-            "fqsen": "\\SlightPHP\\Db\u003A\u003A__query\u0028\u0029",
-            "name": "__query",
-            "summary": "query",
-            "url": "classes/SlightPHP-Db.html#method___query"
+            "fqsen": "\\SlightPHP\\Db\u003A\u003Aquery\u0028\u0029",
+            "name": "query",
+            "summary": "query\u0020sql\u0020and\u0020return\u0020data",
+            "url": "classes/SlightPHP-Db.html#method_query"
         },                {
             "fqsen": "\\SlightPHP\\Db\u003A\u003Aexecute\u0028\u0029",
             "name": "execute",
-            "summary": "",
+            "summary": "execute\u0020sql\u0028multi\u0020sql\u0029",
             "url": "classes/SlightPHP-Db.html#method_execute"
         },                {
-            "fqsen": "\\SlightPHP\\Db\u003A\u003A__quote\u0028\u0029",
-            "name": "__quote",
+            "fqsen": "\\SlightPHP\\Db\u003A\u003Abegin\u0028\u0029",
+            "name": "begin",
             "summary": "",
-            "url": "classes/SlightPHP-Db.html#method___quote"
+            "url": "classes/SlightPHP-Db.html#method_begin"
         },                {
-            "fqsen": "\\SlightPHP\\Db\u003A\u003A__addsqlslashes\u0028\u0029",
-            "name": "__addsqlslashes",
+            "fqsen": "\\SlightPHP\\Db\u003A\u003Acommit\u0028\u0029",
+            "name": "commit",
             "summary": "",
-            "url": "classes/SlightPHP-Db.html#method___addsqlslashes"
+            "url": "classes/SlightPHP-Db.html#method_commit"
         },                {
-            "fqsen": "\\SlightPHP\\Db\u003A\u003A__array2string\u0028\u0029",
-            "name": "__array2string",
+            "fqsen": "\\SlightPHP\\Db\u003A\u003Arollback\u0028\u0029",
+            "name": "rollback",
             "summary": "",
-            "url": "classes/SlightPHP-Db.html#method___array2string"
+            "url": "classes/SlightPHP-Db.html#method_rollback"
+        },                {
+            "fqsen": "\\SlightPHP\\Db\u003A\u003Abuildsql\u0028\u0029",
+            "name": "buildsql",
+            "summary": "",
+            "url": "classes/SlightPHP-Db.html#method_buildsql"
         },                {
             "fqsen": "\\SlightPHP\\Db\u003A\u003A\u0024engine",
             "name": "engine",
@@ -306,20 +311,15 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/SlightPHP-Db.html#property_params"
         },                {
-            "fqsen": "\\SlightPHP\\Db\u003A\u003A\u0024_engine_name",
-            "name": "_engine_name",
+            "fqsen": "\\SlightPHP\\Db\u003A\u003A\u0024engine_name",
+            "name": "engine_name",
             "summary": "",
-            "url": "classes/SlightPHP-Db.html#property__engine_name"
+            "url": "classes/SlightPHP-Db.html#property_engine_name"
         },                {
-            "fqsen": "\\SlightPHP\\Db\u003A\u003A\u0024_allow_engines",
-            "name": "_allow_engines",
+            "fqsen": "\\SlightPHP\\Db\u003A\u003A\u0024allow_engines",
+            "name": "allow_engines",
             "summary": "",
-            "url": "classes/SlightPHP-Db.html#property__allow_engines"
-        },                {
-            "fqsen": "\\SlightPHP\\Db\u003A\u003A\u0024_key",
-            "name": "_key",
-            "summary": "",
-            "url": "classes/SlightPHP-Db.html#property__key"
+            "url": "classes/SlightPHP-Db.html#property_allow_engines"
         },                {
             "fqsen": "\\SlightPHP\\Db\u003A\u003A\u0024count",
             "name": "count",
@@ -376,166 +376,6 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/SlightPHP-DbData.html#property_items"
         },                {
-            "fqsen": "\\SlightPHP\\DbEngine",
-            "name": "DbEngine",
-            "summary": "",
-            "url": "classes/SlightPHP-DbEngine.html"
-        },                {
-            "fqsen": "\\SlightPHP\\DbEngine\u003A\u003Ainit\u0028\u0029",
-            "name": "init",
-            "summary": "",
-            "url": "classes/SlightPHP-DbEngine.html#method_init"
-        },                {
-            "fqsen": "\\SlightPHP\\DbEngine\u003A\u003Aconnect\u0028\u0029",
-            "name": "connect",
-            "summary": "",
-            "url": "classes/SlightPHP-DbEngine.html#method_connect"
-        },                {
-            "fqsen": "\\SlightPHP\\DbEngine\u003A\u003Aquery\u0028\u0029",
-            "name": "query",
-            "summary": "",
-            "url": "classes/SlightPHP-DbEngine.html#method_query"
-        },                {
-            "fqsen": "\\SlightPHP\\DbEngine\u003A\u003Aerror\u0028\u0029",
-            "name": "error",
-            "summary": "",
-            "url": "classes/SlightPHP-DbEngine.html#method_error"
-        },                {
-            "fqsen": "\\SlightPHP\\DbEngine\u003A\u003Aerrno\u0028\u0029",
-            "name": "errno",
-            "summary": "",
-            "url": "classes/SlightPHP-DbEngine.html#method_errno"
-        },                {
-            "fqsen": "\\SlightPHP\\DbEngine\u003A\u003AlastId\u0028\u0029",
-            "name": "lastId",
-            "summary": "",
-            "url": "classes/SlightPHP-DbEngine.html#method_lastId"
-        },                {
-            "fqsen": "\\SlightPHP\\DbEngine\u003A\u003AgetAll\u0028\u0029",
-            "name": "getAll",
-            "summary": "",
-            "url": "classes/SlightPHP-DbEngine.html#method_getAll"
-        },                {
-            "fqsen": "\\SlightPHP\\DbEngine\u003A\u003Acount\u0028\u0029",
-            "name": "count",
-            "summary": "",
-            "url": "classes/SlightPHP-DbEngine.html#method_count"
-        },                {
-            "fqsen": "\\SlightPHP\\DbMysqli",
-            "name": "DbMysqli",
-            "summary": "",
-            "url": "classes/SlightPHP-DbMysqli.html"
-        },                {
-            "fqsen": "\\SlightPHP\\DbMysqli\u003A\u003Ainit\u0028\u0029",
-            "name": "init",
-            "summary": "construct",
-            "url": "classes/SlightPHP-DbMysqli.html#method_init"
-        },                {
-            "fqsen": "\\SlightPHP\\DbMysqli\u003A\u003A__destruct\u0028\u0029",
-            "name": "__destruct",
-            "summary": "",
-            "url": "classes/SlightPHP-DbMysqli.html#method___destruct"
-        },                {
-            "fqsen": "\\SlightPHP\\DbMysqli\u003A\u003Aconnect\u0028\u0029",
-            "name": "connect",
-            "summary": "",
-            "url": "classes/SlightPHP-DbMysqli.html#method_connect"
-        },                {
-            "fqsen": "\\SlightPHP\\DbMysqli\u003A\u003Aquery\u0028\u0029",
-            "name": "query",
-            "summary": "",
-            "url": "classes/SlightPHP-DbMysqli.html#method_query"
-        },                {
-            "fqsen": "\\SlightPHP\\DbMysqli\u003A\u003AgetAll\u0028\u0029",
-            "name": "getAll",
-            "summary": "",
-            "url": "classes/SlightPHP-DbMysqli.html#method_getAll"
-        },                {
-            "fqsen": "\\SlightPHP\\DbMysqli\u003A\u003Acount\u0028\u0029",
-            "name": "count",
-            "summary": "",
-            "url": "classes/SlightPHP-DbMysqli.html#method_count"
-        },                {
-            "fqsen": "\\SlightPHP\\DbMysqli\u003A\u003Aescape\u0028\u0029",
-            "name": "escape",
-            "summary": "",
-            "url": "classes/SlightPHP-DbMysqli.html#method_escape"
-        },                {
-            "fqsen": "\\SlightPHP\\DbMysqli\u003A\u003AlastId\u0028\u0029",
-            "name": "lastId",
-            "summary": "",
-            "url": "classes/SlightPHP-DbMysqli.html#method_lastId"
-        },                {
-            "fqsen": "\\SlightPHP\\DbMysqli\u003A\u003Aerror\u0028\u0029",
-            "name": "error",
-            "summary": "",
-            "url": "classes/SlightPHP-DbMysqli.html#method_error"
-        },                {
-            "fqsen": "\\SlightPHP\\DbMysqli\u003A\u003Aerrno\u0028\u0029",
-            "name": "errno",
-            "summary": "",
-            "url": "classes/SlightPHP-DbMysqli.html#method_errno"
-        },                {
-            "fqsen": "\\SlightPHP\\DbMysqli\u003A\u003A\u0024_mysqli",
-            "name": "_mysqli",
-            "summary": "",
-            "url": "classes/SlightPHP-DbMysqli.html#property__mysqli"
-        },                {
-            "fqsen": "\\SlightPHP\\DbMysqli\u003A\u003A\u0024_stmt",
-            "name": "_stmt",
-            "summary": "",
-            "url": "classes/SlightPHP-DbMysqli.html#property__stmt"
-        },                {
-            "fqsen": "\\SlightPHP\\DbMysqli\u003A\u003A\u0024_result",
-            "name": "_result",
-            "summary": "",
-            "url": "classes/SlightPHP-DbMysqli.html#property__result"
-        },                {
-            "fqsen": "\\SlightPHP\\DbMysqli\u003A\u003A\u0024_engine",
-            "name": "_engine",
-            "summary": "",
-            "url": "classes/SlightPHP-DbMysqli.html#property__engine"
-        },                {
-            "fqsen": "\\SlightPHP\\DbMysqli\u003A\u003A\u0024_host",
-            "name": "_host",
-            "summary": "",
-            "url": "classes/SlightPHP-DbMysqli.html#property__host"
-        },                {
-            "fqsen": "\\SlightPHP\\DbMysqli\u003A\u003A\u0024_port",
-            "name": "_port",
-            "summary": "",
-            "url": "classes/SlightPHP-DbMysqli.html#property__port"
-        },                {
-            "fqsen": "\\SlightPHP\\DbMysqli\u003A\u003A\u0024_user",
-            "name": "_user",
-            "summary": "",
-            "url": "classes/SlightPHP-DbMysqli.html#property__user"
-        },                {
-            "fqsen": "\\SlightPHP\\DbMysqli\u003A\u003A\u0024_password",
-            "name": "_password",
-            "summary": "",
-            "url": "classes/SlightPHP-DbMysqli.html#property__password"
-        },                {
-            "fqsen": "\\SlightPHP\\DbMysqli\u003A\u003A\u0024_database",
-            "name": "_database",
-            "summary": "",
-            "url": "classes/SlightPHP-DbMysqli.html#property__database"
-        },                {
-            "fqsen": "\\SlightPHP\\DbMysqli\u003A\u003A\u0024_persistent",
-            "name": "_persistent",
-            "summary": "",
-            "url": "classes/SlightPHP-DbMysqli.html#property__persistent"
-        },                {
-            "fqsen": "\\SlightPHP\\DbMysqli\u003A\u003A\u0024_charset",
-            "name": "_charset",
-            "summary": "",
-            "url": "classes/SlightPHP-DbMysqli.html#property__charset"
-        },                {
-            "fqsen": "\\SlightPHP\\DbMysqli\u003A\u003A\u0024connectionError",
-            "name": "connectionError",
-            "summary": "",
-            "url": "classes/SlightPHP-DbMysqli.html#property_connectionError"
-        },                {
             "fqsen": "\\SlightPHP\\DbPDO",
             "name": "DbPDO",
             "summary": "",
@@ -551,6 +391,11 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/SlightPHP-DbPDO.html#method_connect"
         },                {
+            "fqsen": "\\SlightPHP\\DbPDO\u003A\u003Aexec\u0028\u0029",
+            "name": "exec",
+            "summary": "",
+            "url": "classes/SlightPHP-DbPDO.html#method_exec"
+        },                {
             "fqsen": "\\SlightPHP\\DbPDO\u003A\u003Aquery\u0028\u0029",
             "name": "query",
             "summary": "",
@@ -565,6 +410,21 @@ Search.appendIndex(
             "name": "count",
             "summary": "",
             "url": "classes/SlightPHP-DbPDO.html#method_count"
+        },                {
+            "fqsen": "\\SlightPHP\\DbPDO\u003A\u003Abegin\u0028\u0029",
+            "name": "begin",
+            "summary": "",
+            "url": "classes/SlightPHP-DbPDO.html#method_begin"
+        },                {
+            "fqsen": "\\SlightPHP\\DbPDO\u003A\u003Acommit\u0028\u0029",
+            "name": "commit",
+            "summary": "",
+            "url": "classes/SlightPHP-DbPDO.html#method_commit"
+        },                {
+            "fqsen": "\\SlightPHP\\DbPDO\u003A\u003Arollback\u0028\u0029",
+            "name": "rollback",
+            "summary": "",
+            "url": "classes/SlightPHP-DbPDO.html#method_rollback"
         },                {
             "fqsen": "\\SlightPHP\\DbPDO\u003A\u003Aescape\u0028\u0029",
             "name": "escape",
