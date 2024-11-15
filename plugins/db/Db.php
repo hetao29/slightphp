@@ -375,10 +375,11 @@ class Db{
 		$this->error['msg']=$this->engine->error();
 
 		if($retry===false && $this->engine->connectionError){
+			trigger_error("DB QUERY ERROR AND RETRY (".var_export($this->error['msg'],true)."), CODE({$this->error['code']}), SQL({$sql}), PARAMS(".var_export($params,true).")",E_USER_NOTICE);
 			$this->reInit();
 			return $this->query($sql,$params,true);
 		}
-		trigger_error("DB QUERY ERROR (".var_export($this->error['msg'],true)."), CODE({$this->error['code']}), SQL({$sql})",E_USER_WARNING);
+		trigger_error("DB QUERY ERROR (".var_export($this->error['msg'],true)."), CODE({$this->error['code']}), SQL({$sql}), PARAMS(".var_export($params,true).")",E_USER_WARNING);
 		return false;
 	}
 	/**

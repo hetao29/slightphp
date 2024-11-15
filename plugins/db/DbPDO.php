@@ -93,8 +93,6 @@ class DbPDO{
 		$this->_stmt = $this->_pdo->prepare($sql);
 		if($this->_stmt){
 			return $this->_stmt->execute($params);
-		}else{
-			trigger_error("CONNECT DATABASE ERROR ( ".implode("\n",$this->_pdo->errorInfo())." ) ",E_USER_WARNING);
 		}
 		return false;
 	}
