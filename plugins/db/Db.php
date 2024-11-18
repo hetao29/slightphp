@@ -199,7 +199,6 @@ class Db{
 		}
 		$sql="SELECT $item FROM ($table) $leftjoin_str $condition_str $groupby_str $orderby_str $limit_sql";
 		$start = microtime(true);
-
 		$result = $this->query($sql,$params);
 		if($result!==false){
 			$data = new DbData;
@@ -413,6 +412,10 @@ class Db{
 						[$v,$k] = [$k,$v]; //swap
 					}
 					if($return_params!==NULL){
+						if($v===NULL){
+							$tmp[]="$k IS NULL";
+							continue;
+						}
 						$return_params[]=$v;
 						$v="?";
 					}
