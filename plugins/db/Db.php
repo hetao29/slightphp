@@ -412,7 +412,7 @@ class Db{
 						[$v,$k] = [$k,$v]; //swap
 					}
 					if($return_params!==NULL){
-						if($v===NULL){
+						if($v===NULL && $joinflag=="AND"){
 							$tmp[]="$k IS NULL";
 							continue;
 						}
