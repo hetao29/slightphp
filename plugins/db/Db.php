@@ -61,17 +61,17 @@ class Db{
 	/**
 	 *
 	 */
-	function __construct($engineName="mysql"){
-		$this->setEngine($engineName);
+	function __construct($engine_name="mysql"){
+		$this->setEngine($engine_name);
 	}
 	public function error(){
 		return $this->error;
 	}
-	private function setEngine($engineName){
-		if(in_array($engineName,$this->allow_engines)){
-			$this->engine_name=$engineName;
+	private function setEngine($engine_name){
+		if(in_array($engine_name,$this->allow_engines)){
+			$this->engine_name=$engine_name;
 		}else{
-			die("Db engine: $engineName does not support!");
+			die("Db engine: $engine_name does not support!");
 		}
 	}
 	private function reInit(){
@@ -162,7 +162,7 @@ class Db{
 		$params=[];
 		$condition_str="";
 		if(!empty($condition)){
-			$condition_str = "WHERE ".$this->buildsql($condition, "=", false, true, "AND",$params);
+			$condition_str = "WHERE ".$this->buildsql($condition, "<=>", false, true, "AND",$params);
 		}
 		//ITEM
 		if(!empty($item)){
@@ -256,11 +256,11 @@ class Db{
 		$params=[];
 		$params2=[];
 		$value = $this->buildsql($item, "=", false, true, ",",$params);
-		$condiStr = $this->buildsql($condition, "=", false, true, "AND",$params2);
-		if($condiStr!=""){
-			$condiStr=" WHERE ".$condiStr;
+		$condition_str = $this->buildsql($condition, "<=>", false, true, "AND",$params2);
+		if($condition_str!=""){
+			$condition_str=" WHERE ".$condition_str;
 		}
-		$sql="UPDATE $table SET $value $condiStr";
+		$sql="UPDATE $table SET $value $condition_str";
 		return $this->query($sql,$this->merge_params($params,$params2));
 	}
 	/**
@@ -273,11 +273,11 @@ class Db{
 	public function delete($table,$condition){
 		$table = $this->buildsql($table, "AS");
 		$params=[];
-		$condiStr = $this->buildsql($condition, "=", false, true, "AND",$params);
-		if($condiStr!=""){
-			$condiStr=" WHERE ".$condiStr;
+		$condition_str = $this->buildsql($condition, "<=>", false, true, "AND",$params);
+		if($condition_str!=""){
+			$condition_str=" WHERE ".$condition_str;
 		}
-		$sql="DELETE FROM  $table $condiStr";
+		$sql="DELETE FROM  $table $condition_str";
 		return $this->query($sql,$params);
 	}
 	public function escape($str){
@@ -412,10 +412,6 @@ class Db{
 						[$v,$k] = [$k,$v]; //swap
 					}
 					if($return_params!==NULL){
-						if($v===NULL && $joinflag=="AND"){
-							$tmp[]="$k IS NULL";
-							continue;
-						}
 						$return_params[]=$v;
 						$v="?";
 					}
