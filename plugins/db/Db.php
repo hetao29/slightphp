@@ -162,7 +162,7 @@ class Db{
 		$params=[];
 		$condition_str="";
 		if(!empty($condition)){
-			$condition_str = "WHERE ".$this->buildsql($condition, "<=>", false, true, "AND",$params);
+			$condition_str = "WHERE ".$this->buildsql($condition, "=", false, true, "AND",$params);
 		}
 		//ITEM
 		if(!empty($item)){
@@ -256,7 +256,7 @@ class Db{
 		$params=[];
 		$params2=[];
 		$value = $this->buildsql($item, "=", false, true, ",",$params);
-		$condition_str = $this->buildsql($condition, "<=>", false, true, "AND",$params2);
+		$condition_str = $this->buildsql($condition, "=", false, true, "AND",$params2);
 		if($condition_str!=""){
 			$condition_str=" WHERE ".$condition_str;
 		}
@@ -273,7 +273,7 @@ class Db{
 	public function delete($table,$condition){
 		$table = $this->buildsql($table, "AS");
 		$params=[];
-		$condition_str = $this->buildsql($condition, "<=>", false, true, "AND",$params);
+		$condition_str = $this->buildsql($condition, "=", false, true, "AND",$params);
 		if($condition_str!=""){
 			$condition_str=" WHERE ".$condition_str;
 		}
@@ -412,6 +412,10 @@ class Db{
 						[$v,$k] = [$k,$v]; //swap
 					}
 					if($return_params!==NULL){
+						if($v===NULL && $joinflag=="AND"){
+							$tmp[]="$k IS NULL";
+							continue;
+						}
 						$return_params[]=$v;
 						$v="?";
 					}
