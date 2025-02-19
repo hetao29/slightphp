@@ -12,7 +12,7 @@ sudo apt-get install php5-redis
 # 使用方法 #
 
 ```
-//初始化对像，也可以直接用静态方法
+//初始化对象，也可以直接用静态方法
 $s = new SRedis;
 
 //设置配置文件地址

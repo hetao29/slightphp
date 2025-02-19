@@ -157,7 +157,7 @@ class SDb extends SlightPHP\Db{
 		return $this->get(true);
 	}
 	/**
-	 * 得到信息，返回数组，可以用对像获取本身
+	 * 得到信息，返回数组，可以用对象获取本身
 	 **/
 	public function get($foreign_info=false){
 		if(!empty($this->_fields)){

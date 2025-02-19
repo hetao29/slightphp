@@ -127,7 +127,7 @@ $table=array("user","user_profile");
 //加了别名的数组
 $table=array("table_alias"=>"user");
 
-//对像,加了别名的
+//对象,加了别名的
 $table=new stdclass;
 $table->table_alias1="user";
 $table->table_alias1="profile";
@@ -142,7 +142,7 @@ $condition="id=1";
 $condition=array("id=1");
 $condition=array("id>0","id<3");
 $condition=array("id"=>1);
-//对像
+//对象
 $condition=new stdclass;
 $condition->id=1;
 ```
@@ -158,7 +158,7 @@ $item=array("*");
 $item=array("id","name");
 //数组，加上别名，会用UserID，替换数据库里的真实字段id和name
 $item=array("UserID"=>"id","UserName"=>"name");
-//对像，用返回别名是，很有用，这个会用UserID代替id
+//对象，用返回别名是，很有用，这个会用UserID代替id
 $item=new stdclass;
 $item->UserID = "id";
 $item->UserName = "name";
@@ -169,7 +169,7 @@ $groupby 是要GROUP的要求，可以为如下格式:
 ```
 //字符串,只需要一个时
 $groupby = "id";
-//多个时，请用数组或者对像
+//多个时，请用数组或者对象
 $groupby = array("id","name");
 $groupby = new stdclass;
 $groupby->g1 = "id";
@@ -185,7 +185,7 @@ $orderby = "id";
 $orderby ="UserID";
 //如果有多个，并不按默认排序，请用数组
 $orderby = array("id"=>"desc","name"=>"asc");
-//对像
+//对象
 $orderby = new stdclass;
 $orderby->id="desc";
 $orderby->name="asc";
@@ -198,7 +198,7 @@ $leftjoin 是要LEFT JOIN的字段，可以为如下格式:
 $left="user_profile on user_profile.user_id = user.id";
 //数组
 $left=array("user_profile"=>"user_profile.user_id=user.id");
-//对像
+//对象
 $left=new stdclass;
 $left->user_profile="user_profile.user_id=user.id";
 $db->select(array("user"),"","","","",$left);
@@ -462,7 +462,7 @@ boolean|array get($foreign_info=false);
 ```
 
   1. $foreign\_info是否包含外键信息
-  1. 返回值如果false，表明没有数据，你还可以通过对像本身去获取属性
+  1. 返回值如果false，表明没有数据，你还可以通过对象本身去获取属性
   1. 实例
 
 ```
