@@ -1,6 +1,6 @@
 <?php
 function tpl_modifier_tostring($mixed){
-	return var_export($mixed,true);
+	return print_r($mixed,true);
 }
 function tpl_modifier_tr($string,$zone="main"){
 	return SLanguage::tr($string,$zone);

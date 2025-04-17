@@ -1,6 +1,6 @@
 <?php
 function tpl_function_tostring($mixed){
-	return var_export($mixed,true);
+	return print_r($mixed,true);
 }
 function tpl_function_part($path){
 	ob_start();

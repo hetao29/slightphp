@@ -84,7 +84,7 @@ class SLog
 				if(self::$LOGTYPE=="json"){
 					$data .= " ".json_encode($info);
 				}else{
-					$data .= " ".var_export($info, true);
+					$data .= " ".print_r($info, true);
 				}
 			} elseif (is_bool($info)) {
 				$data .= " ".($info ? "true" : "false");

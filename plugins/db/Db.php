@@ -108,7 +108,7 @@ class Db{
 			$this->error['code']=$this->engine->errno();
 			$this->error['msg']=$this->engine->error();
 			if(defined("DEBUG")){
-				trigger_error("{$this->engine_name} ( ".var_export($this->error,true).")");
+				trigger_error("{$this->engine_name} ( ".print_r($this->error,true).")");
 			}
 			return false;
 		}
@@ -374,11 +374,11 @@ class Db{
 		$this->error['msg']=$this->engine->error();
 
 		if($retry===false && $this->engine->connectionError){
-			trigger_error("DB QUERY ERROR AND RETRY (".var_export($this->error['msg'],true)."), CODE({$this->error['code']}), SQL({$sql}), PARAMS(".var_export($params,true).")",E_USER_NOTICE);
+			trigger_error("DB QUERY ERROR AND RETRY (".print_r($this->error['msg'],true)."), CODE({$this->error['code']}), SQL({$sql}), PARAMS(".print_r($params,true).")",E_USER_NOTICE);
 			$this->reInit();
 			return $this->query($sql,$params,true);
 		}
-		trigger_error("DB QUERY ERROR (".var_export($this->error['msg'],true)."), CODE({$this->error['code']}), SQL({$sql}), PARAMS(".var_export($params,true).")",E_USER_WARNING);
+		trigger_error("DB QUERY ERROR (".print_r($this->error['msg'],true)."), CODE({$this->error['code']}), SQL({$sql}), PARAMS(".print_r($params,true).")",E_USER_WARNING);
 		return false;
 	}
 	/**
