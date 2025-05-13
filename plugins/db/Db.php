@@ -55,6 +55,10 @@ class Db{
 	 */
 	private $page=1;
 	/**
+	 * 是否支持bind问号
+	 */
+	private $bind=false;
+	/**
 	 *
 	 */
 	private $error=array('code'=>0,'msg'=>"");
@@ -66,6 +70,9 @@ class Db{
 	}
 	public function error(){
 		return $this->error;
+	}
+	public function setSupportBind(bool $bind){
+		$this->bind = $bind;
 	}
 	private function setEngine($engine_name){
 		if(in_array($engine_name,$this->allow_engines)){
@@ -417,6 +424,10 @@ class Db{
 							continue;
 						}
 						$return_params[]=$v;
+						if($this->bind && strpos($k,"?")!==false){
+							$tmp[]=$k;
+							continue;
+						}
 						$v="?";
 					}
 					$tmp[]=$k.$split.$v;
