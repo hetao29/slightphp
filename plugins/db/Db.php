@@ -423,10 +423,19 @@ class Db{
 							$tmp[]="$k IS NULL";
 							continue;
 						}
-						$return_params[]=$v;
-						if($this->bind && strpos($k,"?")!==false){
+						if($this->bind && ($ct=substr_count($k,"?"))>0){
+							$is_array = is_array($v);
 							$tmp[]=$k;
+							for($i=0;$i<$ct;$i++){
+								if($is_array){
+									$return_params[]=$v[$i]??'';
+								}else{
+									$return_params[]=$v;
+								}
+							}
 							continue;
+						}else{
+							$return_params[]=$v;
 						}
 						$v="?";
 					}
