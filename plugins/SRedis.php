@@ -68,7 +68,7 @@ class SRedis{
 	/**
 	 * 切换配置文件
 	 * @param string $zone
-	 * @return array
+	 * @return SRedis | boolean
 	 */
 	static function useConfig($zone,$type="host"){
 		$config = self::getConfig($zone,$type);
