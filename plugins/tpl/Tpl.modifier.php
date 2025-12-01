@@ -5,6 +5,13 @@ function tpl_modifier_tostring($mixed){
 function tpl_modifier_tr($string,$zone="main"){
 	return SLanguage::tr($string,$zone);
 }
+function tpl_modifier_escape($string,$type="html"){
+	switch($type){
+	case "url":return rawurlencode($string);
+	default:
+	case "html":return htmlspecialchars($string);
+	}
+}
 function tpl_modifier_default($input,$default=""){
 	return empty($input)?$default:$input;
 }
