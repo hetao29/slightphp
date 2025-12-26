@@ -79,6 +79,7 @@ class DbPDO{
 				$options,
 			);
 		}catch(\PDOException  $e){
+			$this->connectionError=true;
 			trigger_error("CONNECT DATABASE ERROR ( ".$e->getMessage()." ) ",E_USER_WARNING);
 			return false;
 		}
