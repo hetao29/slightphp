@@ -67,10 +67,17 @@ class DbPDO{
 				\PDO::ATTR_STRINGIFY_FETCHES => false,
 				\PDO::ATTR_EMULATE_PREPARES => false,
 				\PDO::ATTR_ERRMODE => \PDO::ERRMODE_WARNING,
-				\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
 			);
-			if(!empty($this->_charset)){
-				$options[\PDO::MYSQL_ATTR_INIT_COMMAND]="SET CHARACTER SET {$this->_charset}, NAMES {$this->_charset}";
+			if (class_exists('Pdo\Mysql')) { // PHP >=8.4
+				$options[\Pdo\Mysql::ATTR_USE_BUFFERED_QUERY]=true;
+				if(!empty($this->_charset)){
+					$options[\Pdo\Mysql::ATTR_INIT_COMMAND]="SET CHARACTER SET {$this->_charset}, NAMES {$this->_charset}";
+				}
+			}else{//PHP <8.4
+				$options[\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY]=true;
+				if(!empty($this->_charset)){
+					$options[\PDO::MYSQL_ATTR_INIT_COMMAND]="SET CHARACTER SET {$this->_charset}, NAMES {$this->_charset}";
+				}
 			}
 			$this->_pdo = new \PDO(
 				$driver .":dbname=".$this->_database.";host=".$this->_host.";port=".$this->_port,
