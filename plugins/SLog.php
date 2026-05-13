@@ -75,36 +75,35 @@ class SLog
 		return self::writeArray("", $args);
 	}
 	private static function writeArray($prefix, Array $args){
-		$data="";
+		$log= "[" . date("Y-m-d H:i:s") . "]";
 		if($prefix){
-			$data.=" ".$prefix;
+			$log.=" ".$prefix;
 		}
 		foreach($args as $info){
 			if (is_object($info) || is_array($info)) {
 				if(self::$LOGTYPE=="json"){
-					$data .= " ".json_encode($info);
+					$log.= " ".json_encode($info);
 				}else{
-					$data .= " ".print_r($info, true);
+					$log.= " ".print_r($info, true);
 				}
 			} elseif (is_bool($info)) {
-				$data .= " ".($info ? "true" : "false");
+				$log.= " ".($info ? "true" : "false");
 			} else {
-				$data .= " ".$info;
+				$log.= " ".$info;
 			}
 		}
-		$infoText = "[".date("Y-m-d H:i:s")."]".$data;
 
 		if (!empty(self::$LOGFILE)) {
-			error_log($infoText."\n", 3, self::$LOGFILE);
+			error_log($log."\n", 3, self::$LOGFILE);
 		} else {
-			error_log($infoText);
+			error_log($log);
 		}
 
 		if (self::$CONSOLE){
 			if(PHP_SAPI=="cli"){
-				echo $infoText."\n";
+				echo $log."\n";
 			}else{
-				echo "<!--\n".$infoText."\n-->";
+				echo "<!--\n",$log,"\n-->";
 			}
 		}
 	}
