@@ -343,23 +343,24 @@ class Db{
 	 * @param array $parameters
 	 * @return boolean|int|array
 	 */
-	public function query($sql,$params=[], $retry=false){
-		//{{{
-		//SQL MODE 默认为DELETE，INSERT，REPLACE 或 UPDATE,不需要返回值
-		$sql_mode = 1;//1.更新模式 2.查询模式 3.插入模式
+	/*
+	public function query($sql,$params=[], $retry=false, $sql_mode=NULL){
+		if($sql_mode===NULL){
+			//SQL MODE 默认为DELETE，INSERT，REPLACE 或 UPDATE,不需要返回值
+			$sql_mode = 1;//1.更新模式 2.查询模式 3.插入模式
 
-		if(stripos($sql,"INSERT")===0){
-			$sql_mode = 3;
-		}else{
-			$sql_result_query=array("SELECT","SHOW","DESCRIBE","EXPLAIN");
-			foreach($sql_result_query as $query_type){
-				if(stripos($sql,$query_type)===0){
-					$sql_mode = 2;
-					break;
+			if(stripos($sql,"INSERT")===0){
+				$sql_mode = 3;
+			}else{
+				$sql_result_query=array("SELECT","SHOW","DESCRIBE","EXPLAIN","WITH");
+				foreach($sql_result_query as $query_type){
+					if(stripos($sql,$query_type)===0){
+						$sql_mode = 2;
+						break;
+					}
 				}
 			}
 		}
-		//}}}
 		if(defined("DEBUG")){
 			trigger_error("{$this->engine_name} ( $sql )");
 		}
@@ -383,9 +384,67 @@ class Db{
 		if($retry===false && $this->engine->connectionError){
 			trigger_error("DB QUERY ERROR AND RETRY (".print_r($this->error['msg'],true)."), CODE({$this->error['code']}), SQL({$sql}), PARAMS(".print_r($params,true).")",E_USER_NOTICE);
 			$this->reInit();
-			return $this->query($sql,$params,true);
+			return $this->query($sql,$params,true,$sql_mode);
 		}
 		trigger_error("DB QUERY ERROR (".print_r($this->error['msg'],true)."), CODE({$this->error['code']}), SQL({$sql}), PARAMS(".print_r($params,true).")",E_USER_WARNING);
+		return false;
+	}
+*/
+	public function query($sql, $params = [], $retry = 0){
+		$sql_mode = 1; //查询
+		$command = strtoupper(strtok(ltrim($sql), " \n\r\t"));
+		switch ($command) {
+		case 'UPDATE':
+		case 'DELETE':
+		case 'ALTER':
+		case 'DROP':
+		case 'CREATE':
+		case 'TRUNCATE':
+		case 'RENAME':
+			$sql_mode = 2;//更新
+			break;
+		case 'INSERT':
+		case 'REPLACE':
+			$sql_mode = 3;//插入
+			break;
+		}
+		if (defined('DEBUG')) {
+			trigger_error("{$this->engine_name} ( {$sql} )");
+		}
+		$maxRetry = ($sql_mode == 1) ? 1 : 0;
+
+		RETRY:
+		$result = $this->engine->query($sql, $params);
+		if ($result !== false) {
+			if ($this->engine->columnCount() > 0) {
+				return $this->engine->getAll();
+			}
+			if($sql_mode==3){
+				return $this->engine->lastId();
+			}
+			return $this->engine->count();
+		}
+
+		// 错误信息
+		$this->error = [
+			'code' => $this->engine->errno(),
+			'msg'  => $this->engine->error(),
+		];
+
+		if($retry < $maxRetry && $this->engine->connectionError){
+			trigger_error(
+				"DB RETRY ERROR: CODE({$this->error['code']}) SQL({$sql})",
+				E_USER_NOTICE
+			);
+			$this->reInit();
+			$retry++;
+			goto RETRY;
+		}
+
+		trigger_error(
+			"DB QUERY ERROR: CODE({$this->error['code']}) SQL({$sql})",
+			E_USER_WARNING
+		);
 		return false;
 	}
 	/**

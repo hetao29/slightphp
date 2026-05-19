@@ -108,6 +108,10 @@ class DbPDO{
 		if(!$this->_stmt)return false;
 		return $this->_stmt->fetchAll(\PDO::FETCH_ASSOC);
 	}
+	public function columnCount(){
+		if(!$this->_stmt)return false;
+		return $this->_stmt->columnCount();
+	}
 	public function count(){
 		if(!$this->_stmt)return false;
 		return $this->_stmt->rowCount();
