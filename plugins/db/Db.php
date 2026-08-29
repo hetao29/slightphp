@@ -186,8 +186,12 @@ class Db{
 		$leftjoin_str="";
 		if(!empty($leftjoin)){
 			if(is_array($leftjoin) || is_object($leftjoin)){
-				foreach ($leftjoin as $key=>$value){
-					$leftjoin_str.=" LEFT JOIN $key ON $value ";
+				foreach ($leftjoin as $k=>$_v){
+					$v = $_v;
+					if(is_array($_v)){
+						$v = implode(" AND ",$_v);
+					}
+					$leftjoin_str.=" LEFT JOIN $k ON $v ";
 				}
 			}else{
 				$leftjoin_str=" LEFT JOIN $leftjoin";
@@ -258,7 +262,7 @@ class Db{
 	 * @param string|array|object $item
 	 * @return int|boolean
 	 */
-	public function update($table,$condition,$item){
+	public function update($table,$condition,$item,$innerjoin=NULL){
 		$table = $this->buildsql($table, "AS");
 		$params=[];
 		$params2=[];
@@ -267,7 +271,22 @@ class Db{
 		if($condition_str!=""){
 			$condition_str=" WHERE ".$condition_str;
 		}
-		$sql="UPDATE $table SET $value $condition_str";
+		//INNER JOIN
+		$innerjoin_str="";
+		if(!empty($innerjoin)){
+			if(is_array($innerjoin) || is_object($innerjoin)){
+				foreach ($innerjoin as $k=>$_v){
+					$v = $_v;
+					if(is_array($_v)){
+						$v = implode(" AND ",$_v);
+					}
+					$innerjoin_str.=" INNER JOIN $k ON $v ";
+				}
+			}else{
+				$innerjoin_str=" INNER JOIN $innerjoin";
+			}
+		}
+		$sql="UPDATE $table $innerjoin_str SET $value $condition_str";
 		return $this->query($sql,$this->merge_params($params,$params2));
 	}
 	/**
