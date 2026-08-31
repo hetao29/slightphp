@@ -160,9 +160,10 @@ class Db{
 	 * @param string|array|object $groupby 
 	 * @param string|array|object $orderby
 	 * @param string|array|object $leftjoin
+	 * @param string $hits Optimizer Hints https://dev.mysql.com/doc/refman/9.7/en/optimizer-hints.html
 	 * @return DbData object || Boolean false
 	 */
-	public function select($table,$condition="",$item="",$groupby="",$orderby="",$leftjoin=""){
+	public function select($table,$condition="",$item="",$groupby="",$orderby="",$leftjoin="",$hits=""){
 		//TABLE
 		$table = $this->buildsql($table,"AS");
 		//condition
@@ -208,7 +209,11 @@ class Db{
 			$limit     =($this->page-1)*$this->limit;
 			$limit_sql ="LIMIT $limit,$this->limit";
 		}
-		$sql="SELECT $item FROM ($table) $leftjoin_str $condition_str $groupby_str $orderby_str $limit_sql";
+		$hits_str="";
+		if(!empty($hits)){
+			$hits_str=" /*+ {$hits} */ ";
+		}
+		$sql="SELECT $hits_str $item FROM ($table) $leftjoin_str $condition_str $groupby_str $orderby_str $limit_sql";
 		$start = microtime(true);
 		$result = $this->query($sql,$params);
 		if($result!==false){
@@ -220,7 +225,7 @@ class Db{
 			//{{{
 			if($this->count==true){
 				if($this->limit>0){
-					$countsql="SELECT count(1) totalSize FROM ($table) $leftjoin_str $condition_str $groupby_str";
+					$countsql="SELECT $hits_str count(1) totalSize FROM ($table) $leftjoin_str $condition_str $groupby_str";
 					$result_count = $this->query($countsql,$params);
 					if(!empty($result_count[0])){
 						$data->totalSize = (int)$result_count[0]['totalSize'];
