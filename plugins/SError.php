@@ -66,6 +66,9 @@ class SError{
 	}
 
 	public static function error_handler($errno, $errstr, $errfile, $errline) {
+		if (!(error_reporting() & $errno)) {
+			return false;
+		}
 		$ct= SError::getError(debug_backtrace(),null);
 		self::log($ct);
 	}
