@@ -26,6 +26,12 @@ if (!class_exists("SlightPHP", false)):
 		public static $appDir = ".";
 
 		/**
+		 * namespace prefix of the pages, default "" (global class, like zone_page)
+		 * @var string
+		 */
+		public static $appNamespace="";
+
+		/**
 		 * @var string
 		 */
 		public static $pathInfo = "";
@@ -82,6 +88,21 @@ if (!class_exists("SlightPHP", false)):
 		 */
 		public static $splitFlag = "/";
 
+		/**
+		 * @param string $namespace
+		 * @return boolean
+		 */
+		public static function setAppNamespace($namespace){
+			self::$appNamespace = trim($namespace,"\\");
+			return true;
+		}
+
+		/**
+		 * @return string
+		 */
+		public static function getAppNamespace(){
+			return self::$appNamespace;
+		}
 		/**
 		 * zoneAlias
 		 *
@@ -240,8 +261,6 @@ if (!class_exists("SlightPHP", false)):
 		}
 		/**
 		 * appDir set && get
-		 * IMPORTANT: you must set absolute path if you use extension mode(extension=SlightPHP.so)
-		 *
 		 * @param string $dir
 		 * @return boolean
 		 */
@@ -355,7 +374,7 @@ if (!class_exists("SlightPHP", false)):
 					$type   = !empty($_SERVER['HTTP_REQUEST_TYPE']) ? strtolower(trim($_SERVER['HTTP_REQUEST_TYPE'])) : self::$defaultType;
 					$_method = $type . $_entry;
 				} else {
-					$classname = self::snakeToNamespace($classname, "\\") . "Controller";
+					$classname = self::$appNamespace."\\".self::snakeToNamespace($classname, "\\") . "Controller";
 					if (class_exists($classname, true)) {
 						$classInstance = new $classname($path_array);
 					}
