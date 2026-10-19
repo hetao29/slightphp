@@ -215,6 +215,7 @@ $inPath=array("user","profile","update","other1","other2","...")
 ```php
 SlightPHP::setAppDir("/home/www/myAppdir");
 ```
+
 如http://localhost/index.php/user/profile/update
 
 就会执行
@@ -236,12 +237,12 @@ SConfig 配置文件插件 https://github.com/hetao29/slightphp/blob/master/wiki
 SRoute 路由插件 https://github.com/hetao29/slightphp/blob/master/wiki/SRoute.md  
 SError 错误插件 https://github.com/hetao29/slightphp/blob/master/wiki/SError.md  
 ...  
- 
-更多插件功能请看samples下的示例  
+
+更多插件功能请看samples下的示例
 
 ### Nginx配置
 
-```conf
+```json
 
 root /var/www/slightphp/samples/www;
 location / {
@@ -253,9 +254,11 @@ location ~ \.php$ {
 	fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
 	include        fastcgi_params;
 }
+
 ```
 
 ## Version
+
 5.0.0
 
 **Free Software, MIT License!**

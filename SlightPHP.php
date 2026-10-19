@@ -26,10 +26,38 @@ if (!class_exists("SlightPHP", false)):
 		public static $appDir = ".";
 
 		/**
+		 * 框架模式，命令空间模式和文件分隔模式
+		 */
+		private static $modes = [
+			"PAGE", //普通的文件分隔模式
+			"NAMESPACE", //命名空间模式
+		];
+		/**
+		 * 设置框架模式
+		 * 1. 默认同时支持命名空间模式和文件分隔模式 PAGE,NAMESPACE
+		 * 2. 如果只想使用命名空间模式，则设置为 NAMESPACE
+		 * 3. 您可以设置优先顺序，默认是PAGE优先，NAMESPACE次之，如果您想让命名空间模式优先，则设置为 NAMESPACE,PAGE
+		 * @param array $modes
+		 */
+		public static function setModes(array $modes)
+		{
+			self::$modes = $modes;
+			return true;
+		}
+		public static function getModes()
+		{
+			return self::$modes;
+		}
+		/**
+		 * @var string
+		 */
+		private static $appDirRealPath = "";
+
+		/**
 		 * namespace prefix of the pages, default "" (global class, like zone_page)
 		 * @var string
 		 */
-		public static $appNamespace="";
+		public static $appNamespace = "";
 
 		/**
 		 * @var string
@@ -71,7 +99,39 @@ if (!class_exists("SlightPHP", false)):
 		public static $defaultType = "page";
 
 		/**
-		 * current entry
+		 * 允许的请求类型
+		 * @var array
+		 */
+		public static $allowRequestTypes = [
+			"page",
+			"ajax",
+			"part",
+			"json",
+			"xml",
+			"html"
+		];
+
+		/**
+		 * 设置允许的请求类型，这些类型会映射为方法前缀
+		 * 默认PAGE模式下，方法以page开头
+		 * 默认NAMESPACE模式下，方法不以任何开头
+		 * @param array $types
+		 */
+		public static function setAllowRequestTypes(array $types)
+		{
+			self::$allowRequestTypes = $types;
+			return true;
+		}
+
+		/**
+		 * Get the allowed request types
+		 * @return array
+		 */
+		public static function getAllowRequestTypes()
+		{
+			return self::$allowRequestTypes;
+		}
+		/**
 		 * @var string
 		 */
 		public static $entry;
@@ -92,15 +152,17 @@ if (!class_exists("SlightPHP", false)):
 		 * @param string $namespace
 		 * @return boolean
 		 */
-		public static function setAppNamespace($namespace){
-			self::$appNamespace = trim($namespace,"\\");
+		public static function setAppNamespace($namespace)
+		{
+			self::$appNamespace = trim($namespace, "\\");
 			return true;
 		}
 
 		/**
 		 * @return string
 		 */
-		public static function getAppNamespace(){
+		public static function getAppNamespace()
+		{
 			return self::$appNamespace;
 		}
 		/**
@@ -115,7 +177,7 @@ if (!class_exists("SlightPHP", false)):
 		 * @param string $alias
 		 * @return boolean
 		 */
-		public static function setZoneAlias($zone, $alias)
+		public static function setZoneAlias(string $zone, string $alias)
 		{
 			self::$zoneAlias[$zone] = $alias;
 			return true;
@@ -125,7 +187,7 @@ if (!class_exists("SlightPHP", false)):
 		 * @param string $zone
 		 * @return string | boolean
 		 */
-		public static function getZoneAlias($zone)
+		public static function getZoneAlias(string $zone)
 		{
 			return isset(self::$zoneAlias[$zone]) ? self::$zoneAlias[$zone] : false;
 		}
@@ -142,7 +204,7 @@ if (!class_exists("SlightPHP", false)):
 		 * @param string $alias
 		 * @return boolean
 		 */
-		public static function setPageAlias($page, $alias)
+		public static function setPageAlias(string $page, string $alias)
 		{
 			self::$pageAlias[$page] = $alias;
 			return true;
@@ -152,7 +214,7 @@ if (!class_exists("SlightPHP", false)):
 		 * @param string $page
 		 * @return string | boolean
 		 */
-		public static function getPageAlias($page)
+		public static function getPageAlias(string $page)
 		{
 			return isset(self::$pageAlias[$page]) ? self::$pageAlias[$page] : false;
 		}
@@ -164,7 +226,7 @@ if (!class_exists("SlightPHP", false)):
 		 * @return boolean
 		 */
 
-		public static function setDefaultZone($zone)
+		public static function setDefaultZone(string $zone)
 		{
 			self::$defaultZone = $zone;
 			return true;
@@ -185,7 +247,7 @@ if (!class_exists("SlightPHP", false)):
 		 * @param string $page
 		 * @return boolean
 		 */
-		public static function setDefaultPage($page)
+		public static function setDefaultPage(string $page)
 		{
 			self::$defaultPage = $page;
 			return true;
@@ -202,10 +264,10 @@ if (!class_exists("SlightPHP", false)):
 		/**
 		 * defaultType set
 		 *
-		 * @param string $page
+		 * @param string $type
 		 * @return boolean
 		 */
-		public static function setDefaultType($type)
+		public static function setDefaultType(string $type)
 		{
 			self::$defaultType = $type;
 			return true;
@@ -225,7 +287,7 @@ if (!class_exists("SlightPHP", false)):
 		 * @param string $entry
 		 * @return boolean
 		 */
-		public static function setDefaultEntry($entry)
+		public static function setDefaultEntry(string $entry)
 		{
 			self::$defaultEntry = $entry;
 			return true;
@@ -245,7 +307,7 @@ if (!class_exists("SlightPHP", false)):
 		 * @param string $flag
 		 * @return boolean
 		 */
-		public static function setSplitFlag($flag)
+		public static function setSplitFlag(string $flag)
 		{
 			self::$splitFlag = $flag;
 			return true;
@@ -265,12 +327,19 @@ if (!class_exists("SlightPHP", false)):
 		 * @return boolean
 		 */
 
-		public static function setAppDir($dir)
+		public static function setAppDir(string $dir)
 		{
 			self::$appDir = $dir;
+			self::$appDirRealPath = realpath($dir);
 			return true;
 		}
-		public static function setPathInfo($pathInfo)
+		/**
+		 * pathInfo set
+		 * 
+		 * @param string $pathInfo
+		 * @return boolean
+		 */
+		public static function setPathInfo(string $pathInfo)
 		{
 			self::$pathInfo = $pathInfo;
 			return true;
@@ -290,7 +359,7 @@ if (!class_exists("SlightPHP", false)):
 		 * @param boolean $debug
 		 * @return boolean
 		 */
-		public static function setDebug($debug)
+		public static function setDebug(bool $debug)
 		{
 			self::$_debug = $debug;
 			return true;
@@ -369,25 +438,41 @@ if (!class_exists("SlightPHP", false)):
 					return false;
 				}
 				$classname = strtolower(implode("_", array_merge($zoneParts, [$_page])));
-				if (class_exists($classname, true)) {
-					$classInstance = new $classname($path_array);
-					$type   = !empty($_SERVER['HTTP_REQUEST_TYPE']) ? strtolower(trim($_SERVER['HTTP_REQUEST_TYPE'])) : self::$defaultType;
-					$_method = $type . $_entry;
-				} else {
-					$classname = self::$appNamespace."\\".self::snakeToNamespace($classname, "\\") . "Controller";
-					if (class_exists($classname, true)) {
-						$classInstance = new $classname($path_array);
+				$type = "";
+				foreach (self::$modes as $mode) {
+					$file = "";
+					if ($mode == "NAMESPACE") {
+						$classname_namespace = self::$appNamespace . "\\" . self::snakeToNamespace($classname, "\\") . "Controller";
+						$file = realpath(self::$appDir . DIRECTORY_SEPARATOR . str_replace("\\", DIRECTORY_SEPARATOR, $classname_namespace) . ".php");
+						if (self::loadFile($file)) {
+							$type   = !empty($_SERVER['HTTP_REQUEST_TYPE']) ? strtolower(trim($_SERVER['HTTP_REQUEST_TYPE'])) : "";
+							$classname = $classname_namespace;
+							break;
+						}
+					} elseif ($mode == "PAGE") {
+						$type   = !empty($_SERVER['HTTP_REQUEST_TYPE']) ? strtolower(trim($_SERVER['HTTP_REQUEST_TYPE'])) : self::$defaultType;
+						$file = realpath(self::$appDir . DIRECTORY_SEPARATOR . str_replace("_", DIRECTORY_SEPARATOR, $classname) . ".page.php");
+						if (self::loadFile($file)) {
+							$type   = !empty($_SERVER['HTTP_REQUEST_TYPE']) ? strtolower(trim($_SERVER['HTTP_REQUEST_TYPE'])) : self::$defaultType;
+							break;
+						}
 					}
-					$type   = !empty($_SERVER['HTTP_REQUEST_TYPE']) ? strtolower(trim($_SERVER['HTTP_REQUEST_TYPE'])) : "";
-					$_method = $type . $_entry;
 				}
-				if (class_exists($classname, false) && method_exists($classInstance, $_method)) {
-					if (!$isPart) {
-						self::$zone  = $_zone;
-						self::$page  = $_page;
-						self::$entry = $_entry;
+				if (class_exists($classname, false)) {
+					$classInstance = new $classname($path_array);
+					if ($type !== "" && in_array($type, self::$allowRequestTypes)) {
+						$_method = $type . $_entry;
+					} else {
+						$_method = $_entry;
 					}
-					return call_user_func(array(&$classInstance, $_method), $path_array);
+					if (method_exists($classInstance, $_method)) {
+						if (!$isPart) {
+							self::$zone  = $_zone;
+							self::$page  = $_page;
+							self::$entry = $_entry;
+						}
+						return call_user_func(array(&$classInstance, $_method), $path_array);
+					}
 				}
 			}
 			self::debug("run patharray error ", $path_array);
@@ -399,35 +484,46 @@ if (!class_exists("SlightPHP", false)):
 		 */
 		private static $_debug = 0;
 
-		/*private*/
-		private static function debug(...$args)
+		/**
+		 * debug
+		 * @param mixed ...$args
+		 * @return void
+		 */
+		private static function debug(mixed ...$args)
 		{
 			if (self::$_debug) {
 				SLog::debug($args);
 			}
 		}
-		/*private*/
-		private static function snakeToNamespace(string $str, $split = DIRECTORY_SEPARATOR): string
+
+		/**
+		 * 将下划线分隔的字符串转换为命名空间格式
+		 * @param string $str
+		 * @param string $split
+		 * @return string
+		 */
+		private static function snakeToNamespace(string $str, string $split = DIRECTORY_SEPARATOR): string
 		{
 			return implode($split, array_map('ucfirst', explode('_', strtolower($str))));
 		}
+		/**
+		 * 加载文件
+		 * @param string $file
+		 * @return bool
+		 */
+		private static function loadFile(string $file)
+		{
+			if (!self::$appDirRealPath) {
+				self::$appDirRealPath = realpath(self::$appDir);
+			}
+			if (is_file($file) && str_starts_with(
+				$file,
+				SlightPHP::$appDirRealPath
+			)) {
+				require_once(realpath($file));
+				return true;
+			}
+			return false;
+		}
 	}
-	/**
-	 * 加载传统的_分隔的类
-	 */
-	spl_autoload_register(function ($class) {
-		$file = realpath(SlightPHP::$appDir . DIRECTORY_SEPARATOR . str_replace("_", DIRECTORY_SEPARATOR, $class) . ".page.php");
-		if (is_file($file)) {
-			require_once(realpath($file));
-		}
-	});
-	/**
-	 * 加载命令空间的类
-	 */
-	spl_autoload_register(function ($class) {
-		$file = realpath(SlightPHP::$appDir . DIRECTORY_SEPARATOR . str_replace("\\", DIRECTORY_SEPARATOR, $class) . ".php");
-		if (is_file($file)) {
-			require_once(realpath($file));
-		}
-	});
 endif;
