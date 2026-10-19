@@ -439,9 +439,9 @@ if (!class_exists("SlightPHP", false)):
 				}
 				$classname = strtolower(implode("_", array_merge($zoneParts, [$_page])));
 				$type = "";
-				foreach (self::$modes as $mode) {
+				foreach (self::$modes as $_mode) {
 					$file = "";
-					if ($mode == "NAMESPACE") {
+					if ($_mode == "NAMESPACE") {
 						$classname_namespace = self::$appNamespace . "\\" . self::snakeToNamespace($classname, "\\") . "Controller";
 						$file = realpath(self::$appDir . DIRECTORY_SEPARATOR . str_replace("\\", DIRECTORY_SEPARATOR, $classname_namespace) . ".php");
 						if (self::loadFile($file)) {
@@ -449,8 +449,8 @@ if (!class_exists("SlightPHP", false)):
 							$classname = $classname_namespace;
 							break;
 						}
-					} elseif ($mode == "PAGE") {
-						$type   = !empty($_SERVER['HTTP_REQUEST_TYPE']) ? strtolower(trim($_SERVER['HTTP_REQUEST_TYPE'])) : self::$defaultType;
+					} elseif ($_mode == "PAGE") {
+						$type = !empty($_SERVER['HTTP_REQUEST_TYPE']) ? strtolower(trim($_SERVER['HTTP_REQUEST_TYPE'])) : self::$defaultType;
 						$file = realpath(self::$appDir . DIRECTORY_SEPARATOR . str_replace("_", DIRECTORY_SEPARATOR, $classname) . ".page.php");
 						if (self::loadFile($file)) {
 							$type   = !empty($_SERVER['HTTP_REQUEST_TYPE']) ? strtolower(trim($_SERVER['HTTP_REQUEST_TYPE'])) : self::$defaultType;
@@ -465,7 +465,10 @@ if (!class_exists("SlightPHP", false)):
 					} else {
 						$_method = $_entry;
 					}
-					if (method_exists($classInstance, $_method)) {
+					/**
+					 * 方法必须存在并且可调用，才会被执行，否则返回false（private方法和protected方法都不可调用）
+					 */
+					if (method_exists($classInstance, $_method) && is_callable(array(&$classInstance, $_method))) {
 						if (!$isPart) {
 							self::$zone  = $_zone;
 							self::$page  = $_page;
@@ -511,19 +514,26 @@ if (!class_exists("SlightPHP", false)):
 		 * @param string $file
 		 * @return bool
 		 */
-		private static function loadFile(string $file)
+		private static function loadFile(string|false $file)
 		{
+			if ($file === false || $file === '') {
+				return false;
+			}
 			if (!self::$appDirRealPath) {
 				self::$appDirRealPath = realpath(self::$appDir);
+				if (self::$appDirRealPath === false) {
+					return false;
+				}
 			}
-			if (is_file($file) && str_starts_with(
-				$file,
-				SlightPHP::$appDirRealPath
-			)) {
-				require_once(realpath($file));
-				return true;
+			if (!is_file($file)) {
+				return false;
 			}
-			return false;
+			$prefix = rtrim(self::$appDirRealPath, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+			if (!str_starts_with($file, $prefix)) {
+				return false;
+			}
+			require_once $file;
+			return true;
 		}
 	}
 endif;
