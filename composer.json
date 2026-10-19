@@ -1,13 +1,18 @@
 {
     "name": "hetao29/slightphp",
     "description": "SlightPHP PHP FrameWork",
-    "keywords": ["php", "framework", "slightphp"],
+    "keywords": [
+        "php",
+        "framework",
+        "slightphp"
+    ],
     "homepage": "https://github.com/hetao29/slightphp",
     "type": "library",
     "license": "MIT",
-	"require": {
+    "require": {
+        "php": ">=8.0",
         "ext-PDO": "*",
-		"guzzlehttp/guzzle": "^7.0 || ^8.0"
+        "guzzlehttp/guzzle": "^7.0 || ^8.0"
     },
     "authors": [
         {
@@ -16,10 +21,14 @@
             "homepage": "https://github.com/hetao29"
         }
     ],
-	"autoload":{
-		"files":["SlightPHP.php"],
-		"psr-4":{
-			"":["plugins/"]
-		}
-	}
+    "autoload": {
+        "files": [
+            "SlightPHP.php"
+        ],
+        "psr-4": {
+            "": [
+                "plugins/"
+            ]
+        }
+    }
 }

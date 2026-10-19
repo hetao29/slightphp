@@ -1,18 +1,10 @@
 <?php
-/*{{{LICENSE
-+-----------------------------------------------------------------------+
-| SlightPHP Framework                                                   |
-+-----------------------------------------------------------------------+
-| This program is free software; you can redistribute it and/or modify  |
-| it under the terms of the GNU General Public License as published by  |
-| the Free Software Foundation. You should have received a copy of the  |
-| GNU General Public License along with this program.  If not, see      |
-| http://www.gnu.org/licenses/.                                         |
-| Copyright (C) 2008-2009. All Rights Reserved.                         |
-+-----------------------------------------------------------------------+
-| Supports: http://www.slightphp.com                                    |
-+-----------------------------------------------------------------------+
-}}}*/
+
+/**
+ * SlightPHP
+ * @copyright Copyright (c) 2026 SlightPHP
+ * @license MIT
+ */
 
 /**
  * @package SlightPHP
@@ -32,6 +24,8 @@ if (!class_exists("SlightPHP", false)):
 			"PAGE", //普通的文件分隔模式
 			"NAMESPACE", //命名空间模式
 		];
+		private const MODE_PAGE = 'PAGE';
+		private const MODE_NAMESPACE = 'NAMESPACE';
 		/**
 		 * 设置框架模式
 		 * 1. 默认同时支持命名空间模式和文件分隔模式 PAGE,NAMESPACE
@@ -63,6 +57,32 @@ if (!class_exists("SlightPHP", false)):
 		 * @var string
 		 */
 		public static $pathInfo = "";
+
+		/**
+		 * set controller suffix, default "Controller"
+		 * @var string
+		 */
+		private static $setControllerSuffix = "Controller";
+
+		/**
+		 * set controller suffix, default "Controller"
+		 * @param string $suffix
+		 * @return bool
+		 */
+		public static function setControllerSuffix(string $suffix)
+		{
+			self::$setControllerSuffix = $suffix;
+			return true;
+		}
+		/**
+		 * get controller suffix, default "Controller"
+		 */
+		public static function getControllerSuffix()
+		{
+
+			return self::$setControllerSuffix;
+		}
+
 
 		/**
 		 * current zone
@@ -441,15 +461,15 @@ if (!class_exists("SlightPHP", false)):
 				$type = "";
 				foreach (self::$modes as $_mode) {
 					$file = "";
-					if ($_mode == "NAMESPACE") {
-						$classname_namespace = self::$appNamespace . "\\" . self::snakeToNamespace($classname, "\\") . "Controller";
+					if ($_mode == self::MODE_NAMESPACE) {
+						$classname_namespace = self::$appNamespace . "\\" . self::snakeToNamespace($classname, "\\") . self::$setControllerSuffix;
 						$file = realpath(self::$appDir . DIRECTORY_SEPARATOR . str_replace("\\", DIRECTORY_SEPARATOR, $classname_namespace) . ".php");
 						if (self::loadFile($file)) {
 							$type   = !empty($_SERVER['HTTP_REQUEST_TYPE']) ? strtolower(trim($_SERVER['HTTP_REQUEST_TYPE'])) : "";
 							$classname = $classname_namespace;
 							break;
 						}
-					} elseif ($_mode == "PAGE") {
+					} elseif ($_mode == self::MODE_PAGE) {
 						$type = !empty($_SERVER['HTTP_REQUEST_TYPE']) ? strtolower(trim($_SERVER['HTTP_REQUEST_TYPE'])) : self::$defaultType;
 						$file = realpath(self::$appDir . DIRECTORY_SEPARATOR . str_replace("_", DIRECTORY_SEPARATOR, $classname) . ".page.php");
 						if (self::loadFile($file)) {
