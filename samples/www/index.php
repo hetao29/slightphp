@@ -8,13 +8,13 @@
  */
 require_once("global.php");
 
-
-//SlightPHP::setDebug(true);
+SlightPHP::setDebug(true);
 SlightPHP::setAppDir(ROOT_APP);
 SlightPHP::setDefaultZone("index");
 SlightPHP::setDefaultPage("main");
 SlightPHP::setDefaultEntry("entry");
 SlightPHP::setSplitFlag("-_.");
+SLog::$CONSOLE = true;
 
 //{{{
 SDb::setConfigFile(ROOT_CONFIG. "/db.conf");
