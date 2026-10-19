@@ -118,8 +118,8 @@ user_info_edit::pageThumb()
 - 第二种（命令空间）
 
 ```php
-#文件名($appDir/User/Info/Edit.php)
-User/Info/Edit::Thumb()
+#文件名($appDir/User/Info/EditController.php)
+User/Info/EditController::Thumb()
 ```
 
 ### 定义方法名前缀
@@ -256,6 +256,6 @@ location ~ \.php$ {
 ```
 
 ## Version
-4.0.0
+5.0.0
 
 **Free Software, MIT License!**
