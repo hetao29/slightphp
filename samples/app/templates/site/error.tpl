@@ -1,0 +1,1 @@
+<section class="container error-page"><div class="eyebrow">REQUEST NOTICE / 请求提示</div><div class="error-code">{%http_response_code()%}</div><h1>稍作停留，再次出发。</h1><p>{%htmlspecialchars($message, ENT_QUOTES + ENT_SUBSTITUTE, 'UTF-8')%}</p><a class="button dark" href="/">返回首页 ↗</a><a class="text-link" href="/site/main/guide">查看使用指南 →</a></section>

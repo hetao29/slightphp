@@ -1,30 +1,23 @@
 <?php
-/**
- * sample to test
- *
- * http://localhost/samples/www/index.php/zone/default/entry/a/b/c
- * http://localhost/samples/www/index.php/zone-default-entry-a-b-c.html
- *
- */
-require_once("global.php");
-
-SlightPHP::setDebug(true);
-SlightPHP::setAppDir(ROOT_APP);
-SlightPHP::setDefaultZone("index");
-SlightPHP::setDefaultPage("main");
-SlightPHP::setDefaultEntry("entry");
-SlightPHP::setSplitFlag("-_.");
-SLog::$CONSOLE = true;
-
-//{{{
-SDb::setConfigFile(ROOT_CONFIG. "/db.conf");
-SRoute::setConfigFile(ROOT_CONFIG."/route.conf");
-SRedis::setConfigFile(ROOT_CONFIG. "/redis.conf");
-//}}}
-if(($r=SlightPHP::run())===false){
-	echo("404 error");
-}elseif(is_object($r)){
-	var_dump($r);
-}else{
-	echo($r);
+require_once dirname(__DIR__, 2) . '/vendor/autoload.php';
+SlightPHP::setAppDir(dirname(__DIR__) . '/app');
+SlightPHP::setModes(['NAMESPACE']);
+STpl::setTemplateDir(dirname(__DIR__) . '/app/templates');
+STpl::setCompileDir(dirname(__DIR__) . '/app/templates_c');
+STpl::setDelimter('{%', '%}');
+SlightPHP::setDefaultZone('site');
+SlightPHP::setDefaultPage('main');
+SlightPHP::setDefaultEntry('entry');
+try {
+    $result = SlightPHP::run();
+    if ($result === false) {
+        http_response_code(404);
+        SlightPHP::run('/site/main/error');
+    } elseif (is_string($result)) {
+        echo $result;
+    }
+} catch (Throwable $error) {
+    error_log((string) $error);
+    http_response_code(500);
+    SlightPHP::run('/site/main/error');
 }

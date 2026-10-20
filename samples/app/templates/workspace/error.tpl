@@ -1,0 +1,1 @@
+<div class="eyebrow">REQUEST NOTICE</div><h1>{%http_response_code()%}</h1><section class="panel"><h2>请求未完成</h2><p>{%htmlspecialchars($message, ENT_QUOTES + ENT_SUBSTITUTE, 'UTF-8')%}</p><a class="button primary" href="/workspace/main/entry">返回工作台</a></section>
