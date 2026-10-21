@@ -32,11 +32,12 @@ class Tpl{
 		}
 	}
 	static function fetch($tpl){
-		$tpl_real  = self::$template_dir."/".($tpl);
-		if(!is_dir(self::$compile_dir)){
-			mkdir(self::$compile_dir,0777,true);
+		$tpl_real  = self::$template_dir.DIRECTORY_SEPARATOR.$tpl;
+		$compiled_file = self::$compile_dir.DIRECTORY_SEPARATOR.dechex(crc32(realpath(self::$template_dir))).DIRECTORY_SEPARATOR.$tpl;
+		$compiled_file_dir = dirname($compiled_file);
+		if(!is_dir($compiled_file_dir)){
+			mkdir($compiled_file_dir,0777,true);
 		}
-		$compiled_file = self::$compile_dir."/".base64_encode($tpl).".%%.tpl";
 		if(self::$force_compile || !is_file($compiled_file) || filemtime($tpl_real)>filemtime($compiled_file)){
 			$compiled_contents = self::_compile(file_get_contents($tpl_real));
 			file_put_contents($compiled_file,$compiled_contents,LOCK_EX);
