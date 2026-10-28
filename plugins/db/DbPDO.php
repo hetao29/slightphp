@@ -1,4 +1,5 @@
 <?php
+
 /**
  * SlightPHP
  * @copyright Copyright (c) 2026 SlightPHP
@@ -9,22 +10,25 @@
  * @package SlightPHP
  * @subpackage SDb
  */
+
 namespace SlightPHP;
-class DbPDO{
+
+class DbPDO
+{
 	private $_pdo;
 	private $_stmt;
 
 	private $_engine;
 
-	private $_host="localhost";
-	private $_port="3306";
+	private $_host = "localhost";
+	private $_port = "3306";
 	private $_user;
 	private $_password;
 	private $_database;
 
 	private $_persistent;
 	private $_charset;
-	public $connectionError=false;
+	public $connectionError = false;
 	/**
 	 * construct
 	 *
@@ -38,21 +42,25 @@ class DbPDO{
 	 * @param bool $params.persistent 
 	 * @param int $param.port=3306
 	 */
-	public function init($params=array()){
-		foreach($params as $key=>$value){
-			$this->{"_".$key} = $value;
+	public function init($params = array())
+	{
+		foreach ($params as $key => $value) {
+			$this->{"_" . $key} = $value;
 		}
 
 		/**
 		 * fix pdo bug
 		 * https://bugs.php.net/bug.php?id=73475
 		 */
-		if($this->_persistent && $this->_password == ""){$this->_password=null;}
+		if ($this->_persistent && $this->_password == "") {
+			$this->_password = null;
+		}
 	}
-	public function connect(){
-		$tmp = explode("_",$this->_engine);
-		$driver =$tmp[1];
-		try{
+	public function connect()
+	{
+		$tmp = explode("_", $this->_engine);
+		$driver = $tmp[1];
+		try {
 			$options = array(
 				\PDO::ATTR_PERSISTENT => $this->_persistent,
 				\PDO::ATTR_STRINGIFY_FETCHES => false,
@@ -60,92 +68,104 @@ class DbPDO{
 				\PDO::ATTR_ERRMODE => \PDO::ERRMODE_WARNING,
 			);
 			if (class_exists('Pdo\Mysql')) { // PHP >=8.4
-				$options[\Pdo\Mysql::ATTR_USE_BUFFERED_QUERY]=true;
-				if(!empty($this->_charset)){
-					$options[\Pdo\Mysql::ATTR_INIT_COMMAND]="SET CHARACTER SET {$this->_charset}, NAMES {$this->_charset}";
+				$options[\Pdo\Mysql::ATTR_USE_BUFFERED_QUERY] = true;
+				if (!empty($this->_charset)) {
+					$options[\Pdo\Mysql::ATTR_INIT_COMMAND] = "SET CHARACTER SET {$this->_charset}, NAMES {$this->_charset}";
 				}
-			}else{//PHP <8.4
-				$options[\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY]=true;
-				if(!empty($this->_charset)){
-					$options[\PDO::MYSQL_ATTR_INIT_COMMAND]="SET CHARACTER SET {$this->_charset}, NAMES {$this->_charset}";
+			} else { //PHP <8.4
+				$options[\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY] = true;
+				if (!empty($this->_charset)) {
+					$options[\PDO::MYSQL_ATTR_INIT_COMMAND] = "SET CHARACTER SET {$this->_charset}, NAMES {$this->_charset}";
 				}
 			}
 			$this->_pdo = new \PDO(
-				$driver .":dbname=".$this->_database.";host=".$this->_host.";port=".$this->_port,
+				$driver . ":dbname=" . $this->_database . ";host=" . $this->_host . ";port=" . $this->_port,
 				$this->_user,
 				$this->_password,
 				$options,
 			);
-		}catch(\PDOException  $e){
-			$this->connectionError=true;
-			trigger_error("CONNECT DATABASE ERROR ( ".$e->getMessage()." ) ",E_USER_WARNING);
+		} catch (\PDOException  $e) {
+			$this->connectionError = true;
+			trigger_error("CONNECT DATABASE ERROR ( " . $e->getMessage() . " ) ", E_USER_WARNING);
 			return false;
 		}
 		return true;
 	}
-	public function exec($sql){
-		if(!$this->_pdo)return false;
+	public function exec($sql)
+	{
+		if (!$this->_pdo) return false;
 		return $this->_pdo->exec($sql);
 	}
-	public function query($sql,$params=[]){
-		if(!$this->_pdo)return false;
+	public function query($sql, $params = [])
+	{
+		if (!$this->_pdo) return false;
 		$this->_stmt = $this->_pdo->prepare($sql);
-		if($this->_stmt){
+		if ($this->_stmt) {
 			return $this->_stmt->execute($params);
 		}
 		return false;
 	}
-	public function getAll(){
-		if(!$this->_stmt)return false;
+	public function getAll()
+	{
+		if (!$this->_stmt) return false;
 		return $this->_stmt->fetchAll(\PDO::FETCH_ASSOC);
 	}
-	public function columnCount(){
-		if(!$this->_stmt)return false;
+	public function columnCount()
+	{
+		if (!$this->_stmt) return false;
 		return $this->_stmt->columnCount();
 	}
-	public function count(){
-		if(!$this->_stmt)return false;
+	public function count()
+	{
+		if (!$this->_stmt) return false;
 		return $this->_stmt->rowCount();
 	}
-	public function begin(){
-		if(!$this->_pdo)return false;
+	public function begin()
+	{
+		if (!$this->_pdo) return false;
 		return $this->_pdo->beginTransaction();
 	}
-	public function commit(){
-		if(!$this->_pdo)return false;
+	public function commit()
+	{
+		if (!$this->_pdo) return false;
 		return $this->_pdo->commit();
 	}
-	public function rollback(){
-		if(!$this->_pdo)return false;
+	public function rollback()
+	{
+		if (!$this->_pdo) return false;
 		return $this->_pdo->rollBack();
 	}
-	public function escape($str){
-		if(!$this->_pdo)return false;
+	public function escape($str)
+	{
+		if (!$this->_pdo) return false;
 		$str = $this->_pdo->quote($str);
-		return substr($str,1,strlen($str)-2);
+		return substr($str, 1, strlen($str) - 2);
 	}
-	public function lastId(){
-		if(!$this->_pdo)return false;
+	public function lastId()
+	{
+		if (!$this->_pdo) return false;
 		return $this->_pdo->lastInsertId();
 	}
-	public function error(){
-		if(!$this->_pdo)return false;
-		if($this->_stmt){
+	public function error()
+	{
+		if (!$this->_pdo) return false;
+		if ($this->_stmt) {
 			return $this->_stmt->errorInfo();
 		}
 		return $this->_pdo->errorInfo();
 	}
-	public function errno(){
-		if(!$this->_pdo)return false;
-		if($this->_stmt){
+	public function errno()
+	{
+		if (!$this->_pdo) return false;
+		if ($this->_stmt) {
 			$error = $this->_stmt->errorCode();
-		}else{
+		} else {
 			$error = $this->_pdo->errorCode();
 		}
-		if($error=='HY000'){
-			$this->connectionError=true;
-		}else{
-			$this->connectionError=false;
+		if ($error == 'HY000') {
+			$this->connectionError = true;
+		} else {
+			$this->connectionError = false;
 		}
 		return $error;
 	}

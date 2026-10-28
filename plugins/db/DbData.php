@@ -1,4 +1,5 @@
 <?php
+
 /**
  * SlightPHP
  * @copyright Copyright (c) 2026 SlightPHP
@@ -9,35 +10,38 @@
  * @package SlightPHP
  * @subpackage SDb
  */
+
 namespace SlightPHP;
-class DbData{
+
+class DbData
+{
 	/**
 	 * @var int
 	 */
-	var $page=1;
+	var $page = 1;
 	/**
 	 * @var int
 	 */
-	var $pageSize=0;
+	var $pageSize = 0;
 	/**
 	 * @var int
 	 */
-	var $limit=0;
+	var $limit = 0;
 	/**
 	 * @var int
 	 */
-	var $totalPage=0;
+	var $totalPage = 0;
 	/**
 	 * @var int
 	 */
-	var $totalSize=0;
+	var $totalSize = 0;
 	/**
 	 * @var int
 	 */
-	var $totalSecond=0;
+	var $totalSecond = 0;
 	/**
 	 * @var array
 	 */
-	var $items;//array(array(),array());
+	var $items; //array(array(),array());
 
 }
