@@ -73,13 +73,13 @@ class SError{
 	}
 
 	private static function getFatal($error){
-		$errno   = $error["type"];
+		$type    = self::$error_type[ $error["type"] ]??"UNKNOWN";
 		$errfile = $error["file"];
 		$errline = $error["line"];
 		$errstr  = $error["message"];
 		$logType = self::getLogType();
 		if($logType=="html"){
-			$html='<table border="1" cellpadding="3" style="font-size: 75%;border: 1px solid #000000;border-collapse: collapse;"><tr style="background-color: #ccccff; font-weight: bold; color: #000000;"><th style="padding:4px">#</th><th style="padding:4px">File</th><th style="padding:4px">Line</th><th style="padding:4px">Class::Method(Args)</th><th style="padding:4px">Fatal Error</th></tr>';
+			$html='<table border="1" cellpadding="3" style="font-size: 75%;border: 1px solid #000000;border-collapse: collapse;"><tr style="background-color: #ccccff; font-weight: bold; color: #000000;"><th style="padding:4px">#</th><th style="padding:4px">File</th><th style="padding:4px">Line</th><th style="padding:4px">Class::Method(Args)</th><th style="padding:4px">'.$type.'</th></tr>';
 			$html.='<tr style="background-color: #cccccc; color: red;font-weight:bold;"><td>0</td><td style="padding:4px">'.
 				$errfile.'</td><td style="padding:4px">'.
 				$errline.'</td><td style="padding:4px"><td>'.
@@ -87,7 +87,7 @@ class SError{
 			return $html;
 		}else{
 			$text=[];
-			$text[]="Fatal Error(".date("Y-m-d H:i:s").")";
+			$text[]="$type (".date("Y-m-d H:i:s").")";
 			$text[]=$errfile."\t".$errline."\t".$errstr;
 			if($logType=="text"){
 				return implode("\r\n",$text);
