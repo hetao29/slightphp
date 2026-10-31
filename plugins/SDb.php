@@ -44,7 +44,7 @@ class SDb extends SlightPHP\Db
 		return;
 	}
 	/**
-	 * @deprecated use setConfig
+	 * Alias of setConfig
 	 * @param string $zone
 	 * @param string $type	main|query
 	 */
