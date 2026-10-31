@@ -50,10 +50,6 @@ class Db
 	 */
 	private $page = 1;
 	/**
-	 * 是否支持bind问号
-	 */
-	private $bind = true;
-	/**
 	 *
 	 */
 	private $error = array('code' => 0, 'msg' => "");
@@ -67,10 +63,6 @@ class Db
 	public function error()
 	{
 		return $this->error;
-	}
-	public function setSupportBind(bool $bind)
-	{
-		$this->bind = $bind;
 	}
 	private function setEngine($engine_name)
 	{
@@ -165,7 +157,7 @@ class Db
 	 * @param string|array|object $orderby
 	 * @param string|array|object $leftjoin
 	 * @param string $hits Optimizer Hints https://dev.mysql.com/doc/refman/9.7/en/optimizer-hints.html
-	 * @return SlightPHP\DbData object || Boolean false
+	 * @return \SlightPHP\DbData | boolean
 	 */
 	public function select($table, $condition = "", $item = "", $groupby = "", $orderby = "", $leftjoin = "", $hits = "")
 	{
@@ -223,6 +215,7 @@ class Db
 		$result = $this->query($sql, $params);
 		if ($result !== false) {
 			$data = new DbData;
+			$count_failed = false;
 			$data->page = (int)$this->page;
 			$data->limit = (int)$this->limit;
 			$data->items = $result;
@@ -232,7 +225,9 @@ class Db
 				if ($this->limit > 0) {
 					$countsql = "SELECT $hits_str count(1) totalSize FROM ($table) $leftjoin_str $condition_str $groupby_str";
 					$result_count = $this->query($countsql, $params);
-					if (!empty($result_count[0])) {
+					if ($result_count === false) {
+						$count_failed = true;
+					} elseif (!empty($result_count[0])) {
 						$data->totalSize = (int)$result_count[0]['totalSize'];
 						$data->totalPage = (int)ceil($data->totalSize / $data->limit);
 					}
@@ -244,7 +239,7 @@ class Db
 			//}}}
 			$end = microtime(true);
 			$data->totalSecond = (int)$end - $start;
-			$result = $data;
+			$result = $count_failed ? false : $data;
 		}
 		//{{{reset 
 		$this->setPage(1);
@@ -371,7 +366,9 @@ class Db
 		});
 		return array_merge(...$arr);
 	}
-
+	/**
+	 * @return bool | int | array
+	 */
 	public function query($sql, $params = [], $retry = 0)
 	{
 		$sql_mode = 1; //查询
@@ -470,7 +467,7 @@ class Db
 							$tmp[] = "$k IS NULL";
 							continue;
 						}
-						if ($this->bind && ($ct = substr_count($k, "?")) > 0) {
+						if (($ct = substr_count($k, "?")) > 0) {
 							$is_array = is_array($v);
 							$tmp[] = $k;
 							for ($i = 0; $i < $ct; $i++) {
