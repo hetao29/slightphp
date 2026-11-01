@@ -117,7 +117,7 @@ class Db
 	/**
 	 * is count 
 	 *
-	 * @param boolean count
+	 * @param boolean $count
 	 */
 	public function setCount($count)
 	{
@@ -130,7 +130,7 @@ class Db
 	/**
 	 * page number
 	 *
-	 * @param int page 
+	 * @param int $page 
 	 */
 	public function setPage($page)
 	{
@@ -140,7 +140,7 @@ class Db
 	/**
 	 * page size
 	 *
-	 * @param int limit ,0 is all
+	 * @param int $limit ,0 is all
 	 */
 	public function setLimit($limit)
 	{
