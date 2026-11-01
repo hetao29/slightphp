@@ -15,6 +15,7 @@ composer require "hetao29/slightphp:^5.0.0"
 - 支持命令行(cli)模式 可以直接执行SlightPHP::run($path_info) ，可以用于WorkerMan,Swoole 等PHP 服务端项目
 - 支持多级URI路由
 - 支持传统的分隔符目录结构和按命令空间规划的目录结构(5.x版本支持)
+- 支持自定义 “Controller”后缀
 - 插件SDb，支持数据库读写库分离
 - 插件SRoute 支持各种简洁路由支持，精简URL
 - 插件STpl模板类，高效与灵活
@@ -118,8 +119,9 @@ user_info_edit::pageThumb()
 - 第二种（命令空间）
 
 ```php
-#文件名($appDir/User/Info/Edit.php)
-User/Info/Edit::Thumb()
+#文件名($appDir/User/Info/EditController.php)
+#支持自定义 “Controller”后缀，用SlightPHP::setControllerSuffix("Action")之类的就行
+User/Info/EditController::Thumb()
 ```
 
 ### 定义方法名前缀
@@ -215,6 +217,7 @@ $inPath=array("user","profile","update","other1","other2","...")
 ```php
 SlightPHP::setAppDir("/home/www/myAppdir");
 ```
+
 如http://localhost/index.php/user/profile/update
 
 就会执行
@@ -236,12 +239,12 @@ SConfig 配置文件插件 https://github.com/hetao29/slightphp/blob/master/wiki
 SRoute 路由插件 https://github.com/hetao29/slightphp/blob/master/wiki/SRoute.md  
 SError 错误插件 https://github.com/hetao29/slightphp/blob/master/wiki/SError.md  
 ...  
- 
-更多插件功能请看samples下的示例  
+
+更多插件功能请看samples下的示例
 
 ### Nginx配置
 
-```conf
+```json
 
 root /var/www/slightphp/samples/www;
 location / {
@@ -253,9 +256,11 @@ location ~ \.php$ {
 	fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
 	include        fastcgi_params;
 }
+
 ```
 
 ## Version
-4.0.0
+
+5.0.0
 
 **Free Software, MIT License!**

@@ -34,6 +34,7 @@
  */
 
 namespace SlightPHP;
+/** 提供 PHPMailer 使用的 SMTP 连接及协议命令。 */
 class SMTP {
   /**
    *  SMTP server port
@@ -95,6 +96,9 @@ class SMTP {
    * SMTP CODE SUCCESS: 220
    * SMTP CODE FAILURE: 421
    * @access public
+   * @param string $host SMTP 服务器地址。
+   * @param int $port 端口；0 使用默认 SMTP 端口。
+   * @param int|float $tval 连接超时秒数。
    * @return bool
    */
   public function Connect($host,$port=0,$tval=30) {
@@ -203,6 +207,8 @@ class SMTP {
    * Performs SMTP authentication.  Must be run after running the
    * Hello() method.  Returns true if successfully authenticated.
    * @access public
+   * @param string $username 认证用户名。
+   * @param string $password 认证密码。
    * @return bool
    */
   public function Authenticate($username, $password) {
@@ -324,6 +330,7 @@ class SMTP {
    * SMTP CODE FAILURE: 451,554
    * SMTP CODE ERROR  : 500,501,503,421
    * @access public
+   * @param string $msg_data 包含邮件头和正文的完整消息。
    * @return bool
    */
   public function Data($msg_data) {
@@ -468,7 +475,8 @@ class SMTP {
    * SMTP CODE FAILURE: 550
    * SMTP CODE ERROR  : 500,501,502,504,421
    * @access public
-   * @return string array
+   * @param string $name 要展开的邮件列表名称。
+   * @return array|false 地址列表，或失败时的 false。
    */
   public function Expand($name) {
     $this->error = null; // so no confusion is caused
@@ -519,6 +527,7 @@ class SMTP {
    * SMTP CODE SUCCESS: 250
    * SMTP CODE ERROR  : 500, 501, 504, 421
    * @access public
+   * @param string $host 客户端主机名；为空时使用 localhost。
    * @return bool
    */
   public function Hello($host="") {
@@ -551,6 +560,8 @@ class SMTP {
   /**
    * Sends a HELO/EHLO command.
    * @access private
+   * @param string $hello HELO 或 EHLO 命令。
+   * @param string $host 客户端主机名。
    * @return bool
    */
   private function SendHello($hello, $host) {
@@ -593,7 +604,8 @@ class SMTP {
    * SMTP CODE SUCCESS: 211,214
    * SMTP CODE ERROR  : 500,501,502,504,421
    * @access public
-   * @return string
+   * @param string $keyword 帮助主题；空字符串请求通用帮助。
+   * @return string|false 服务器响应，或失败时的 false。
    */
   public function Help($keyword="") {
     $this->error = null; // to avoid confusion
@@ -645,6 +657,7 @@ class SMTP {
    * SMTP CODE SUCCESS: 552,451,452
    * SMTP CODE SUCCESS: 500,501,421
    * @access public
+   * @param string $from 发件人的信封地址。
    * @return bool
    */
   public function Mail($from) {
@@ -731,6 +744,7 @@ class SMTP {
    * SMTP CODE SUCCESS: 221
    * SMTP CODE ERROR  : 500
    * @access public
+   * @param bool $close_on_error QUIT 失败时是否仍关闭连接。
    * @return bool
    */
   public function Quit($close_on_error=true) {
@@ -785,6 +799,7 @@ class SMTP {
    * SMTP CODE FAILURE: 550,551,552,553,450,451,452
    * SMTP CODE ERROR  : 500,501,503,421
    * @access public
+   * @param string $to 收件人的信封地址。
    * @return bool
    */
   public function Recipient($to) {
@@ -878,6 +893,7 @@ class SMTP {
    * SMTP CODE SUCCESS: 552,451,452
    * SMTP CODE SUCCESS: 500,501,502,421
    * @access public
+   * @param string $from 发件人的信封地址。
    * @return bool
    */
   public function Send($from) {
@@ -926,6 +942,7 @@ class SMTP {
    * SMTP CODE SUCCESS: 552,451,452
    * SMTP CODE SUCCESS: 500,501,502,421
    * @access public
+   * @param string $from 发件人的信封地址。
    * @return bool
    */
   public function SendAndMail($from) {
@@ -974,6 +991,7 @@ class SMTP {
    * SMTP CODE SUCCESS: 552,451,452
    * SMTP CODE SUCCESS: 500,501,502,421
    * @access public
+   * @param string $from 发件人的信封地址。
    * @return bool
    */
   public function SendOrMail($from) {
@@ -1041,7 +1059,8 @@ class SMTP {
    * SMTP CODE FAILURE: 550,551,553
    * SMTP CODE ERROR  : 500,501,502,421
    * @access public
-   * @return int
+   * @param string $name 待验证的名称。
+   * @return string|false 服务器响应，或验证失败时的 false。
    */
   public function Verify($name) {
     $this->error = null; // so no confusion is caused

@@ -1,52 +1,48 @@
 <?php
-/*{{{LICENSE
-+-----------------------------------------------------------------------+
-| SlightPHP Framework                                                   |
-+-----------------------------------------------------------------------+
-| This program is free software; you can redistribute it and/or modify  |
-| it under the terms of the GNU General Public License as published by  |
-| the Free Software Foundation. You should have received a copy of the  |
-| GNU General Public License along with this program.  If not, see      |
-| http://www.gnu.org/licenses/.                                         |
-| Copyright (C) 2008-2009. All Rights Reserved.                         |
-+-----------------------------------------------------------------------+
-| Supports: http://www.slightphp.com                                    |
-+-----------------------------------------------------------------------+
-}}}*/
+
+/**
+ * SlightPHP
+ * @copyright Copyright (c) 2026 SlightPHP
+ * @license MIT
+ */
 
 /**
  * @package SlightPHP
  * @subpackage SDb
  */
+
 namespace SlightPHP;
-class DbData{
+
+/** 分页查询结果及其统计信息。 */
+class DbData
+{
 	/**
-	 * @var int
+	 * @var int 当前页码，从 1 开始。
 	 */
-	var $page=1;
+	var $page = 1;
 	/**
-	 * @var int
+	 * @var int 本次返回的行数。
 	 */
-	var $pageSize=0;
+	var $pageSize = 0;
 	/**
-	 * @var int
+	 * @var int 查询限制条数。
 	 */
-	var $limit=0;
+	var $limit = 0;
 	/**
-	 * @var int
+	 * @var int 总页数；未启用总数统计时保持 0。
 	 */
-	var $totalPage=0;
+	var $totalPage = 0;
 	/**
-	 * @var int
+	 * @var int 总条数；未启用总数统计时保持 0。
 	 */
-	var $totalSize=0;
+	var $totalSize = 0;
 	/**
-	 * @var int
+	 * @var int|float 查询结束时间取整后减去开始时间的结果（秒），可能为负数。
 	 */
-	var $totalSecond=0;
+	var $totalSecond = 0;
 	/**
-	 * @var array
+	 * @var array|null 查询结果行；查询前可能尚未设置。
 	 */
-	var $items;//array(array(),array());
+	var $items; //array(array(),array());
 
 }

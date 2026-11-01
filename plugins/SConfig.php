@@ -1,27 +1,24 @@
 <?php
-/*{{{LICENSE
-+-----------------------------------------------------------------------+
-| SlightPHP Framework                                                   |
-+-----------------------------------------------------------------------+
-| This program is free software; you can redistribute it and/or modify  |
-| it under the terms of the GNU General Public License as published by  |
-| the Free Software Foundation. You should have received a copy of the  |
-| GNU General Public License along with this program.  If not, see      |
-| http://www.gnu.org/licenses/.                                         |
-| Copyright (C) 2008-2009. All Rights Reserved.                         |
-+-----------------------------------------------------------------------+
-| Supports: http://www.slightphp.com                                    |
-+-----------------------------------------------------------------------+
-}}}*/
 /**
+ * SlightPHP
+ * @copyright Copyright (c) 2026 SlightPHP
+ * @license MIT
+ */
+/**
+ * 解析类似 nginx 的配置文件，并可缓存解析结果。
  * @package SlightPHP
  */
 class SConfig{
+	/**
+	 * @var bool 是否启用进程内和临时文件缓存。
+	 * 进程内命中时不会检查配置文件修改时间；关闭缓存不会清空已有内存结果。
+	 */
 	public static $CACHE=true;
 	/**
-	 * 支持新的conf配置格式(类似nginx的配置)
-	 * @return mixed $result
-	 * @param string $configFile
+	 * 读取配置；指定区域不存在时回退到 default 区域。
+	 * @param string $configFile 配置文件路径。
+	 * @param string|null $zone 顶层区域名；为空时返回完整配置。
+	 * @return mixed 完整配置对象、区域值或不存在时的 null。
 	 **/
 	public static function getConfig($configFile,$zone=null){
 		$config = self::parse($configFile);
@@ -35,6 +32,12 @@ class SConfig{
 		}
 		return $config;
 	}
+	/**
+	 * 解析配置文件，将重复的键或区域收集为数组；启用缓存时可复用内存或临时文件结果。
+	 * 数字文本和 true/false 会转换成对应的 PHP 值，包括使用引号包围的值。
+	 * @param string $configFile 配置文件路径。
+	 * @return mixed 正常解析时为 stdClass；缓存文件反序列化失败时可能为 false。
+	 */
 	public static function parse($configFile){
 		self::$_tmpPrefix = 0;
 		self::$_tmpData=array();
@@ -69,12 +72,20 @@ class SConfig{
 	private static $_tmpPrefix="SCONFIG_TMP_PREFIX_";
 	private static $_tmpIndex=0;
 	private static $_result=array();
-	private static function _tmpData($matches){
+	/**
+	 * @param array $matches 正则匹配结果。
+	 * @return string 占位后的键值表达式。
+	 */
+	private static function _tmpData(array $matches): string{
 		$key = self::$_tmpPrefix.(self::$_tmpIndex++);
 		self::$_tmpData[$key]=$matches[3];
 		return $matches[1].":".$key.";";
 	}
-	private static function _getKV($string) {
+	/**
+	 * @param string $string 配置文本。
+	 * @return stdClass 当前层的键值。
+	 */
+	private static function _getKV(string $string): stdClass {
 		$_data = new stdclass;
 		$tmp_string = preg_replace("/([\w\.\-\_]+?)([\s:]*)\{(([^{}]+|(?R))+)\}/","",$string);
 		preg_match_all("/([\w\.\-\_]+)[\s:]+(.+?);/",$tmp_string,$_matches2,PREG_SET_ORDER);
@@ -109,7 +120,13 @@ class SConfig{
 		}
 		return $_data;
 	}
-	private static function _split ($string,&$result) {
+	/**
+	 * 递归解析嵌套区域并写入结果对象。
+	 * @param string $string 配置文本。
+	 * @param stdClass $result 接收解析结果的对象，按引用传递。
+	 * @return void
+	 */
+	private static function _split (string $string, stdClass &$result): void {
 		preg_match_all("/([\w\.\-\_]*?)[:\s]*\{(([^{}]*|(?R))+)\}/xms",$string,$matches,PREG_SET_ORDER);
 		if (!empty($matches)) {
 			foreach($matches as $m){
@@ -130,8 +147,10 @@ class SConfig{
 			}
 		}
 	}
+	/** @return string 系统临时目录路径。 */
 	private static function _tmpDir(){
 		if ( !function_exists('sys_get_temp_dir')){
+			/** @return string|false|null 从环境或临时文件推断的临时目录。 */
 			function sys_get_temp_dir() {
 				if (!empty($_ENV['TMP'])) { return realpath($_ENV['TMP']); }
 				if (!empty($_ENV['TMPDIR'])) { return realpath( $_ENV['TMPDIR']); }

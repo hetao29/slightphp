@@ -122,6 +122,11 @@ define ( "SPH_GROUPBY_ATTRPAIR",	5 );
 //  - otherwise format number into a string
 
 /// pack 64-bit signed
+/**
+ * 将有符号整数编码为网络字节序的 8 字节。
+ * @param int|float|string $v 数字或数字字符串。
+ * @return string 编码后的二进制数据。
+ */
 function sphPackI64 ( $v )
 {
 	assert ( is_numeric($v) );
@@ -171,6 +176,11 @@ function sphPackI64 ( $v )
 }
 
 /// pack 64-bit unsigned
+/**
+ * 将无符号整数编码为网络字节序的 8 字节。
+ * @param int|float|string $v 非负数字或数字字符串。
+ * @return string 编码后的二进制数据。
+ */
 function sphPackU64 ( $v )
 {
 	assert ( is_numeric($v) );
@@ -230,6 +240,10 @@ function sphPackU64 ( $v )
 }
 
 // unpack 64-bit unsigned
+/**
+ * @param string $v 网络字节序的 8 字节数据。
+ * @return int|string 解码后的无符号整数；无法用整数表示时为十进制字符串。
+ */
 function sphUnpackU64 ( $v )
 {
 	list ( $hi, $lo ) = array_values ( unpack ( "N*N*", $v ) );
@@ -296,6 +310,10 @@ function sphUnpackU64 ( $v )
 }
 
 // unpack 64-bit signed
+/**
+ * @param string $v 网络字节序的 8 字节数据。
+ * @return int|string 解码后的有符号整数；无法用整数表示时为十进制字符串。
+ */
 function sphUnpackI64 ( $v )
 {
 	list ( $hi, $lo ) = array_values ( unpack ( "N*N*", $v ) );
@@ -365,6 +383,11 @@ function sphUnpackI64 ( $v )
 }
 
 
+/**
+ * 修正解包后的 32 位无符号数。
+ * @param int $value 解包值。
+ * @return int|string 无符号数；32 位平台返回十进制字符串。
+ */
 function sphFixUint ( $value )
 {
 	if ( PHP_INT_SIZE>=8 )
@@ -382,6 +405,7 @@ function sphFixUint ( $value )
 
 
 /// sphinx searchd client class
+/** 使用 Sphinx 二进制协议连接 searchd 的客户端。 */
 class SphinxClient
 {
 	var $_host;			///< searchd host (default is "localhost")
@@ -425,6 +449,7 @@ class SphinxClient
 	/////////////////////////////////////////////////////////////////////////////
 
 	/// create a new client object and fill defaults
+	/** 初始化 searchd 连接和搜索选项的默认值。 */
 	function __construct()
 	{
 		// per-client-object settings
@@ -469,6 +494,7 @@ class SphinxClient
 		$this->_timeout		= 0;
 	}
 
+	/** 关闭仍然打开的持久连接。 */
 	function __destruct()
 	{
 		if ( $this->_socket !== false )
@@ -476,24 +502,33 @@ class SphinxClient
 	}
 
 	/// get last error message (string)
+	/** @return string 最近一次错误信息。 */
 	function GetLastError ()
 	{
 		return $this->_error;
 	}
 
 	/// get last warning message (string)
+	/** @return string 最近一次警告信息。 */
 	function GetLastWarning ()
 	{
 		return $this->_warning;
 	}
 
 	/// get last error flag (to tell network connection errors from searchd errors or broken responses)
+	/** @return bool 最近一次错误是否为连接错误。 */
 	function IsConnectError()
 	{
 		return $this->_connerror;
 	}
 
 	/// set searchd host name (string) and port (integer)
+	/**
+	 * 设置 searchd TCP 地址或 Unix socket 路径。
+	 * @param string $host 主机名、绝对 socket 路径或 unix:// 地址。
+	 * @param int $port TCP 端口；使用 Unix socket 时忽略。
+	 * @return void
+	 */
 	function SetServer ( $host, $port = 0 )
 	{
 		assert ( is_string($host) );
@@ -516,6 +551,10 @@ class SphinxClient
 	}
 
 	/// set server connection timeout (0 to remove)
+	/**
+	 * @param int|float|numeric-string $timeout 连接超时秒数；0 表示不设置。
+	 * @return void
+	 */
 	function SetConnectTimeout ( $timeout )
 	{
 		assert ( is_numeric($timeout) );
@@ -523,6 +562,13 @@ class SphinxClient
 	}
 
 
+	/**
+	 * 向已连接的流发送请求。
+	 * @param resource $handle 连接流。
+	 * @param string $data 二进制请求。
+	 * @param int $length 预期写入的字节数。
+	 * @return bool 是否完整写入。
+	 */
 	function _Send ( $handle, $data, $length )
 	{
 		if ( feof($handle) || fwrite ( $handle, $data, $length ) !== $length )
@@ -537,6 +583,10 @@ class SphinxClient
 	/////////////////////////////////////////////////////////////////////////////
 
 	/// enter mbstring workaround mode
+	/**
+	 * 必要时暂时将 mbstring 内部编码切换为 latin1。
+	 * @return void
+	 */
 	function _MBPush ()
 	{
 		$this->_mbenc = "";
@@ -548,6 +598,10 @@ class SphinxClient
 	}
 
 	/// leave mbstring workaround mode
+	/**
+	 * 恢复 _MBPush 保存的内部编码。
+	 * @return void
+	 */
 	function _MBPop ()
 	{
 		if ( $this->_mbenc )
@@ -555,6 +609,10 @@ class SphinxClient
 	}
 
 	/// connect to searchd server
+	/**
+	 * 复用持久连接或建立连接并完成协议版本握手。
+	 * @return resource|false 连接流，或连接及握手失败时的 false。
+	 */
 	function _Connect ()
 	{
 		if ( $this->_socket!==false )
@@ -626,6 +684,12 @@ class SphinxClient
 	}
 
 	/// get and check response packet from searchd server
+	/**
+	 * 读取并验证 searchd 响应。
+	 * @param resource $fp 连接流。
+	 * @param int $client_ver 客户端命令协议版本。
+	 * @return string|false 响应正文，或失败时的 false。
+	 */
 	function _GetResponse ( $fp, $client_ver )
 	{
 		$response = "";
@@ -698,6 +762,14 @@ class SphinxClient
 
 	/// set offset and count into result set,
 	/// and optionally set max-matches and cutoff limits
+	/**
+	 * 设置搜索结果范围及可选匹配上限。
+	 * @param int $offset 从零开始的结果偏移。
+	 * @param int $limit 返回的最大条数。
+	 * @param int $max 最大匹配数；0 保留当前设置。
+	 * @param int $cutoff 提前停止的匹配数；0 保留当前设置。
+	 * @return void
+	 */
 	function SetLimits ( $offset, $limit, $max=0, $cutoff=0 )
 	{
 		assert ( is_int($offset) );
@@ -715,6 +787,10 @@ class SphinxClient
 
 	/// set maximum query time, in milliseconds, per-index
 	/// integer, 0 means "do not limit"
+	/**
+	 * @param int $max 每个索引的查询时间上限，单位毫秒；0 表示不限。
+	 * @return void
+	 */
 	function SetMaxQueryTime ( $max )
 	{
 		assert ( is_int($max) );
@@ -723,6 +799,10 @@ class SphinxClient
 	}
 
 	/// set matching mode
+	/**
+	 * @param int $mode SPH_MATCH_* 匹配模式常量。
+	 * @return void
+	 */
 	function SetMatchMode ( $mode )
 	{
 		assert ( $mode==SPH_MATCH_ALL
@@ -736,6 +816,10 @@ class SphinxClient
 	}
 
 	/// set ranking mode
+	/**
+	 * @param int $ranker SPH_RANK_* 排名模式常量。
+	 * @return void
+	 */
 	function SetRankingMode ( $ranker )
 	{
 		assert ( $ranker>=0 && $ranker<SPH_RANK_TOTAL );
@@ -743,6 +827,11 @@ class SphinxClient
 	}
 
 	/// set matches sorting mode
+	/**
+	 * @param int $mode SPH_SORT_* 排序模式常量。
+	 * @param string $sortby 排序字段或表达式；相关度排序可为空。
+	 * @return void
+	 */
 	function SetSortMode ( $mode, $sortby="" )
 	{
 		assert (
@@ -761,6 +850,11 @@ class SphinxClient
 
 	/// bind per-field weights by order
 	/// DEPRECATED; use SetFieldWeights() instead
+	/**
+	 * @deprecated 使用 SetFieldWeights 按名称设置字段权重。
+	 * @param int[] $weights 按字段顺序排列的权重。
+	 * @return void
+	 */
 	function SetWeights ( $weights )
 	{
 		assert ( is_array($weights) );
@@ -771,6 +865,10 @@ class SphinxClient
 	}
 
 	/// bind per-field weights by name
+	/**
+	 * @param array<string,int> $weights 字段名到权重的映射。
+	 * @return void
+	 */
 	function SetFieldWeights ( $weights )
 	{
 		assert ( is_array($weights) );
@@ -783,6 +881,10 @@ class SphinxClient
 	}
 
 	/// bind per-index weights by name
+	/**
+	 * @param array<string,int> $weights 索引名到权重的映射。
+	 * @return void
+	 */
 	function SetIndexWeights ( $weights )
 	{
 		assert ( is_array($weights) );
@@ -796,6 +898,11 @@ class SphinxClient
 
 	/// set IDs range to match
 	/// only match records if document ID is beetwen $min and $max (inclusive)
+	/**
+	 * @param int|string $min 最小文档 ID（含）。
+	 * @param int|string $max 最大文档 ID（含）。
+	 * @return void
+	 */
 	function SetIDRange ( $min, $max )
 	{
 		assert ( is_numeric($min) );
@@ -807,6 +914,13 @@ class SphinxClient
 
 	/// set values set filter
 	/// only match records where $attribute value is in given set
+	/**
+	 * 添加属性值集合过滤器。
+	 * @param string $attribute 属性名。
+	 * @param array $values 要匹配的数值集合。
+	 * @param bool $exclude 是否排除匹配集合的记录。
+	 * @return void
+	 */
 	function SetFilter ( $attribute, $values, $exclude=false )
 	{
 		assert ( is_string($attribute) );
@@ -824,6 +938,14 @@ class SphinxClient
 
 	/// set range filter
 	/// only match records if $attribute value is beetwen $min and $max (inclusive)
+	/**
+	 * 添加包含边界的数值范围过滤器。
+	 * @param string $attribute 属性名。
+	 * @param int|float|string $min 最小值。
+	 * @param int|float|string $max 最大值。
+	 * @param bool $exclude 是否排除范围内的记录。
+	 * @return void
+	 */
 	function SetFilterRange ( $attribute, $min, $max, $exclude=false )
 	{
 		assert ( is_string($attribute) );
@@ -836,6 +958,14 @@ class SphinxClient
 
 	/// set float range filter
 	/// only match records if $attribute value is beetwen $min and $max (inclusive)
+	/**
+	 * 添加包含边界的浮点范围过滤器。
+	 * @param string $attribute 属性名。
+	 * @param float $min 最小值。
+	 * @param float $max 最大值。
+	 * @param bool $exclude 是否排除范围内的记录。
+	 * @return void
+	 */
 	function SetFilterFloatRange ( $attribute, $min, $max, $exclude=false )
 	{
 		assert ( is_string($attribute) );
@@ -849,6 +979,14 @@ class SphinxClient
 	/// setup anchor point for geosphere distance calculations
 	/// required to use @geodist in filters and sorting
 	/// latitude and longitude must be in radians
+	/**
+	 * 设置距离计算的锚点。
+	 * @param string $attrlat 纬度属性名。
+	 * @param string $attrlong 经度属性名。
+	 * @param float $lat 锚点纬度，单位为弧度。
+	 * @param float $long 锚点经度，单位为弧度。
+	 * @return void
+	 */
 	function SetGeoAnchor ( $attrlat, $attrlong, $lat, $long )
 	{
 		assert ( is_string($attrlat) );
@@ -860,6 +998,13 @@ class SphinxClient
 	}
 
 	/// set grouping attribute and function
+	/**
+	 * 设置分组及组排序。
+	 * @param string $attribute 分组属性名。
+	 * @param int $func SPH_GROUPBY_* 分组方式。
+	 * @param string $groupsort 组排序表达式。
+	 * @return void
+	 */
 	function SetGroupBy ( $attribute, $func, $groupsort="@group desc" )
 	{
 		assert ( is_string($attribute) );
@@ -877,6 +1022,10 @@ class SphinxClient
 	}
 
 	/// set count-distinct attribute for group-by queries
+	/**
+	 * @param string $attribute 分组内去重计数的属性名。
+	 * @return void
+	 */
 	function SetGroupDistinct ( $attribute )
 	{
 		assert ( is_string($attribute) );
@@ -884,6 +1033,11 @@ class SphinxClient
 	}
 
 	/// set distributed retries count and delay
+	/**
+	 * @param int $count 分布式查询的重试次数。
+	 * @param int $delay 重试间隔，单位毫秒。
+	 * @return void
+	 */
 	function SetRetries ( $count, $delay=0 )
 	{
 		assert ( is_int($count) && $count>=0 );
@@ -894,6 +1048,10 @@ class SphinxClient
 
 	/// set result set format (hash or array; hash by default)
 	/// PHP specific; needed for group-by-MVA result sets that may contain duplicate IDs
+	/**
+	 * @param bool $arrayresult 是否使用列表而非以文档 ID 为键的结果格式。
+	 * @return void
+	 */
 	function SetArrayResult ( $arrayresult )
 	{
 		assert ( is_bool($arrayresult) );
@@ -903,6 +1061,13 @@ class SphinxClient
 	/// set attribute values override
 	/// there can be only one override per attribute
 	/// $values must be a hash that maps document IDs to attribute values
+	/**
+	 * 在查询中覆盖指定属性的值。
+	 * @param string $attrname 属性名。
+	 * @param int $attrtype 支持的 SPH_ATTR_* 类型常量。
+	 * @param array $values 文档 ID 到属性值的映射。
+	 * @return void
+	 */
 	function SetOverride ( $attrname, $attrtype, $values )
 	{
 		assert ( is_string ( $attrname ) );
@@ -913,6 +1078,10 @@ class SphinxClient
 	}
 
 	/// set select-list (attributes or expressions), SQL-like syntax
+	/**
+	 * @param string $select SQL 风格的属性或表达式选择列表。
+	 * @return void
+	 */
 	function SetSelect ( $select )
 	{
 		assert ( is_string ( $select ) );
@@ -922,6 +1091,10 @@ class SphinxClient
 	//////////////////////////////////////////////////////////////////////////////
 
 	/// clear all filters (for multi-queries)
+	/**
+	 * 清空所有过滤器和地理锚点。
+	 * @return void
+	 */
 	function ResetFilters ()
 	{
 		$this->_filters = array();
@@ -929,6 +1102,10 @@ class SphinxClient
 	}
 
 	/// clear groupby settings (for multi-queries)
+	/**
+	 * 将分组和去重设置恢复默认值。
+	 * @return void
+	 */
 	function ResetGroupBy ()
 	{
 		$this->_groupby		= "";
@@ -938,6 +1115,10 @@ class SphinxClient
 	}
 
 	/// clear all attribute value overrides (for multi-queries)
+	/**
+	 * 清空所有属性覆盖值。
+	 * @return void
+	 */
 	function ResetOverrides ()
 	{
 		$this->_overrides = array ();
@@ -947,6 +1128,13 @@ class SphinxClient
 
 	/// connect to searchd server, run given search query through given indexes,
 	/// and return the search results
+	/**
+	 * 执行单次搜索。
+	 * @param string $query 搜索表达式。
+	 * @param string $index 索引列表，默认全部索引。
+	 * @param string $comment 随查询发送的注释。
+	 * @return array|false 搜索结果或失败时的 false。
+	 */
 	function Query ( $query, $index="*", $comment="" )
 	{
 		assert ( empty($this->_reqs) );
@@ -967,6 +1155,10 @@ class SphinxClient
 	}
 
 	/// helper to pack floats in network byte order
+	/**
+	 * @param float $f 待编码的浮点数。
+	 * @return string 网络字节序的单精度二进制数据。
+	 */
 	function _PackFloat ( $f )
 	{
 		$t1 = pack ( "f", $f ); // machine order
@@ -976,6 +1168,13 @@ class SphinxClient
 
 	/// add query to multi-query batch
 	/// returns index into results array from RunQueries() call
+	/**
+	 * 将查询加入批次，使用加入时的搜索设置。
+	 * @param string $query 搜索表达式。
+	 * @param string $index 索引列表，默认全部索引。
+	 * @param string $comment 随查询发送的注释。
+	 * @return int 对应 RunQueries 结果中的索引。
+	 */
 	function AddQuery ( $query, $index="*", $comment="" )
 	{
 		// mbstring workaround
@@ -1089,6 +1288,10 @@ class SphinxClient
 	}
 
 	/// connect to searchd, run queries batch, and return an array of result sets
+	/**
+	 * 一次发送已加入的查询；发送和接收成功后清空批次。
+	 * @return array|false 各查询的结果列表；没有查询或通信失败时为 false。
+	 */
 	function RunQueries ()
 	{
 		if ( empty($this->_reqs) )
@@ -1127,6 +1330,12 @@ class SphinxClient
 	}
 
 	/// parse and return search query (or queries) response
+	/**
+	 * 解析批量搜索响应。
+	 * @param string $response 响应正文。
+	 * @param int $nreqs 请求数量。
+	 * @return array|false 搜索结果列表，或响应不完整时的 false。
+	 */
 	function _ParseSearchResponse ( $response, $nreqs )
 	{
 		$p = 0; // current position
@@ -1289,6 +1498,14 @@ class SphinxClient
 	/// connect to searchd server, and generate exceprts (snippets)
 	/// of given documents for given query. returns false on failure,
 	/// an array of snippets on success
+	/**
+	 * 为文档生成含查询词的摘要。
+	 * @param string[] $docs 待生成摘要的文档。
+	 * @param string $index 使用的索引。
+	 * @param string $words 查询词或查询表达式。
+	 * @param array $opts 摘要选项，包括 before_match、after_match、limit 和 around。
+	 * @return array|false 与文档顺序对应的摘要，或失败时的 false。
+	 */
 	function BuildExcerpts ( $docs, $index, $words, $opts=array() )
 	{
 		assert ( is_array($docs) );
@@ -1411,6 +1628,13 @@ class SphinxClient
 	/// connect to searchd server, and generate keyword list for a given query
 	/// returns false on failure,
 	/// an array of words on success
+	/**
+	 * 为查询生成分词及可选统计信息。
+	 * @param string $query 查询表达式。
+	 * @param string $index 使用的索引。
+	 * @param bool $hits 是否包含文档和命中次数。
+	 * @return array|false 分词结果或失败时的 false。
+	 */
 	function BuildKeywords ( $query, $index, $hits )
 	{
 		assert ( is_string($query) );
@@ -1488,6 +1712,11 @@ class SphinxClient
 		return $res;
 	}
 
+	/**
+	 * 转义 Sphinx 搜索表达式中的特殊字符。
+	 * @param string $string 待转义文本。
+	 * @return string 转义后的文本。
+	 */
 	function EscapeString ( $string )
 	{
 		$from = array ( '\\', '(',')','|','-','!','@','~','"','&', '/', '^', '$', '=' );
@@ -1502,6 +1731,14 @@ class SphinxClient
 
 	/// batch update given attributes in given rows in given indexes
 	/// returns amount of updated documents (0 or more) on success, or -1 on failure
+	/**
+	 * 批量更新文档属性。
+	 * @param string $index 索引列表。
+	 * @param string[] $attrs 属性名列表。
+	 * @param array $values 文档 ID 到属性值列表的映射，值顺序与属性名一致。
+	 * @param bool $mva 是否更新多值属性。
+	 * @return int 更新文档数，失败时为 -1。
+	 */
 	function UpdateAttributes ( $index, $attrs, $values, $mva=false )
 	{
 		// verify everything
@@ -1585,6 +1822,7 @@ class SphinxClient
 	// persistent connections
 	/////////////////////////////////////////////////////////////////////////////
 
+	/** @return bool 是否成功打开持久连接。 */
 	function Open()
 	{
 		if ( $this->_socket !== false )
@@ -1604,6 +1842,7 @@ class SphinxClient
 		return true;
 	}
 
+	/** @return bool 是否成功关闭持久连接。 */
 	function Close()
 	{
 		if ( $this->_socket === false )
@@ -1622,6 +1861,7 @@ class SphinxClient
 	// status
 	//////////////////////////////////////////////////////////////////////////
 
+	/** @return array|false searchd 状态表，失败时为 false。 */
 	function Status ()
 	{
 		$this->_MBPush ();
@@ -1659,6 +1899,7 @@ class SphinxClient
 	// flush
 	//////////////////////////////////////////////////////////////////////////
 
+	/** @return int 刷新标记，失败时为 -1。 */
 	function FlushAttributes ()
 	{
 		$this->_MBPush ();

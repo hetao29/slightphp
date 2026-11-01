@@ -33,6 +33,7 @@
  * @copyright 2004 - 2008 Andy Prevost
  */
 namespace SlightPHP;
+/** 构造邮件并通过 SMTP、PHP mail 或 sendmail 发送的旧版 PHPMailer。 */
 class PHPMailer {
 
   /////////////////////////////////////////////////
@@ -429,6 +430,8 @@ class PHPMailer {
    * Sends mail using the $Sendmail program.
    * @access public
    * @return bool
+   * @param string $header 邮件头。
+   * @param string $body 邮件正文。
    */
   public function SendmailSend($header, $body) {
     if ($this->Sender != '') {
@@ -461,6 +464,8 @@ class PHPMailer {
    * Sends mail using the PHP mail() function.
    * @access public
    * @return bool
+   * @param string $header 邮件头。
+   * @param string $body 邮件正文。
    */
   public function MailSend($header, $body) {
 
@@ -511,6 +516,8 @@ class PHPMailer {
    * bad MAIL FROM, RCPT, or DATA input.
    * @access public
    * @return bool
+   * @param string $header 邮件头。
+   * @param string $body 邮件正文。
    */
   public function SmtpSend($header, $body) {
     include_once($this->PluginDir . 'class.smtp.php');
@@ -674,6 +681,8 @@ class PHPMailer {
    * Creates recipient headers.
    * @access public
    * @return string
+   * @param string $type 邮件头名称。
+   * @param array $addr 收件地址及显示名称组成的列表。
    */
   public function AddrAppend($type, $addr) {
     $addr_str = $type . ': ';
@@ -692,6 +701,7 @@ class PHPMailer {
    * Formats an address correctly.
    * @access public
    * @return string
+   * @param array $addr 地址和可选显示名称组成的数组。
    */
   public function AddrFormat($addr) {
     if(empty($addr[1])) {
@@ -709,6 +719,9 @@ class PHPMailer {
    * Original written by philippe.
    * @access public
    * @return string
+   * @param string $message 待换行的正文。
+   * @param int $length 每行目标长度。
+   * @param bool $qp_mode 是否使用 quoted-printable 软换行。
    */
   public function WrapText($message, $length, $qp_mode = false) {
     $soft_break = ($qp_mode) ? sprintf(" =%s", $this->LE) : $this->LE;
@@ -1040,6 +1053,11 @@ class PHPMailer {
   /**
    * Returns the start of a message boundary.
    * @access public
+   * @param string $boundary MIME 边界标识。
+   * @param string $charSet 字符集；空字符串使用当前配置。
+   * @param string $contentType 内容类型；空字符串使用当前配置。
+   * @param string $encoding 传输编码；空字符串使用当前配置。
+   * @return string MIME 分段头。
    */
   public function GetBoundary($boundary, $charSet, $contentType, $encoding) {
     $result = '';
@@ -1064,6 +1082,8 @@ class PHPMailer {
   /**
    * Returns the end of a message boundary.
    * @access public
+   * @param string $boundary MIME 边界标识。
+   * @return string MIME 结束边界。
    */
   public function EndBoundary($boundary) {
     return $this->LE . '--' . $boundary . '--' . $this->LE;
@@ -1090,9 +1110,11 @@ class PHPMailer {
     }
   }
 
-  /* Returns a formatted header line.
+  /** Returns a formatted header line.
    * @access public
    * @return string
+   * @param string $name 邮件头名称。
+   * @param string $value 邮件头值。
    */
   public function HeaderLine($name, $value) {
     return $name . ': ' . $value . $this->LE;
@@ -1102,6 +1124,7 @@ class PHPMailer {
    * Returns a formatted mail line.
    * @access public
    * @return string
+   * @param string $value 要输出的一行文本。
    */
   public function TextLine($value) {
     return $value . $this->LE;
@@ -1210,6 +1233,8 @@ class PHPMailer {
    * empty string on failure.
    * @access public
    * @return string
+   * @param string $path 文件路径。
+   * @param string $encoding 传输编码。
    */
   public function EncodeFile ($path, $encoding = 'base64') {
     if(!@$fd = fopen($path, 'rb')) {
@@ -1217,6 +1242,7 @@ class PHPMailer {
       return '';
     }
     if (function_exists('get_magic_quotes')) {
+        /** @return bool 兼容占位函数固定返回 false。 */
         function get_magic_quotes() {
             return false;
         }
@@ -1237,6 +1263,8 @@ class PHPMailer {
    * empty string on failure.
    * @access public
    * @return string
+   * @param string $str 待编码内容。
+   * @param string $encoding 传输编码。
    */
   public function EncodeString ($str, $encoding = 'base64') {
     $encoded = '';
@@ -1267,6 +1295,8 @@ class PHPMailer {
    * Encode a header string to best of Q, B, quoted or none.
    * @access public
    * @return string
+   * @param string $str 待编码的邮件头文本。
+   * @param string $position 文本位置，如 text、phrase 或 comment。
    */
   public function EncodeHeader ($str, $position = 'text') {
     $x = 0;
@@ -1380,8 +1410,9 @@ class PHPMailer {
   /**
   * Encode string to quoted-printable.
   * @access public
-  * @param string $string the text to encode
-  * @param integer $line_max Number of chars allowed on a line before wrapping
+  * @param string $input 要编码的文本。
+  * @param integer $line_max 换行前允许的最大字符数。
+  * @param bool $space_conv 是否编码行中空格。
   * @return string
   */
   public function EncodeQP( $input = '', $line_max = 76, $space_conv = false ) {
@@ -1429,6 +1460,8 @@ class PHPMailer {
    * Encode string to q encoding.
    * @access public
    * @return string
+   * @param string $str 待编码的文本。
+   * @param string $position 文本位置，如 text、phrase 或 comment。
    */
   public function EncodeQ ($str, $position = 'text') {
     /* There should not be any EOL in the string */
@@ -1606,6 +1639,7 @@ class PHPMailer {
    * Returns void.
    * @access private
    * @return void
+   * @param string $msg 错误信息。
    */
   private function SetError($msg) {
     $this->error_count++;
@@ -1648,6 +1682,7 @@ class PHPMailer {
    * Returns a message in the appropriate language.
    * @access private
    * @return string
+   * @param string $key 语言条目键。
    */
   private function Lang($key) {
     if(count($this->language) < 1) {
@@ -1674,6 +1709,7 @@ class PHPMailer {
    * Changes every end of line from CR or LF to CRLF.
    * @access private
    * @return string
+   * @param string $str 待规范化换行符的文本。
    */
   private function FixEOL($str) {
     $str = str_replace("\r\n", "\n", $str);
@@ -1685,6 +1721,7 @@ class PHPMailer {
   /**
    * Adds a custom header.
    * @access public
+   * @param string $custom_header 以冒号分隔的邮件头名称和值。
    * @return void
    */
   public function AddCustomHeader($custom_header) {
@@ -1692,9 +1729,12 @@ class PHPMailer {
   }
 
   /**
-   * Evaluates the message and returns modifications for inline images and backgrounds
+   * 设置 HTML 邮件正文，尝试嵌入相对路径图片，并在需要时生成纯文本正文。
+   * 相对图片路径处理使用旧版 split 函数，PHP 7 及以后需要兼容实现。
    * @access public
-   * @return $message
+   * @param string $message HTML 正文。
+   * @param string $basedir 相对图片路径的基础目录。
+   * @return void
    */
   public function MsgHTML($message,$basedir='') {
     preg_match_all("/(src|background)=\"(.*)\"/Ui", $message, $images);
@@ -1732,7 +1772,8 @@ class PHPMailer {
   /**
    * Gets the mime type of the embedded or inline image
    * @access public
-   * @return mime type of ext
+   * @param string $ext 不含点号的文件扩展名。
+   * @return string 对应的 MIME 类型；未知扩展名返回 application/octet-stream。
    */
   public function _mime_types($ext = '') {
     $mimes = array(
@@ -1836,7 +1877,7 @@ class PHPMailer {
    * @access public
    * @param string $name Parameter Name
    * @param mixed $value Parameter Value
-   * NOTE: will not work with arrays, there are no arrays to set/reset
+   * @return false|null 属性不存在时返回 false，赋值成功时返回 null。
    */
   public function set ( $name, $value = '' ) {
     if ( isset($this->$name) ) {
@@ -1852,6 +1893,7 @@ class PHPMailer {
    *
    * @access public
    * @param string $filename Parameter File Name
+   * @return string|false 文件内容，或打开失败时的 false。
    */
   public function getFile($filename) {
     $return = '';
@@ -1883,8 +1925,10 @@ class PHPMailer {
    * Set the private key file and password to sign the message.
    *
    * @access public
+   * @param string $cert_filename 用于签名的证书文件路径。
    * @param string $key_filename Parameter File Name
    * @param string $key_pass Password for private key
+   * @return void
    */
   public function Sign($cert_filename, $key_filename, $key_pass) {
     $this->sign_cert_file = $cert_filename;

@@ -22,7 +22,8 @@ require_once 'class.Thumbnail.inc.php';
 * @package Thumbnail
 */
 /**
-* Creates a thumbnail from a source image, put a watermark/logo on it and caches it for a given time
+* Creates a thumbnail from a source image and overlays watermarks or logos.
+* The inherited cache implementation is not active in this version.
 *
 * Tested with Apache 2.2 and PHP 5.2.
 * Last change: 2008-04-06
@@ -85,7 +86,7 @@ class WMThumbnail extends Thumbnail {
 	* Constructor
 	*
 	* @param string $file  path/filename of picture
-	* @param int $seconds  amount of seconds thumbs should be cached. 0 = no cache
+	* @param int $seconds 保留参数；当前父类不使用缓存时间。
 	* @return void
 	* @uses CachedThumbnail::CachedThumbnail()
 	* @uses $wm_image_path
@@ -253,7 +254,7 @@ class WMThumbnail extends Thumbnail {
 	*
 	* @param string $format gif, jpg, png, wbmp
 	* @param int $quality jpg-quality: 0-100
-	* @return mixed
+	* @return void 图片直接输出到响应。
 	* @uses createThumbnail()
 	* @uses CachedThumbnail::outputThumbnail()
 	*/
@@ -274,8 +275,8 @@ class WMThumbnail extends Thumbnail {
 	/**
 	* returns the variable with the thumbnail image
 	*
-	* @param string $format gif, jpg, png, wbmp
-	* @return mixed
+	* @param string $format 输出格式参数；父类 returnThumbnail 会重新设置为 PNG。
+	* @return \GdImage|resource GD 图片对象或旧版 GD 资源。
 	* @uses createThumbnail()
 	* @uses CachedThumbnail::returnThumbnail()
 	*/

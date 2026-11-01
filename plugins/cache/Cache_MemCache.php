@@ -1,48 +1,53 @@
 <?php
-/*{{{LICENSE
-+-----------------------------------------------------------------------+
-| SlightPHP Framework                                                   |
-+-----------------------------------------------------------------------+
-| This program is free software; you can redistribute it and/or modify  |
-| it under the terms of the GNU General Public License as published by  |
-| the Free Software Foundation. You should have received a copy of the  |
-| GNU General Public License along with this program.  If not, see      |
-| http://www.gnu.org/licenses/.                                         |
-| Copyright (C) 2008-2009. All Rights Reserved.                         |
-+-----------------------------------------------------------------------+
-| Supports: http://www.slightphp.com                                    |
-+-----------------------------------------------------------------------+
-}}}*/
 
 /**
  * @package SlightPHP
  * @subpackage SCache
  */
 namespace SlightPHP;
+/** 保存缓存值及写入时间，供依赖键失效判断使用。 */
 final class Cache_MemcacheObject{
+	/** @var mixed 缓存值。 */
 	var $v;
+	/** @var int 写入时的 Unix 时间戳。 */
 	var $t;
+	/** @param mixed $value 缓存值。 */
 	function __construct($value){
 		$this->v = $value;
 		$this->t = time();
 	}
 }
 if(class_exists("Memcached",false)){
+	/** 基于 Memcached 扩展的服务器及基础缓存操作。 */
 	class Cache_MemcacheEngine{
 		private $_memcache;
+		/** 创建 Memcached 客户端并设置一致性哈希和连接超时。 */
 		public function __construct(){
 			$this->_memcache = new \Memcached();
 			$this->_memcache->setOption(\Memcached::OPT_DISTRIBUTION,\Memcached::DISTRIBUTION_CONSISTENT);
 			$this->_memcache->setOption(\Memcached::OPT_LIBKETAMA_COMPATIBLE,true); 
 			$this->_memcache->setOption(\Memcached::OPT_CONNECT_TIMEOUT,1000);
 		}
+		/** 析构客户端。 */
 		public function __destruct(){
 		}
 
+		/**
+		 * 添加服务器。
+		 * @param string $host 主机名。
+		 * @param int $port 端口。
+		 * @param int $weight 一致性哈希权重。
+		 * @param int|float $timeout 连接超时秒数。
+		 * @return void
+		 */
 		public function addServer($host,$port=11211,$weight=10,$timeout=1){
 			$this->_memcache->setOption(\Memcached::OPT_CONNECT_TIMEOUT,$timeout*1000);
 			$this->_memcache->addServer($host,$port,$weight);
 		}
+		/**
+		 * @param array|object $hosts 服务器配置对象或对象数组，字段为 host、port、weight。
+		 * @return void
+		 */
 		public function addServers($hosts=array()){
 			$realhost=array();
 			if(is_array($hosts)){
@@ -63,6 +68,10 @@ if(class_exists("Memcached",false)){
 			}
 			$this->_memcache->addServers($realhost);
 		}
+		/**
+		 * @param string|array $keys 缓存键；数组时当前实现只删除第一个键。
+		 * @return bool|null 删除结果；空数组返回 null。
+		 */
 		public function del($keys){
 			if(is_array($keys)){
 				foreach($keys as $key){
@@ -72,6 +81,10 @@ if(class_exists("Memcached",false)){
 				return $this->_memcache->delete($keys);
 			}
 		}
+		/**
+		 * @param string|array $keys 缓存键或键数组。
+		 * @return mixed 单键值或多键结果；失败时由扩展返回 false。
+		 */
 		public function get($keys){
 			if(is_array($keys)){
 				return $this->_memcache->getMulti($keys);
@@ -79,24 +92,45 @@ if(class_exists("Memcached",false)){
 				return $this->_memcache->get($keys);
 			}
 		}
+		/**
+		 * @param string $key 缓存键。
+		 * @param mixed $value 缓存值。
+		 * @param int $expire Memcached 过期参数，0 表示不过期。
+		 * @return bool 是否保存成功。
+		 */
 		public function set($key,$value,$expire=0){
 			return $this->_memcache->set($key,$value,$expire);
 		}
 	}
 }else{
+	/** 基于旧版 Memcache 扩展的服务器及基础缓存操作。 */
 	class Cache_MemcacheEngine extends \Memcache{
 		private $_memcache;
+		/** 创建 Memcache 客户端并设置哈希策略。 */
 		public function __construct(){
 			$this->_memcache = new \Memcache();
 			ini_set("memcache.hash_strategy","consistent");
 			ini_set("memcache.hash_function","crc32");
 		}
+		/** 关闭 Memcache 连接。 */
 		public function __destruct(){
 			$this->_memcache->close();
 		}
+		/**
+		 * 添加服务器。
+		 * @param string $host 主机名。
+		 * @param int $port 端口。
+		 * @param int $weight 哈希权重；非正数时使用 10。
+		 * @param int|float $timeout 连接超时秒数；非正数时使用 1。
+		 * @return void
+		 */
 		public function addServer($host,$port=11211,$weight=10,$timeout=1){
 			$this->_memcache->addServer($host,$port,false,$weight>0?$weight:10,$timeout>0?$timeout:1);
 		}
+		/**
+		 * @param array|object $hosts 服务器配置对象或对象数组，字段为 host、port、weight、timeout。
+		 * @return void
+		 */
 		public function addServers($hosts=array()){
 			if(is_array($hosts)){
 				foreach($hosts as $host){
@@ -118,6 +152,10 @@ if(class_exists("Memcached",false)){
 			}
 
 		}
+		/**
+		 * @param string|array $keys 缓存键；数组时当前实现只删除第一个键。
+		 * @return bool|null 删除结果；空数组返回 null。
+		 */
 		public function del($keys){
 			if(is_array($keys)){
 				foreach($keys as $key){
@@ -127,29 +165,41 @@ if(class_exists("Memcached",false)){
 				return $this->_memcache->delete($keys);
 			}
 		}
+		/**
+		 * @param string|array $keys 缓存键或键数组。
+		 * @return mixed 扩展返回的缓存值或多键结果。
+		 */
 		public function get($keys){
 			return $this->_memcache->get($keys);
 		}
+		/**
+		 * @param string $key 缓存键。
+		 * @param mixed $value 缓存值。
+		 * @param int $expire Memcache 过期参数，0 表示不过期。
+		 * @return bool 是否保存成功。
+		 */
 		public function set($key,$value,$expire=0){
 			return $this->_memcache->set($key,$value,0,$expire);
 		}
 	}
 }
+/** Memcache 缓存封装，支持以其他缓存键作为失效依赖。 */
 class Cache_Memcache extends Cache_MemcacheEngine{
 
 	/**
-	 * int $mode
+	 * @var int 1 表示所有依赖必须有效，其他值表示至少一个依赖有效。
 	 */
 	private $mode = 1;
+	/** 初始化底层 Memcache 客户端。 */
 	public function __construct(){
 		parent::__construct();
 	}
 	
 	/**
-	 * @param array['host']
-	 * @param array['port']
-	 * @param array['timeout']
-	 * @param array['weight']
+	 * 根据配置添加单台服务器；只有 host 非空时才添加。
+	 * @param array $params 包含 host、port、timeout、weight 的配置。
+	 *                      未指定 port 时传给扩展的值为 0。
+	 * @return void
 	 */
 	function init($params=array()){
 		if(!empty($params['host'])){
@@ -162,16 +212,20 @@ class Cache_Memcache extends Cache_MemcacheEngine{
 		}
 	}
 	/**
-	 * @param int $mode
+	 * @param int $mode 1 要求所有依赖有效；其他值要求至少一个依赖有效。
+	 * @return void
 	 */
 	function setMode($mode){
 		$this->mode=$mode;
 	}
 
 	/**
-	 * @param string|array $key
-	 * @param string|array $depKeys
-	 * @return mixed
+	 * 读取缓存；单个依赖键缺失或其更新时间晚于缓存时，该依赖无效。
+	 * mode 为 1 时要求所有依赖有效，其他模式要求至少一个有效。
+	 * 写入时间按秒记录，同一秒内更新的依赖不会使缓存失效。
+	 * @param string|array $key 缓存键或键数组。
+	 * @param string|array|null $depKeys 依赖键或键数组。
+	 * @return mixed 单个值或键到值的数组；未命中以 false 表示。
 	 */
 	function get($key,$depKeys=null){
 		$return_type=1;
@@ -231,6 +285,13 @@ class Cache_Memcache extends Cache_MemcacheEngine{
 		if($return_type==1)return array_shift($result);
 		return $result;
 	}
+	/**
+	 * 保存带写入时间的缓存值；底层写入结果不会返回给调用方。
+	 * @param string $key 缓存键。
+	 * @param mixed $value 缓存值。
+	 * @param int $exp 扩展的过期参数，0 表示不过期。
+	 * @return void
+	 */
 	function set($key,$value,$exp=0){
 		$v = new Cache_MemcacheObject($value);
 		parent::set($key,$v,$exp);

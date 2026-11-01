@@ -1,0 +1,3 @@
+</main>
+<footer class="site-footer"><div class="container footer-inner"><div><a class="brand" href="/"><span class="brand-mark" aria-hidden="true">s.</span><span>SlightPHP</span></a><p>Lightweight PHP framework. MIT licensed.</p></div><nav aria-label="页脚导航"><a href="/site/main/guide">文档</a><a href="/site/main/plugins">插件</a><a href="/site/main/about">关于</a><a href="/workspace/main/entry">交互示例</a><a href="https://github.com/hetao29/slightphp" target="_blank" rel="noopener noreferrer">源码 ↗</a><a href="#">↑ 顶部</a></nav></div><div class="container footer-bottom"><span>Built with SlightPHP + STpl</span><span>PHP ≥ 8.0 · PAGE / NAMESPACE · MIT</span></div></footer>
+</body></html>
