@@ -5,31 +5,33 @@
  * @license MIT
  */
 /**
+ * 格式化并输出 PHP 错误、异常和关闭时的最后一条错误。
+ * 加载本文件时会注册异常处理器、错误处理器和关闭回调。
+ * 日志中可能包含调用参数；对象会替换为类名，数组及标量不会自动脱敏。
  * @package SlightPHP
  */
 class SError{
 
 	/**
-	 * 
+	 * @var bool 是否将错误输出到当前响应或控制台。
 	 */
 	public static $CONSOLE=false;
 	/**
-	 * 
+	 * @var bool 是否写入 PHP 错误日志或指定文件。
 	 */
 	public static $LOG=true;
 	/**
-	 * 
+	 * @var string 日志文件路径；空字符串使用 PHP 默认错误日志。
 	 */
 	public static $LOGFILE="";
 	/**
-	 *
-	 * @param string $LOGTYPE text/html/json
+	 * @var string 输出格式 text、html 或 json；空字符串按运行环境选择。
 	 */
 	public static $LOGTYPE="";
 
 
 	/**
-	 * 
+	 * @var array<int|string,string> PHP 错误级别到名称的映射。
 	 */
 	static $error_type=array(
 		"1"	=>"E_ERROR",
@@ -51,11 +53,24 @@ class SError{
 		"30719"=>"E_ALL",
 	);
 
+	/**
+	 * 格式化并记录未捕获的异常或错误。
+	 * @param Throwable $e 未捕获的异常或错误。
+	 * @return void
+	 */
 	public static function exception_handler($e){//PHP7 Throwable
 		$ct= SError::getError($e->getTrace(),$e);
 		self::log($ct);
 	}
 
+	/**
+	 * 处理 PHP 错误；不在 error_reporting 掩码中的错误直接忽略。
+	 * @param int $errno 错误级别。
+	 * @param string $errstr 错误消息。
+	 * @param string $errfile 错误发生的文件。
+	 * @param int $errline 错误发生的行号。
+	 * @return bool|null 忽略时为 true；记录后返回 null。
+	 */
 	public static function error_handler($errno, $errstr, $errfile, $errline) {
 		if (!(error_reporting() & $errno)) {
 			return true;
@@ -64,6 +79,10 @@ class SError{
 		self::log($ct);
 	}
 
+	/**
+	 * 关闭时记录 error_get_last 返回的最后一条错误（若存在）。
+	 * @return void
+	 */
 	public static function fatal_handler() {
 		$error = error_get_last();
 		if($error != NULL){
@@ -72,6 +91,11 @@ class SError{
 		}
 	}
 
+	/**
+	 * 格式化最后一条 PHP 错误。
+	 * @param array $error error_get_last 返回的错误信息。
+	 * @return string|false 格式化内容；JSON 编码失败时为 false。
+	 */
 	private static function getFatal($error){
 		$type    = self::$error_type[ $error["type"] ]??"UNKNOWN";
 		$errfile = $error["file"];
@@ -97,7 +121,10 @@ class SError{
 		}
 	}
 	/**
-	 * @return string
+	 * 根据调用栈及可选异常生成日志内容。
+	 * @param array $backtrace 调用栈。
+	 * @param Throwable|null $e 异常或错误对象；null 表示普通 PHP 错误。
+	 * @return string|false 格式化内容；JSON 编码失败时为 false。
 	 */
 	private static function getError($backtrace,$e=null){
 		$arrLen=count($backtrace);
@@ -171,6 +198,11 @@ class SError{
 			}
 		}
 	}
+	/**
+	 * 递归将参数中的对象替换为类名，以便序列化。
+	 * @param mixed $args 按引用修改的参数值。
+	 * @return void
+	 */
 	private static function obj2str(&$args){
 		if(is_array($args)){
 			foreach($args as &$v){
@@ -180,12 +212,18 @@ class SError{
 			$args=get_class($args)."::";
 		}
 	}
+	/**
+	 * 将调用参数格式化为字符串。
+	 * @param array $args 调用参数。
+	 * @return string 格式化结果。
+	 */
 	private static function args2str($args){
 		self::obj2str($args);
 		$tmp  = json_encode($args);
 		$tmp = str_replace("\/","/",$tmp);
 		return substr($tmp,1,strlen($tmp)-2);
 	}
+	/** @return string 当前输出格式；未设置时 CLI 用 text，其他环境用 html。 */
 	private static function getLogType(){
 		if(self::$LOGTYPE==""){
 			if(PHP_SAPI=="cli"){
@@ -196,6 +234,11 @@ class SError{
 		}
 		return self::$LOGTYPE;
 	}
+	/**
+	 * 根据配置输出日志内容。
+	 * @param string|false $ct 已格式化的内容。
+	 * @return void
+	 */
 	private static function log($ct){
 		if(SError::$CONSOLE){
 			echo $ct;

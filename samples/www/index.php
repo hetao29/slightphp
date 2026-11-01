@@ -3,7 +3,7 @@ require_once dirname(__DIR__, 2) . '/vendor/autoload.php';
 SlightPHP::setAppDir(dirname(__DIR__) . '/app');
 SlightPHP::setModes(['NAMESPACE']);
 STpl::setTemplateDir(dirname(__DIR__) . '/app/templates');
-STpl::setCompileDir(dirname(__DIR__) . '/app/templates_c');
+STpl::setCompileDir(sys_get_temp_dir());
 STpl::setDelimter('{%', '%}');
 SlightPHP::setDefaultZone('site');
 SlightPHP::setDefaultPage('main');

@@ -10,10 +10,11 @@
  * @package SlightPHP
  */
 if (!class_exists("SlightPHP", false)):
+	/** 应用入口：解析请求路径，加载控制器并调用对应入口方法。 */
 	final class SlightPHP
 	{
 		/**
-		 * @var string
+		 * @var string 应用根目录。
 		 */
 		public static $appDir = ".";
 
@@ -31,30 +32,32 @@ if (!class_exists("SlightPHP", false)):
 		 * 1. 默认同时支持命名空间模式和文件分隔模式 PAGE,NAMESPACE
 		 * 2. 如果只想使用命名空间模式，则设置为 NAMESPACE
 		 * 3. 您可以设置优先顺序，默认是PAGE优先，NAMESPACE次之，如果您想让命名空间模式优先，则设置为 NAMESPACE,PAGE
-		 * @param array $modes
+		 * @param string[] $modes 按查找优先级排列的 PAGE、NAMESPACE 模式。
+		 * @return bool 始终返回 true。
 		 */
 		public static function setModes(array $modes)
 		{
 			self::$modes = $modes;
 			return true;
 		}
+		/** @return string[] 当前控制器查找模式及其顺序。 */
 		public static function getModes()
 		{
 			return self::$modes;
 		}
 		/**
-		 * @var string
+		 * @var string|false 应用根目录的规范路径；解析失败时为 false。
 		 */
 		private static $appDirRealPath = "";
 
 		/**
 		 * namespace prefix of the pages, default "" (global class, like zone_page)
-		 * @var string
+		 * @var string 控制器命名空间前缀。
 		 */
 		public static $appNamespace = "";
 
 		/**
-		 * @var string
+		 * @var string 优先于服务器请求信息的显式路径。
 		 */
 		public static $pathInfo = "";
 
@@ -66,7 +69,7 @@ if (!class_exists("SlightPHP", false)):
 
 		/**
 		 * set controller suffix, default "Controller"
-		 * @param string $suffix
+		 * @param string $suffix 控制器类名后缀。
 		 * @return bool
 		 */
 		public static function setControllerSuffix(string $suffix)
@@ -76,6 +79,7 @@ if (!class_exists("SlightPHP", false)):
 		}
 		/**
 		 * get controller suffix, default "Controller"
+		 * @return string 控制器类名后缀。
 		 */
 		public static function getControllerSuffix()
 		{
@@ -86,7 +90,7 @@ if (!class_exists("SlightPHP", false)):
 
 		/**
 		 * current zone
-		 * @var string
+		 * @var string|null 当前请求匹配的区域；调度前为 null。
 		 */
 		public static $zone;
 
@@ -97,7 +101,7 @@ if (!class_exists("SlightPHP", false)):
 
 		/**
 		 * current page
-		 * @var string
+		 * @var string|null 当前请求匹配的页面；调度前为 null。
 		 */
 		public static $page;
 
@@ -108,7 +112,7 @@ if (!class_exists("SlightPHP", false)):
 
 		/**
 		 * current type
-		 * @var string
+		 * @var string|null 保留的当前请求类型字段；调度过程不设置此字段。
 		 */
 		public static $type;
 
@@ -132,10 +136,12 @@ if (!class_exists("SlightPHP", false)):
 		];
 
 		/**
-		 * 设置允许的请求类型，这些类型会映射为方法前缀
-		 * 默认PAGE模式下，方法以page开头
-		 * 默认NAMESPACE模式下，方法不以任何开头
-		 * @param array $types
+		 * 设置允许作为方法前缀的请求类型。
+		 * HTTP_REQUEST_TYPE 在此列表中时加到入口名前；不在列表时调用无前缀入口。
+		 * 未提供请求类型时，PAGE 模式使用默认类型，NAMESPACE 模式不加前缀。
+		 * 该设置不限制 HTTP 请求方法，也不是权限控制。
+		 * @param string[] $types 允许作为入口方法前缀的请求类型。
+		 * @return bool 始终返回 true。
 		 */
 		public static function setAllowRequestTypes(array $types)
 		{
@@ -152,7 +158,7 @@ if (!class_exists("SlightPHP", false)):
 			return self::$allowRequestTypes;
 		}
 		/**
-		 * @var string
+		 * @var string|null 当前请求匹配的入口；调度前为 null。
 		 */
 		public static $entry;
 
@@ -169,8 +175,9 @@ if (!class_exists("SlightPHP", false)):
 		public static $splitFlag = "/";
 
 		/**
-		 * @param string $namespace
-		 * @return boolean
+		 * 设置命名空间模式下的控制器前缀，去掉首尾反斜杠。
+		 * @param string $namespace 命名空间前缀。
+		 * @return bool 始终返回 true。
 		 */
 		public static function setAppNamespace($namespace)
 		{
@@ -179,23 +186,25 @@ if (!class_exists("SlightPHP", false)):
 		}
 
 		/**
-		 * @return string
+		 * @return string 当前控制器命名空间前缀。
 		 */
 		public static function getAppNamespace()
 		{
 			return self::$appNamespace;
 		}
 		/**
-		 * zoneAlias
+		 * 区域名到 URL 别名的映射，尚未设置时为 null。
 		 *
-		 * @var array
+		 * @var array<string,string>|null
 		 */
 		public static $zoneAlias;
 
 		/**
-		 * @param string $zone
-		 * @param string $alias
-		 * @return boolean
+		 * 设置区域的 URL 别名；调度时根据别名反查区域名。
+		 * 当前类名和文件路径仍由原始区域路径构造，别名不能可靠替代目录映射。
+		 * @param string $zone 原区域名。
+		 * @param string $alias URL 中使用的别名。
+		 * @return bool 始终返回 true。
 		 */
 		public static function setZoneAlias(string $zone, string $alias)
 		{
@@ -204,8 +213,9 @@ if (!class_exists("SlightPHP", false)):
 		}
 
 		/**
-		 * @param string $zone
-		 * @return string | boolean
+		 * 查询区域的 URL 别名。
+		 * @param string $zone 原区域名。
+		 * @return string|false 别名，或未设置时的 false。
 		 */
 		public static function getZoneAlias(string $zone)
 		{
@@ -213,16 +223,17 @@ if (!class_exists("SlightPHP", false)):
 		}
 
 		/**
-		 * pageAlias
+		 * 页面名到 URL 别名的映射，尚未设置时为 null。
 		 *
-		 * @var array
+		 * @var array<string,string>|null
 		 */
 		public static $pageAlias;
 
 		/**
-		 * @param string $page
-		 * @param string $alias
-		 * @return boolean
+		 * 设置页面的 URL 别名；调度时根据别名反查页面名。
+		 * @param string $page 原页面名。
+		 * @param string $alias URL 中使用的别名。
+		 * @return bool 始终返回 true。
 		 */
 		public static function setPageAlias(string $page, string $alias)
 		{
@@ -231,8 +242,9 @@ if (!class_exists("SlightPHP", false)):
 		}
 
 		/**
-		 * @param string $page
-		 * @return string | boolean
+		 * 查询页面的 URL 别名。
+		 * @param string $page 原页面名。
+		 * @return string|false 别名，或未设置时的 false。
 		 */
 		public static function getPageAlias(string $page)
 		{
@@ -240,9 +252,9 @@ if (!class_exists("SlightPHP", false)):
 		}
 
 		/**
-		 * defaultZone set
+		 * 设置路径缺少区域时使用的默认区域。
 		 * 
-		 * @param string $zone
+		 * @param string $zone 默认区域名。
 		 * @return boolean
 		 */
 
@@ -252,7 +264,7 @@ if (!class_exists("SlightPHP", false)):
 			return true;
 		}
 		/**
-		 * defaultZone get
+		 * 获取默认区域。
 		 * 
 		 * @return string
 		 */
@@ -262,9 +274,9 @@ if (!class_exists("SlightPHP", false)):
 			return self::$defaultZone;
 		}
 		/**
-		 * defaultClass set
+		 * 设置路径缺少页面时使用的默认页面。
 		 *
-		 * @param string $page
+		 * @param string $page 默认页面名。
 		 * @return boolean
 		 */
 		public static function setDefaultPage(string $page)
@@ -273,7 +285,7 @@ if (!class_exists("SlightPHP", false)):
 			return true;
 		}
 		/**
-		 * defaultPage get
+		 * 获取默认页面。
 		 *
 		 * @return string
 		 */
@@ -282,9 +294,9 @@ if (!class_exists("SlightPHP", false)):
 			return self::$defaultPage;
 		}
 		/**
-		 * defaultType set
+		 * 设置 PAGE 模式下未指定请求类型时使用的方法前缀。
 		 *
-		 * @param string $type
+		 * @param string $type 默认请求类型。
 		 * @return boolean
 		 */
 		public static function setDefaultType(string $type)
@@ -293,7 +305,7 @@ if (!class_exists("SlightPHP", false)):
 			return true;
 		}
 		/**
-		 * defaultType get
+		 * 获取默认请求类型。
 		 *
 		 * @return string
 		 */
@@ -302,9 +314,9 @@ if (!class_exists("SlightPHP", false)):
 			return self::$defaultType;
 		}
 		/**
-		 * defaultMethod set
+		 * 设置路径缺少入口时使用的默认入口名。
 		 * 
-		 * @param string $entry
+		 * @param string $entry 默认入口名。
 		 * @return boolean
 		 */
 		public static function setDefaultEntry(string $entry)
@@ -313,18 +325,18 @@ if (!class_exists("SlightPHP", false)):
 			return true;
 		}
 		/**
-		 * defaultMethod get
+		 * 获取默认入口名。
 		 * 
-		 * @return string $method
+		 * @return string 入口名。
 		 */
 		public static function getDefaultEntry()
 		{
 			return self::$defaultEntry;
 		}
 		/**
-		 * splitFlag set
+		 * 设置路径中的附加分隔字符；斜杠始终是分隔符。
 		 * 
-		 * @param string $flag
+		 * @param string $flag 附加分隔字符集合。
 		 * @return boolean
 		 */
 		public static function setSplitFlag(string $flag)
@@ -333,7 +345,7 @@ if (!class_exists("SlightPHP", false)):
 			return true;
 		}
 		/**
-		 * defaultMethod get
+		 * 获取附加路径分隔字符。
 		 * 
 		 * @return string
 		 */
@@ -342,8 +354,8 @@ if (!class_exists("SlightPHP", false)):
 			return self::$splitFlag;
 		}
 		/**
-		 * appDir set && get
-		 * @param string $dir
+		 * 设置应用根目录并刷新其规范路径缓存。
+		 * @param string $dir 应用根目录路径。
 		 * @return boolean
 		 */
 
@@ -354,9 +366,9 @@ if (!class_exists("SlightPHP", false)):
 			return true;
 		}
 		/**
-		 * pathInfo set
+		 * 设置调度时优先使用的路径。
 		 * 
-		 * @param string $pathInfo
+		 * @param string $pathInfo 请求路径；空字符串恢复使用服务器信息。
 		 * @return boolean
 		 */
 		public static function setPathInfo(string $pathInfo)
@@ -365,7 +377,7 @@ if (!class_exists("SlightPHP", false)):
 			return true;
 		}
 		/**
-		 * appDir get
+		 * 获取应用根目录。
 		 * 
 		 * @return string
 		 */
@@ -374,9 +386,9 @@ if (!class_exists("SlightPHP", false)):
 			return self::$appDir;
 		}
 		/**
-		 * debug status set
+		 * 设置是否记录调度调试信息。
 		 *
-		 * @param boolean $debug
+		 * @param bool $debug 是否开启调试日志。
 		 * @return boolean
 		 */
 		public static function setDebug(bool $debug)
@@ -385,9 +397,9 @@ if (!class_exists("SlightPHP", false)):
 			return true;
 		}
 		/**
-		 * debug status get
+		 * 获取调试开关；尚未设置时返回整数 0。
 		 * 
-		 * @return boolean 
+		 * @return bool|int
 		 */
 		public static function getDebug()
 		{
@@ -395,10 +407,14 @@ if (!class_exists("SlightPHP", false)):
 		}
 
 		/**
-		 * main method!
+		 * 解析路径并调用匹配的控制器入口。
+		 * 显式传入非空路径时作为局部调用，不更新当前 zone/page/entry，
+		 * 且会跳过与当前入口相同的局部调用。
+		 * 路径依次尝试不同的区域深度，完整路径段数组同时传给控制器构造函数和入口。
+		 * 未显式传路径时依次使用 pathInfo、PATH_INFO 和 REQUEST_URI。
 		 *
-		 * @param string $path
-		 * @return boolean
+		 * @param string $path 显式路径；空字符串时从 pathInfo 或服务器请求信息读取。
+		 * @return mixed 入口方法的返回值；找不到可调用入口时返回 false。
 		 */
 		public static function run($path = "")
 		{
@@ -503,7 +519,7 @@ if (!class_exists("SlightPHP", false)):
 		}
 
 		/**
-		 * @var boolean
+		 * @var bool|int 调试开关；初始值为整数 0。
 		 */
 		private static $_debug = 0;
 
@@ -521,9 +537,9 @@ if (!class_exists("SlightPHP", false)):
 
 		/**
 		 * 将下划线分隔的字符串转换为命名空间格式
-		 * @param string $str
-		 * @param string $split
-		 * @return string
+		 * @param string $str 下划线分隔的名称。
+		 * @param string $split 输出部分之间的分隔符。
+		 * @return string 首字母大写的各部分拼接结果。
 		 */
 		private static function snakeToNamespace(string $str, string $split = DIRECTORY_SEPARATOR): string
 		{
@@ -531,7 +547,7 @@ if (!class_exists("SlightPHP", false)):
 		}
 		/**
 		 * 加载文件
-		 * @param string $file
+		 * @param string|false $file 已解析的文件路径；false 表示路径解析失败。
 		 * @return bool
 		 */
 		private static function loadFile(string|false $file)

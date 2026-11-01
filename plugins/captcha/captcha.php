@@ -38,10 +38,10 @@
 
 
 /**
- * SimpleCaptcha class
- *
+ * 使用 GD 和字体生成验证码图片，并将文本保存在当前会话中。
  */
 namespace SlightPHP;
+/** 使用 GD 和字体生成验证码图片，并将文本保存在当前会话中。 */
 class SimpleCaptcha {
 
     /** Width of the image */
@@ -142,6 +142,9 @@ class SimpleCaptcha {
 
 
 
+    /**
+     * @param array $config 保留参数；当前构造方法不读取该配置。
+     */
     public function __construct($config = array()) {
     }
 
@@ -151,6 +154,10 @@ class SimpleCaptcha {
 
 
 
+    /**
+     * 生成图片并输出到响应，同时将验证码写入会话。
+     * @return string 生成的验证码文本。
+     */
     public function CreateImage() {
         $ini = microtime(true);
 
@@ -195,7 +202,8 @@ class SimpleCaptcha {
 
 
     /**
-     * Creates the image resources
+     * 创建图片并分配背景、前景和可选阴影颜色。
+     * @return void
      */
     protected function ImageAllocate() {
         // Cleanup
@@ -253,6 +261,7 @@ class SimpleCaptcha {
     /**
      * Random text generation
      *
+     * @param int|null $length 文本长度；为空时在配置范围内随机选择。
      * @return string Text
      */
     protected function GetRandomCaptchaText($length = null) {
@@ -288,7 +297,7 @@ class SimpleCaptcha {
      * Random dictionary word generation
      *
      * @param boolean $extended Add extended "fake" words
-     * @return string Word
+     * @return string|false 单词；词典未设置或读取失败时为 false。
      */
     function GetDictionaryCaptchaText($extended = false) {
         if (empty($this->wordsFile)) {
@@ -333,7 +342,10 @@ class SimpleCaptcha {
 
 
     /**
-     * Text insertion
+     * 将文本逐字符绘制到图片上。
+     * @param string $text 验证码文本。
+     * @param array $fontcfg 字体配置；空数组时随机选择。
+     * @return void
      */
     protected function WriteText($text, $fontcfg = array()) {
         if (empty($fontcfg)) {
@@ -370,7 +382,8 @@ class SimpleCaptcha {
 
 
     /**
-     * Wave filter
+     * 对图片施加水平和垂直波浪变形。
+     * @return void
      */
     protected function WaveImage() {
         // X-axis wave generation
@@ -396,7 +409,8 @@ class SimpleCaptcha {
 
 
     /**
-     * Reduce the image to the final size
+     * 将图片缩放到配置的最终尺寸。
+     * @return void
      */
     protected function ReduceImage() {
         $imResampled = imagecreatetruecolor($this->width, $this->height);
@@ -417,7 +431,8 @@ class SimpleCaptcha {
 
 
     /**
-     * File generation
+     * 根据 imageFormat 输出 PNG 或 JPEG 图片及响应头。
+     * @return void
      */
     protected function WriteImage() {
 		if($this->transprent)imagecolortransparent($this->im,   $this->GdBgColor);
@@ -437,7 +452,8 @@ class SimpleCaptcha {
 
 
     /**
-     * Cleanup
+     * 释放 GD 图片资源。
+     * @return void
      */
     protected function Cleanup() {
         imagedestroy($this->im);

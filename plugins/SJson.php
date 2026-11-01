@@ -6,24 +6,34 @@
  */
 
 /**
+ * JSON 编解码及最近一次错误的便捷接口。
  * @package SlightPHP
  */
 class SJson{
 	/**
-	 * encode object to json
+	 * 将值编码为 JSON。
 	 *
-	 * @param    mixed  $object
-	 * @return   string  json
+	 * @param mixed $object 待编码的值。
+	 * @param int $options json_encode 选项位掩码。
+	 * @param int $depth 最大嵌套深度。
+	 * @return string|false JSON 字符串，编码失败时为 false。
+	 * @throws JsonException 设置 JSON_THROW_ON_ERROR 且编码失败时。
+	 * @throws ValueError 深度参数超出有效范围时。
 	 * @access   public
 	 */
 	public static function encode($object, $options = 0, $depth = 512){
 		return json_encode($object, $options, $depth);
 	}
 	/**
-	 * decode string to json object
+	 * 将 JSON 字符串解码为 PHP 值。
 	 *
-	 * @param	string $str
-	 * @return mixed object
+	 * @param string $str JSON 字符串。
+	 * @param bool|null $assoc 是否将对象解码为关联数组；null 使用选项中的设置。
+	 * @param int $depth 最大嵌套深度。
+	 * @param int $options json_decode 选项位掩码。
+	 * @return mixed 解码后的值；失败时通常为 null。
+	 * @throws JsonException 设置 JSON_THROW_ON_ERROR 且解码失败时。
+	 * @throws ValueError 深度参数超出有效范围时。
 	 * @access public
 	 */
 	public static function decode($str, $assoc = false, $depth = 512, $options = 0){

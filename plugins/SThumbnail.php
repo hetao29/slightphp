@@ -15,6 +15,12 @@ if (!function_exists('imageflip')) {
 	define('IMG_FLIP_VERTICAL', 1);
 	define('IMG_FLIP_BOTH', 2);
 
+	/**
+	 * 在缺少原生 imageflip 时原地翻转 GD 图片。
+	 * @param GdImage|resource $image 待修改的图片。
+	 * @param int $mode IMG_FLIP_HORIZONTAL、IMG_FLIP_VERTICAL 或 IMG_FLIP_BOTH。
+	 * @return void
+	 */
 	function imageflip($image, $mode) {
 		switch ($mode) {
 			case IMG_FLIP_HORIZONTAL: {
@@ -55,13 +61,19 @@ if (!function_exists('imageflip')) {
 		imagedestroy($temp_image);
 	}
 }
+/** 在缩略图生成器上提供按方向写入文件的能力。 */
 class SThumbnail extends SlightPHP\WMThumbnail{
 	/**
-	 * spanned file
-	 * 
-	 * @param $fileName
+	 * @var int 输出图片类型：1 GIF、2 JPEG、3 PNG、15 WBMP。
 	 */
 	var $image_type = 3;
+	/**
+	 * 生成缩略图并写入文件。
+	 * @param string $fileName 输出文件路径。
+	 * @param int $quality JPEG 质量，超出 0–100 时使用 75。
+	 * @param int $orientation 方向值 1–8；其他值不变换。
+	 * @return bool 写入是否成功。
+	 */
 	public function genFile($fileName,$quality = 100,$orientation= 0) {
         $image = parent::returnThumbnail();
 		if($orientation>=1 && $orientation<=8){

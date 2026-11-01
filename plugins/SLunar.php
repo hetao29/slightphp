@@ -9,20 +9,21 @@
  */
 /*阳历转换为农历方法*/
 
+/** 使用 1900–2050 年的内置农历数据转换日期；PHP 8 中需显式调用 SLunar() 初始化。 */
 class SLunar {
 	/**
-	 * 农历年分
-	 * @var int $year
+	 * 农历年份，初始化前为 null。
+	 * @var int|null $year
 	 */
 	var $year;
 	/**
-	 * 农历月分
-	 * @var int $month
+	 * 农历月份，初始化前为 null。
+	 * @var int|null $month
 	 */
 	var $month;
 	/**
-	 * 农历日期
-	 * @var int $day
+	 * 农历日期，初始化前为 null。
+	 * @var int|float|null $day
 	 */
 	var $day;
 	/**
@@ -31,23 +32,23 @@ class SLunar {
 	 */
 	//var $days;
 	/**
-	 * 是否是润年
-	 * @var boolean $isLeap
+	 * 当前日期是否处于闰月
+	 * @var bool|null $isLeap 初始化前为 null。
 	 */
 	var $isLeap;
 	/**
-	 * 离1900之间有多少个年份
-	 * @var int $yearCyl
+	 * 年干支周期序号，计算为农历年份减去 1864。
+	 * @var int|null $yearCyl 初始化前为 null。
 	 */
 	var $yearCyl;
 	/**
-	 * 离1900之间有多少天
-	 * @var int $dayCyl
+	 * 日干支周期序号，由公历时间戳计算。
+	 * @var int|float|null $dayCyl 初始化前为 null。
 	 */
 	var $dayCyl;
 	/**
-	 * 离1900之间有多少个月份
-	 * @var int $monCyl
+	 * 月干支周期序号，由年、月及闰月偏移计算。
+	 * @var int|null $monCyl 初始化前为 null。
 	 */
 	var $monCyl;
 	private $lunarInfo = array(
@@ -69,7 +70,9 @@ class SLunar {
 		0x14b63);
 
 	/**
-	* 传回农历 y年的总天数
+	* 传回农历 y年的总天数。
+	* @param int $y 农历年份，须在内置数据范围内。
+	* @return int 年总天数，包含闰月。
 	*/
 	function lYearDays($y) {
 		$sum = 348;
@@ -78,7 +81,9 @@ class SLunar {
 		return $sum+$this->leapDays($y);
 	}
 	/**
-	* 传回农历 y年闰月的天数
+	* 传回农历 y年闰月的天数。
+	* @param int $y 农历年份，须在内置数据范围内。
+	* @return int 闰月天数；没有闰月时为 0。
 	*/
 	function leapDays($y) {
 		if($this->leapMonth($y))
@@ -86,13 +91,18 @@ class SLunar {
 		else return 0;
 	}
 	/**
-	* 传回农历 y年闰哪个月 1-12 , 没闰传回 0
+	* 传回农历 y年闰哪个月。
+	* @param int $y 农历年份，须在内置数据范围内。
+	* @return int 闰月月份 1–12；没有闰月时为 0。
 	*/
 	function leapMonth($y) {
 		return $this->lunarInfo[$y-1900] & 0xf;
 	}
 	/**
-	* 传回农历 y年m月的总天数
+	* 传回农历普通月份的天数，闰月请使用 leapDays。
+	* @param int $y 农历年份，须在内置数据范围内。
+	* @param int $m 农历月份 1–12。
+	* @return int 月天数。
 	*/
 	function monthDays($y,$m) {
 		return ($this->lunarInfo[$y-1900] & (0x10000>>$m))? 30: 29;
@@ -100,7 +110,12 @@ class SLunar {
 
 
 	/**
-	* 创建农历日期对象
+	* 根据公历日期初始化农历字段。此旧式同名方法在 PHP 8 中不是构造函数；
+	* 内置数据仅覆盖农历 1900–2050 年，且方法不验证日期是否在范围内。
+	* @param int $year 公历年份。
+	* @param int $month 公历月份。
+	* @param int $day 公历日期。
+	* @return false|null mktime 失败时为 false，成功时为 null。
 	*/
 	function SLunar($year,$month=1,$day=1) {
 		//date from 1901-12-14 to 2038-01-19 [windows]
@@ -181,13 +196,19 @@ class SLunar {
 		$this->days = $days;*/
 	}
 
+	/**
+	 * 将周期序号转换为天干、地支和生肖文本。
+	 * @param int $num 非负周期序号。
+	 * @return string 干支及生肖。
+	 */
 	function cyclical($num) {
 		$Gan = Array("甲","乙","丙","丁","戊","己","庚","辛","壬","癸");
 		$Zhi = Array("子（鼠）","丑（牛）","寅（虎）","卯（兔）","辰（龙）","巳（蛇）","午（马）","未（羊）","申（猴）","酉（鸡）","戌（狗）","亥（猪）");
 		return $Gan[$num%10].$Zhi[$num%12];
 	}
 	/**
-	* 输出，根据需要直接修改本函数或在派生类中重写本函数
+	* 返回农历日期的中文表示，可在派生类中重写。
+	* @return string|null 日期文本；日期字段不完整时为 null。
 	*/
 	function display() {
 		$nStr = array(' ','正','二','三','四','五','六','七','八','九','十','十一','腊');
@@ -200,7 +221,9 @@ class SLunar {
 		RETURN $nl;
 	}
 	/**
-	* 中文日期
+	* 将农历日转换为中文日期。
+	* @param int $d 农历日，1–30。
+	* @return string 中文日期。
 	*/
 	function cDay($d) {
 		$nStr1 = array('日','一','二','三','四','五','六','七','八','九','十');

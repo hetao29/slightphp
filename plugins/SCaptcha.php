@@ -16,8 +16,11 @@ require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."captcha/captcha.php");
 /**
  * @package SlightPHP
  */
+/** 基于会话的旧版验证码封装。 */
 class SCaptcha extends SlightPHP\SimpleCaptcha{
+	/** @var string 验证码会话键前缀。 */
 	static $session_prefix="SCaptcha_";
+	/** 初始化验证码尺寸、字符长度和图片选项。 */
 	function __construct(){
 		$this->wordsFile = "";
 		$this->session_var = SCaptcha::$session_prefix ;
@@ -32,6 +35,10 @@ class SCaptcha extends SlightPHP\SimpleCaptcha{
 		$this->imageFormat="png";
 		$this->transprent=false;
 	}
+	/**
+	 * @param string $captcha_code 用户输入的验证码。
+	 * @return bool 会话中是否存在匹配的验证码。
+	 */
 	static function check($captcha_code){
 		if(	empty($_SESSION[SCaptcha::$session_prefix . $captcha_code]) ||
 			$_SESSION[SCaptcha::$session_prefix . $captcha_code] != $captcha_code
@@ -41,6 +48,10 @@ class SCaptcha extends SlightPHP\SimpleCaptcha{
 			return true;
 		}
 	}
+	/**
+	 * @param string $captcha_code 要移除的验证码。
+	 * @return void
+	 */
 	static function del($captcha_code){
 		if(	!empty($_SESSION[SCaptcha::$session_prefix . $captcha_code])){
 			unset ($_SESSION[SCaptcha::$session_prefix . $captcha_code]);

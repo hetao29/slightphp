@@ -29,6 +29,7 @@
 * @version 2.001
 */
 namespace SlightPHP;
+/** 使用 GD 从源图片创建和输出缩略图。 */
 class Thumbnail {
 
 	/*-------------------*/
@@ -125,7 +126,7 @@ class Thumbnail {
 	/**
 	* Constructor
 	*
-	* @param string $file  path/filename of picture or stream from a DB field
+	* @param string $file 图片路径；当前读取流程先检查文件是否存在。
 	* @return void
 	* @uses $image_path
 	*/
@@ -140,7 +141,7 @@ class Thumbnail {
 	/**
 	* sets the output type of the thumbnail
 	*
-	* @param string $format gif, jpg, png, wbmp
+	* @param string $format 输出格式：gif、jpg、png、wbmp 或 string；未知格式不修改当前值。
 	* @return void
 	* @uses $thumbnail_type
 	* @uses $formats
@@ -154,8 +155,8 @@ class Thumbnail {
 	/**
 	* sets the max. height of the thumbnail
 	*
-	* @param int $height
-	* @return boolean
+	* @param int $height 最大高度；非正数或不小于原图高度时使用原图高度。
+	* @return bool 始终返回 true。
 	* @uses readSourceImageData()
 	* @uses $image_height
 	* @uses $thumb_max_height
@@ -174,8 +175,8 @@ class Thumbnail {
 	/**
 	* sets the max. width of the thumbnail
 	*
-	* @param int $width
-	* @return boolean
+	* @param int $width 最大宽度；非正数或不小于原图宽度时使用原图宽度。
+	* @return bool 始终返回 true。
 	* @uses readSourceImageData()
 	* @uses $image_width
 	* @uses $thumb_max_width
@@ -196,9 +197,9 @@ class Thumbnail {
 	*
 	* passes values to the functions setMaxHeight() and setMaxWidth()
 	*
-	* @param int $width
-	* @param int $height
-	* @return boolean
+	* @param int $width 最大宽度，传给 setMaxWidth。
+	* @param int $height 最大高度，传给 setMaxHeight。
+	* @return bool 始终返回 true。
 	* @uses setMaxHeight()
 	* @uses setMaxWidth()
 	*/
@@ -211,7 +212,7 @@ class Thumbnail {
 	/**
 	* whether to create thumbs fast or with good quality
 	*
-	* @param boolean $boolean
+	* @param bool $boolean true 使用较高质量的缩放，false 使用较快的缩放。
 	* @return void
 	* @uses $quality_thumb
 	*/
@@ -365,8 +366,8 @@ class Thumbnail {
 	/**
 	* outputs the thumbnail to the browser
 	*
-	* @param string $format
-	* @param int $quality
+	* @param string $format 输出格式：gif、jpg、png 或 wbmp。
+	* @param int $quality JPEG 质量（0–100），超出范围时使用 75。
 	* @return void
 	* @uses setOutputFormat()
 	* @uses createThumbnail()
@@ -406,7 +407,7 @@ class Thumbnail {
 	/**
 	* returns the variable with the thumbnail image
 	*
-	* @return mixed
+	* @return \GdImage|resource GD 图片对象或旧版 GD 资源。
 	* @uses setOutputFormat()
 	* @uses createThumbnail()
 	* @uses $thumbnail
@@ -429,9 +430,9 @@ class Thumbnail {
 	} // end function
 
 	/**
-	* returns the width of the thumbnail
+	* 返回缩略图宽度。
 	*
-	* @return int
+	* @return int 缩略图宽度。
 	* @uses $thumbnail_width
 	*/
 	public function getThumbWidth() {
@@ -440,10 +441,10 @@ class Thumbnail {
 	} // end function
 
 	/**
-	* returns the width of the thumbnail
+	* 返回当前保存的源图片路径。
 	*
-	* @return int
-	* @uses $thumbnail_width
+	* @return string 图片路径；读取时找不到源文件可能被替换为 error_pic。
+	* @uses $image_path
 	*/
 	public function getPictureName() {
 		return (string) $this->image_path;

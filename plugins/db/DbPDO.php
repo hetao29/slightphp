@@ -13,9 +13,12 @@
 
 namespace SlightPHP;
 
+/** PDO 数据库连接及最近一次预处理语句的适配器。 */
 class DbPDO
 {
+	/** @var \PDO|null */
 	private $_pdo;
+	/** @var \PDOStatement|null */
 	private $_stmt;
 
 	private $_engine;
@@ -28,19 +31,14 @@ class DbPDO
 
 	private $_persistent;
 	private $_charset;
+	/** @var bool 连接失败或最近一次 SQLSTATE 为 HY000 时置为 true。 */
 	public $connectionError = false;
 	/**
-	 * construct
-	 *
-	 * @param array $params
-	 * @param string $params.host
-	 * @param string $params.user
-	 * @param string $params.password
-	 * @param string $params.database
-	 * @param string $params.charset
-	 * @param string $params.engine
-	 * @param bool $params.persistent 
-	 * @param int $param.port=3306
+	 * 保存连接参数；此方法不建立连接。
+	 * @param array $params 连接选项：engine 为 PDO 引擎名（如 pdo_mysql），host 和 port
+	 *                      为地址，user 和 password 为凭据，database 为库名，charset 为字符集，
+	 *                      persistent 控制是否使用持久连接。
+	 * @return void
 	 */
 	public function init($params = array())
 	{
@@ -56,6 +54,12 @@ class DbPDO
 			$this->_password = null;
 		}
 	}
+	/**
+	 * 建立 PDO 连接。当前 DSN 和连接选项按 MySQL 方式构造，即使 engine
+	 * 名称指向其他 PDO 驱动，也不代表该驱动可以使用此连接方式。
+	 * @return bool 连接是否成功；PDOException 会被捕获并产生警告。
+	 * @throws \Error 依赖的 PDO MySQL 常量不存在时。
+	 */
 	public function connect()
 	{
 		$tmp = explode("_", $this->_engine);
@@ -91,11 +95,22 @@ class DbPDO
 		}
 		return true;
 	}
+	/**
+	 * 直接执行 SQL。
+	 * @param string $sql SQL 语句。
+	 * @return int|false 受影响的行数，未连接或执行失败时为 false。
+	 */
 	public function exec($sql)
 	{
 		if (!$this->_pdo) return false;
 		return $this->_pdo->exec($sql);
 	}
+	/**
+	 * 预处理并执行 SQL，供后续结果和错误方法使用。
+	 * @param string $sql SQL 语句。
+	 * @param array $params PDO 占位符参数。
+	 * @return bool 是否执行成功。
+	 */
 	public function query($sql, $params = [])
 	{
 		if (!$this->_pdo) return false;
@@ -105,47 +120,60 @@ class DbPDO
 		}
 		return false;
 	}
+	/** @return array|false 最近一次语句的关联数组结果，或没有语句时为 false。 */
 	public function getAll()
 	{
 		if (!$this->_stmt) return false;
 		return $this->_stmt->fetchAll(\PDO::FETCH_ASSOC);
 	}
+	/** @return int|false 最近一次语句的结果列数，或没有语句时为 false。 */
 	public function columnCount()
 	{
 		if (!$this->_stmt) return false;
 		return $this->_stmt->columnCount();
 	}
+	/** @return int|false 最近一次语句的行数，或没有语句时为 false。 */
 	public function count()
 	{
 		if (!$this->_stmt) return false;
 		return $this->_stmt->rowCount();
 	}
+	/** @return bool 是否成功开始事务。 */
 	public function begin()
 	{
 		if (!$this->_pdo) return false;
 		return $this->_pdo->beginTransaction();
 	}
+	/** @return bool 是否成功提交事务。 */
 	public function commit()
 	{
 		if (!$this->_pdo) return false;
 		return $this->_pdo->commit();
 	}
+	/** @return bool 是否成功回滚事务。 */
 	public function rollback()
 	{
 		if (!$this->_pdo) return false;
 		return $this->_pdo->rollBack();
 	}
+	/**
+	 * 使用 PDO quote 转义字符串，去掉外层引号。
+	 * @param string $str 待转义的值。
+	 * @return string|false 转义后的值，未连接时为 false。
+	 */
 	public function escape($str)
 	{
 		if (!$this->_pdo) return false;
 		$str = $this->_pdo->quote($str);
 		return substr($str, 1, strlen($str) - 2);
 	}
+	/** @return string|false 最后插入的 ID，或失败时为 false。 */
 	public function lastId()
 	{
 		if (!$this->_pdo) return false;
 		return $this->_pdo->lastInsertId();
 	}
+	/** @return array|false 最近语句或连接的 PDO errorInfo，未连接时为 false。 */
 	public function error()
 	{
 		if (!$this->_pdo) return false;
@@ -154,6 +182,7 @@ class DbPDO
 		}
 		return $this->_pdo->errorInfo();
 	}
+	/** @return string|null|false 最近语句或连接的 SQLSTATE，未连接时为 false。 */
 	public function errno()
 	{
 		if (!$this->_pdo) return false;

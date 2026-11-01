@@ -11,14 +11,28 @@
 namespace SlightPHP;
 require_once(dirname(__FILE__)."/Tpl.modifier.php");
 require_once(dirname(__FILE__)."/Tpl.function.php");
+/** 将模板编译为 PHP，缓存编译文件并在当前输出流中执行。 */
 class Tpl{
+	/** @var array 模板变量表。 */
 	static $_tpl_vars             = array();
+	/** @var string 模板标签左分隔符。 */
 	static $left_delimiter  =  '';//{
+	/** @var string 模板标签右分隔符。 */
 	static $right_delimiter =  '';//}
+	/** @var string 模板源文件目录。 */
 	static $template_dir    =  '';//templates
+	/** @var string 编译文件目录。 */
 	static $compile_dir     =  '';//templates_c
+	/** @var bool 是否每次都重新编译。 */
 	static $force_compile   =  false;
+	/** @var bool 是否在编译时替换显式的 PHP 标签代码；不限制模板表达式。 */
 	static $safe_mode = true;
+	/**
+	 * 分配一个变量或一组变量；空名称会被忽略。
+	 * @param string|array $tpl_var 变量名或名称到值的映射。
+	 * @param mixed $value 单个变量的值。
+	 * @return void
+	 */
 	static function assign($tpl_var, $value = null){
 		if (is_array($tpl_var)){
 			foreach ($tpl_var as $key => $val) {
@@ -31,6 +45,11 @@ class Tpl{
 				self::$_tpl_vars[$tpl_var] = $value;
 		}
 	}
+	/**
+	 * 必要时编译模板并直接包含编译文件，内容输出到当前输出流。
+	 * @param string $tpl 相对于模板目录的文件名。
+	 * @return void
+	 */
 	static function fetch($tpl){
 		$tpl_real  = self::$template_dir.DIRECTORY_SEPARATOR.$tpl;
 		$compiled_file = self::$compile_dir.DIRECTORY_SEPARATOR.dechex(crc32(realpath(self::$template_dir))).DIRECTORY_SEPARATOR.$tpl;
@@ -44,7 +63,12 @@ class Tpl{
 		}
 		include($compiled_file);
 	}
-	private static function _match($matches){
+	/**
+	 * 编译一个模板标签。
+	 * @param array $matches 正则匹配结果。
+	 * @return string 生成的 PHP 代码。
+	 */
+	private static function _match(array $matches): string{
 		$content = $matches[1];
 		//替换特殊字符
 		self::$_tmpData=array();
@@ -92,7 +116,12 @@ class Tpl{
 		$content="<?php $content; ?>";
 		return $content;
 	}
-	private static function _matchfunction($function){
+	/**
+	 * 编译模板函数调用。
+	 * @param array $function 正则匹配结果。
+	 * @return string PHP 调用或说明函数不存在的注释。
+	 */
+	private static function _matchfunction(array $function): string{
 		$r=preg_match_all("/(\\$?\S+|\".+?\"|\'.+?\')/",$function[2],$tmp);
 		if($r){
 			$func="tpl_function_".$function[1];
@@ -104,7 +133,12 @@ class Tpl{
 			return "/* $function[0] is not a STpl function */";
 		}
 	}
-	private static function _matchmodifier($modifier){
+	/**
+	 * 编译模板修饰器调用。
+	 * @param array $modifier 正则匹配结果。
+	 * @return string|null PHP 调用、错误注释或没有匹配时的 null。
+	 */
+	private static function _matchmodifier(array $modifier): ?string{
 		$r=preg_match_all("/(\\$?\w+)/",$modifier[2],$keys);
 		if($r){
 			$func = array_shift($keys[0]);
@@ -121,6 +155,11 @@ class Tpl{
 			return $str;
 		}
 	}
+	/**
+	 * 编译模板文本，安全模式下先替换其中的 PHP 代码。
+	 * @param string $content 模板源文本。
+	 * @return string|null 编译后的 PHP 文本，正则失败时为 null。
+	 */
 	private static function _compile($content){
 		$left_delimiter= self::$left_delimiter;
 		$right_delimiter= self::$right_delimiter;
@@ -146,7 +185,12 @@ class Tpl{
 	private static $_tmpData;
 	private static $_tmpIndex=0;
 	private static $_tmpPrefix="TPL_TMP_PREFIX_";
-	private static function _tmpData($matches){
+	/**
+	 * 暂存标签中的引号字符串。
+	 * @param array $matches 正则匹配结果。
+	 * @return string 占位符。
+	 */
+	private static function _tmpData(array $matches): string{
 		$key = self::$_tmpPrefix.(self::$_tmpIndex++);
 		self::$_tmpData[$key]=$matches[1].$matches[2].$matches[1];
 		return $key;

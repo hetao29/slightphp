@@ -47,6 +47,7 @@
  */
 
 namespace SlightPHP;
+/** 提供 SMTP 发送之前的 POP3 连接和认证。 */
 class POP3 {
   /**
    * Default POP3 port
@@ -122,13 +123,17 @@ class POP3 {
   }
 
   /**
-   * Combination of public events - connect, login, disconnect
+   * 连接、登录后断开 POP3，用于 SMTP 前置认证。
+   * PHP 8 中 port 和 tval 位于必需参数之前，调用时也必须提供。
    * @access public
-   * @param string $host
-   * @param integer $port
-   * @param integer $tval
-   * @param string $username
-   * @param string $password
+   * @param string $host POP3 服务器地址。
+   * @param int|false $port 端口；false 使用配置的默认端口。
+   * @param int|float|false $tval 超时秒数；false 使用配置的默认值。
+   * @param string $username 登录用户名。
+   * @param string $password 登录密码。
+   * @param int $debug_level 调试输出级别。
+   * @return bool 连接并登录成功时为 true。
+   * @throws \TypeError 在 PHP 8 中，连接失败后仍尝试断开无效流时可能抛出。
    */
   public function Authorise ($host, $port = false, $tval = false, $username, $password, $debug_level = 0) {
     $this->host = $host;
@@ -175,12 +180,12 @@ class POP3 {
   }
 
   /**
-   * Connect to the POP3 server
+   * 连接 POP3 服务器并检查问候响应。
    * @access public
-   * @param string $host
-   * @param integer $port
-   * @param integer $tval
-   * @return boolean
+   * @param string $host POP3 服务器地址。
+   * @param int|false $port 端口；直接调用时 false 传给 fsockopen，不会替换成默认端口。
+   * @param int|float $tval 连接和读取超时秒数。
+   * @return bool|null 连接失败时为 false，问候响应不是 +OK 时为 null。
    */
   public function Connect ($host, $port = false, $tval = 30) {
     //  Are we already connected?
@@ -251,11 +256,12 @@ class POP3 {
   }
 
   /**
-   * Login to the POP3 server (does not support APOP yet)
+   * 登录 POP3 服务器（不支持 APOP）。
    * @access public
-   * @param string $username
-   * @param string $password
-   * @return boolean
+   * @param string $username 用户名；空字符串使用实例保存的用户名。
+   * @param string $password 密码；空字符串使用实例保存的密码。
+   * @return bool 登录是否成功。
+   * @throws \TypeError 在 PHP 8 中，未连接时仍尝试写入无效流可能抛出。
    */
   public function Login ($username = '', $password = '') {
     if ($this->connected == false) {
@@ -297,8 +303,10 @@ class POP3 {
   }
 
   /**
-   * Disconnect from the POP3 server
+   * 发送 QUIT 并关闭 POP3 连接。
    * @access public
+   * @return void
+   * @throws \TypeError 在 PHP 8 中，连接流无效时可能抛出。
    */
   public function Disconnect () {
     $this->sendString('QUIT');
@@ -315,7 +323,7 @@ class POP3 {
    * $size is the maximum number of bytes to retrieve
    * @access private
    * @param integer $size
-   * @return string
+   * @return string|false 响应文本；读取失败时为 false。
    */
   private function getResponse ($size = 128) {
     $pop3_response = fgets($this->pop_conn, $size);
@@ -327,7 +335,7 @@ class POP3 {
    * Send a string down the open socket connection to the POP3 server
    * @access private
    * @param string $string
-   * @return integer
+   * @return int|false 已写入字节数；写入失败时为 false。
    */
   private function sendString ($string) {
     $bytes_sent = fwrite($this->pop_conn, $string, strlen($string));
@@ -363,6 +371,7 @@ class POP3 {
   /**
    * If debug is enabled, display the error message array
    * @access private
+   * @return void
    */
   private function displayErrors () {
     echo '<pre>';
@@ -381,6 +390,7 @@ class POP3 {
    * @param string $errstr
    * @param string $errfile
    * @param integer $errline
+   * @return void
    */
   private function catchWarning ($errno, $errstr, $errfile, $errline) {
     $this->error[] = array(

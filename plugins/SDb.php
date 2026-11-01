@@ -10,6 +10,7 @@ require_once(SLIGHTPHP_PLUGINS_DIR . "/SConfig.php");
 require_once(SLIGHTPHP_PLUGINS_DIR . "/db/DbData.php");
 require_once(SLIGHTPHP_PLUGINS_DIR . "/db/Db.php");
 /**
+ * 表记录操作封装，支持简单的外键关联。
  * @package SlightPHP
  */
 class SDb extends SlightPHP\Db
@@ -21,7 +22,7 @@ class SDb extends SlightPHP\Db
 
 	/**
 	 * set global db config file
-	 * @param string $file
+	 * @param string $file 配置文件路径。
 	 * @return void
 	 */
 	static function setConfigFile($file)
@@ -29,9 +30,10 @@ class SDb extends SlightPHP\Db
 		self::$_config_file = $file;
 	}
 	/**
-	 * @param string $zone
-	 * @param string $type	main|query
-	 * @return array
+	 * 读取数据库配置；指定类型不存在时回退到 main。
+	 * @param string|null $zone 配置区域名。
+	 * @param string $type 配置类型，如 main 或 query。
+	 * @return mixed 数据库配置值，未找到时为 null。
 	 */
 	static function getConfig($zone = null, $type = "main")
 	{
@@ -45,18 +47,19 @@ class SDb extends SlightPHP\Db
 	}
 	/**
 	 * Alias of setConfig
-	 * @param string $zone
-	 * @param string $type	main|query
+	 * @param string $zone 配置区域名。
+	 * @param string $type 配置类型，如 main 或 query。
+	 * @return bool|null 连接结果；配置不可用时为 null。
 	 */
 	public function useConfig($zone, $type = "main")
 	{
 		return self::setConfig($zone, $type);
 	}
 	/**
-	 * 设置数据库配置文件
-	 * @param string $zone
-	 * @param string $type	main|query
-	 * @return array
+	 * 按配置区域建立连接；配置为数组时随机选择一项。
+	 * @param string $zone 配置区域名。
+	 * @param string $type 配置类型，如 main 或 query。
+	 * @return bool|null 连接结果；配置不可用时为 null。
 	 */
 	public function setConfig($zone, $type = "main")
 	{
@@ -84,6 +87,11 @@ class SDb extends SlightPHP\Db
 	 * @var stdclass $_fields
 	 */
 	private $_fields;
+	/**
+	 * 获取字段；外键表名对应的属性会在首次访问时创建对象。
+	 * @param string $k 字段或关联表名。
+	 * @return mixed 字段值、关联对象或不存在时的 null。
+	 */
 	public function __get(string $k)
 	{
 		if (isset($this->_fields->$k)) {
@@ -102,7 +110,10 @@ class SDb extends SlightPHP\Db
 		return null;
 	}
 	/**
-	 * @param mixed $v
+	 * 设置待保存或查询的字段。
+	 * @param string $k 字段名。
+	 * @param mixed $v 字段值。
+	 * @return void
 	 */
 	public function __set(string $k, $v)
 	{
@@ -110,8 +121,8 @@ class SDb extends SlightPHP\Db
 	}
 	/**
 	 * 构造方法
-	 * @param string $table_name
-	 * @return void
+	 * @param string $table_name 操作的表名。
+	 * @param array|object $config 非空时立即用于初始化数据库连接。
 	 **/
 	public function __construct($table_name = "", $config = array())
 	{
@@ -121,18 +132,18 @@ class SDb extends SlightPHP\Db
 	}
 	/**
 	 * 设置表名
-	 * @param string $table_name
+	 * @param string $table_name 后续记录操作使用的表名。
 	 * @return void
 	 */
 	public function setTable($table_name)
 	{
 		$this->table_name = $table_name;
 	}
-	/*
+	/**
 	 * 按条件获取所有信息
-	 * @param array $condition 条件，参照Db::select()里的定义
+	 * @param string|array|object $condition 条件，参照 Db::select() 的定义。
 	 * @param boolean $foreign_info 是否返回外键信息
-	 * @return array
+	 * @return array|false 结果行；没有结果或查询失败时为 false。
 	 */
 	public function listAll($condition, $foreign_info = false)
 	{
@@ -163,21 +174,25 @@ class SDb extends SlightPHP\Db
 		return false;
 	}
 	/**
-	 * 重设所有参数
+	 * 清空当前记录字段；表名、连接配置和外键映射保持不变。
+	 * @return void
 	 **/
 	public function reset()
 	{
 		$this->_fields = new stdclass;
 	}
 	/**
-	 * 得到带外键的信息
+	 * 查询首条记录并包含外键关联信息。
+	 * @return array|false 查询到的记录或失败时的 false。
 	 **/
 	public function getAll()
 	{
 		return $this->get(true);
 	}
 	/**
-	 * 得到信息，返回数组，可以用对象获取本身
+	 * 使用当前非对象字段作为条件查询首条记录，并将结果写回字段。
+	 * @param bool $foreign_info 是否查询关联记录。
+	 * @return array|false 查询到的记录或无条件、无结果时的 false。
 	 **/
 	public function get($foreign_info = false)
 	{
@@ -208,6 +223,8 @@ class SDb extends SlightPHP\Db
 	}
 	/**
 	 * 删除信息,可以连带外键一起删除
+	 * @param bool $foreign_info 是否同时删除关联记录。
+	 * @return int|false 主表删除的受影响行数，或失败时的 false。
 	 **/
 	public function del($foreign_info = false)
 	{
@@ -243,6 +260,7 @@ class SDb extends SlightPHP\Db
 	 * 你必须初始化外键的值，否则可能无效，如:
 	 * $test->user_profile = new stdclass;
 	 * $test->user_profile->field_name = "field_value";
+	 * @return string|false 最后一次插入操作的 ID；未执行或失败时为 false。
 	 */
 	public function set()
 	{
@@ -287,6 +305,8 @@ class SDb extends SlightPHP\Db
 
 	/**
 	 * 设置外键关联
+	 * @param array $keys 本表字段名到“关联表.关联字段”的映射。
+	 * @return void
 	 */
 	public function setForeignKey($keys = array())
 	{

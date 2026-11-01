@@ -11,6 +11,7 @@
  */
 if (!defined("SLIGHTPHP_PLUGINS_DIR")) define("SLIGHTPHP_PLUGINS_DIR", dirname(__FILE__));
 require_once(SLIGHTPHP_PLUGINS_DIR . "/SConfig.php");
+/** phpredis 客户端封装，支持通过配置选择 RedisArray 或 RedisCluster。 */
 class SRedis
 {
 	private static $hosts = array();
@@ -21,12 +22,15 @@ class SRedis
 	 */
 	private static $_configFile;
 	/**
-	 * 当前使用的resouce
-	 * @var Redis|RedisArray|RedisCluster $_redis
+	 * @var RedisArray|RedisCluster 当前使用的客户端。
 	 */
 	private $_redis;
 	/**
-	 * 当前使用的resouce
+	 * 创建 Redis 客户端。cluster 使用传入的主机和选项；其他模式使用静态配置。
+	 * sentinel 分支同样创建 RedisArray，不会创建单独的 Sentinel 客户端。
+	 * @param array $hosts 集群节点地址列表。
+	 * @param array $options 客户端选项，如 timeout、read_timeout、persistent、auth 和 context。
+	 * @param string $engine 为 cluster 时创建 RedisCluster，否则创建 RedisArray。
 	 */
 	public function __construct(array $hosts, array $options, $engine = "")
 	{
@@ -51,13 +55,19 @@ class SRedis
 		return $this->_redis;
 	}
 
+	/**
+	 * @param string $file Redis 配置文件路径。
+	 * @return void
+	 */
 	static function setConfigFile($file)
 	{
 		self::$_configFile = $file;
 	}
 	/**
-	 * @param string $zone
-	 * @return array
+	 * 获取指定类型的 Redis 配置，缺失时回退到 host，包括请求 engine 和 options 时。
+	 * @param string|null $zone 配置区域。
+	 * @param string $type 配置项名，如 host、engine 或 options。
+	 * @return mixed 配置值，缺失时为 null。
 	 */
 	static function getConfig($zone = null, $type = "host")
 	{
@@ -70,9 +80,11 @@ class SRedis
 		return NULL;
 	}
 	/**
-	 * 切换配置文件
-	 * @param string $zone
-	 * @return SRedis | boolean
+	 * 读取配置并创建客户端，同时设置静态调用使用的配置。
+	 * options 仅在配置值为对象时转为数组；其他类型会被忽略。
+	 * @param string $zone 配置区域。
+	 * @param string $type 主机配置项名，默认 host。
+	 * @return SRedis|false 客户端，或缺少主机配置时为 false。
 	 */
 	static function useConfig($zone, $type = "host")
 	{
@@ -100,9 +112,10 @@ class SRedis
 		return new self(self::$hosts, self::$options, self::$engine);
 	}
 	/**
-	 * @param string $name
-	 * @param array $args
-	 * @return mixed
+	 * 将调用转发给当前 Redis 客户端。
+	 * @param string $name 方法名。
+	 * @param array $args 方法参数。
+	 * @return mixed 客户端返回值；捕获 RedisException 时为 false。
 	 */
 	public function __call($name, $args)
 	{
@@ -114,9 +127,10 @@ class SRedis
 		return false;
 	}
 	/**
-	 * @param string $name
-	 * @param array $args
-	 * @return mixed
+	 * 使用静态配置创建客户端并转发调用。
+	 * @param string $name 方法名。
+	 * @param array $args 方法参数。
+	 * @return mixed 客户端返回值；捕获 RedisException 时为 false。
 	 */
 	public static function __callStatic($name, $args)
 	{
