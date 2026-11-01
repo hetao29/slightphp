@@ -1,13 +1,3 @@
-# 使用方法 #
-```
-cd pecl
+# SlightPHP 使用方法
 
-phpize
-./configure
-make
-make install
-```
-然后在php.ini中加载这个
-extension=slightphp.so
-
-就可以了
+SlightPHP 6.0 请参阅[当前使用文档](../docs/framework.md)及[迁移指南](../docs/migration-6.0.md)。

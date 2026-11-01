@@ -66,13 +66,6 @@
   }));
   search?.addEventListener('input', filterPlugins);
   if (filters.length) filterPlugins();
-  const modes = [...document.querySelectorAll('[data-mode]')];
-  function selectMode(mode) {
-    modes.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.mode === mode)));
-    document.querySelectorAll('[data-mode-panel]').forEach(panel => { panel.hidden = panel.dataset.modePanel !== mode; });
-  }
-  modes.forEach(button => button.addEventListener('click', () => selectMode(button.dataset.mode)));
-  if (modes.length) selectMode('namespace');
   document.querySelectorAll('[data-copy]').forEach(button => button.addEventListener('click', async () => {
     const code = document.getElementById(button.dataset.copy);
     const original = button.textContent;

@@ -7,4 +7,6 @@ $baseDir = dirname($vendorDir);
 
 return array(
     '685ba3d03c0a49d7bfd5531cf21197d4' => $baseDir . '/SlightPHP.php',
+    'slightphp_tpl_functions' => $baseDir . '/plugins/tpl/Tpl.function.php',
+    'slightphp_tpl_modifiers' => $baseDir . '/plugins/tpl/Tpl.modifier.php',
 );

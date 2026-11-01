@@ -19,39 +19,12 @@ if (!class_exists("SlightPHP", false)):
 		public static $appDir = ".";
 
 		/**
-		 * 框架模式，命令空间模式和文件分隔模式
-		 */
-		private static $modes = [
-			"PAGE", //普通的文件分隔模式
-			"NAMESPACE", //命名空间模式
-		];
-		private const MODE_PAGE = 'PAGE';
-		private const MODE_NAMESPACE = 'NAMESPACE';
-		/**
-		 * 设置框架模式
-		 * 1. 默认同时支持命名空间模式和文件分隔模式 PAGE,NAMESPACE
-		 * 2. 如果只想使用命名空间模式，则设置为 NAMESPACE
-		 * 3. 您可以设置优先顺序，默认是PAGE优先，NAMESPACE次之，如果您想让命名空间模式优先，则设置为 NAMESPACE,PAGE
-		 * @param string[] $modes 按查找优先级排列的 PAGE、NAMESPACE 模式。
-		 * @return bool 始终返回 true。
-		 */
-		public static function setModes(array $modes)
-		{
-			self::$modes = $modes;
-			return true;
-		}
-		/** @return string[] 当前控制器查找模式及其顺序。 */
-		public static function getModes()
-		{
-			return self::$modes;
-		}
-		/**
 		 * @var string|false 应用根目录的规范路径；解析失败时为 false。
 		 */
 		private static $appDirRealPath = "";
 
 		/**
-		 * namespace prefix of the pages, default "" (global class, like zone_page)
+		 * namespace prefix of the controllers, default ""
 		 * @var string 控制器命名空间前缀。
 		 */
 		public static $appNamespace = "";
@@ -117,12 +90,6 @@ if (!class_exists("SlightPHP", false)):
 		public static $type;
 
 		/**
-		 * default file type, like $defaultZone.$defaultType.php
-		 * @var string
-		 */
-		public static $defaultType = "page";
-
-		/**
 		 * 允许的请求类型
 		 * @var array
 		 */
@@ -138,7 +105,7 @@ if (!class_exists("SlightPHP", false)):
 		/**
 		 * 设置允许作为方法前缀的请求类型。
 		 * HTTP_REQUEST_TYPE 在此列表中时加到入口名前；不在列表时调用无前缀入口。
-		 * 未提供请求类型时，PAGE 模式使用默认类型，NAMESPACE 模式不加前缀。
+		 * 未提供请求类型时不添加前缀。
 		 * 该设置不限制 HTTP 请求方法，也不是权限控制。
 		 * @param string[] $types 允许作为入口方法前缀的请求类型。
 		 * @return bool 始终返回 true。
@@ -292,26 +259,6 @@ if (!class_exists("SlightPHP", false)):
 		public static function getDefaultPage()
 		{
 			return self::$defaultPage;
-		}
-		/**
-		 * 设置 PAGE 模式下未指定请求类型时使用的方法前缀。
-		 *
-		 * @param string $type 默认请求类型。
-		 * @return boolean
-		 */
-		public static function setDefaultType(string $type)
-		{
-			self::$defaultType = $type;
-			return true;
-		}
-		/**
-		 * 获取默认请求类型。
-		 *
-		 * @return string
-		 */
-		public static function getDefaultType()
-		{
-			return self::$defaultType;
 		}
 		/**
 		 * 设置路径缺少入口时使用的默认入口名。
@@ -473,27 +420,13 @@ if (!class_exists("SlightPHP", false)):
 					self::debug("part ignored [$path]");
 					return false;
 				}
-				$classname = strtolower(implode("_", array_merge($zoneParts, [$_page])));
-				$type = "";
-				foreach (self::$modes as $_mode) {
-					$file = "";
-					if ($_mode == self::MODE_NAMESPACE) {
-						$classname_namespace = self::$appNamespace . "\\" . self::snakeToNamespace($classname, "\\") . self::$setControllerSuffix;
-						$file = realpath(self::$appDir . DIRECTORY_SEPARATOR . str_replace("\\", DIRECTORY_SEPARATOR, $classname_namespace) . ".php");
-						if (self::loadFile($file)) {
-							$type   = !empty($_SERVER['HTTP_REQUEST_TYPE']) ? strtolower(trim($_SERVER['HTTP_REQUEST_TYPE'])) : "";
-							$classname = $classname_namespace;
-							break;
-						}
-					} elseif ($_mode == self::MODE_PAGE) {
-						$type = !empty($_SERVER['HTTP_REQUEST_TYPE']) ? strtolower(trim($_SERVER['HTTP_REQUEST_TYPE'])) : self::$defaultType;
-						$file = realpath(self::$appDir . DIRECTORY_SEPARATOR . str_replace("_", DIRECTORY_SEPARATOR, $classname) . ".page.php");
-						if (self::loadFile($file)) {
-							$type   = !empty($_SERVER['HTTP_REQUEST_TYPE']) ? strtolower(trim($_SERVER['HTTP_REQUEST_TYPE'])) : self::$defaultType;
-							break;
-						}
-					}
+				$controller = strtolower(implode("_", array_merge($zoneParts, [$_page])));
+				$classname = self::$appNamespace . "\\" . self::snakeToNamespace($controller, "\\") . self::$setControllerSuffix;
+				$file = realpath(self::$appDir . DIRECTORY_SEPARATOR . str_replace("\\", DIRECTORY_SEPARATOR, $classname) . ".php");
+				if (!self::loadFile($file)) {
+					continue;
 				}
+				$type = !empty($_SERVER['HTTP_REQUEST_TYPE']) ? strtolower(trim($_SERVER['HTTP_REQUEST_TYPE'])) : "";
 				if (class_exists($classname, false)) {
 					$classInstance = new $classname($path_array);
 					if ($type !== "" && in_array($type, self::$allowRequestTypes)) {
@@ -531,7 +464,7 @@ if (!class_exists("SlightPHP", false)):
 		private static function debug(mixed ...$args)
 		{
 			if (self::$_debug) {
-				SLog::debug($args);
+				\SlightPHP\Log::debug($args);
 			}
 		}
 

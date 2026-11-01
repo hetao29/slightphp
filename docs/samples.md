@@ -22,7 +22,7 @@
 | `/workspace/main/api` | GET | 当前会话任务 JSON，含 data 和 meta |
 | `/lab/route/entry` | GET | 命名空间控制器与实际路径数组 |
 | `/lab/route/entry/hello` | GET | 演示附加路径参数 |
-| `/workspace/main/plugins` | GET | 真实解析 SConfig 配置及检测扩展 |
+| `/workspace/main/plugins` | GET | 真实解析 Config 配置及检测扩展 |
 | 不存在的控制器或方法 | 任意 | HTTP 404 和可返回首页的错误页 |
 
 `save` 的错误 HTTP 方法返回 405、CSRF 失败返回 403；业务输入错误通过跳转后的提示呈现。API 的非 GET 请求返回 405 JSON。

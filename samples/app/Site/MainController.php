@@ -1,7 +1,7 @@
 <?php
 namespace Site;
 
-use STpl;
+use SlightPHP\Tpl;
 
 class MainController
 {
@@ -27,7 +27,7 @@ class MainController
         if (in_array($view, ['home', 'features'], true)) $data['features'] = require dirname(__DIR__) . '/data/site/features.php';
         if ($view === 'plugins') $data['plugins'] = require dirname(__DIR__) . '/data/site/plugins.php';
         if (in_array($view, ['home', 'plugins', 'guide'], true)) $data['code'] = require dirname(__DIR__) . '/data/site/code.php';
-        $tpl = new STpl();
+        $tpl = new Tpl();
         $tpl->render('head.tpl', $data);
         $tpl->render('site/' . $view . '.tpl', $data);
         $tpl->render('footer.tpl', $data);

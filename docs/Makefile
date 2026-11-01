@@ -1,2 +1,2 @@
 docs:
-	phpdoc -c phpdoc.dist.xml
+	php ../tools/generate-api.php

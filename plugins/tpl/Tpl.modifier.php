@@ -12,7 +12,7 @@ function tpl_modifier_tostring($mixed){
  * @return string 翻译结果或原文。
  */
 function tpl_modifier_tr($string,$zone="main"){
-	return SLanguage::tr($string,$zone);
+	return \SlightPHP\Language::tr($string,$zone);
 }
 /**
  * @param string $string 待转义文本。

@@ -2,7 +2,7 @@
 
 ## 运行仓库中的完整示例
 
-要求 PHP 8.0+，启用 session。入口通过仓库的 vendor/autoload.php 加载框架及 STpl、SConfig、SJson 插件；缺少 vendor 时先执行 composer install，无需数据库或 Redis；模板编译目录 `samples/app/templates_c` 必须可写。
+要求 PHP 8.0+，启用 session。入口通过仓库的 vendor/autoload.php 加载框架及 Tpl、Config、Json 插件；缺少 vendor 时先执行 composer install，无需数据库或 Redis；PHP 的系统临时目录必须可写。
 
 部署示例站点后，访问其根路径 `/`。首页展示框架介绍；从导航进入功能、插件和使用指南，从页脚进入任务工作台。以 `samples/www` 为网站根目录并转发原始 URI，具体配置见 [部署说明](deployment.md)。
 
@@ -19,21 +19,21 @@ samples/
   app/data/site/code.php          使用指南代码
   app/Workspace/             任务工作台 NAMESPACE 控制器
   app/Lab/                   NAMESPACE 路由实验
-  app/templates/             STpl 页面模板与公共布局
-  config/example.conf        SConfig 可运行配置
+  app/templates/             Tpl 页面模板与公共布局
+  config/example.conf        Config 可运行配置
   tests/website.py           官网 HTTP 验证
   tests/smoke.py             工作台 HTTP 验证
 ```
 
-`app` 和配置不在公开目录内。模板编译输出位于 `app/templates_c`，首次渲染自动生成，勿提交版本控制。新示例沿用现有 app、config、www 目录与 STpl 模板结构；无关的旧业务示例已清理。
+`app` 和配置不在公开目录内。模板编译输出位于 PHP 的系统临时目录，首次渲染自动生成。新示例沿用现有 app、config、www 目录与 Tpl 模板结构；无关的旧业务示例已清理。
 
 ## 在新项目中使用 Composer
 
 ```bash
-composer require hetao29/slightphp
+composer require hetao29/slightphp:^6.0
 ```
 
-包声明 PHP >=8.0、PDO 与 Guzzle；实际可用版本以 Composer 解析结果为准。核心本身不依赖 Guzzle。不要混淆完整安装要求与独立演示要求。
+包声明 PHP >=8.0、PDO、Redis 扩展、Guzzle 与 Gregwar Captcha；实际可用版本以 Composer 解析结果为准。核心本身不依赖 Guzzle。不要混淆完整安装要求与独立演示要求。
 
 创建 `public/index.php`：
 
@@ -41,7 +41,6 @@ composer require hetao29/slightphp
 <?php
 require dirname(__DIR__) . '/vendor/autoload.php';
 SlightPHP::setAppDir(dirname(__DIR__) . '/app');
-SlightPHP::setModes(['NAMESPACE']);
 SlightPHP::setDefaultZone('home');
 SlightPHP::setDefaultPage('main');
 SlightPHP::setDefaultEntry('entry');

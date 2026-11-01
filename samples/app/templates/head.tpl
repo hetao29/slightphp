@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="SlightPHP 轻量级 PHP 框架：路径调度、PAGE 与 NAMESPACE 控制器、独立插件和使用指南。">
+<meta name="description" content="SlightPHP 轻量级 PHP 框架：路径调度、命名空间控制器、独立插件和使用指南。">
 <meta name="theme-color" content="#101114">
 <title>{%htmlspecialchars($title, ENT_QUOTES + ENT_SUBSTITUTE, 'UTF-8')%} · SlightPHP</title>
 <link rel="stylesheet" href="/assets/site.css?v={%filemtime(SlightPHP::getAppDir() . '/../www/assets/site.css')%}"><script src="/assets/site.js?v={%filemtime(SlightPHP::getAppDir() . '/../www/assets/site.js')%}" defer></script>
