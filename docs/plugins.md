@@ -14,7 +14,30 @@ $config = Config::getConfig('samples/config/example.conf', 'application');
 echo $config->name;
 ```
 
-支持 `key value;`、分组 `{}`、行首 `#` 注释、数字、布尔及重复键（转数组）。读取不存在的分组会回退 `default` 分组，否则返回 null。默认缓存包含进程内结果和系统临时目录文件；常驻进程修改配置后需要考虑重启或禁用缓存。配置文件应来自可信路径。
+扩展名不是 `.json` 或 `.jsonc` 的文件按原有格式解析，支持 `key value;`、分组 `{}`、行首 `#` 注释、数字、布尔及重复键（转数组）。
+
+扩展名为 `.json` 或 `.jsonc`（不区分大小写）的文件按 JSON 解析，也允许 `//` 行注释和 `/* ... */` 块注释，字符串内的注释符号会保留。除此之外遵循 JSON 语法，例如不允许尾随逗号。JSON 对象解码为 `stdClass`，数组和标量保留对应类型；解码失败（包括格式、编码或深度错误）及块注释未结束时抛出 `JsonException`。
+
+例如 `config.json`：
+
+```jsonc
+{
+  // 应用配置
+  "application": { "name": "demo", "url": "https://example.com" },
+  /* 找不到指定区域时使用 */
+  "default": { "name": "fallback" }
+}
+```
+
+```php
+$application = Config::getConfig('config.json', 'application');
+echo $application->name; // demo
+$all = Config::parse('config.json'); // 完整解码结果
+```
+
+`getConfig()` 不指定区域时返回完整解析结果；指定区域时按顶层对象属性读取，区域不存在或值为 `null` 时回退到非 `null` 的 `default` 属性，否则返回 `null`。区域名为空字符串或字符串 `"0"` 时也返回完整结果。顶层 JSON 数组或标量可通过不指定区域读取。
+
+默认缓存包含进程内结果和系统临时目录文件。进程内缓存命中时不会检查文件修改时间，临时文件缓存则根据修改时间判断是否有效。关闭缓存不会清空已有的进程内结果，重新启用时可能再次读到旧值；常驻进程修改配置后可保持缓存关闭或重启进程。配置文件应来自可信路径。
 
 ## Json
 
