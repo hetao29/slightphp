@@ -30,7 +30,7 @@ class Redis
 	 */
 	private $_redis;
 	/**
-	 * 创建 Redis 客户端。cluster 使用传入的主机和选项；其他模式使用静态配置。
+	 * 创建 Redis 客户端。cluster 使用传入的主机和选项；其他模式同样使用传入的主机和选项。
 	 * sentinel 分支同样创建 RedisArray，不会创建单独的 Sentinel 客户端。
 	 * @param array $hosts 集群节点地址列表。
 	 * @param array $options 客户端选项，如 timeout、read_timeout、persistent、auth 和 context。
@@ -51,10 +51,10 @@ class Redis
 			);
 		} elseif ($engine == "sentinel") {
 			//https://github.com/phpredis/phpredis/blob/develop/sentinel.md
-			$this->_redis = new RedisArray(self::$hosts, self::$options);
+			$this->_redis = new RedisArray($hosts, $options);
 		} else {
 			//https://github.com/phpredis/phpredis/blob/develop/arrays.md
-			$this->_redis = new RedisArray(self::$hosts, self::$options);
+			$this->_redis = new RedisArray($hosts, $options);
 		}
 		return $this->_redis;
 	}
