@@ -9,7 +9,7 @@ namespace SlightPHP;
 /**
  * 格式化并输出 PHP 错误、异常和关闭时的最后一条错误。
  * 加载本文件时会注册异常处理器、错误处理器和关闭回调。
- * 日志中可能包含调用参数；对象会替换为类名，数组及标量不会自动脱敏。
+ * 日志中可能包含调用参数；对象替换为类名，数组中密码、密钥及令牌字段脱敏。
  * @package SlightPHP
  */
 class Error{
@@ -207,7 +207,11 @@ class Error{
 	 */
 	private static function obj2str(&$args){
 		if(is_array($args)){
-			foreach($args as &$v){
+			foreach($args as $key => &$v){
+				if(is_string($key) && preg_match('/password|passwd|secret|token|authorization|cookie|private[_-]?key|api[_-]?key|access[_-]?key|^pwd$/i', $key)){
+					$v = "[REDACTED]";
+					continue;
+				}
 				self::obj2str($v);
 			}
 		}elseif(is_object($args)){

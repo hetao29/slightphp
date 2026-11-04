@@ -20,6 +20,8 @@ class DbPDO
 	private $_pdo;
 	/** @var \PDOStatement|null */
 	private $_stmt;
+	/** @var array|null PDO 建连异常的原始 SQLSTATE、驱动错误码及消息。 */
+	private $_connectionErrorInfo;
 
 	private $_engine;
 
@@ -62,6 +64,10 @@ class DbPDO
 	 */
 	public function connect()
 	{
+		$this->_pdo = null;
+		$this->_stmt = null;
+		$this->_connectionErrorInfo = null;
+		$this->connectionError = false;
 		$tmp = explode("_", $this->_engine);
 		$driver = $tmp[1];
 		try {
@@ -90,6 +96,7 @@ class DbPDO
 			);
 		} catch (\PDOException  $e) {
 			$this->connectionError = true;
+			$this->_connectionErrorInfo = $e->errorInfo ?: [(string)$e->getCode(), null, $e->getMessage()];
 			trigger_error("CONNECT DATABASE ERROR ( " . $e->getMessage() . " ) ", E_USER_WARNING);
 			return false;
 		}
@@ -173,19 +180,19 @@ class DbPDO
 		if (!$this->_pdo) return false;
 		return $this->_pdo->lastInsertId();
 	}
-	/** @return array|false 最近语句或连接的 PDO errorInfo，未连接时为 false。 */
+	/** @return array|false 最近语句或连接的 PDO errorInfo，未连接且无建连错误时为 false。 */
 	public function error()
 	{
-		if (!$this->_pdo) return false;
+		if (!$this->_pdo) return $this->_connectionErrorInfo ?? false;
 		if ($this->_stmt) {
 			return $this->_stmt->errorInfo();
 		}
 		return $this->_pdo->errorInfo();
 	}
-	/** @return string|null|false 最近语句或连接的 SQLSTATE，未连接时为 false。 */
+	/** @return string|null|false 最近语句或连接的 SQLSTATE，未连接且无建连错误时为 false。 */
 	public function errno()
 	{
-		if (!$this->_pdo) return false;
+		if (!$this->_pdo) return $this->_connectionErrorInfo[0] ?? false;
 		if ($this->_stmt) {
 			$error = $this->_stmt->errorCode();
 		} else {
