@@ -58,14 +58,19 @@ class Captcha extends CaptchaBuilder
 	}
 
 	/**
-	 * 检查会话中是否存在匹配的验证码。
+	 * 校验并移除会话中的对应验证码，同一验证码只能使用一次。
 	 * @param string $captcha_code 用户输入的验证码。
 	 * @return bool 是否匹配。
 	 */
 	public static function check($captcha_code)
 	{
-		return !empty($_SESSION[self::$session_prefix . $captcha_code])
-			&& $_SESSION[self::$session_prefix . $captcha_code] == $captcha_code;
+		if (session_status() !== PHP_SESSION_ACTIVE || !is_string($captcha_code) || $captcha_code === '') {
+			return false;
+		}
+		$key = self::$session_prefix . $captcha_code;
+		$expected = $_SESSION[$key] ?? null;
+		unset($_SESSION[$key]);
+		return is_string($expected) && hash_equals($expected, $captcha_code);
 	}
 
 	/**
