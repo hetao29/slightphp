@@ -9,7 +9,7 @@ namespace SlightPHP;
 /**
  * 格式化并输出 PHP 错误、异常和关闭时的最后一条错误。
  * 加载本文件时会注册异常处理器、错误处理器和关闭回调。
- * 日志中可能包含调用参数；对象替换为类名，数组中密码、密钥及令牌字段脱敏。
+ * 默认不记录调用参数；显式启用后，对象替换为类名，数组中密码、密钥及令牌字段脱敏。
  * @package SlightPHP
  */
 class Error{
@@ -22,6 +22,10 @@ class Error{
 	 * @var bool 是否写入 PHP 错误日志或指定文件。
 	 */
 	public static $LOG=true;
+	/**
+	 * @var bool 是否记录调用栈中的参数；默认关闭，开启后沿用字段名脱敏。
+	 */
+	public static $LOGARGS=false;
 	/**
 	 * @var string 日志文件路径；空字符串使用 PHP 默认错误日志。
 	 */
@@ -77,7 +81,10 @@ class Error{
 		if (!(error_reporting() & $errno)) {
 			return true;
 		}
-		$ct= Error::getError(debug_backtrace(),null);
+		$backtrace = debug_backtrace(self::$LOGARGS ? 0 : DEBUG_BACKTRACE_IGNORE_ARGS);
+		// 首帧保留错误元数据，供 getError() 输出错误级别、消息和位置。
+		$backtrace[0]['args'] = [$errno, $errstr, $errfile, $errline];
+		$ct= Error::getError($backtrace,null);
 		self::log($ct);
 	}
 
@@ -142,7 +149,7 @@ class Error{
 					$type = isset($backtrace[$i]['type'])?$backtrace[$i]['type']:"";
 					$func = isset($backtrace[$i]['function'])?$backtrace[$i]['function']:"";
 					$html.='<tr style="background-color: #cccccc; color: #000000;"><td style="padding:4px">'.($index).'</td><td style="padding:4px">'.self::escapeHtml($file).'</td><td style="padding:4px">'.self::escapeHtml($line).'</td><td style="padding:4px">'.self::escapeHtml((empty($class)?"":$class.$type).$func).'(';
-					if(!empty($backtrace[$i]['args'])){
+					if(self::$LOGARGS && !empty($backtrace[$i]['args'])){
 						$html.=self::escapeHtml(self::args2str($backtrace[$i]['args']));
 					}
 					$html.=')<td></td></tr>';
@@ -172,7 +179,7 @@ class Error{
 					$type = isset($backtrace[$i]['type'])?$backtrace[$i]['type']:"";
 					$func = isset($backtrace[$i]['function'])?$backtrace[$i]['function']:"";
 					$tmp=($index)."\t".$file."($line)\t".(empty($class)?"":$class.'::').$func."(";
-					if(!empty($backtrace[$i]['args'])){
+					if(self::$LOGARGS && !empty($backtrace[$i]['args'])){
 						$tmp.=self::args2str($backtrace[$i]['args']);
 					}
 					$tmp.=")";

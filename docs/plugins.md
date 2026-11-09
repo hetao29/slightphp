@@ -47,8 +47,11 @@ $all = Config::parse('config.jsonc'); // 完整解码结果
 error_reporting(error_reporting() & ~(E_DEPRECATED | E_USER_DEPRECATED));
 \SlightPHP\Error::$CONSOLE = false;
 \SlightPHP\Error::$LOG = true;
+\SlightPHP\Error::$LOGARGS = false; // 默认不记录调用参数
 \SlightPHP\Error::$LOGTYPE = 'text';
 ```
+
+`Error::$LOGARGS` 默认为 `false`，HTML、text、json 格式的日志和控制台输出均不记录调用栈参数，仍保留文件、行号、类名、方法名及错误消息。普通错误采集调用栈时也会忽略参数。显式设置为 `true` 后恢复参数记录，并沿用数组字段名脱敏及对象转类名的规则；位置参数及未命中字段名的敏感值仍可能被记录。此开关不清除错误或异常消息本身包含的数据。
 
 HTML 格式会转义错误消息、文件名、调用方法和参数中的 HTML 字符，保留错误表格；引号使用 `ENT_QUOTES`，非法 UTF-8 使用替代字符。text、json 格式保持原内容。
 
