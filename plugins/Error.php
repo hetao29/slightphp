@@ -105,11 +105,11 @@ class Error{
 		$errstr  = $error["message"];
 		$logType = self::getLogType();
 		if($logType=="html"){
-			$html='<table border="1" cellpadding="3" style="font-size: 75%;border: 1px solid #000000;border-collapse: collapse;"><tr style="background-color: #ccccff; font-weight: bold; color: #000000;"><th style="padding:4px">#</th><th style="padding:4px">File</th><th style="padding:4px">Line</th><th style="padding:4px">Class::Method(Args)</th><th style="padding:4px">'.$type.'</th></tr>';
+			$html='<table border="1" cellpadding="3" style="font-size: 75%;border: 1px solid #000000;border-collapse: collapse;"><tr style="background-color: #ccccff; font-weight: bold; color: #000000;"><th style="padding:4px">#</th><th style="padding:4px">File</th><th style="padding:4px">Line</th><th style="padding:4px">Class::Method(Args)</th><th style="padding:4px">'.self::escapeHtml($type).'</th></tr>';
 			$html.='<tr style="background-color: #cccccc; color: red;font-weight:bold;"><td>0</td><td style="padding:4px">'.
-				$errfile.'</td><td style="padding:4px">'.
-				$errline.'</td><td style="padding:4px"><td>'.
-				$errstr. '</td></tr></table><hr style="background-color: #cccccc; border: 0px; height: 1px;" />';
+				self::escapeHtml($errfile).'</td><td style="padding:4px">'.
+				self::escapeHtml($errline).'</td><td style="padding:4px"><td>'.
+				self::escapeHtml($errstr). '</td></tr></table><hr style="background-color: #cccccc; border: 0px; height: 1px;" />';
 			return $html;
 		}else{
 			$text=[];
@@ -141,9 +141,9 @@ class Error{
 					$class = isset($backtrace[$i]['class'])?$backtrace[$i]['class']:"";
 					$type = isset($backtrace[$i]['type'])?$backtrace[$i]['type']:"";
 					$func = isset($backtrace[$i]['function'])?$backtrace[$i]['function']:"";
-					$html.='<tr style="background-color: #cccccc; color: #000000;"><td style="padding:4px">'.($index).'</td><td style="padding:4px">'.$file.'</td><td style="padding:4px">'.$line.'</td><td style="padding:4px">'.(empty($class)?"":$class.$type).$func.'(';
+					$html.='<tr style="background-color: #cccccc; color: #000000;"><td style="padding:4px">'.($index).'</td><td style="padding:4px">'.self::escapeHtml($file).'</td><td style="padding:4px">'.self::escapeHtml($line).'</td><td style="padding:4px">'.self::escapeHtml((empty($class)?"":$class.$type).$func).'(';
 					if(!empty($backtrace[$i]['args'])){
-						$html.=self::args2str($backtrace[$i]['args']);
+						$html.=self::escapeHtml(self::args2str($backtrace[$i]['args']));
 					}
 					$html.=')<td></td></tr>';
 					$index++;
@@ -151,12 +151,12 @@ class Error{
 			}
 			$i=0;
 			if($e){
-				$html.='<tr style="background-color: #cccccc; color: #000000;"><td style="padding:4px">'.($index).'</td><td style="padding:4px">'.$e->getFile().'</td><td style="padding:4px">'.$e->getLine().'</td><td></td><td style="padding:4px;font-weight:bold">'.$e->getCode().':'.$e->getMessage().'</td></tr>';
+				$html.='<tr style="background-color: #cccccc; color: #000000;"><td style="padding:4px">'.($index).'</td><td style="padding:4px">'.self::escapeHtml($e->getFile()).'</td><td style="padding:4px">'.self::escapeHtml($e->getLine()).'</td><td></td><td style="padding:4px;font-weight:bold">'.self::escapeHtml($e->getCode()).':'.self::escapeHtml($e->getMessage()).'</td></tr>';
 				$index++;
 			}else{
 				$errorCode = $backtrace[$i]['args'][0];
 				$line  = isset($backtrace[$i]['line'])?$backtrace[$i]['line']:"";
-				$html.='<tr style="background-color: #cccccc; color: #000000;"><td style="padding:4px">'.($index).'</td><td style="padding:4px">'.$backtrace[$i]['args'][2].'</td><td style="padding:4px">'.$line.'</td><td></td><td style="padding:4px;font-weight:bold">'.Error::$error_type[$errorCode].':'.(!empty($backtrace[$i]['args'])?$backtrace[$i]['args'][1]:"").'</td></tr>';
+				$html.='<tr style="background-color: #cccccc; color: #000000;"><td style="padding:4px">'.($index).'</td><td style="padding:4px">'.self::escapeHtml($backtrace[$i]['args'][2]).'</td><td style="padding:4px">'.self::escapeHtml($line).'</td><td></td><td style="padding:4px;font-weight:bold">'.self::escapeHtml(Error::$error_type[$errorCode]).':'.self::escapeHtml(!empty($backtrace[$i]['args'])?$backtrace[$i]['args'][1]:"").'</td></tr>';
 				$index++;
 			}
 			$html.='</table><hr style="background-color: #cccccc; border: 0px; height: 1px;" />';
@@ -239,6 +239,10 @@ class Error{
 			}
 		}
 		return self::$LOGTYPE;
+	}
+	/** @return string 可安全插入 HTML 文本节点的内容。 */
+	private static function escapeHtml($value){
+		return htmlspecialchars((string)$value, ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8");
 	}
 	/**
 	 * 根据配置输出日志内容。

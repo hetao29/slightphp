@@ -14,6 +14,8 @@
 
 删除 `setModes()`、`getModes()`、`setDefaultType()`、`getDefaultType()` 和 `$defaultType` 的调用。无 `Request-Type` 请求头时，入口方法不再默认添加 `page` 前缀；有该头且值在允许列表中时，仍会添加对应前缀。注意检查 AJAX、内部调用、CLI 任务及自定义错误页面。框架仍不根据 GET/POST 自动限制方法。
 
+请求路径现在默认最多 10 段，包含区域、page、entry 和路径参数；超过上限时 `run()` 直接返回 `false`，不会加载控制器。原有路由或业务参数超过 10 段时，可在初始化阶段通过 `SlightPHP::setMaxDepth($maxDepth)` 调整（必须大于等于 1），通过 `getMaxDepth()` 读取。未超限的 `$inPath` 参数仍保持原样，默认路径补全不额外计数。该限制同时适用于正常请求及内部调用，详见[核心调度文档](framework.md)。
+
 ## 插件类名
 
 旧的全局插件类名及兼容别名均已删除，必须使用命名空间类，或在调用处使用 `use` 导入：

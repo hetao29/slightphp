@@ -4,9 +4,9 @@
 
 1. 入口加载核心，设置应用目录、默认路径和需要的插件。
 2. `run()` 选择路径：非空显式参数 → 非空 `setPathInfo()` → `$_SERVER['PATH_INFO']` → `$_SERVER['REQUEST_URI']`。全部为空时返回 `false`。
-3. 去掉开头 `/`，用 `parse_url(..., PHP_URL_PATH)` 排除查询串，按 `/` 与 splitFlag 的每个字符拆分。不会 URL 解码或自动过滤业务参数。
+3. 去掉开头 `/`，用 `parse_url(..., PHP_URL_PATH)` 排除查询串，按 `/` 与 splitFlag 的每个字符拆分，忽略空段。`preg_split()` 使用 `maxDepth + 1` 作为结果数量上限（防止整数溢出），结果超过 `maxDepth` 时立即返回 `false`，不进入控制器查找。不会 URL 解码。
 4. 缺少前三段时分别补 defaultZone、defaultPage、defaultEntry。
-5. 从最深候选目录开始向浅层尝试，将倒数两段作为 page、entry；每个深度寻找命名空间控制器文件。
+5. 从最深候选区域开始向浅层尝试；区域后相邻两段作为 page、entry，每个深度寻找命名空间控制器文件。默认最多 10 个路径段，因此最多尝试 8 个区域深度。
 6. 文件必须经 realpath 验证位于 appDir 内且是普通文件，再 `require_once`。
 7. 找到类后使用完整路径数组构造实例；检查目标方法存在且可公开调用，再传入同一数组执行。构造函数可能在方法未匹配时就执行，不应在其中执行写操作。
 8. 返回方法的原始返回值；未匹配返回 `false`。核心不会自动输出字符串、序列化对象、发送 404 或捕获异常。
@@ -20,6 +20,17 @@
 
 路径的下划线分段首字母大写并附加 Controller 后缀。在大小写敏感文件系统上必须按此规则命名。
 
+`maxDepth` 默认是 10，限制请求路径的非空分段总数，包含区域、page、entry 和路径参数。超过上限直接返回 `false`，不会加载控制器，也不会把合并的尾部作为一个参数继续调度。默认值允许最多 8 段区域路径，再加 page 和 entry；业务参数也会占用分段数。
+
+在应用初始化时按实际路由需要设置：
+
+```php
+SlightPHP::setMaxDepth(15);
+$maxDepth = SlightPHP::getMaxDepth(); // 15
+```
+
+`setMaxDepth(int $maxDepth)` 必须大于等于 1，否则抛出 `InvalidArgumentException` 并保留原配置。分段数在补全默认区域、page、entry 之前检查；缺省段不会额外计入。增大上限会增加候选控制器查找成本。
+
 `setAppNamespace('Demo')` 同时影响类名和文件路径：例如文件需要放在 `appDir/Demo/User/ProfileController.php`，声明 `namespace Demo\User`。
 
 ## 路径参数
@@ -32,6 +43,8 @@
 
 多级路由时 entry 的下标随目录深度变化，不应一律认为第三段是方法、第四段是参数。控制器应根据自己的固定路由结构读取参数并校验。`$_GET` 与 `$_POST` 仍由 PHP 提供，框架不绑定参数。
 
+`maxDepth` 同时适用于正常请求和显式路径的内部调用。默认配置下，`/user/profile/update/1/2/3/4/5/6/7` 共 10 段，参数仍分别传入 `$inPath`；再追加 `/8` 则直接返回 `false`。查询串和空路径段不计入上限；配置的附加分隔字符同样参与分段。
+
 ## 配置 API
 
 | 方法 | 默认值 / 说明 |
@@ -39,6 +52,7 @@
 | `setAppDir($dir)` / `getAppDir()` | `.`，建议使用存在目录的绝对路径 |
 | `setAppNamespace($namespace)` / `getAppNamespace()` | 空字符串 |
 | `setControllerSuffix($suffix)` / `getControllerSuffix()` | `Controller` |
+| `setMaxDepth(int $maxDepth)` / `getMaxDepth()` | `10`；请求路径最大分段数，必须大于等于 1 |
 | `setDefaultZone($zone)` / `getDefaultZone()` | `zone` |
 | `setDefaultPage($page)` / `getDefaultPage()` | `page` |
 | `setDefaultEntry($entry)` / `getDefaultEntry()` | `entry` |

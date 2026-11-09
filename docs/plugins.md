@@ -50,6 +50,12 @@ error_reporting(error_reporting() & ~(E_DEPRECATED | E_USER_DEPRECATED));
 \SlightPHP\Error::$LOGTYPE = 'text';
 ```
 
+HTML 格式会转义错误消息、文件名、调用方法和参数中的 HTML 字符，保留错误表格；引号使用 `ENT_QUOTES`，非法 UTF-8 使用替代字符。text、json 格式保持原内容。
+
+## Log
+
+`Log::$CONSOLE = true` 时，CLI 输出纯文本，网页响应输出 HTML 注释。网页中的日志内容会进行 HTML 转义，避免标签注入或 `-->` 提前闭合注释；写入日志文件的内容保持原样。
+
 ## Json
 
 封装 `json_encode` / `json_decode`，支持对应 flags、depth。默认编码失败返回 false，解码失败可能返回 null，应检查 `Json::error()` / `errorMsg()`，或使用 `JSON_THROW_ON_ERROR`。响应头由应用设置。

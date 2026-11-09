@@ -132,7 +132,7 @@ class Log
 			if(PHP_SAPI=="cli"){
 				echo $log."\n";
 			}else{
-				echo "<!--\n",$log,"\n-->";
+				echo "<!--\n",htmlspecialchars($log, ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8"),"\n-->";
 			}
 		}
 	}

@@ -35,6 +35,34 @@ if (!class_exists("SlightPHP", false)):
 		public static $pathInfo = "";
 
 		/**
+		 * @var int 请求路径允许的最大分段数，默认 10。
+		 */
+		private static $maxDepth = 10;
+
+		/**
+		 * 设置请求路径的最大分段数，包含区域、page、entry 和路径参数。
+		 * @param int $maxDepth 最大深度，必须大于等于 1。
+		 * @return bool 始终返回 true。
+		 * @throws \InvalidArgumentException 深度小于 1。
+		 */
+		public static function setMaxDepth(int $maxDepth)
+		{
+			if ($maxDepth < 1) {
+				throw new \InvalidArgumentException('maxDepth must be at least 1');
+			}
+			self::$maxDepth = $maxDepth;
+			return true;
+		}
+
+		/**
+		 * @return int 当前请求路径的最大分段数。
+		 */
+		public static function getMaxDepth()
+		{
+			return self::$maxDepth;
+		}
+
+		/**
 		 * set controller suffix, default "Controller"
 		 * @var string
 		 */
@@ -357,7 +385,8 @@ if (!class_exists("SlightPHP", false)):
 		 * 解析路径并调用匹配的控制器入口。
 		 * 显式传入非空路径时作为局部调用，不更新当前 zone/page/entry，
 		 * 且会跳过与当前入口相同的局部调用。
-		 * 路径依次尝试不同的区域深度，完整路径段数组同时传给控制器构造函数和入口。
+		 * 请求路径最多包含 maxDepth 段（默认 10），超限返回 false。
+		 * 上限包含区域、page、entry 和路径参数；未超限时完整路径数组传给控制器。
 		 * 未显式传路径时依次使用 pathInfo、PATH_INFO 和 REQUEST_URI。
 		 *
 		 * @param string $path 显式路径；空字符串时从 pathInfo 或服务器请求信息读取。
@@ -394,7 +423,11 @@ if (!class_exists("SlightPHP", false)):
 			} else {
 				$url = "";
 			}
-			$path_array = preg_split("/[$splitFlag\/]/", $url, -1, PREG_SPLIT_NO_EMPTY);
+			$path_array = preg_split("/[$splitFlag\/]+/", $url, min(self::$maxDepth, PHP_INT_MAX - 1) + 1, PREG_SPLIT_NO_EMPTY);
+			if (count($path_array) > self::$maxDepth) {
+				self::debug("path exceeds maxDepth");
+				return false;
+			}
 			if (!isset($path_array[0])) {
 				$path_array[0] = self::$defaultZone;
 			}
