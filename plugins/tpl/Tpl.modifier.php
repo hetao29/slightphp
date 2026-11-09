@@ -16,14 +16,14 @@ function tpl_modifier_tr($string,$zone="main"){
 }
 /**
  * @param string $string 待转义文本。
- * @param string $type url 使用 URL 编码，其他值使用 HTML 转义。
+ * @param string $type url 使用 URL 编码，其他值使用 UTF-8 HTML 转义，包含单双引号。
  * @return string 转义后的文本。
  */
 function tpl_modifier_escape($string,$type="html"){
 	switch($type){
 	case "url":return rawurlencode($string);
 	default:
-	case "html":return htmlspecialchars($string);
+	case "html":return htmlspecialchars($string, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 	}
 }
 /**
