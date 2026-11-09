@@ -82,12 +82,12 @@ class Error{
 	}
 
 	/**
-	 * 关闭时记录 error_get_last 返回的最后一条错误（若存在）。
+	 * 关闭时记录 error_get_last 返回且在 error_reporting 掩码中的最后一条错误。
 	 * @return void
 	 */
 	public static function fatal_handler() {
 		$error = error_get_last();
-		if($error != NULL){
+		if ($error !== null && (error_reporting() & $error["type"])) {
 			$ct = Error::getFatal($error);
 			self::log($ct);
 		}

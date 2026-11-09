@@ -39,6 +39,17 @@ $all = Config::parse('config.json'); // 完整解码结果
 
 默认缓存包含进程内结果和系统临时目录文件。进程内缓存命中时不会检查文件修改时间，临时文件缓存则根据修改时间判断是否有效。关闭缓存不会清空已有的进程内结果，重新启用时可能再次读到旧值；常驻进程修改配置后可保持缓存关闭或重启进程。配置文件应来自可信路径。
 
+## Error
+
+首次加载 `SlightPHP\Error` 时会注册错误处理器、异常处理器和关闭回调。普通错误处理及关闭回调补记的最后一条错误都遵循调用时的 `error_reporting()` 掩码；即使被屏蔽的错误仍留在 `error_get_last()` 中，关闭回调也不会将其输出或写入日志。未捕获异常仍由异常处理器记录。
+
+```php
+error_reporting(error_reporting() & ~(E_DEPRECATED | E_USER_DEPRECATED));
+\SlightPHP\Error::$CONSOLE = false;
+\SlightPHP\Error::$LOG = true;
+\SlightPHP\Error::$LOGTYPE = 'text';
+```
+
 ## Json
 
 封装 `json_encode` / `json_decode`，支持对应 flags、depth。默认编码失败返回 false，解码失败可能返回 null，应检查 `Json::error()` / `errorMsg()`，或使用 `JSON_THROW_ON_ERROR`。响应头由应用设置。
