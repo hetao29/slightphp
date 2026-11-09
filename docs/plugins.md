@@ -111,7 +111,9 @@ $captcha = new \SlightPHP\Captcha();
 $captcha->CreateImage(); // 输出 PNG 并将验证码保存到会话
 ```
 
-提交表单时，在同一活动会话中调用 `\SlightPHP\Captcha::check($code)`。对应验证码记录会在校验时自动移除，同一验证码只能使用一次，重复提交返回 `false`；空值或非字符串输入返回 `false`。不要在校验前调用 `session_write_close()`，也不要在同一业务流程中重复调用 `check()`。原有 `del($code)` 可以继续调用，也可用于主动作废尚未使用的验证码。默认图片为 140×50、文本长度为 4–5；可在生成前修改 `width`、`height`、`minWordLength`、`maxWordLength` 和 `imageFormat`。父类现为 `Gregwar\Captcha\CaptchaBuilder`，旧版 `SimpleCaptcha` 的其他属性和方法不再提供。
+提交表单时，在同一活动会话中调用 `\SlightPHP\Captcha::check($code)`。同一会话、同一前缀仅保存最新验证码，刷新图片立即替换旧记录。验证码默认有效期为 300 秒，可在生成前通过 `Captcha::$ttl` 设置正整数秒数；到期及异常记录在检查时移除并返回 `false`。成功校验后立即移除，重复提交返回 `false`；错误输入保留当前未过期验证码，空值或非字符串输入返回 `false`。不要在校验前调用 `session_write_close()`，也不要在同一业务流程中重复调用 `check()`。原有 `del($code)` 可以继续调用，也可用于主动作废尚未使用的验证码。默认图片为 140×50、文本长度为 4–5；可在生成前修改 `width`、`height`、`minWordLength`、`maxWordLength` 和 `imageFormat`。父类现为 `Gregwar\Captcha\CaptchaBuilder`，旧版 `SimpleCaptcha` 的其他属性和方法不再提供。
+
+Session 中的记录现在包含 `code` 和 `expires_at`，存放于 `session_prefix` 对应的固定键中；旧的“前缀 + 验证码”记录不再接受，升级后需重新获取验证码。不同用途可使用不同前缀隔离；生成图片时必须有活动会话。
 
 并发请求下的一次性校验依赖会话后端提供互斥锁。PHP files 会话后端会锁定同一会话；使用 Redis 等后端时需确认其会话锁支持与配置，不能将仅修改当前请求的 `$_SESSION` 视为分布式原子操作。PhpRedis 对 RedisCluster 的会话锁存在限制，见[官方说明](https://github.com/phpredis/phpredis#session-locking)。
 
