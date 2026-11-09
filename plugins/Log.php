@@ -22,7 +22,7 @@ class Log
 	/** @var string 日志文件路径；为空时使用 PHP 默认错误日志。 */
 	public static $LOGFILE = "";
 	/**
-	 * @var string 数组和对象的格式：json 或其他值（print_r 文本）。
+	 * @var string text：print_r 文本；json：每行一条完整 JSON 记录。
 	 */
 	public static $LOGTYPE="text";
 
@@ -104,21 +104,25 @@ class Log
 	 * @return void
 	 */
 	private static function writeArray($prefix, Array $args){
-		$log= "[" . date("Y-m-d H:i:s") . "]";
-		if($prefix){
-			$log.=" ".$prefix;
-		}
-		foreach($args as $info){
-			if (is_object($info) || is_array($info)) {
-				if(self::$LOGTYPE=="json"){
-					$log.= " ".json_encode($info);
-				}else{
+		if (self::$LOGTYPE === 'json') {
+			$log = json_encode([
+				'time' => date(DATE_ATOM),
+				'level' => $prefix,
+				'message' => array_values($args),
+			], JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE | JSON_PARTIAL_OUTPUT_ON_ERROR);
+		} else {
+			$log= "[" . date("Y-m-d H:i:s") . "]";
+			if($prefix){
+				$log.=" ".$prefix;
+			}
+			foreach($args as $info){
+				if (is_object($info) || is_array($info)) {
 					$log.= " ".print_r($info, true);
+				} elseif (is_bool($info)) {
+					$log.= " ".($info ? "true" : "false");
+				}else{
+					$log.= " ".$info;
 				}
-			} elseif (is_bool($info)) {
-				$log.= " ".($info ? "true" : "false");
-			} else {
-				$log.= " ".$info;
 			}
 		}
 

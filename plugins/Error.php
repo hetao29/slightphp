@@ -251,6 +251,21 @@ class Error{
 	private static function escapeHtml($value){
 		return htmlspecialchars((string)$value, ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8");
 	}
+	/** @return bool 网页中的非 HTML 错误输出是否需要按 HTML 文本转义。 */
+	private static function shouldEscapeConsole(): bool {
+		if (PHP_SAPI === 'cli' || PHP_SAPI === 'phpdbg' || self::getLogType() === 'html') {
+			return false;
+		}
+		$contentType = (string) ini_get('default_mimetype');
+		foreach (headers_list() as $header) {
+			if (stripos($header, 'Content-Type:') === 0) {
+				$contentType = substr($header, 13);
+			}
+		}
+		$contentType = strtolower(trim(explode(';', $contentType, 2)[0]));
+		return $contentType !== 'text/plain' && $contentType !== 'application/json'
+			&& !(str_starts_with($contentType, 'application/') && str_ends_with($contentType, '+json'));
+	}
 	/**
 	 * 根据配置输出日志内容。
 	 * @param string|false $ct 已格式化的内容。
@@ -258,7 +273,7 @@ class Error{
 	 */
 	private static function log($ct){
 		if(Error::$CONSOLE){
-			echo $ct;
+			echo self::shouldEscapeConsole() ? self::escapeHtml($ct) : $ct;
 		}
 		if(Error::$LOG){
 			if(!empty(Error::$LOGFILE)){

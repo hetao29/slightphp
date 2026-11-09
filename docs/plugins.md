@@ -53,11 +53,27 @@ error_reporting(error_reporting() & ~(E_DEPRECATED | E_USER_DEPRECATED));
 
 `Error::$LOGARGS` 默认为 `false`，HTML、text、json 格式的日志和控制台输出均不记录调用栈参数，仍保留文件、行号、类名、方法名及错误消息。普通错误采集调用栈时也会忽略参数。显式设置为 `true` 后恢复参数记录，并沿用数组字段名脱敏及对象转类名的规则；位置参数及未命中字段名的敏感值仍可能被记录。此开关不清除错误或异常消息本身包含的数据。
 
-HTML 格式会转义错误消息、文件名、调用方法和参数中的 HTML 字符，保留错误表格；引号使用 `ENT_QUOTES`，非法 UTF-8 使用替代字符。text、json 格式保持原内容。
+HTML 格式会转义错误消息、文件名、调用方法和参数中的 HTML 字符，保留错误表格；引号使用 `ENT_QUOTES`，非法 UTF-8 使用替代字符。text、json 格式写入日志文件和输出到 CLI 时保持原内容。开启 `CONSOLE` 向网页输出时，仅在响应已声明 `text/plain`、`application/json` 或 `application/*+json` 时保留原格式；其他类型（含默认 `text/html` 和未指定类型）会将错误内容作为 HTML 文本转义，避免消息中的标签被执行。插件不修改响应头；独立 JSON 或纯文本接口应由应用设置正确的 `Content-Type`。
 
 ## Log
 
 `Log::$CONSOLE = true` 时，CLI 输出纯文本，网页响应输出 HTML 注释。网页中的日志内容会进行 HTML 转义，避免标签注入或 `-->` 提前闭合注释；写入日志文件的内容保持原样。
+
+`LOGTYPE` 默认是 `text`，保留多行文本。`json` 将每次调用编码为一个完整 JSON 对象，每行一条记录；消息中的换行、回车及控制字符会被 JSON 编码，不会变成额外记录。这是 JSON Lines 格式，整个多条记录文件不是单个 JSON 数组：
+
+```php
+\SlightPHP\Log::$LOGTYPE = 'json';
+\SlightPHP\Log::$LOGFILE = __DIR__ . '/app.json';
+\SlightPHP\Log::warning("第一行\n第二行", ['user_id' => 123]);
+```
+
+```json
+{"time":"2026-11-09T18:00:00+08:00","level":"WARNING","message":["第一行\n第二行",{"user_id":123}]}
+```
+
+`time` 为带时区的 ISO 8601 时间，`level` 沿用原级别名称，`write()` 的级别为空字符串。`message` 始终为调用参数数组，保留可编码值的类型。非法 UTF-8 使用替代字符；循环引用、资源等无法完整编码的数据按 `JSON_PARTIAL_OUTPUT_ON_ERROR` 规则部分输出。指定 `LOGFILE` 的文件与 CLI 控制台每条记录以一个换行结束；网页控制台继续使用转义后的 HTML 注释。`LOGFILE` 为空时交给 PHP 默认日志系统，其附加前缀由运行环境决定。
+
+兼容性：`json` 模式已从旧的“文本前缀 + 部分参数 JSON 编码”升级为整条记录 JSON 编码。依赖旧日志格式的解析程序需要调整；应为新格式使用单独日志文件或先轮转旧文件，避免混合格式。
 
 ## Json
 
