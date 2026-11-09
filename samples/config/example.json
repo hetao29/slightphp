@@ -1,0 +1,8 @@
+{
+    "application": {
+        "name": "SlightPHP 示例工作台",
+        "debug": false,
+        "limit": 50,
+        "feature": ["tasks", "routing"]
+    }
+}

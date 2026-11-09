@@ -20,7 +20,7 @@ samples/
   app/Workspace/             任务工作台 NAMESPACE 控制器
   app/Lab/                   NAMESPACE 路由实验
   app/templates/             Tpl 页面模板与公共布局
-  config/example.conf        Config 可运行配置
+  config/example.json        Config 可运行配置
   tests/website.py           官网 HTTP 验证
   tests/smoke.py             工作台 HTTP 验证
 ```

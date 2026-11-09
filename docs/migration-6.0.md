@@ -38,6 +38,12 @@
 
 验证码实现改用 `Gregwar\Captcha\CaptchaBuilder`；旧 `SimpleCaptcha` 的专有属性和方法不再可用，检查自定义验证码生成代码。保留的 `Captcha::check()` 和 `del()` 使用当前会话。确认图片扩展、字体和输出流程后重新测试。
 
+## Config 配置迁移
+
+`SlightPHP\Config` 仅支持 `.json` 和 `.jsonc`，不再解析 `.conf` 等旧格式。将分组转换为 JSON 对象、重复键转换为数组，并更新 `Db::setConfigFile()`、`Redis::setConfigFile()` 及 `Config::getConfig()` 等调用中的路径。`.json` 使用严格 JSON；需要注释时使用 `.jsonc`。
+
+Config 已取消序列化文件缓存，只保留由 `Config::$CACHE` 控制的进程内缓存；旧的 `0SConfig_Cache_*` 文件不会再读取。关闭缓存不会清空已有内存结果，常驻进程更新配置后应保持缓存关闭或重启进程。
+
 ## 升级检查
 
 逐项测试默认路由、多级控制器、请求类型前缀、404 和反向代理路径；检查配置、模板、数据库、Redis、日志及验证码；重新生成 Composer 自动加载文件并在实际 PHP 运行环境运行测试。原 PAGE 文件不会被调度，旧类名不会自动加载，不能依靠旧缓存掩盖迁移问题。

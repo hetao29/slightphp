@@ -69,7 +69,7 @@ class MainController
     public function Plugins($inPath)
     {
         Config::$CACHE = false;
-        $this->render('plugins', ['config' => Config::getConfig(dirname(__DIR__, 2) . '/config/example.conf')]);
+        $this->render('plugins', ['config' => Config::getConfig(dirname(__DIR__, 2) . '/config/example.json')]);
     }
 
     private function render(string $view, array $data = []): void

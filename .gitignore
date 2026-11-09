@@ -1,4 +1,3 @@
 samples/tests/
 tests/
-!tests/ConfigTest.php
 tools/

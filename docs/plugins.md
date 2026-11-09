@@ -9,16 +9,16 @@
 ```php
 require 'vendor/autoload.php';
 use SlightPHP\Config;
-Config::$CACHE = false; // 开发时禁用进程内及临时文件缓存
-$config = Config::getConfig('samples/config/example.conf', 'application');
+Config::$CACHE = false; // 开发时禁用进程内缓存
+$config = Config::getConfig('samples/config/example.json', 'application');
 echo $config->name;
 ```
 
-扩展名不是 `.json` 或 `.jsonc` 的文件按原有格式解析，支持 `key value;`、分组 `{}`、行首 `#` 注释、数字、布尔及重复键（转数组）。
+仅支持 `.json` 和 `.jsonc`（扩展名不区分大小写），不再兼容 `.conf` 等旧配置格式。旧配置中的分组应迁移为 JSON 对象，重复键应迁移为数组。其他扩展名会抛出 `InvalidArgumentException`；文件不存在或无法读取时抛出 `RuntimeException`。
 
-扩展名为 `.json` 或 `.jsonc`（不区分大小写）的文件按 JSON 解析，也允许 `//` 行注释和 `/* ... */` 块注释，字符串内的注释符号会保留。除此之外遵循 JSON 语法，例如不允许尾随逗号。JSON 对象解码为 `stdClass`，数组和标量保留对应类型；解码失败（包括格式、编码或深度错误）及块注释未结束时抛出 `JsonException`。
+`.json` 直接按严格 JSON 解码，不处理注释；`.jsonc` 额外允许 `//` 行注释和 `/* ... */` 块注释，字符串内的注释符号会保留。两种格式均不允许尾随逗号。JSON 对象解码为 `stdClass`，数组和标量保留对应类型；解码失败（包括格式、编码或深度错误）及 JSONC 块注释未结束时抛出 `JsonException`。原来含注释的 `.json` 文件需改名为 `.jsonc`。
 
-例如 `config.json`：
+例如 `config.jsonc`：
 
 ```jsonc
 {
@@ -30,14 +30,14 @@ echo $config->name;
 ```
 
 ```php
-$application = Config::getConfig('config.json', 'application');
+$application = Config::getConfig('config.jsonc', 'application');
 echo $application->name; // demo
-$all = Config::parse('config.json'); // 完整解码结果
+$all = Config::parse('config.jsonc'); // 完整解码结果
 ```
 
 `getConfig()` 不指定区域时返回完整解析结果；指定区域时按顶层对象属性读取，区域不存在或值为 `null` 时回退到非 `null` 的 `default` 属性，否则返回 `null`。区域名为空字符串或字符串 `"0"` 时也返回完整结果。顶层 JSON 数组或标量可通过不指定区域读取。
 
-默认缓存包含进程内结果和系统临时目录文件。进程内缓存命中时不会检查文件修改时间，临时文件缓存则根据修改时间判断是否有效。关闭缓存不会清空已有的进程内结果，重新启用时可能再次读到旧值；常驻进程修改配置后可保持缓存关闭或重启进程。配置文件应来自可信路径。
+默认仅保留进程内缓存，按配置文件的规范路径及格式复用解析结果；不再读写或反序列化系统临时目录中的文件缓存，旧文件缓存不会再被使用。缓存命中时不会检查文件修改时间。`Config::$CACHE = false` 会绕过缓存，但不会清空已有结果，重新启用时可能再次读到旧值；常驻进程修改配置后可保持缓存关闭或重启进程。配置文件应来自可信路径。
 
 ## Error
 
@@ -102,7 +102,7 @@ $captcha->CreateImage(); // 输出 PNG 并将验证码保存到会话
 
 | 插件 | 用途 | 启用前需要 |
 | --- | --- | --- |
-| Db | 表操作、查询与读写配置 | PDO / 对应驱动、数据库、db.conf；见 [数据库 API](index.html#SlightPHP%5CDb) |
+| Db | 表操作、查询与读写配置 | PDO / 对应驱动、数据库、JSON/JSONC 连接配置；见 [数据库 API](index.html#SlightPHP%5CDb) |
 | Redis | Redis 缓存 | Redis PHP 扩展、服务和连接配置 |
 | Log | 分级日志 | 可写日志路径；避免将调试输出混入 JSON 响应 |
 | Error | 错误处理 | 明确线上错误输出策略 |

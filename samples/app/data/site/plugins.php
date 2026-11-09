@@ -2,7 +2,7 @@
 // Module content, loaded only for the pages that use it.
 return [
             ['name' => 'Tpl', 'group' => '基础', 'type' => 'base', 'text' => '模板编译与变量赋值，支持条件、循环和公共模板拆分。本站正在使用。', 'need' => '需要可信模板与可写编译目录'],
-            ['name' => 'Config', 'group' => '基础', 'type' => 'base', 'text' => '解析分组配置，支持数字、布尔值及重复键，并提供缓存。', 'need' => '配置文件；开发时可关闭缓存'],
+            ['name' => 'Config', 'group' => '基础', 'type' => 'base', 'text' => '解析 JSON/JSONC 配置，支持对象、数组与基本类型，并提供进程内缓存。', 'need' => '配置文件；开发时可关闭缓存'],
             ['name' => 'Json', 'group' => '基础', 'type' => 'base', 'text' => 'JSON 编解码与错误查询，支持原生 flags 和 depth 参数。', 'need' => '应用自行设置响应头与错误策略'],
             ['name' => 'Route', 'group' => '基础', 'type' => 'base', 'text' => '使用正则规则匹配请求路径，映射为核心调度路径。', 'need' => '在 run() 前注册规则'],
             ['name' => 'Log', 'group' => '基础', 'type' => 'base', 'text' => '提供分级日志，可配置控制台输出与文件记录。', 'need' => '写文件时需要目录权限'],
