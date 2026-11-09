@@ -1,8 +1,10 @@
-# SlightPHP 框架使用文档
+# SlightPHP 6.2.0 框架使用文档
 
 本目录的 Markdown 文档根据当前 PHP 源码整理。[API 参考](index.html)由当前源码生成；安装 Composer 依赖后可运行 `make -C docs` 重新生成。
 
-- [6.0 迁移与不兼容事项](migration-6.0.md)
+- [更新记录](../CHANGELOG.md)
+- [6.2 升级说明](migration-6.2.md)
+- [从 5.x 迁移到 6.x](migration-6.0.md)
 - [快速开始与项目结构](getting-started.md)
 - [核心调度、路由与 API](framework.md)
 - [框架官网与维护说明](website.md)

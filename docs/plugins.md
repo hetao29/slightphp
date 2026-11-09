@@ -1,6 +1,6 @@
 # 插件使用指南
 
-运行 `composer install` 后，在应用入口引入 `vendor/autoload.php`。插件由 Composer 按需加载，使用 `SlightPHP\` 命名空间；6.0 不提供旧版全局类名。模板辅助函数由 Composer 自动注册。各插件的运行条件不同，请按需准备扩展和服务。
+运行 `composer install` 后，在应用入口引入 `vendor/autoload.php`。插件由 Composer 按需加载，使用 `SlightPHP\` 命名空间；6.x 不提供旧版全局类名。模板辅助函数由 Composer 自动注册。各插件的运行条件不同，请按需准备扩展和服务。
 
 插件包括 `Captcha`、`Config`、`Db`、`Error`、`Http`、`Json`、`Language`、`Log`、`Redis`、`Route` 和 `Tpl`。`SlightPHP\Db` 提供表操作、查询和事务接口。
 
