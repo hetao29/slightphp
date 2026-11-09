@@ -86,6 +86,10 @@ $tpl->render('index.tpl', ['title' => '示例']);
 
 模板及编译目录由应用管理，编译目录必须可写且不应公开访问。当前实现中 `render()` 与 `display()` 均直接输出，返回值为 null（内部 fetch 使用 include），不要依赖其返回 HTML 字符串；还有 `setForceCompile()`、`setSafeMode()` 和历史拼写 `setDelimter()`。安全模式不能替代输出转义，不允许上传不可信模板。模板语法和调用方式应以当前源码及 API 为准。新工作台通过 Tpl 渲染 `head.tpl`、`index/*.tpl` 和 `footer.tpl`；使用 `{%`、`%}` 分隔符，保持默认安全模式。
 
+源文件经 `realpath()` 解析后必须位于模板目录内；编译文件和其各级子目录也必须位于编译目录内，指向目录外的符号链接会被拒绝。保留原有 CRC32 子目录和修改时间缓存逻辑。新建编译目录及子目录默认权限为 `0700`（受 umask 影响），已有目录权限不自动修改。`compile_dir` 及其 CRC32 子目录均不检查归属或权限，允许将 `compile_dir` 设为 `/tmp`。
+
+不检查编译文件的所属用户或权限。新建或重新写入编译文件时，将文件权限设置为 `0600`；命中已有缓存时不修改其权限。目录需要执行位以访问内部文件，因此新建目录默认使用 `0700`，不使用 `0600`。实际读写仍受操作系统权限限制，编译目录及其父级应由可信用户管理。
+
 ## Captcha
 
 先运行 `composer install`，通过 `vendor/autoload.php` 加载插件和 `gregwar/captcha`。依赖需要 GD、mbstring 和 fileinfo；插件在会话未启动时会启动会话。图片端点应在输出其他内容之前调用：
@@ -96,7 +100,17 @@ $captcha = new \SlightPHP\Captcha();
 $captcha->CreateImage(); // 输出 PNG 并将验证码保存到会话
 ```
 
-提交表单时，使用同一会话调用 `\SlightPHP\Captcha::check($code)`，验证完成后可用 `\SlightPHP\Captcha::del($code)` 删除该验证码。默认图片为 140×50、文本长度为 4–5；可在生成前修改 `width`、`height`、`minWordLength`、`maxWordLength` 和 `imageFormat`。父类现为 `Gregwar\Captcha\CaptchaBuilder`，旧版 `SimpleCaptcha` 的其他属性和方法不再提供。
+提交表单时，在同一活动会话中调用 `\SlightPHP\Captcha::check($code)`。对应验证码记录会在校验时自动移除，同一验证码只能使用一次，重复提交返回 `false`；空值或非字符串输入返回 `false`。不要在校验前调用 `session_write_close()`，也不要在同一业务流程中重复调用 `check()`。原有 `del($code)` 可以继续调用，也可用于主动作废尚未使用的验证码。默认图片为 140×50、文本长度为 4–5；可在生成前修改 `width`、`height`、`minWordLength`、`maxWordLength` 和 `imageFormat`。父类现为 `Gregwar\Captcha\CaptchaBuilder`，旧版 `SimpleCaptcha` 的其他属性和方法不再提供。
+
+并发请求下的一次性校验依赖会话后端提供互斥锁。PHP files 会话后端会锁定同一会话；使用 Redis 等后端时需确认其会话锁支持与配置，不能将仅修改当前请求的 `$_SESSION` 视为分布式原子操作。PhpRedis 对 RedisCluster 的会话锁存在限制，见[官方说明](https://github.com/phpredis/phpredis#session-locking)。
+
+## Language
+
+`Language::tr($source, $zone = 'main')` 从 `languageDir/locale/zone.ini` 查找词条，未找到时返回原文。`Accept-Language` 仅接受由 1–8 个字母开头、后接连字符及 1–8 个字母或数字子标签组成的语言标签，例如 `en`、`zh-CN`、`zh-Hans-CN`；标签不区分大小写。非法项、通配符、非法 q 值及 `q=0` 项会被忽略，合法项按原有出现顺序查找，并保留主语言回退和 `defaultLocale` 优先规则，不按 q 值排序。
+
+请求头最多处理 8192 字节、前 32 个条目，包含 CR、LF、NUL 或不是字符串时整个请求头被忽略。不会通过 URL 解码或删除危险字符把非法标签转换成路径。`setLocale()` 的强制语言也进行格式检查，并兼容 `en_US` 这样的下划线写法；`zone` 仅允许字母、数字、下划线开头，后续可含点或连字符。语言文件经 `realpath()` 解析后必须位于语言根目录内，指向目录外的符号链接不会读取。
+
+语言列表及翻译缓存仍保留原有进程内行为，常驻进程需隔离请求状态；修改语言目录或强制语言不会自动清空已经初始化的结果。
 
 ## 数据库、Redis 与其他插件
 

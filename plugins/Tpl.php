@@ -46,19 +46,63 @@ class Tpl{
 	}
 	/**
 	 * 必要时编译模板并直接包含编译文件，内容输出到当前输出流。
+	 * 源文件及编译文件必须分别位于模板目录及编译目录内。
 	 * @param string $tpl 相对于模板目录的文件名。
 	 * @return void
+	 * @throws \RuntimeException 路径越界、模板缺失或编译目录及文件无法创建。
 	 */
 	static function fetch($tpl){
-		$tpl_real  = self::$template_dir.DIRECTORY_SEPARATOR.$tpl;
-		$compiled_file = self::$compile_dir.DIRECTORY_SEPARATOR.dechex(crc32(realpath(self::$template_dir))).DIRECTORY_SEPARATOR.$tpl;
-		$compiled_file_dir = dirname($compiled_file);
-		if(!is_dir($compiled_file_dir)){
-			mkdir($compiled_file_dir,0777,true);
+		$template_dir = realpath(self::$template_dir);
+		$tpl_real = realpath(self::$template_dir.DIRECTORY_SEPARATOR.$tpl);
+		if($template_dir === false || $tpl_real === false || !is_file($tpl_real) ||
+			!str_starts_with($tpl_real, rtrim($template_dir, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR)){
+			throw new \RuntimeException('Template missing or outside template directory');
+		}
+		if(!is_dir(self::$compile_dir) && !@mkdir(self::$compile_dir,0700,true) && !is_dir(self::$compile_dir)){
+			throw new \RuntimeException('Cannot create template compile directory');
+		}
+		$compile_dir = realpath(self::$compile_dir);
+		if($compile_dir === false) throw new \RuntimeException('Invalid template compile directory');
+		$compile_prefix = rtrim($compile_dir, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
+		$relative = substr($tpl_real, strlen(rtrim($template_dir, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR));
+		$parts = explode(DIRECTORY_SEPARATOR, dechex(crc32($template_dir)).DIRECTORY_SEPARATOR.$relative);
+		$filename = array_pop($parts);
+		$compiled_file_dir = $compile_dir;
+		// 逐级创建并校验，避免经过指向编译目录外的链接创建子目录。
+		foreach($parts as $part){
+			$dir = $compiled_file_dir.DIRECTORY_SEPARATOR.$part;
+			if(!is_dir($dir) && !@mkdir($dir,0700) && !is_dir($dir)){
+				throw new \RuntimeException('Cannot create compiled template subdirectory');
+			}
+			$compiled_file_dir = realpath($dir);
+			if($compiled_file_dir === false || ($compiled_file_dir !== $compile_dir && !str_starts_with($compiled_file_dir, $compile_prefix))){
+				throw new \RuntimeException('Compiled template directory outside compile directory');
+			}
+		}
+		$compiled_file = $compiled_file_dir.DIRECTORY_SEPARATOR.$filename;
+		if(file_exists($compiled_file) || is_link($compiled_file)){
+			$compiled_file = realpath($compiled_file);
+			if($compiled_file === false || !is_file($compiled_file) || !str_starts_with($compiled_file, $compile_prefix)){
+				throw new \RuntimeException('Compiled template outside compile directory');
+			}
 		}
 		if(self::$force_compile || !is_file($compiled_file) || filemtime($tpl_real)>filemtime($compiled_file)){
 			$compiled_contents = self::_compile(file_get_contents($tpl_real));
-			file_put_contents($compiled_file,$compiled_contents,LOCK_EX);
+			$previousMask = umask(0077);
+			try {
+				if(file_put_contents($compiled_file,$compiled_contents,LOCK_EX) === false){
+					throw new \RuntimeException('Cannot write compiled template');
+				}
+				if(!chmod($compiled_file,0600)){
+					throw new \RuntimeException('Cannot set compiled template permissions');
+				}
+			} finally {
+				umask($previousMask);
+			}
+		}
+		$compiled_file = realpath($compiled_file);
+		if($compiled_file === false || !is_file($compiled_file) || !str_starts_with($compiled_file, $compile_prefix)){
+			throw new \RuntimeException('Compiled template outside compile directory');
 		}
 		include($compiled_file);
 	}
@@ -153,6 +197,7 @@ class Tpl{
 			}
 			return $str;
 		}
+		return null;
 	}
 	/**
 	 * 编译模板文本，安全模式下先替换其中的 PHP 代码。
@@ -164,8 +209,6 @@ class Tpl{
 		$right_delimiter= self::$right_delimiter;
 		$left_delimiter_quote = preg_quote($left_delimiter);
 		$right_delimiter_quota= preg_quote($right_delimiter);
-		$php_left = preg_quote("<?php ");
-		$php_right= preg_quote(" ?>");
 		//安全模式，替换php可执行代码
 		if(self::$safe_mode){
 			$pattern="/\\<\\?.*\\?>/msUi";
@@ -181,7 +224,7 @@ class Tpl{
 		$pattern="/{$left_delimiter_quote}([\S].*){$right_delimiter_quota}/msU";
 		return preg_replace_callback($pattern,array("SlightPHP\Tpl",'_match'),$content);
 	}
-	private static $_tmpData;
+	private static $_tmpData=[];
 	private static $_tmpIndex=0;
 	private static $_tmpPrefix="TPL_TMP_PREFIX_";
 	/**
