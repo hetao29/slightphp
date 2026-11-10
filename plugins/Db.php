@@ -317,7 +317,6 @@ class Db
 	 * @var DbPDO 数据库适配器，初始化后可用。
 	 */
 	private $engine;
-	private $params;
 	private $engine_name = "pdo_mysql";
 	private $allow_engines = array(
 		"pdo_mysql",
@@ -367,14 +366,6 @@ class Db
 			die("Db engine: $engine_name does not support!");
 		}
 	}
-	/** @return bool 使用已保存参数重新连接是否成功。 */
-	private function reInit()
-	{
-		if (empty($this->params)) {
-			return false;
-		}
-		return $this->init($this->params);
-	}
 	/**
 	 * 初始化并连接数据库；缺少或不支持的 engine 会回退到当前引擎名。
 	 * @param array|object $params 连接选项：engine 为 PDO 引擎名，host 和 port 为地址，
@@ -391,9 +382,8 @@ class Db
 		}
 		$this->setEngine($params['engine']);
 
-		$this->params = $params;
-		$this->engine = new \SlightPHP\DbPDO($this->params);
-		$this->engine->init($this->params);
+		$this->engine = new \SlightPHP\DbPDO();
+		$this->engine->init($params);
 		if ($this->engine->connect() === false) {
 			$this->error['code'] = $this->engine->errno();
 			$this->error['msg'] = $this->engine->error();
@@ -678,13 +668,12 @@ class Db
 		return array_merge(...$arr);
 	}
 	/**
-	 * 执行预处理 SQL；读取操作遇到连接错误时最多重试一次。
+	 * 执行预处理 SQL；失败直接返回 false，不自动重连或重试。
 	 * @param string $sql SQL 语句。
 	 * @param array $params PDO 占位符参数。
-	 * @param int $retry 已重试次数。
 	 * @return array|int|string|false 结果行、受影响行数、插入 ID 或失败时的 false。
 	 */
-	public function query($sql, $params = [], $retry = 0)
+	public function query($sql, $params = [])
 	{
 		$sql_mode = 1; //查询
 		$command = strtoupper(strtok(ltrim($sql), " \n\r\t"));
@@ -706,9 +695,6 @@ class Db
 		if (defined('DEBUG')) {
 			trigger_error("{$this->engine_name} ( {$sql} )");
 		}
-		$maxRetry = ($sql_mode == 1) ? 1 : 0;
-
-		RETRY:
 		$result = $this->engine->query($sql, $params);
 		if ($result !== false) {
 			if ($this->engine->columnCount() > 0) {
@@ -725,16 +711,6 @@ class Db
 			'code' => $this->engine->errno(),
 			'msg'  => $this->engine->error(),
 		];
-
-		if ($retry < $maxRetry && $this->engine->connectionError) {
-			trigger_error(
-				"DB RETRY ERROR: CODE({$this->error['code']}) SQL({$sql})",
-				E_USER_NOTICE
-			);
-			$this->reInit();
-			$retry++;
-			goto RETRY;
-		}
 
 		trigger_error(
 			"DB QUERY ERROR: CODE({$this->error['code']}) SQL({$sql})",

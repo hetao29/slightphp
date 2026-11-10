@@ -33,8 +33,6 @@ class DbPDO
 
 	private $_persistent;
 	private $_charset;
-	/** @var bool 连接失败或最近一次 SQLSTATE 为 HY000 时置为 true。 */
-	public $connectionError = false;
 	/**
 	 * 保存连接参数；此方法不建立连接。
 	 * @param array $params 连接选项：engine 为 PDO 引擎名（如 pdo_mysql），host 和 port
@@ -67,7 +65,6 @@ class DbPDO
 		$this->_pdo = null;
 		$this->_stmt = null;
 		$this->_connectionErrorInfo = null;
-		$this->connectionError = false;
 		$tmp = explode("_", $this->_engine);
 		$driver = $tmp[1];
 		try {
@@ -95,7 +92,6 @@ class DbPDO
 				$options,
 			);
 		} catch (\PDOException  $e) {
-			$this->connectionError = true;
 			$this->_connectionErrorInfo = $e->errorInfo ?: [(string)$e->getCode(), null, $e->getMessage()];
 			trigger_error("CONNECT DATABASE ERROR ( " . $e->getMessage() . " ) ", E_USER_WARNING);
 			return false;
@@ -192,17 +188,7 @@ class DbPDO
 	/** @return string|null|false 最近语句或连接的 SQLSTATE，未连接且无建连错误时为 false。 */
 	public function errno()
 	{
-		if (!$this->_pdo) return $this->_connectionErrorInfo[0] ?? false;
-		if ($this->_stmt) {
-			$error = $this->_stmt->errorCode();
-		} else {
-			$error = $this->_pdo->errorCode();
-		}
-		if ($error == 'HY000') {
-			$this->connectionError = true;
-		} else {
-			$this->connectionError = false;
-		}
-		return $error;
+		$info = $this->error();
+		return $info[0] ?? false;
 	}
 }
