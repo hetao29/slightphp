@@ -444,9 +444,10 @@ class Db
 	 * @param string|array|object $orderby 排序表达式。
 	 * @param string|array|object $leftjoin LEFT JOIN 表与 ON 条件。
 	 * @param string $hits 原样放入 SELECT 优化器提示中的内容。
+	 * @param string $for 锁模式；UPDATE/SHARE 在 LIMIT 之后追加 FOR UPDATE/FOR SHARE，其他值不追加。
 	 * @return DbData|false 查询结果；查询或计数失败时为 false。
 	 */
-	public function select($table, $condition = "", $item = "", $groupby = "", $orderby = "", $leftjoin = "", $hits = "")
+	public function select($table, $condition = "", $item = "", $groupby = "", $orderby = "", $leftjoin = "", $hits = "", $for = "")
 	{
 		//TABLE
 		$table = $this->buildsql($table, "AS");
@@ -498,6 +499,9 @@ class Db
 			$hits_str = " /*+ {$hits} */ ";
 		}
 		$sql = "SELECT $hits_str $item FROM ($table) $leftjoin_str $condition_str $groupby_str $orderby_str $limit_sql";
+		if ($for === "UPDATE" || $for === "SHARE") {
+			$sql .= " FOR " . $for;
+		}
 		$start = microtime(true);
 		$result = $this->query($sql, $params);
 		if ($result !== false) {
@@ -543,13 +547,15 @@ class Db
 	 * @param string|array|object $groupby 分组表达式。
 	 * @param string|array|object $orderby 排序表达式。
 	 * @param string|array|object $leftjoin LEFT JOIN 条件。
+	 * @param string $hits 原样传递给 select 的优化器提示。
+	 * @param string $for 锁模式；UPDATE/SHARE 表示 FOR UPDATE/FOR SHARE，须由调用方管理事务和连接。
 	 * @return array|false 第一行，或无结果、查询失败时为 false。
 	 */
-	public function selectOne($table, $condition = "", $item = "", $groupby = "", $orderby = "", $leftjoin = "")
+	public function selectOne($table, $condition = "", $item = "", $groupby = "", $orderby = "", $leftjoin = "", $hits = "", $for = "")
 	{
 		$this->setLimit(1);
 		$this->setCount(false);
-		$data = $this->select($table, $condition, $item, $groupby, $orderby, $leftjoin);
+		$data = $this->select($table, $condition, $item, $groupby, $orderby, $leftjoin, $hits, $for);
 		return $data->items[0] ?? false;
 	}
 

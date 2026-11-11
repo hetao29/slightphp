@@ -160,3 +160,12 @@ Session 中的记录现在包含 `code` 和 `expires_at`，存放于 `session_pr
 `Db::query($sql, $params = [])` 只执行一次 SQL，失败保留原错误并返回 `false`，框架不自动重连或重试。第三个重试次数参数及重连逻辑已移除；旧调用中的 `query($sql, $params, 1)`、`query($sql, $params, false)` 都应迁移为两个参数。
 
 `select`、`selectOne`、增删改等沿用同样的失败行为。连接断开后由调用方决定是否重新获取连接、重新初始化会话或重试整个任务；事务、锁及会话状态不能通过重连自动恢复。写入结果不确定时先核对实际结果，不能只重放失败的 SQL。`error()` 保留原有错误协议，成功时不保证清空旧错误。
+
+`select` 和 `selectOne` 的参数顺序均为 `table, condition, item, groupby, orderby, leftjoin, hits, for`。`selectOne` 将末尾默认空字符串的 `$hits`、`$for` 原样传给 `select`；优化器提示仍由可信调用方提供。仅 `$for === 'UPDATE'` 或 `$for === 'SHARE'` 时，在主查询排序及 LIMIT 后分别追加 `FOR UPDATE` 或 `FOR SHARE`，COUNT 查询不追加锁子句，其他值不作为 SQL 拼接。调用方须在同一连接开启并结束事务；多条锁查询可关闭计数，单条查询继续限定1条并关闭计数。
+
+```php
+$db->begin();
+$row = $db->selectOne('t_invoice', ['pk_invoice' => $id], hits: '', for: 'UPDATE');
+// 校验并更新后提交；失败路径须 rollback。
+$db->commit();
+```
