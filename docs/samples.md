@@ -23,9 +23,17 @@
 | `/lab/route/entry` | GET | 命名空间控制器与实际路径数组 |
 | `/lab/route/entry/hello` | GET | 演示附加路径参数 |
 | `/workspace/main/plugins` | GET | 真实解析 Config 配置及检测扩展 |
+| `/lab/template/entry` | GET | 模板 include 与模块 part 组合、变量作用域及输出顺序 |
+| `/widgets/template/card/direct` | GET | 独立渲染模块卡片，读取路径参数 direct |
 | 不存在的控制器或方法 | 任意 | HTTP 404 和可返回首页的错误页 |
 
 `save` 的错误 HTTP 方法返回 405、CSRF 失败返回 403；业务输入错误通过跳转后的提示呈现。API 的非 GET 请求返回 405 JSON。
+
+## 模板与模块组合
+
+从工作台侧栏或官网示例索引进入 `/lab/template/entry`。父模板通过动态文件名跨目录 include 公共模板，再通过 part 调用 Widgets 模块的 Card、Returned、Mixed、Nested 和 Ended 方法。页面展示 PARENT、CHILD、NESTED 三个实例的变量作用域、路径参数和实际输出顺序。调用规则及代码位置见 [Tpl 模板与模块组合手册](templates.md)。
+
+运行 `php samples/tests/tpl-composition.php`，自动使用独立临时缓存验证真实入口、嵌套模块、冷/热缓存、缓冲层数和转义。
 
 ## 数据与安全设计
 
@@ -46,4 +54,4 @@ python3 samples/tests/smoke.py "$SITE_URL"
 
 ## 清理后的范围
 
-samples 仅包含官网与当前可运行的任务、路由、配置和 JSON 示例。历史 user、photos、guestbook、Auction、数据库与 Redis 测试、backend、locale、旧配置和模板缓存已删除。插件实现仍保留在仓库 plugins 中，可参考插件文档独立使用。
+samples 仅包含官网与当前可运行的任务、路由、配置、JSON 和模板组合示例。历史 user、photos、guestbook、Auction、数据库与 Redis 测试、backend、locale、旧配置和模板缓存已删除。插件实现仍保留在仓库 plugins 中，可参考插件文档独立使用。

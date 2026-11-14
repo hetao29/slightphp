@@ -106,12 +106,21 @@ pattern 内容不带外围正则分隔符，插件内部使用 `/.../sm`，斜�
 \SlightPHP\Tpl::setTemplateDir(__DIR__ . '/templates');
 \SlightPHP\Tpl::setCompileDir(__DIR__ . '/var/templates_c');
 $tpl = new \SlightPHP\Tpl();
+$tpl->assign('site', 'SlightPHP');
 $tpl->render('index.tpl', ['title' => '示例']);
 ```
+
+模板变量保存在各个 Tpl 实例的受保护属性 `$_tpl_vars` 中，不同实例互不共享。`assign($name, $value)` 或 `assign($array)` 分配变量，`render()` 的参数覆盖同名值；同一个实例在多次渲染之间保留变量及模板循环产生的赋值。常驻服务应为每个请求创建新实例。模板目录、编译目录、分隔符等配置仍为静态配置，由所有实例共享。
+
+从 6.4.0 起，`assign()`、`fetch()` 为实例方法，不能再使用 `Tpl::assign()`、`Tpl::fetch()` 或从外部访问 `Tpl::$_tpl_vars`；迁移示例见 [6.4 升级说明](migration-6.4.md#模板变量与实例)。`{%include "child.tpl"%}` 和 `{%include $child%}` 自动使用父模板的实例，支持多层嵌套，子模板可以读取并修改同一张变量表。PHP 代码直接调用模板辅助函数时，需显式传入上下文：`tpl_function_include('child.tpl', $tpl)`。
+
+`{%part "/widgets/template/card/demo"%}` 调用其它模块的控制器入口，收集直接输出并追加字符串返回值，作为 HTML 插入当前位置。控制器新建 Tpl 实例时使用独立变量；part 不会自动将父模板变量传给控制器。返回布尔值、数字、数组或对象时仅保留直接输出。异常会在清理片段缓冲后继续抛出。完整规则与可运行示例见 [Tpl 模板与模块组合手册](templates.md)，samples 入口为 `/lab/template/entry`。
 
 模板及编译目录由应用管理，编译目录必须可写且不应公开访问。当前实现中 `render()` 与 `display()` 均直接输出，返回值为 null（内部 fetch 使用 include），不要依赖其返回 HTML 字符串；还有 `setForceCompile()`、`setSafeMode()` 和历史拼写 `setDelimter()`。安全模式不能替代输出转义，不允许上传不可信模板。模板语法和调用方式应以当前源码及 API 为准。新工作台通过 Tpl 渲染 `head.tpl`、`index/*.tpl` 和 `footer.tpl`；使用 `{%`、`%}` 分隔符，保持默认安全模式。
 
 源文件经 `realpath()` 解析后必须位于模板目录内；编译文件和其各级子目录也必须位于编译目录内，指向目录外的符号链接会被拒绝。保留原有 CRC32 子目录和修改时间缓存逻辑。新建编译目录及子目录默认权限为 `0700`（受 umask 影响），已有目录权限不自动修改。`compile_dir` 及其 CRC32 子目录均不检查归属或权限，允许将 `compile_dir` 设为 `/tmp`。
+
+编译文件带有格式标记，每次加载时检查文件头；缺少当前标记的旧缓存会自动重新编译，即使模板源文件没有变化。已有目录布局保持不变。部署时需确保运行用户能够重写旧编译文件，常驻进程需重启以加载新类定义；OPcache 刷新由部署流程管理。
 
 `{%$value|escape%}` 使用 `ENT_QUOTES | ENT_SUBSTITUTE` 和 UTF-8 进行 HTML 转义，覆盖单双引号、尖括号和 `&`，非法 UTF-8 使用替代字符，不依赖 PHP 默认选项或 `default_charset`。此修饰器用于 HTML 文本和带引号的普通属性值；URL 编码分支仍使用 `rawurlencode()`。
 

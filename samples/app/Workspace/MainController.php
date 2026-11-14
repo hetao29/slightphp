@@ -96,6 +96,7 @@ class MainController
             'tasks' => ['/workspace/main/entry', '01', '任务工作台'],
             'route' => ['/lab/route/entry', '02', '路由实验室'],
             'plugins' => ['/workspace/main/plugins', '03', '插件与环境'],
+            'template' => ['/lab/template/entry', '04', '模板与模块组合'],
         ];
         $data['done'] = count(array_filter($data['tasks'] ?? [], fn($task) => $task['done']));
         $data['flash'] = $_SESSION['flash'] ?? '';

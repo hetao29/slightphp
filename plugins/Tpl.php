@@ -12,8 +12,10 @@
 namespace SlightPHP;
 /** 将模板编译为 PHP，缓存编译文件并在当前输出流中执行。 */
 class Tpl{
-	/** @var array 模板变量表。 */
-	static $_tpl_vars             = array();
+	/** @var array 当前实例的模板变量表；多次赋值与渲染之间保留。 */
+	protected $_tpl_vars = array();
+	/** 编译格式标记，用于自动重建仍访问静态变量的旧缓存。 */
+	private const COMPILE_HEADER = '<?php /* SlightPHP Tpl instance-vars v2 */ ?>';
 	/** @var string 模板标签左分隔符。 */
 	static $left_delimiter  =  '';//{
 	/** @var string 模板标签右分隔符。 */
@@ -32,16 +34,16 @@ class Tpl{
 	 * @param mixed $value 单个变量的值。
 	 * @return void
 	 */
-	static function assign($tpl_var, $value = null){
+	public function assign($tpl_var, $value = null){
 		if (is_array($tpl_var)){
 			foreach ($tpl_var as $key => $val) {
 				if ($key != '') {
-					self::$_tpl_vars[$key] = $val;
+					$this->_tpl_vars[$key] = $val;
 				}
 			}
 		} else {
 			if ($tpl_var != '')
-				self::$_tpl_vars[$tpl_var] = $value;
+				$this->_tpl_vars[$tpl_var] = $value;
 		}
 	}
 	/**
@@ -51,7 +53,7 @@ class Tpl{
 	 * @return void
 	 * @throws \RuntimeException 路径越界、模板缺失或编译目录及文件无法创建。
 	 */
-	static function fetch($tpl){
+	public function fetch($tpl){
 		$template_dir = realpath(self::$template_dir);
 		$tpl_real = realpath(self::$template_dir.DIRECTORY_SEPARATOR.$tpl);
 		if($template_dir === false || $tpl_real === false || !is_file($tpl_real) ||
@@ -86,8 +88,9 @@ class Tpl{
 				throw new \RuntimeException('Compiled template outside compile directory');
 			}
 		}
-		if(self::$force_compile || !is_file($compiled_file) || filemtime($tpl_real)>filemtime($compiled_file)){
-			$compiled_contents = self::_compile(file_get_contents($tpl_real));
+		if(self::$force_compile || !is_file($compiled_file) || filemtime($tpl_real)>filemtime($compiled_file) ||
+			file_get_contents($compiled_file, false, null, 0, strlen(self::COMPILE_HEADER)) !== self::COMPILE_HEADER){
+			$compiled_contents = self::COMPILE_HEADER.self::_compile(file_get_contents($tpl_real));
 			$previousMask = umask(0077);
 			try {
 				if(file_put_contents($compiled_file,$compiled_contents,LOCK_EX) === false){
@@ -150,8 +153,8 @@ class Tpl{
 			$content = preg_replace_callback($pattern,array("SlightPHP\Tpl","_matchmodifier"),$content,-1,$ct);
 		}while($ct);
 		//{{{替换变量,加ECHO
-		$patterns = array('/\$(\w+)/ms','/^(?!(if|else|for|foreach|elseif))(\w+)([^\=]+)$/ms');
-		$replacements=array('SlightPHP\Tpl::$_tpl_vars["\1"]','echo \\0');
+		$patterns = array('/\$(\w+)/ms','/^(?!(if|else|for|foreach|elseif))(\$?\w+)([^\=]+)$/ms');
+		$replacements=array('$this->_tpl_vars["\1"]','echo \\0');
 		$content = preg_replace($patterns,$replacements,$content);
 		//还原特殊字符
 		$content = str_replace(array_keys(self::$_tmpData),self::$_tmpData,$content);
@@ -169,6 +172,12 @@ class Tpl{
 		if($r){
 			$func="tpl_function_".$function[1];
 			$params=implode(",",$tmp[0]);
+			if(strtolower($function[1]) === 'include'){
+				// 在变量替换之后恢复 $this，避免被当作模板变量改写。
+				$key = self::$_tmpPrefix.(self::$_tmpIndex++);
+				self::$_tmpData[$key] = '$this';
+				$params .= ','.$key;
+			}
 			if(function_exists($func))return "$func($params)";
 			elseif(function_exists($function[1]))return "{$function[1]}($params)";
 			else return "/* $func function not exists! */";
@@ -305,8 +314,8 @@ class Tpl{
 		if(self::$left_delimiter=="" || self::$right_delimiter==""){
 			self::setDelimter();
 		}
-		self::assign($parames);
-		return self::fetch("$tpl");
+		$this->assign($parames);
+		return $this->fetch("$tpl");
 	}
 
 	/**

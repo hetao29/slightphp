@@ -16,7 +16,8 @@
 | `/site/main/features` | 路径调度、命名空间控制器、CLI 与应用职责 |
 | `/site/main/plugins` | 插件分类、搜索、依赖说明、Json / Tpl 示例 |
 | `/site/main/guide` | 运行样例、Composer 安装、入口、控制器、部署注意事项 |
-| `/site/main/examples` | 任务、路由、配置和 JSON 的实际运行入口 |
+| `/site/main/examples` | 任务、路由、配置、JSON 和模板组合的实际运行入口 |
+| `/lab/template/entry` | include / part、跨模块调用和实例变量作用域 |
 | `/site/main/about` | 框架定位、许可与源码入口 |
 
 旧企业页及咨询逻辑已经移除，不存在的路径返回 404。
@@ -48,6 +49,7 @@ URL 无需改变，例如 `/workspace/main/save` 对应 `app/Workspace/MainContr
 - `samples/app/data/site/features.php`、`plugins.php`、`code.php`：按页面需要加载的模块内容。
 - `samples/app/Workspace/MainController.php`：任务、会话、CSRF、JSON 和工作台模板渲染。
 - `samples/app/Lab/RouteController.php`：独立的命名空间路由实验与模板渲染。
+- `samples/app/Lab/TemplateController.php`、`samples/app/Widgets/TemplateController.php`：模板组合页面与跨模块片段，调用说明见 [Tpl 手册](templates.md)。
 - `samples/www/index.php`：通过 `vendor/autoload.php` 加载核心与插件，只做环境配置、URI 解析和调度。
 - `samples/app/templates/head.tpl`、`footer.tpl`：公共布局与元信息。
 - `samples/app/templates/site/`：首页、功能、插件、指南、示例、关于、错误页。

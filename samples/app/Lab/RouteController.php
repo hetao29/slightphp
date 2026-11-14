@@ -27,6 +27,7 @@ class RouteController
                 'tasks' => ['/workspace/main/entry', '01', '任务工作台'],
                 'route' => ['/lab/route/entry', '02', '路由实验室'],
                 'plugins' => ['/workspace/main/plugins', '03', '插件与环境'],
+                'template' => ['/lab/template/entry', '04', '模板与模块组合'],
             ],
             'json' => \SlightPHP\Json::encode($this->request->route, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE),
         ];
