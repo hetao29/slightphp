@@ -2,11 +2,11 @@
 
 6.0 是不兼容的主版本。先在测试环境升级依赖和应用代码，覆盖控制器、插件及部署路径，再发布到生产环境。
 
-当前版本为 6.2.0。本页保留从 5.x 迁移到 6.x 的基础说明；升级到当前版本时，还需阅读 [6.2 升级说明](migration-6.2.md)。
+当前版本为 6.3.0。本页保留从 5.x 迁移到 6.x 的基础说明；升级到当前版本时，还需阅读 [6.2 升级说明](migration-6.2.md)及 [6.3 迁移指南](migration-6.3.md)。
 
 ## 安装与加载
 
-将依赖约束改为 `hetao29/slightphp:^6.2`，执行 `composer update hetao29/slightphp`，并在入口加载 `vendor/autoload.php`。包要求 PHP 8.0+、`ext-pdo`、`ext-redis`、Guzzle 和 Gregwar Captcha；验证码还需 GD、mbstring、fileinfo 和可用的会话。数据库和 Redis 功能分别需要对应驱动和服务。
+将依赖约束改为 `hetao29/slightphp:^6.3`，执行 `composer update hetao29/slightphp`，并在入口加载 `vendor/autoload.php`。包要求 PHP 8.0+、`ext-pdo`、`ext-redis`、Guzzle 和 Gregwar Captcha；验证码还需 GD、mbstring、fileinfo 和可用的会话。数据库和 Redis 功能分别需要对应驱动和服务。
 
 旧版手动引用 `plugins/S*.php` 的路径和 `SLIGHTPHP_PLUGINS_DIR` 常量已移除。模板辅助函数仍由 Composer 自动加载。切换部署版本后清理并重新生成模板编译缓存。
 
@@ -16,7 +16,9 @@
 
 删除 `setModes()`、`getModes()`、`setDefaultType()`、`getDefaultType()` 和 `$defaultType` 的调用。无 `Request-Type` 请求头时，入口方法不再默认添加 `page` 前缀；有该头且值在允许列表中时，仍会添加对应前缀。注意检查 AJAX、内部调用、CLI 任务及自定义错误页面。框架仍不根据 GET/POST 自动限制方法。
 
-请求路径现在默认最多 10 段，包含区域、page、entry 和路径参数；超过上限时 `run()` 直接返回 `false`，不会加载控制器。原有路由或业务参数超过 10 段时，可在初始化阶段通过 `SlightPHP::setMaxDepth($maxDepth)` 调整（必须大于等于 1），通过 `getMaxDepth()` 读取。未超限的 `$inPath` 参数仍保持原样，默认路径补全不额外计数。该限制同时适用于正常请求及内部调用，详见[核心调度文档](framework.md)。
+请求路径现在默认最多 10 段，包含区域、page、entry 和路径参数；超过上限时 `run()` 直接返回 `false`，不会加载控制器。原有路由或业务参数超过 10 段时，可在初始化阶段通过 `SlightPHP::setMaxDepth($maxDepth)` 调整（必须大于等于 1），通过 `getMaxDepth()` 读取。未超限的路径分段保持原样，默认路径补全不额外计数。该限制同时适用于正常请求及内部调用，详见[核心调度文档](framework.md)。
+
+6.3.0 不再传入 `$inPath` 数组：构造函数接收 `Request $request`，入口接收 `Request $request, Response $response`，路径从 `$request->route` 读取。签名和响应结束行为的迁移示例见 [6.3 迁移指南](migration-6.3.md)。
 
 ## 插件类名
 

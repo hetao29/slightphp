@@ -1,5 +1,7 @@
 # SlightPHP 官网与交互示例
 
+示例对应 SlightPHP 6.3.0，控制器入口使用 `Request $request, Response $response`，路径从 `$request->route` 读取。升级已有应用请参阅 [6.3 迁移指南](../docs/migration-6.3.md)。
+
 部署示例站点后，访问站点根路径 `/`，即可浏览框架介绍并体验交互示例。站点地址由部署环境决定。
 
 - `/site/main/features`：功能特性。

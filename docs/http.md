@@ -1,6 +1,6 @@
 # Request 与 Response
 
-`SlightPHP\Request` 提供请求数据，`SlightPHP\Response` 负责设置并输出响应，适用于 PHP-FPM、PHP 内置服务器和 CLI。
+6.3.0 新增 `SlightPHP\Request` 提供请求数据，`SlightPHP\Response` 负责设置并输出响应，适用于 PHP-FPM、PHP 内置服务器和 CLI。旧应用的修改步骤见 [6.3 迁移指南](migration-6.3.md)。
 
 应用入口加载 `vendor/autoload.php` 后，Composer 按 PSR-4 将 `SlightPHP\` 映射到 `plugins/`，可直接使用 `new \SlightPHP\Request()`、`new \SlightPHP\Response()`。控制器调度也复用此自动加载规则。
 
@@ -36,7 +36,7 @@ class MainController {
 
 这是不兼容变更：调度不再向构造函数或入口方法传入 `$inPath` 数组。原 `$inPath` 参数改为 Request 参数，并从 `$request->route` 读取路径。`array $request` 等数组参数也不会自动接收路径。
 
-没有使用 Response 结束响应时，`run()` 保持返回控制器原始返回值，由应用入口处理；调用 `end()` 或 `redirect()` 后则返回 `null`，避免入口重复输出其布尔结果或触发 `false` 路由失败分支。
+没有使用 Response 结束响应时，`run()` 保持返回控制器原始返回值，由应用入口处理；成功调用 `end()` 或 `redirect()` 结束响应后则返回 `null`，避免入口重复输出其布尔结果或触发 `false` 路由失败分支。仅调用 `write()` 不会结束响应，入口仍会收到控制器的返回值。
 
 ## Request
 

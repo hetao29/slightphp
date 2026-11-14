@@ -1,15 +1,15 @@
-# SlightPHP 6.2.0
+# SlightPHP 6.3.0
 
 SlightPHP 是一个轻量 PHP 框架，按照请求路径加载命名空间控制器并调用公开方法。应用负责响应输出、状态码、权限和输入校验。
 
-6.2.0 增加请求路径深度限制，并加强配置、模板、多语言、验证码和日志处理。升级前请阅读 [6.2 升级说明](docs/migration-6.2.md)，特别留意配置格式、验证码会话及 JSON 日志格式的变化。完整记录见 [Changelog](CHANGELOG.md)。
+6.3.0 引入 `SlightPHP\Request` 和 `SlightPHP\Response`，替换控制器构造函数和入口方法原有的 `$inPath` 数组传参。这是不兼容变更，升级前请阅读 [6.3 迁移指南](docs/migration-6.3.md)。从较早版本升级还需留意 6.2.1 的数据库自动重试移除及 [6.2 升级说明](docs/migration-6.2.md)中的配置、验证码和日志变化。完整记录见 [Changelog](CHANGELOG.md)。
 
 ## 安装
 
 需要 PHP 8.0+、PDO 和 Redis 扩展；Composer 还会安装 Guzzle 和 Gregwar Captcha。使用数据库、Redis 服务或验证码时，还需准备相应驱动、服务和扩展。
 
 ```bash
-composer require hetao29/slightphp:^6.2
+composer require hetao29/slightphp:^6.3
 ```
 
 ## 创建应用
@@ -59,10 +59,12 @@ class MainController
 ## 文档
 
 - [更新记录](CHANGELOG.md)
+- [6.3 升级与迁移说明](docs/migration-6.3.md)
 - [6.2 升级说明](docs/migration-6.2.md)
 - [6.0 迁移与不兼容事项](docs/migration-6.0.md)
 - [快速开始](docs/getting-started.md)
 - [核心调度和 API](docs/framework.md)
+- [Request 与 Response](docs/http.md)
 - [插件使用](docs/plugins.md)
 - [示例与部署](docs/README.md)
 

@@ -30,10 +30,12 @@ samples/
 ## 在新项目中使用 Composer
 
 ```bash
-composer require hetao29/slightphp:^6.2
+composer require hetao29/slightphp:^6.3
 ```
 
 包声明 PHP >=8.0、PDO、Redis 扩展、Guzzle 与 Gregwar Captcha；实际可用版本以 Composer 解析结果为准。核心本身不依赖 Guzzle。不要混淆完整安装要求与独立演示要求。
+
+已有项目升级请先阅读 [6.3 迁移指南](migration-6.3.md)，同步修改控制器构造函数与入口参数。
 
 创建 `public/index.php`：
 

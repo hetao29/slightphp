@@ -1,10 +1,26 @@
 # Changelog
 
-## 未发布
+## 6.3.0 — 2026-11-14
+
+### 新增与不兼容变更
 
 - 新增 `SlightPHP\Request` / `Response`，提供 PHP 请求快照、原始正文、响应头、状态码、Cookie、正文输出、结束及重定向接口；`$request->route` 对应原 `$inPath` 的完整路径数组。
 - 调度直接按 `($request, $response)` 的顺序调用入口，参数名不限；不使用反射。构造控制器时传入同一个 Request，构造前已设置完整 `route`；移除构造函数和入口的 `$inPath` 数组传参，原签名须迁移。响应结束后 `run()` 返回 `null`，防止现有入口重复输出。
 - Request/Response 统一通过 Composer 的 `SlightPHP\` PSR-4 映射按需加载，移除调度中的手动文件加载。
+
+### 升级注意事项
+
+旧的 `__construct(array $inPath)`、`Entry(array $inPath)` 以及未声明类型但按数组使用 `$inPath` 的控制器都需要调整；手动创建控制器和直接调用入口的代码也需同步。`end()` / `redirect()` 不会退出 PHP，调用后应从控制器返回。完整步骤及前后对照见 [6.3 迁移指南](docs/migration-6.3.md)。
+
+## 6.2.2 — 2026-11-11
+
+- `Db::select()` 新增末尾 `$for` 参数；仅精确传入大写 `UPDATE` / `SHARE` 时，在主查询 LIMIT 后追加 `FOR UPDATE` / `FOR SHARE`，COUNT 查询不加锁。
+- `Db::selectOne()` 新增末尾 `$hits`、`$for` 参数并传给 `select()`，原有位置参数调用保持兼容。事务及连接由调用方管理，数据库须支持对应锁语法。
+
+## 6.2.1 — 2026-11-10
+
+- `Db::query()` 移除第三个 `$retry` 参数和连接失败后的自动重连、重试逻辑；查询失败保留错误信息、触发 `E_USER_WARNING` 并返回 `false`。
+- `DbPDO` 移除公开的 `$connectionError` 标记，`errno()` 从 `error()` 返回的错误信息读取 SQLSTATE。依赖旧参数、标记或自动恢复行为的应用需要迁移，见 [6.3 迁移指南](docs/migration-6.3.md#数据库调用)。
 
 ## 6.2.0 — 2026-11-09
 
