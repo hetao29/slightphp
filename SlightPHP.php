@@ -386,11 +386,12 @@ if (!class_exists("SlightPHP", false)):
 		 * 显式传入非空路径时作为局部调用，不更新当前 zone/page/entry，
 		 * 且会跳过与当前入口相同的局部调用。
 		 * 请求路径最多包含 maxDepth 段（默认 10），超限返回 false。
-		 * 上限包含区域、page、entry 和路径参数；未超限时完整路径数组传给控制器。
+		 * 上限包含区域、page、entry 和路径参数；完整路径数组通过 Request::route 提供。
 		 * 未显式传路径时依次使用 pathInfo、PATH_INFO 和 REQUEST_URI。
 		 *
 		 * @param string $path 显式路径；空字符串时从 pathInfo 或服务器请求信息读取。
 		 * @return mixed 入口方法的返回值；找不到可调用入口时返回 false。
+		 * 响应已通过 end()/redirect() 结束时返回 null，避免入口重复输出返回值。
 		 */
 		public static function run($path = "")
 		{
@@ -461,7 +462,9 @@ if (!class_exists("SlightPHP", false)):
 				}
 				$type = !empty($_SERVER['HTTP_REQUEST_TYPE']) ? strtolower(trim($_SERVER['HTTP_REQUEST_TYPE'])) : "";
 				if (class_exists($classname, false)) {
-					$classInstance = new $classname($path_array);
+					$request = new \SlightPHP\Request();
+					$request->route = $path_array;
+					$classInstance = new $classname($request);
 					if ($type !== "" && in_array($type, self::$allowRequestTypes)) {
 						$_method = $type . $_entry;
 					} else {
@@ -476,7 +479,9 @@ if (!class_exists("SlightPHP", false)):
 							self::$page  = $_page;
 							self::$entry = $_entry;
 						}
-						return call_user_func(array(&$classInstance, $_method), $path_array);
+						$response = new \SlightPHP\Response();
+						$result = $classInstance->$_method($request, $response);
+						return $response->isWritable() ? $result : null;
 					}
 				}
 			}

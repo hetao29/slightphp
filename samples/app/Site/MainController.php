@@ -5,13 +5,41 @@ use SlightPHP\Tpl;
 
 class MainController
 {
-    public function Entry($inPath) { $this->render('home'); }
-    public function Features($inPath) { $this->render('features'); }
-    public function Plugins($inPath) { $this->render('plugins'); }
-    public function Guide($inPath) { $this->render('guide'); }
-    public function Examples($inPath) { $this->render('examples'); }
-    public function About($inPath) { $this->render('about'); }
-    public function Error($inPath)
+    /**
+     * @param \SlightPHP\Request $request 当前请求。
+     * @param \SlightPHP\Response $response 当前响应。
+     */
+    public function Entry(\SlightPHP\Request $request, \SlightPHP\Response $response) { $this->render('home'); }
+    /**
+     * @param \SlightPHP\Request $request 当前请求。
+     * @param \SlightPHP\Response $response 当前响应。
+     */
+    public function Features(\SlightPHP\Request $request, \SlightPHP\Response $response) { $this->render('features'); }
+    /**
+     * @param \SlightPHP\Request $request 当前请求。
+     * @param \SlightPHP\Response $response 当前响应。
+     */
+    public function Plugins(\SlightPHP\Request $request, \SlightPHP\Response $response) { $this->render('plugins'); }
+    /**
+     * @param \SlightPHP\Request $request 当前请求。
+     * @param \SlightPHP\Response $response 当前响应。
+     */
+    public function Guide(\SlightPHP\Request $request, \SlightPHP\Response $response) { $this->render('guide'); }
+    /**
+     * @param \SlightPHP\Request $request 当前请求。
+     * @param \SlightPHP\Response $response 当前响应。
+     */
+    public function Examples(\SlightPHP\Request $request, \SlightPHP\Response $response) { $this->render('examples'); }
+    /**
+     * @param \SlightPHP\Request $request 当前请求。
+     * @param \SlightPHP\Response $response 当前响应。
+     */
+    public function About(\SlightPHP\Request $request, \SlightPHP\Response $response) { $this->render('about'); }
+    /**
+     * @param \SlightPHP\Request $request 当前请求。
+     * @param \SlightPHP\Response $response 当前响应。
+     */
+    public function Error(\SlightPHP\Request $request, \SlightPHP\Response $response)
     {
         $this->render('error', ['message' => http_response_code() === 404
             ? '这个页面暂时找不到了，您可以返回首页或查看使用指南。'

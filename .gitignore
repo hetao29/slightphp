@@ -1,3 +1,4 @@
-samples/tests/
-tests/
-tools/
+/samples/tests/
+/tests/
+/vendor/
+/tools/

@@ -8,15 +8,15 @@
 4. 缺少前三段时分别补 defaultZone、defaultPage、defaultEntry。
 5. 从最深候选区域开始向浅层尝试；区域后相邻两段作为 page、entry，每个深度寻找命名空间控制器文件。默认最多 10 个路径段，因此最多尝试 8 个区域深度。
 6. 文件必须经 realpath 验证位于 appDir 内且是普通文件，再 `require_once`。
-7. 找到类后使用完整路径数组构造实例；检查目标方法存在且可公开调用，再传入同一数组执行。构造函数可能在方法未匹配时就执行，不应在其中执行写操作。
-8. 返回方法的原始返回值；未匹配返回 `false`。核心不会自动输出字符串、序列化对象、发送 404 或捕获异常。
+7. 找到类后创建 Request 并设置完整 `route`，通过 `new $classname($request)` 构造实例；检查目标方法存在且可公开调用后执行。入口共用同一个 Request，直接按 `($request, $response)` 的顺序调用；参数名可以自定义。构造函数可能在方法未匹配时就执行，不应在其中执行写操作。
+8. 返回方法的原始返回值；Response 已结束时返回 `null`，未匹配返回 `false`。构造函数和入口方法的异常继续向外抛，由调用方处理。核心不会自动输出返回值、序列化对象或发送 404。新签名及响应规则见 [Request 与 Response](http.md)。
 
 ## 命名空间控制器
 
 | 请求 | 文件（相对 appDir） | 类 / 方法 |
 | --- | --- | --- |
-| `/user/profile/update` | `User/ProfileController.php` | `User\ProfileController::Update($inPath)` |
-| `/user/info/edit/thumb` | `User/Info/EditController.php` | `User\Info\EditController::Thumb($inPath)` |
+| `/user/profile/update` | `User/ProfileController.php` | `User\ProfileController::Update(Request $request, Response $response)` |
+| `/user/info/edit/thumb` | `User/Info/EditController.php` | `User\Info\EditController::Thumb(Request $request, Response $response)` |
 
 路径的下划线分段首字母大写并附加 Controller 后缀。在大小写敏感文件系统上必须按此规则命名。
 
@@ -35,15 +35,15 @@ $maxDepth = SlightPHP::getMaxDepth(); // 15
 
 ## 路径参数
 
-`/workspace/main/entry/hello` 的 `$inPath` 是：
+`/workspace/main/entry/hello` 的 `$request->route` 是：
 
 ```php
 ['workspace', 'main', 'entry', 'hello']
 ```
 
-多级路由时 entry 的下标随目录深度变化，不应一律认为第三段是方法、第四段是参数。控制器应根据自己的固定路由结构读取参数并校验。`$_GET` 与 `$_POST` 仍由 PHP 提供，框架不绑定参数。
+多级路由时 entry 的下标随目录深度变化，不应一律认为第三段是方法、第四段是参数。控制器应根据自己的固定路由结构读取参数并校验。通过 `$request->get/post` 读取 PHP 参数快照；框架不绑定业务参数。
 
-`maxDepth` 同时适用于正常请求和显式路径的内部调用。默认配置下，`/user/profile/update/1/2/3/4/5/6/7` 共 10 段，参数仍分别传入 `$inPath`；再追加 `/8` 则直接返回 `false`。查询串和空路径段不计入上限；配置的附加分隔字符同样参与分段。
+`maxDepth` 同时适用于正常请求和显式路径的内部调用。默认配置下，`/user/profile/update/1/2/3/4/5/6/7` 共 10 段，分段完整保留在 `$request->route`；再追加 `/8` 则直接返回 `false`。查询串和空路径段不计入上限；配置的附加分隔字符同样参与分段。
 
 ## 配置 API
 
@@ -74,7 +74,7 @@ $maxDepth = SlightPHP::getMaxDepth(); // 15
 ## CLI 和内部调用
 
 ```php
-require 'SlightPHP.php';
+require 'vendor/autoload.php';
 SlightPHP::setAppDir(__DIR__ . '/samples/app');
 // 实际 CLI 控制器应避免依赖 HTTP 和会话。
 $result = SlightPHP::run('/your/controller/entry');

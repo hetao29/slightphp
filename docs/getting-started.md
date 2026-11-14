@@ -61,7 +61,11 @@ if ($result === false) {
 namespace Home;
 
 class MainController {
-    public function Entry($inPath) {
+    /**
+     * @param \SlightPHP\Request $request 当前请求。
+     * @param \SlightPHP\Response $response 当前响应。
+     */
+    public function Entry(\SlightPHP\Request $request, \SlightPHP\Response $response) {
         return 'Hello, SlightPHP!';
     }
 }

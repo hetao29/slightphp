@@ -7,6 +7,7 @@
 - [从 5.x 迁移到 6.x](migration-6.0.md)
 - [快速开始与项目结构](getting-started.md)
 - [核心调度、路由与 API](framework.md)
+- [Request、Response 与控制器新签名](http.md)
 - [框架官网与维护说明](website.md)
 - [完整示例与交互说明](samples.md)
 - [插件与扩展](plugins.md)

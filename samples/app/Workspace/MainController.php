@@ -7,11 +7,19 @@ use SlightPHP\Json;
 
 class MainController
 {
-    public function Entry($inPath)
+    /**
+     * @param \SlightPHP\Request $request 当前请求。
+     * @param \SlightPHP\Response $response 当前响应。
+     */
+    public function Entry(\SlightPHP\Request $request, \SlightPHP\Response $response)
     {
         $this->render('tasks', ['tasks' => $this->tasks()]);
     }
-    public function Save($inPath)
+    /**
+     * @param \SlightPHP\Request $request 当前请求。
+     * @param \SlightPHP\Response $response 当前响应。
+     */
+    public function Save(\SlightPHP\Request $request, \SlightPHP\Response $response)
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Allow: POST');
@@ -56,7 +64,11 @@ class MainController
         $_SESSION['flash'] = $message;
         header('Location: /workspace/main/entry', true, 303);
     }
-    public function Api($inPath)
+    /**
+     * @param \SlightPHP\Request $request 当前请求。
+     * @param \SlightPHP\Response $response 当前响应。
+     */
+    public function Api(\SlightPHP\Request $request, \SlightPHP\Response $response)
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
             http_response_code(405);
@@ -66,7 +78,11 @@ class MainController
         }
         $this->json(['data' => $this->tasks(), 'meta' => ['storage' => 'session', 'count' => count($this->tasks())]]);
     }
-    public function Plugins($inPath)
+    /**
+     * @param \SlightPHP\Request $request 当前请求。
+     * @param \SlightPHP\Response $response 当前响应。
+     */
+    public function Plugins(\SlightPHP\Request $request, \SlightPHP\Response $response)
     {
         Config::$CACHE = false;
         $this->render('plugins', ['config' => Config::getConfig(dirname(__DIR__, 2) . '/config/example.json')]);
@@ -84,7 +100,7 @@ class MainController
         $data['done'] = count(array_filter($data['tasks'] ?? [], fn($task) => $task['done']));
         $data['flash'] = $_SESSION['flash'] ?? '';
         unset($_SESSION['flash']);
-        $data['json'] = Json::encode($data['config'] ?? $data['inPath'] ?? [], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        $data['json'] = Json::encode($data['config'] ?? [], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
         $tpl = new Tpl();
         $tpl->render('workspace-head.tpl', $data);
         $tpl->render('workspace/' . ($view === 'tasks' ? 'index' : $view) . '.tpl', $data);
