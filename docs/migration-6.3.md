@@ -90,6 +90,7 @@ $result = $controller->Edit($request, new \SlightPHP\Response());
 | --- | --- |
 | `$inPath` / `$inPath[3]` | `$request->route` / `$request->route[3]` |
 | `$_GET` / `$_POST` | `$request->get` / `$request->post` |
+| `$_REQUEST` | `$request->request`，保留 PHP 配置决定的合并来源、顺序及数组语义 |
 | `$_COOKIE` / `$_FILES` | `$request->cookie` / `$request->files` |
 | `$_SERVER['REQUEST_METHOD']` | `$request->getMethod()` 或 `$request->server['request_method']` |
 | `$_SERVER['HTTP_CONTENT_TYPE']` / `$_SERVER['CONTENT_TYPE']` | `$request->header['content-type'] ?? null` |

@@ -45,6 +45,7 @@ class MainController {
 | `$request->route` | 原 `$inPath` 完整路由分段数组，包含补全的默认段；不包含查询串，不做 URL 解码 |
 | `$request->get` | `$_GET` 快照 |
 | `$request->post` | `$_POST` 快照，不自动解析 JSON |
+| `$request->request` | `$_REQUEST` 快照，来源及覆盖顺序遵循 PHP `request_order` / `variables_order` 配置 |
 | `$request->cookie` | `$_COOKIE` 快照 |
 | `$request->files` | `$_FILES` 快照，保持 PHP 的单文件和多文件结构 |
 | `$request->server` | `$_SERVER` 快照，键为小写，例如 `request_method`、`request_uri` |
@@ -55,6 +56,8 @@ class MainController {
 推荐使用 **route** 替代 `inPath`，表示框架用于调度的分段数据。例如 `/user/profile/edit/123` 对应 `['user', 'profile', 'edit', '123']`，原 `$inPath[3]` 改为 `$request->route[3]`。多层控制器的 entry 下标仍随目录深度变化，不能统一认定第三段为入口。URI 字符串通过 `$request->server['request_uri']` 读取。
 
 快照不与超全局变量建立引用；修改 `$request->post` 不会更新 `$_POST`。空值、`'0'`、数组和大 ID 数字字符串保持 PHP 解析后的原值。上传和 multipart 正文沿 PHP 的处理规则，`getContent()` 不重建 multipart 数据。上传临时文件仍由 PHP 管理，请求结束后不得依赖其继续存在。
+
+原先使用 `$_REQUEST` 的代码改读 `$request->request`，保留 GET、POST 混合取参及 PHP 对同名字段、嵌套数组的处理结果。Cookie 是否参与取决于 PHP 配置；框架直接复制已解析的 `$_REQUEST`，不自行合并。原先只读 GET、POST 的代码继续分别使用 `get`、`post`。三个数组是独立快照，修改 `get` 或 `post` 不会重算 `request`，修改 `request` 也不会更新其他快照或超全局变量。JSON 正文不自动并入 `post` 或 `request`。
 
 ## Response
 

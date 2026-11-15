@@ -7,6 +7,8 @@ class Request {
     public array $get;
     /** @var array<string,mixed> 表单参数；JSON 等正文通过 getContent() 读取。 */
     public array $post;
+    /** @var array<string,mixed> $_REQUEST 快照，合并来源及顺序沿 PHP request_order / variables_order 配置。 */
+    public array $request;
     /** @var array<string,string> 请求 Cookie。 */
     public array $cookie;
     /** @var array<string,array> 上传文件，保持 PHP 的 $_FILES 结构。 */
@@ -24,6 +26,7 @@ class Request {
     public function __construct() {
         $this->get = $_GET;
         $this->post = $_POST;
+        $this->request = $_REQUEST;
         $this->cookie = $_COOKIE;
         $this->files = $_FILES;
         $this->server = array_change_key_case($_SERVER, CASE_LOWER);

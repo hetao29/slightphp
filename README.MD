@@ -56,7 +56,7 @@ class MainController
 
 请求路径默认最多 10 段，包含区域、page、entry 和路径参数。可通过 `SlightPHP::setMaxDepth(15)` 调整，通过 `SlightPHP::getMaxDepth()` 读取；必须大于等于 1。超过上限时 `run()` 返回 `false`，未超限的参数保持原样。
 
-控制器可使用 `Entry(\SlightPHP\Request $request, \SlightPHP\Response $response)`，通过 `$request->route` 读取完整路由分段，通过 `get/post/cookie/files/header/server` 读取请求数据，使用 Response 设置响应并输出。入口按 Request、Response 的顺序传入两个位置参数，参数名不限；原 `$inPath` 签名需要迁移，详见 [Request 与 Response](docs/http.md)。
+控制器可使用 `Entry(\SlightPHP\Request $request, \SlightPHP\Response $response)`，通过 `$request->route` 读取完整路由分段，通过 `get/post/request/cookie/files/header/server` 读取请求数据，使用 Response 设置响应并输出。入口按 Request、Response 的顺序传入两个位置参数，参数名不限；原 `$inPath` 签名需要迁移，详见 [Request 与 Response](docs/http.md)。
 
 ## 文档
 
