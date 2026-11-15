@@ -114,7 +114,7 @@ $tpl->render('index.tpl', ['title' => '示例']);
 
 从 6.4.0 起，`assign()`、`fetch()` 为实例方法，不能再使用 `Tpl::assign()`、`Tpl::fetch()` 或从外部访问 `Tpl::$_tpl_vars`；迁移示例见 [6.4 升级说明](migration-6.4.md#模板变量与实例)。`{%include "child.tpl"%}` 和 `{%include $child%}` 自动使用父模板的实例，支持多层嵌套，子模板可以读取并修改同一张变量表。PHP 代码直接调用模板辅助函数时，需显式传入上下文：`tpl_function_include('child.tpl', $tpl)`。
 
-`{%part "/widgets/template/card/demo"%}` 调用其它模块的控制器入口，收集直接输出并追加字符串返回值，作为 HTML 插入当前位置。控制器新建 Tpl 实例时使用独立变量；part 不会自动将父模板变量传给控制器。返回布尔值、数字、数组或对象时仅保留直接输出。异常会在清理片段缓冲后继续抛出。完整规则与可运行示例见 [Tpl 模板与模块组合手册](templates.md)，samples 入口为 `/lab/template/entry`。
+`{%part "/widgets/template/card/demo"%}` 调用其它模块的控制器入口，模块内容直接输出到当前位置，再输出字符串返回值，函数自身返回 null。控制器新建 Tpl 实例时使用独立变量；part 不会自动将父模板变量传给控制器。返回布尔值、数字、数组或对象时仅保留直接输出。part 不管理输出缓冲；异常原样抛出，已输出内容保留。完整规则与可运行示例见 [Tpl 模板与模块组合手册](templates.md)，samples 入口为 `/lab/template/entry`。
 
 模板及编译目录由应用管理，编译目录必须可写且不应公开访问。当前实现中 `render()` 与 `display()` 均直接输出，返回值为 null（内部 fetch 使用 include），不要依赖其返回 HTML 字符串；还有 `setForceCompile()`、`setSafeMode()` 和历史拼写 `setDelimter()`。安全模式不能替代输出转义，不允许上传不可信模板。模板语法和调用方式应以当前源码及 API 为准。新工作台通过 Tpl 渲染 `head.tpl`、`index/*.tpl` 和 `footer.tpl`；使用 `{%`、`%}` 分隔符，保持默认安全模式。
 

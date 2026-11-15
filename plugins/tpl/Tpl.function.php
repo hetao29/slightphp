@@ -7,34 +7,15 @@ function tpl_function_tostring($mixed){
 	return print_r($mixed,true);
 }
 /**
- * 调用指定路径的控制器入口，收集直接输出及字符串返回值。
+ * 调用指定路径的控制器入口，直接输出模块内容及字符串返回值。
  * @param string $path 控制器路径；空字符串不调用入口。
- * @return string 片段 HTML；空路径或未匹配入口时为空字符串。
- * @throws \RuntimeException 模块遗留无法移除的输出缓冲。
- * @throws \Throwable 控制器异常会在清理可移除的输出缓冲后继续抛出。
+ * @return null 不返回片段内容；空路径或未匹配入口时不输出。
+ * @throws \Throwable 控制器或模板异常原样抛出，已输出内容保留。
  */
 function tpl_function_part($path){
-	if(empty($path)) return '';
-	$level = ob_get_level();
-	ob_start();
-	try {
-		$result = SlightPHP::run($path);
-		if(is_string($result)) echo $result;
-		// 将模块遗留的内部缓冲按顺序合入本次片段。
-		while(ob_get_level() > $level + 1){
-			$status = ob_get_status();
-			if(($status['flags'] & PHP_OUTPUT_HANDLER_REMOVABLE) === 0 || !ob_end_flush()){
-				throw new \RuntimeException('Cannot remove fragment output buffer');
-			}
-		}
-		return ob_get_contents();
-	} finally {
-		while(ob_get_level() > $level){
-			$status = ob_get_status();
-			// 无法移除的缓冲仍由 PHP 持有，停止清理并保留原异常。
-			if(($status['flags'] & PHP_OUTPUT_HANDLER_REMOVABLE) === 0 || !ob_end_clean()) break;
-		}
-	}
+	if(empty($path)) return;
+	$result = SlightPHP::run($path);
+	if(is_string($result)) echo $result;
 }
 /**
  * 使用指定实例输出子模板；模板 include 标签会自动传入当前实例。
