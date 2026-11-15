@@ -9,8 +9,8 @@ function tpl_function_tostring($mixed){
 /**
  * 调用指定路径的控制器入口，直接输出模块内容及字符串返回值。
  * @param string $path 控制器路径；空字符串不调用入口。
- * @return null 不返回片段内容；空路径或未匹配入口时不输出。
- * @throws \Throwable 控制器或模板异常原样抛出，已输出内容保留。
+ * @return null 不返回片段内容；空路径不调用入口。
+ * @throws \Throwable 调度、控制器或模板异常原样抛出，已输出内容保留。
  */
 function tpl_function_part($path){
 	if(empty($path)) return;

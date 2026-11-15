@@ -6,7 +6,7 @@
         "framework",
         "slightphp"
     ],
-    "homepage": "https://github.com/hetao29/slightphp",
+    "homepage": "https://slightphp.com/",
     "type": "library",
     "license": "MIT",
     "require": {

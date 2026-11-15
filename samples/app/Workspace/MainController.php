@@ -4,6 +4,7 @@ namespace Workspace;
 use SlightPHP\Tpl;
 use SlightPHP\Config;
 use SlightPHP\Json;
+use SlightPHP\Route;
 
 class MainController
 {
@@ -19,14 +20,9 @@ class MainController
      * @param \SlightPHP\Request $request 当前请求。
      * @param \SlightPHP\Response $response 当前响应。
      */
+    #[Route(method: 'POST')]
     public function Save(\SlightPHP\Request $request, \SlightPHP\Response $response)
     {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Allow: POST');
-            http_response_code(405);
-            $this->render('error', ['message' => '此操作需要通过表单提交。']);
-            return;
-        }
         if (!is_string($_POST['csrf'] ?? null) || !hash_equals($this->token(), $_POST['csrf'])) {
             http_response_code(403);
             $this->render('error', ['message' => '表单已失效，请返回工作台刷新后重试。']);
@@ -68,14 +64,9 @@ class MainController
      * @param \SlightPHP\Request $request 当前请求。
      * @param \SlightPHP\Response $response 当前响应。
      */
+    #[Route(method: 'GET')]
     public function Api(\SlightPHP\Request $request, \SlightPHP\Response $response)
     {
-        if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
-            http_response_code(405);
-            header('Allow: GET');
-            $this->json(['error' => '仅支持 GET']);
-            return;
-        }
         $this->json(['data' => $this->tasks(), 'meta' => ['storage' => 'session', 'count' => count($this->tasks())]]);
     }
     /**

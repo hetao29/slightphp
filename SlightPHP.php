@@ -2,6 +2,8 @@
 
 /**
  * SlightPHP
+ * @version 6.5.0
+ * @link https://slightphp.com/
  * @copyright Copyright (c) 2026 SlightPHP
  * @license MIT
  */
@@ -210,11 +212,15 @@ if (!class_exists("SlightPHP", false)):
 		/**
 		 * 查询区域的 URL 别名。
 		 * @param string $zone 原区域名。
-		 * @return string|false 别名，或未设置时的 false。
+		 * @return string 别名。
+		 * @throws \SlightPHP\Exception 别名未设置，原因码 ALIAS_NOT_FOUND。
 		 */
 		public static function getZoneAlias(string $zone)
 		{
-			return isset(self::$zoneAlias[$zone]) ? self::$zoneAlias[$zone] : false;
+			if (!isset(self::$zoneAlias[$zone])) {
+				throw new \SlightPHP\Exception('Zone alias not found', \SlightPHP\Exception::ALIAS_NOT_FOUND, ['zone' => $zone]);
+			}
+			return self::$zoneAlias[$zone];
 		}
 
 		/**
@@ -239,11 +245,15 @@ if (!class_exists("SlightPHP", false)):
 		/**
 		 * 查询页面的 URL 别名。
 		 * @param string $page 原页面名。
-		 * @return string|false 别名，或未设置时的 false。
+		 * @return string 别名。
+		 * @throws \SlightPHP\Exception 别名未设置，原因码 ALIAS_NOT_FOUND。
 		 */
 		public static function getPageAlias(string $page)
 		{
-			return isset(self::$pageAlias[$page]) ? self::$pageAlias[$page] : false;
+			if (!isset(self::$pageAlias[$page])) {
+				throw new \SlightPHP\Exception('Page alias not found', \SlightPHP\Exception::ALIAS_NOT_FOUND, ['page' => $page]);
+			}
+			return self::$pageAlias[$page];
 		}
 
 		/**
@@ -337,7 +347,8 @@ if (!class_exists("SlightPHP", false)):
 		public static function setAppDir(string $dir)
 		{
 			self::$appDir = $dir;
-			self::$appDirRealPath = realpath($dir);
+			// 尾部 /. 要求路径指向目录，避免调度时额外查询 is_dir()。
+			self::$appDirRealPath = realpath(($dir === '' ? '.' : $dir) . DIRECTORY_SEPARATOR . '.');
 			return true;
 		}
 		/**
@@ -384,14 +395,16 @@ if (!class_exists("SlightPHP", false)):
 		/**
 		 * 解析路径并调用匹配的控制器入口。
 		 * 显式传入非空路径时作为局部调用，不更新当前 zone/page/entry，
-		 * 且会跳过与当前入口相同的局部调用。
-		 * 请求路径最多包含 maxDepth 段（默认 10），超限返回 false。
+		 * 与当前入口相同的局部调用抛出 RECURSIVE_DISPATCH 异常。
+		 * 请求路径最多包含 maxDepth 段（默认 10），超限抛出 PATH_TOO_DEEP 异常。
 		 * 上限包含区域、page、entry 和路径参数；完整路径数组通过 Request::route 提供。
 		 * 未显式传路径时依次使用 pathInfo、PATH_INFO 和 REQUEST_URI。
 		 *
 		 * @param string $path 显式路径；空字符串时从 pathInfo 或服务器请求信息读取。
-		 * @return mixed 入口方法的返回值；找不到可调用入口时返回 false。
+		 * @return mixed 入口方法的原始返回值，包括业务代码主动返回的 false。
 		 * 响应已通过 end()/redirect() 结束时返回 null，避免入口重复输出返回值。
+		 * @throws \SlightPHP\Exception 路径、控制器或入口不可用，或 Route 方法限制不匹配。
+		 * 核心不自动输出异常响应；控制器和注解自身的异常原样传播。
 		 */
 		public static function run($path = "")
 		{
@@ -408,8 +421,8 @@ if (!class_exists("SlightPHP", false)):
 				} elseif (!empty($_SERVER['REQUEST_URI'])) {
 					$path = $_SERVER["REQUEST_URI"];
 				} else {
-					self::debug("path not set in params or server.path_info, server.request_uri");
-					return false;
+					self::debug('Request path not set');
+					throw new \SlightPHP\Exception('Request path not set', \SlightPHP\Exception::PATH_NOT_SET);
 				}
 			}
 			$len = strlen($path);
@@ -419,6 +432,9 @@ if (!class_exists("SlightPHP", false)):
 			}
 
 			$url_parsed = parse_url(substr($path, $start), PHP_URL_PATH);
+			if ($url_parsed === false) {
+				throw new \SlightPHP\Exception('Invalid request path', \SlightPHP\Exception::INVALID_PATH, ['path' => $path]);
+			}
 			if (!empty($url_parsed)) {
 				$url = $url_parsed;
 			} else {
@@ -426,8 +442,8 @@ if (!class_exists("SlightPHP", false)):
 			}
 			$path_array = preg_split("/[$splitFlag\/]+/", $url, min(self::$maxDepth, PHP_INT_MAX - 1) + 1, PREG_SPLIT_NO_EMPTY);
 			if (count($path_array) > self::$maxDepth) {
-				self::debug("path exceeds maxDepth");
-				return false;
+				self::debug('Request path exceeds maxDepth');
+				throw new \SlightPHP\Exception('Request path exceeds maxDepth', \SlightPHP\Exception::PATH_TOO_DEEP, ['path' => $path, 'maxDepth' => self::$maxDepth]);
 			}
 			if (!isset($path_array[0])) {
 				$path_array[0] = self::$defaultZone;
@@ -438,6 +454,15 @@ if (!class_exists("SlightPHP", false)):
 			if (!isset($path_array[2])) {
 				$path_array[2] = self::$defaultEntry;
 			}
+			if (!self::$appDirRealPath) {
+				self::setAppDir(self::$appDir);
+			}
+			if (self::$appDirRealPath === false) {
+				throw new \SlightPHP\Exception('Invalid application directory', \SlightPHP\Exception::APP_DIR_INVALID, ['appDir' => self::$appDir]);
+			}
+			// 候选查找只记录诊断，成功回退时不构造最终失败异常。
+			$failure = null;
+			$missingFile = null;
 			$_count = count($path_array);
 			for ($depth = $_count - 2; $depth >= 1; $depth--) {
 				$zoneParts = array_slice($path_array, 0, $depth);
@@ -451,27 +476,48 @@ if (!class_exists("SlightPHP", false)):
 					$_page = $key;
 				}
 				if ($isPart && $_zone == self::$zone && $_page == self::$page && $_entry == self::$entry) {
-					self::debug("part ignored [$path]");
-					return false;
+					self::debug('Internal dispatch targets the current entry', $path);
+					throw new \SlightPHP\Exception('Internal dispatch targets the current entry', \SlightPHP\Exception::RECURSIVE_DISPATCH, ['path' => $path]);
 				}
 				$controller = strtolower(implode("_", array_merge($zoneParts, [$_page])));
 				$classname = self::$appNamespace . "\\" . self::snakeToNamespace($controller, "\\") . self::$setControllerSuffix;
-				$file = realpath(self::$appDir . DIRECTORY_SEPARATOR . str_replace("\\", DIRECTORY_SEPARATOR, $classname) . ".php");
-				if (!self::loadFile($file)) {
+				$candidate = self::$appDir . DIRECTORY_SEPARATOR . str_replace("\\", DIRECTORY_SEPARATOR, $classname) . ".php";
+				try {
+					$file = self::resolveControllerFile($candidate);
+				} catch (\SlightPHP\Exception $error) {
+					if ($error->getCode() !== \SlightPHP\Exception::FILE_NOT_ALLOWED) {
+						throw $error;
+					}
+					$failure = [$error->getMessage(), $error->getCode(), ['path' => $path, 'controller' => $classname] + $error->getContext(), $error];
 					continue;
 				}
+				if ($file === false) {
+					// 普通缺失不抛异常，也不覆盖已找到控制器的具体失败原因。
+					$missingFile ??= ['path' => $path, 'controller' => $classname, 'file' => $candidate];
+					continue;
+				}
+				require_once $file;
 				$type = !empty($_SERVER['HTTP_REQUEST_TYPE']) ? strtolower(trim($_SERVER['HTTP_REQUEST_TYPE'])) : "";
 				if (class_exists($classname, false)) {
 					$request = new \SlightPHP\Request();
 					$request->route = $path_array;
-					$classInstance = new $classname($request);
 					if ($type !== "" && in_array($type, self::$allowRequestTypes)) {
 						$_method = $type . $_entry;
 					} else {
 						$_method = $_entry;
 					}
+					if (method_exists($classname, $_method)) {
+						$methods = self::getRouteMethods($classname, $_method);
+						if ($methods !== false && $methods !== [] && !in_array(strtoupper((string) $request->getMethod()), $methods, true)) {
+							throw new \SlightPHP\Exception('HTTP method not allowed', \SlightPHP\Exception::METHOD_NOT_ALLOWED, [
+								'path' => $path, 'controller' => $classname, 'method' => $_method,
+								'requestMethod' => $request->getMethod(), 'allowedMethods' => $methods,
+							]);
+						}
+					}
+					$classInstance = new $classname($request);
 					/**
-					 * 方法必须存在并且可调用，才会被执行，否则返回false（private方法和protected方法都不可调用）
+					 * 方法必须存在并且可调用；private 和 protected 方法不可调用。
 					 */
 					if (method_exists($classInstance, $_method) && is_callable(array(&$classInstance, $_method))) {
 						if (!$isPart) {
@@ -483,10 +529,38 @@ if (!class_exists("SlightPHP", false)):
 						$result = $classInstance->$_method($request, $response);
 						return $response->isWritable() ? $result : null;
 					}
+					$failure = ['Controller entry is missing or not callable',
+						method_exists($classInstance, $_method) ? \SlightPHP\Exception::METHOD_NOT_CALLABLE : \SlightPHP\Exception::METHOD_NOT_FOUND,
+						['path' => $path, 'controller' => $classname, 'method' => $_method]];
+				} else {
+					$failure = ['Controller class not found', \SlightPHP\Exception::CLASS_NOT_FOUND, ['path' => $path, 'controller' => $classname, 'file' => $file]];
 				}
 			}
-			self::debug("run patharray error ", $path_array);
-			return false;
+			self::debug('Controller dispatch failed', $path_array);
+			if ($failure !== null) {
+				throw new \SlightPHP\Exception(...$failure);
+			}
+			throw new \SlightPHP\Exception('Controller file not found', \SlightPHP\Exception::FILE_NOT_FOUND, $missingFile);
+		}
+
+		/**
+		 * 按实际控制器与入口缓存 Route 元数据；命中后不再创建反射对象。
+		 * 不缓存当前请求的匹配结果；非公开方法不解析注解。
+		 * @return string[]|false 允许的 HTTP 方法；未限制为空数组，非公开方法为 false。
+		 */
+		private static function getRouteMethods(string $classname, string $method): array|false
+		{
+			static $cache = [];
+			$key = strtolower($classname . '::' . $method);
+			if (!isset($cache[$key])) {
+				$reflection = new \ReflectionMethod($classname, $method);
+				if (!$reflection->isPublic()) {
+					return $cache[$key] = false;
+				}
+				$attributes = $reflection->getAttributes(\SlightPHP\Route::class);
+				$cache[$key] = $attributes === [] ? [] : $attributes[0]->newInstance()->getMethods();
+			}
+			return $cache[$key];
 		}
 
 		/**
@@ -517,30 +591,31 @@ if (!class_exists("SlightPHP", false)):
 			return implode($split, array_map('ucfirst', explode('_', strtolower($str))));
 		}
 		/**
-		 * 加载文件
-		 * @param string|false $file 已解析的文件路径；false 表示路径解析失败。
-		 * @return bool
+		 * 解析并校验候选控制器文件；文件加载在调用方完成，避免吞掉文件自身的异常。
+		 * @param string $candidate 候选文件路径。
+		 * @return string|false 规范文件路径；候选不存在或不是普通文件时返回 false。
+		 * @throws \SlightPHP\Exception 应用目录无效或文件越界。
 		 */
-		private static function loadFile(string|false $file)
+		private static function resolveControllerFile(string $candidate): string|false
 		{
-			if ($file === false || $file === '') {
+			$file = realpath($candidate);
+			if ($file === false) {
 				return false;
 			}
 			if (!self::$appDirRealPath) {
-				self::$appDirRealPath = realpath(self::$appDir);
-				if (self::$appDirRealPath === false) {
-					return false;
-				}
+				self::setAppDir(self::$appDir);
+			}
+			if (self::$appDirRealPath === false) {
+				throw new \SlightPHP\Exception('Invalid application directory', \SlightPHP\Exception::APP_DIR_INVALID, ['appDir' => self::$appDir]);
 			}
 			if (!is_file($file)) {
 				return false;
 			}
 			$prefix = rtrim(self::$appDirRealPath, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
 			if (!str_starts_with($file, $prefix)) {
-				return false;
+				throw new \SlightPHP\Exception('Controller file is outside application directory', \SlightPHP\Exception::FILE_NOT_ALLOWED, ['file' => $file]);
 			}
-			require_once $file;
-			return true;
+			return $file;
 		}
 	}
 endif;

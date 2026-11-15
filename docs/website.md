@@ -1,6 +1,8 @@
-# SlightPHP 框架介绍官网
+# SlightPHP 框架介绍官网（6.5.0）
 
 官网由 SlightPHP + Tpl 构建，内容依据当前仓库源码整理，不依赖外部图片、字体或 JavaScript 库。首页介绍核心定位，内页覆盖功能、插件、入门与可运行示例。
+
+正式官网地址为 [https://slightphp.com/](https://slightphp.com/)，当前展示版本为 6.5.0。GitHub 链接用于源码与许可证，不作为官网地址。
 
 ## 访问与部署
 
@@ -14,10 +16,11 @@
 | --- | --- |
 | `/`、`/site/main/entry` | 框架首页、安装命令、特性概览 |
 | `/site/main/features` | 路径调度、命名空间控制器、CLI 与应用职责 |
-| `/site/main/plugins` | 插件分类、搜索、依赖说明、Json / Tpl 示例 |
+| `/site/main/plugins` | 插件分类、搜索、依赖说明，Json / Tpl 与 Route 两种功能示例 |
 | `/site/main/guide` | 运行样例、Composer 安装、入口、控制器、部署注意事项 |
 | `/site/main/examples` | 任务、路由、配置、JSON 和模板组合的实际运行入口 |
 | `/lab/template/entry` | include / part、跨模块调用和实例变量作用域 |
+| `/r/hello`、`/r-ini/hello`、`/r-pair/2026/11` | PHP / INI 自定义路由实验与多参数 |
 | `/site/main/about` | 框架定位、许可与源码入口 |
 
 旧企业页及咨询逻辑已经移除，不存在的路径返回 404。
@@ -33,6 +36,7 @@
 - 导航标记当前页，移动菜单支持按钮开关、外部点击与 Escape 关闭。
 - 插件可以按基础、数据、扩展分类，并与关键词搜索组合；结果数通过状态区域播报，支持空结果提示。
 - 使用指南展示命名空间控制器示例。
+- 插件页的 Route 卡片可跳转到自定义 URL 映射和 HTTP 方法注解；包含 PHP / INI 配置、复制按钮及真实 GET / POST 验证入口。
 - 代码和命令支持复制；剪贴板不可用时选中代码并提示手动复制。
 - FAQ 使用原生 details，不依赖 JavaScript。
 - 静态资源使用不含域名的根路径 `/assets/site.css` 和 `/assets/site.js`，并附加文件修改时间作为 v 参数，更新后自动绕过旧缓存。
@@ -49,6 +53,7 @@ URL 无需改变，例如 `/workspace/main/save` 对应 `app/Workspace/MainContr
 - `samples/app/data/site/features.php`、`plugins.php`、`code.php`：按页面需要加载的模块内容。
 - `samples/app/Workspace/MainController.php`：任务、会话、CSRF、JSON 和工作台模板渲染。
 - `samples/app/Lab/RouteController.php`：独立的命名空间路由实验与模板渲染。
+- `samples/config/routes.php`、`routes.ini`：自定义 URL 映射，配置与验证见 [自定义路由手册](routes.md)。
 - `samples/app/Lab/TemplateController.php`、`samples/app/Widgets/TemplateController.php`：模板组合页面与跨模块片段，调用说明见 [Tpl 手册](templates.md)。
 - `samples/www/index.php`：通过 `vendor/autoload.php` 加载核心与插件，只做环境配置、URI 解析和调度。
 - `samples/app/templates/head.tpl`、`footer.tpl`：公共布局与元信息。

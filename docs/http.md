@@ -36,7 +36,7 @@ class MainController {
 
 这是不兼容变更：调度不再向构造函数或入口方法传入 `$inPath` 数组。原 `$inPath` 参数改为 Request 参数，并从 `$request->route` 读取路径。`array $request` 等数组参数也不会自动接收路径。
 
-没有使用 Response 结束响应时，`run()` 保持返回控制器原始返回值，由应用入口处理；成功调用 `end()` 或 `redirect()` 结束响应后则返回 `null`，避免入口重复输出其布尔结果或触发 `false` 路由失败分支。仅调用 `write()` 不会结束响应，入口仍会收到控制器的返回值。
+没有使用 Response 结束响应时，`run()` 保持返回控制器原始返回值（包括业务代码返回的 `false`），由应用入口处理；成功调用 `end()` 或 `redirect()` 结束响应后则返回 `null`，避免入口重复输出其布尔结果。调度失败通过异常报告，见 [核心异常与迁移](exceptions.md)。仅调用 `write()` 不会结束响应，入口仍会收到控制器的返回值。
 
 ## Request
 
@@ -79,3 +79,5 @@ class MainController {
 ## 调度入口
 
 入口继续使用 `SlightPHP::run($path = '')`。Request 在构造控制器前创建并设置完整 `route`，Response 在调用入口方法前创建。路径深度限制、默认段、Request-Type 和显式路径的 part 语义沿用原规则。
+
+控制器入口可通过 [Route 方法注解](framework.md#route-方法注解)声明允许的 HTTP 方法。不匹配时，核心在构造控制器前抛出 `SlightPHP\Exception::METHOD_NOT_ALLOWED`，不输出响应；入口可根据异常设置 `405`，从 `getContext()['allowedMethods']` 生成 `Allow`。示例见 [核心异常与迁移](exceptions.md)。

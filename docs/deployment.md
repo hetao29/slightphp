@@ -2,6 +2,8 @@
 
 ## 网站入口与 URL
 
+正式官网地址为 [https://slightphp.com/](https://slightphp.com/)。自行部署时使用自己的域名，站内导航和静态资源继续使用根路径链接。
+
 部署示例站点时，将网站根目录设为 `samples/www`，并把不存在的文件路径转发到 `index.php`。部署完成后访问站点根路径 `/`；站内链接以 `/` 开头，不带域名或 `/index.php` 前缀。
 
 入口优先从 `REQUEST_URI` 提取原始路径，剔除查询串后传给 `setPathInfo()`。不要用 `PATH_INFO ?? '/'` 作为唯一路径来源：URI 转发后 PATH_INFO 往往为空，会把内页误判为首页。只有 REQUEST_URI 缺失时，才回退使用 PATH_INFO。
@@ -11,7 +13,7 @@ Nginx 配置示意（替换根路径、域名和 FPM 地址）：
 ```nginx
 server {
     listen 80;
-    server_name example.com;
+    server_name slightphp.com;
     root /var/www/slightphp/samples/www;
     index index.php;
 

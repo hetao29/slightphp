@@ -1,5 +1,7 @@
 # 快速开始
 
+当前版本为 SlightPHP 6.5.0，官网：[https://slightphp.com/](https://slightphp.com/)。
+
 ## 运行仓库中的完整示例
 
 要求 PHP 8.0+，启用 session。入口通过仓库的 vendor/autoload.php 加载框架及 Tpl、Config、Json 插件；缺少 vendor 时先执行 composer install，无需数据库或 Redis；PHP 的系统临时目录必须可写。
@@ -30,12 +32,12 @@ samples/
 ## 在新项目中使用 Composer
 
 ```bash
-composer require hetao29/slightphp:^6.4
+composer require hetao29/slightphp:^6.5
 ```
 
 包声明 PHP >=8.0、PDO、Redis 扩展、Guzzle 与 Gregwar Captcha；实际可用版本以 Composer 解析结果为准。核心本身不依赖 Guzzle。不要混淆完整安装要求与独立演示要求。
 
-已有项目升级请先阅读 [6.4 迁移指南](migration-6.4.md)，同步修改模板静态调用；从 6.2.x 或更早版本升级时，还需按 [6.3 迁移指南](migration-6.3.md)修改控制器构造函数与入口参数。
+已有项目升级请先阅读 [6.5 迁移指南](migration-6.5.md)，调整核心异常处理；从 6.3.x 或更早版本升级时，还需按 [6.4 迁移指南](migration-6.4.md)修改模板静态调用，从 6.2.x 或更早版本升级时还需按 [6.3 迁移指南](migration-6.3.md)修改控制器构造函数与入口参数。
 
 创建 `public/index.php`：
 
@@ -47,12 +49,17 @@ SlightPHP::setDefaultZone('home');
 SlightPHP::setDefaultPage('main');
 SlightPHP::setDefaultEntry('entry');
 SlightPHP::setPathInfo(parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/');
-$result = SlightPHP::run();
-if ($result === false) {
-    http_response_code(404);
-    echo '页面不存在';
-} elseif (is_string($result)) {
-    echo $result;
+try {
+    $result = SlightPHP::run();
+    if (is_string($result)) {
+        echo $result;
+    }
+} catch (\SlightPHP\Exception $error) {
+    http_response_code($error->getStatusCode());
+    if ($error->getCode() === \SlightPHP\Exception::METHOD_NOT_ALLOWED) {
+        header('Allow: ' . implode(', ', $error->getContext()['allowedMethods']));
+    }
+    echo $error->getStatusCode() === 404 ? '页面不存在' : '请求失败';
 }
 ```
 

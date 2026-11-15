@@ -1,4 +1,4 @@
-# Tpl 模板与模块组合手册（6.4.0）
+# Tpl 模板与模块组合手册（6.5.0）
 
 运行 samples 后访问 `/lab/template/entry`，或从 `/site/main/examples` 的「模板与模块组合」进入。工作台侧栏也提供同名入口。该页面实际执行跨目录 include、跨模块 part 和嵌套调用，无需数据库或 Redis。
 
@@ -82,7 +82,7 @@ public function Card(\SlightPHP\Request $request, \SlightPHP\Response $response)
 
 Card 的模板及其 include 读取到 `CHILD`，调用结束后父模板仍读取到 `PARENT`。part 通过 `SlightPHP::run($path)` 创建控制器与新的 Request / Response；路径数组对应显式路径，请求的 GET、POST、Cookie、请求头等仍来自当前 PHP 请求。URL 路径参数保留原始内容，不自动 URL 解码；路径后的查询串不会合成为新的 GET 参数。`Request-Type` 前缀规则也适用于内部调用。
 
-part 在同一个 PHP 请求中同步执行，session、超全局变量和响应头仍属于整个请求；它保留顶层 `zone/page/entry`。指向当前顶层入口的调用会被跳过，其他循环调用需由应用控制。片段路径使用固定值或白名单；模块方法负责权限、输入校验及输出转义。
+part 在同一个 PHP 请求中同步执行，session、超全局变量和响应头仍属于整个请求；它保留顶层 `zone/page/entry`。指向当前顶层入口的调用会抛出 `SlightPHP\Exception::RECURSIVE_DISPATCH`，其他循环调用需由应用控制。片段路径使用固定值或白名单；模块方法负责权限、输入校验及输出转义。
 
 PHP 中也可以直接输出片段，函数返回 null：
 
@@ -99,7 +99,8 @@ tpl_function_part('/widgets/template/card/demo');
 | 先输出，再返回字符串 | 先输出的内容 + 返回字符串，各一次 |
 | 返回 true、false、数字、数组或对象 | 只保留已输出的内容，忽略该返回值 |
 | 调用 `Response::end('HTML')` | 保留 HTML；父页面继续渲染 |
-| 空路径或找不到入口 | 不输出 |
+| 空路径 | 不调用入口、不输出 |
+| 找不到入口 | 抛出 `SlightPHP\Exception`，由调用方处理 |
 | 控制器或模板抛出异常 | 原样抛出，已输出内容保留；后续模板内容停止执行，除非调用方捕获异常后继续渲染 |
 
 part 直接输出 HTML，返回 null；需要控制器原始结果时，在 PHP 代码中调用 `SlightPHP::run()`。模块负责将动态内容转义为适当的 HTML，part 不会自动转义整个片段。片段渲染不会回滚 session 等业务副作用；响应状态、响应头及重定向由外层页面统一管理。

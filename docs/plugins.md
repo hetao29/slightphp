@@ -86,11 +86,13 @@ echo \SlightPHP\Json::encode(['message' => '你好'], JSON_UNESCAPED_UNICODE | J
 
 ## Route
 
-需在 `run()` 前设置。它会匹配服务器 PATH_INFO 或 REQUEST_URI，再调用核心的 setPathInfo，并非独立 HTTP 服务。
+`SlightPHP\Route` 可通过 `#[Route(method: 'POST')]` 或 `#[Route(methods: ['GET', 'POST'])]` 限制控制器入口的 HTTP 方法，不匹配时抛出 `SlightPHP\Exception`，由入口生成 405 和 Allow。完整规则见 [Route 方法注解](framework.md#route-方法注解)。
+
+用于 URL 映射时需在 `run()` 前设置。它匹配 URL 路径、忽略查询串，再调用核心的 setPathInfo，并非独立 HTTP 服务。
 
 ```php
 \SlightPHP\Route::set([
-    'pattern' => '^\/tasks(?:\?.*)?$',
+    'pattern' => '^\/tasks$',
     'zone' => 'workspace',
     'page' => 'main',
     'entry' => 'entry',
@@ -98,7 +100,7 @@ echo \SlightPHP\Json::encode(['message' => '你好'], JSON_UNESCAPED_UNICODE | J
 SlightPHP::run();
 ```
 
-pattern 内容不带外围正则分隔符，插件内部使用 `/.../sm`，斜杠必须转义。配置可由 `setConfigFile()` 读取 INI。`:name` 占位符由同名键提供正则，捕获组会依次附加为路径段；避免无关捕获组。按注册顺序取第一个匹配规则。默认 `/index.php/...` 入口路径参与匹配时应调整正则；新示例使用原生路径，未启用 Route。
+pattern 不带外围正则分隔符，斜杠必须转义。`setConfigFile()` 加载 INI，`:name` 占位符由同名键提供正则；规则按注册顺序取第一条匹配项。默认使用 PATH_INFO 或 REQUEST_URI，也可用 `Route::parse($requestPath)` 显式匹配入口已规范化的路径。samples 已启用 PHP 和 INI 自定义路由，完整用法、注意事项和可运行地址见 [自定义 URL 路由](routes.md)。
 
 ## Tpl
 

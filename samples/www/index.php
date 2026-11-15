@@ -19,16 +19,36 @@ if (is_string($uri) && $uri !== '') {
 SlightPHP::setDefaultZone('site');
 SlightPHP::setDefaultPage('main');
 SlightPHP::setDefaultEntry('entry');
-try {
-    $result = SlightPHP::run();
-    if ($result === false) {
-        http_response_code(404);
+$renderError = static function (): void {
+    // 错误页使用固定入口，不受客户端 Request-Type 方法前缀影响。
+    $requestTypes = SlightPHP::getAllowRequestTypes();
+    SlightPHP::setAllowRequestTypes([]);
+    try {
         SlightPHP::run('/site/main/error');
-    } elseif (is_string($result)) {
+    } finally {
+        SlightPHP::setAllowRequestTypes($requestTypes);
+    }
+};
+try {
+    // 保留入口已去除 index.php 的原始路径，再显式匹配，避免 PATH_INFO=/ 的转发影响短地址。
+    $routePath = SlightPHP::$pathInfo !== '' ? SlightPHP::$pathInfo : ($_SERVER['PATH_INFO'] ?? '/');
+    require dirname(__DIR__) . '/config/routes.php';
+    \SlightPHP\Route::parse($routePath);
+    $result = SlightPHP::run();
+    if (is_string($result)) {
         echo $result;
+    }
+} catch (\SlightPHP\Exception $error) {
+    http_response_code($error->getStatusCode());
+    if ($error->getCode() === \SlightPHP\Exception::METHOD_NOT_ALLOWED) {
+        header('Allow: ' . implode(', ', $error->getContext()['allowedMethods']));
+        echo 'Method Not Allowed';
+    } else {
+        if ($error->getStatusCode() >= 500) error_log((string) $error);
+        $renderError();
     }
 } catch (Throwable $error) {
     error_log((string) $error);
     http_response_code(500);
-    SlightPHP::run('/site/main/error');
+    $renderError();
 }

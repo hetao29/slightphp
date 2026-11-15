@@ -4,7 +4,7 @@
 
 从 6.0 / 6.1 升级时，还需完成 [6.2 升级说明](migration-6.2.md)中的配置、路径、模板、验证码和日志迁移；5.x 应用需先完成 [6.0 迁移指南](migration-6.0.md)。从 6.2.0 直接升级时，也需检查本文的数据库变化。
 
-本文记录 6.3.0 的变化。升级到当前 6.4.0 时，还需按 [6.4 迁移指南](migration-6.4.md)调整模板变量及静态调用；下方 `^6.3` 约束也允许安装 6.4。
+本文记录 6.3.0 的变化。升级到当前 6.5.0 时，还需按 [6.4 迁移指南](migration-6.4.md)调整模板变量及静态调用，并按 [6.5 迁移指南](migration-6.5.md)处理调度异常；下方 `^6.3` 约束也允许安装 6.5。
 
 ## 安装与自动加载
 
@@ -122,7 +122,7 @@ public function Edit(\SlightPHP\Request $request, \SlightPHP\Response $response)
 | 成功通过 `end()` 或 `redirect()` 结束 Response | `null` |
 | 找不到可调用入口，或路径超出深度限制 | `false` |
 
-应用入口应使用 `$result === false` 判断调度失败，使用 `is_string($result)` 判断是否输出返回正文；不要用 `if (!$result)` 将已经结束响应的 `null` 误判为 404。完整入口示例见[快速开始](getting-started.md)。
+升级到 6.5.0 后，应用入口应捕获 `SlightPHP\Exception` 处理调度失败，使用 `is_string($result)` 判断是否输出返回正文。控制器返回的 `false` 属于正常业务结果，已经结束响应时返回 `null`；两者均不表示调度失败。完整入口示例见[快速开始](getting-started.md)及[异常迁移](exceptions.md)。
 
 `end()` 和成功的 `redirect()` 只标记本实例结束，不调用 `exit`，也不停止后续 PHP 语句；使用 `return $response->end(...)` 或 `return $response->redirect('/login')` 结束控制器执行。`write()` 不标记结束，混用 `write()` 和返回同一正文会导致重复输出。响应开始输出非空正文后，不能再通过该实例修改响应头、状态码或 Cookie；响应操作失败会返回 `false`，应按业务需要处理。
 

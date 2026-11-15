@@ -1,14 +1,19 @@
-# SlightPHP 6.4.0 框架使用文档
+# SlightPHP 6.5.0 框架使用文档
 
 本目录的 Markdown 文档根据当前 PHP 源码整理。[API 参考](index.html)由当前源码生成；安装 Composer 依赖后可运行 `make -C docs` 重新生成。
 
+官网：[https://slightphp.com/](https://slightphp.com/)。
+
 - [更新记录](../CHANGELOG.md)
+- [6.5 升级与迁移说明](migration-6.5.md)
+- [核心异常与迁移](exceptions.md)
 - [6.4 升级与迁移说明](migration-6.4.md)
 - [6.3 升级与迁移说明](migration-6.3.md)
 - [6.2 升级说明](migration-6.2.md)
 - [从 5.x 迁移到 6.x](migration-6.0.md)
 - [快速开始与项目结构](getting-started.md)
 - [核心调度、路由与 API](framework.md)
+- [自定义 URL 路由、PHP / INI 配置与示例](routes.md)
 - [Request、Response 与控制器新签名](http.md)
 - [框架官网与维护说明](website.md)
 - [完整示例与交互说明](samples.md)
@@ -17,6 +22,8 @@
 - [部署、排错与安全边界](deployment.md)
 
 SlightPHP 是轻量级调度框架：核心负责从路径加载控制器并调用方法，应用负责响应输出、状态码、权限、校验和数据管理。插件独立使用，并不由核心自动启用。
+
+6.5.0 新增 Route 方法注解，核心失败统一抛出结构化异常，并完善自定义 URL 路由与请求内元数据缓存。从 6.4.x 升级也需调整调度失败处理，具体见 [6.5 迁移指南](migration-6.5.md)。
 
 6.4.0 将 Tpl 模板变量及 `assign()`、`fetch()` 改为实例级；已有静态调用和直接变量表访问需迁移，具体步骤见 [6.4 迁移指南](migration-6.4.md)。
 
