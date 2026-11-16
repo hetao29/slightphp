@@ -50,25 +50,29 @@ class Route{
         private static $_RouteConfigFile;
         private static $_Routes=array();
         /**
-         * 加载 INI 路由，追加到现有规则后立即尝试匹配当前请求。
-         * @param string $file INI 配置文件路径，节对应路由规则。
+         * 通过 Config 加载 JSON/JSONC 路由数组，追加后立即尝试匹配当前请求。
+         * @param string $file JSON/JSONC 文件路径，顶层数组中的每个对象为一条规则。
          * @return void
-         * @throws \RuntimeException INI 文件不可读或解析失败。
-         * @throws \InvalidArgumentException 路由配置或正则无效。
+         * @throws \RuntimeException 配置文件不存在或不可读。
+         * @throws \JsonException JSON/JSONC 解析失败。
+         * @throws \InvalidArgumentException 文件扩展名、路由结构或正则无效。
          */
         static function setConfigFile($file){
-                $routes = @parse_ini_file($file, true);
-                if ($routes === false) {
-                        throw new \RuntimeException('Cannot read or parse Route INI file');
+                $config = Config::parse($file);
+                if (!is_array($config)) {
+                        throw new \InvalidArgumentException('Route configuration must be a JSON array');
                 }
-                foreach ($routes as $route) {
-                        if (!is_array($route)) {
-                                throw new \InvalidArgumentException('Route INI rules must be grouped into sections');
+                $routes = [];
+                foreach ($config as $item) {
+                        if (!$item instanceof \stdClass) {
+                                throw new \InvalidArgumentException('Route rules must be JSON objects');
                         }
+                        $route = get_object_vars($item);
                         self::pattern($route);
+                        $routes[] = $route;
                 }
                 self::$_RouteConfigFile= $file;
-                self::$_Routes = array_merge(self::$_Routes, array_values($routes));
+                self::$_Routes = array_merge(self::$_Routes, $routes);
                 self::parse();
         }
         /** @return string|null 最近设置的路由配置文件路径。 */

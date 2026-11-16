@@ -2,7 +2,7 @@
 // Module content, loaded only for the pages that use it.
 return [
             'route_php' => file_get_contents(dirname(__DIR__, 3) . '/config/routes.php'),
-            'route_ini' => file_get_contents(dirname(__DIR__, 3) . '/config/routes.ini'),
+            'route_json' => file_get_contents(dirname(__DIR__, 3) . '/config/routes.json'),
             'route_methods' => <<<'PHP'
 <?php
 namespace Demo;
@@ -26,7 +26,7 @@ class MainController
     }
 }
 PHP,
-            'install' => 'composer require hetao29/slightphp:^6.5',
+            'install' => 'composer require hetao29/slightphp:^6.5.1',
             'entry' => <<<'PHP'
 <?php
 require dirname(__DIR__) . '/vendor/autoload.php';
@@ -53,6 +53,6 @@ PHP,
             'preview' => "GET /home/main/entry\n\napp/Home/MainController.php\n  → Home\\MainController::Entry(\\SlightPHP\\Request \$request, \\SlightPHP\\Response \$response)\n  → Hello, SlightPHP!",
             'serve' => 'php samples/tests/routing.php',
             'config' => "SlightPHP::setControllerSuffix('Controller');\nSlightPHP::setSplitFlag('/');",
-            'json' => "header('Content-Type: application/json; charset=utf-8');\necho \\SlightPHP\\Json::encode(\n    ['message' => '你好，SlightPHP'],\n    JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR\n);",
+            'json' => "header('Content-Type: application/json; charset=utf-8');\necho json_encode(\n    ['message' => '你好，SlightPHP'],\n    JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR\n);",
             'tpl' => "\\SlightPHP\\Tpl::setTemplateDir(__DIR__ . '/templates');\n\\SlightPHP\\Tpl::setCompileDir(__DIR__ . '/var/templates_c');\n\$tpl = new \\SlightPHP\\Tpl();\n\$tpl->render('index.tpl', ['title' => 'SlightPHP']);",
         ];

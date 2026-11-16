@@ -1,6 +1,6 @@
 <div class="eyebrow">UNDER THE HOOD</div>
 <h1>让每个请求，有迹可循。</h1>
-<p class="lead">通过 PHP 或 INI 规则，把自定义 URL 映射到命名空间控制器。</p>
+<p class="lead">通过 PHP 或 JSON 规则，把自定义 URL 映射到命名空间控制器。</p>
 <section class="panel">
   <h2>路由实验室</h2>
   <p>输入一个参数，通过 PHP 自定义路由 /r/:slug 访问当前页面。</p>
@@ -26,10 +26,10 @@
     <thead><tr><th>URL</th><th>配置来源</th><th>映射结果</th></tr></thead>
     <tbody>
       <tr><td><a href="/r/hello?source=php">/r/hello?source=php</a></td><td>routes.php</td><td>/lab/route/entry/hello</td></tr>
-      <tr><td><a href="/r-ini/hello?source=ini">/r-ini/hello?source=ini</a></td><td>routes.ini</td><td>/lab/route/entry/hello</td></tr>
-      <tr><td><a href="/r-pair/2026/11">/r-pair/2026/11</a></td><td>routes.ini，多参数</td><td>/lab/route/entry/2026/11</td></tr>
-      <tr><td><a href="/tasks">/tasks</a></td><td>routes.ini，固定地址</td><td>/workspace/main/entry</td></tr>
-      <tr><td><a href="/tasks.json">/tasks.json</a></td><td>routes.ini，GET 接口</td><td>/workspace/main/api</td></tr>
+      <tr><td><a href="/r-json/hello?source=json">/r-json/hello?source=json</a></td><td>routes.json</td><td>/lab/route/entry/hello</td></tr>
+      <tr><td><a href="/r-pair/2026/11">/r-pair/2026/11</a></td><td>routes.json，多参数</td><td>/lab/route/entry/2026/11</td></tr>
+      <tr><td><a href="/tasks">/tasks</a></td><td>routes.json，固定地址</td><td>/workspace/main/entry</td></tr>
+      <tr><td><a href="/tasks.json">/tasks.json</a></td><td>routes.json，GET 接口</td><td>/workspace/main/api</td></tr>
       <tr><td><a href="/lab/route/entry/hello">/lab/route/entry/hello</a></td><td>默认命名空间路径</td><td>Lab\RouteController::Entry</td></tr>
     </tbody>
   </table></div>
@@ -38,7 +38,7 @@
 <section class="panel">
   <h2>PHP 配置：samples/config/routes.php</h2>
   <pre>{%htmlspecialchars($routes_php, ENT_QUOTES + ENT_SUBSTITUTE, 'UTF-8')%}</pre>
-  <h2>INI 配置：samples/config/routes.ini</h2>
-  <pre>{%htmlspecialchars($routes_ini, ENT_QUOTES + ENT_SUBSTITUTE, 'UTF-8')%}</pre>
+  <h2>JSON 配置：samples/config/routes.json</h2>
+  <pre>{%htmlspecialchars($routes_json, ENT_QUOTES + ENT_SUBSTITUTE, 'UTF-8')%}</pre>
   <p>入口在 run() 前加载配置，再用 Route::parse($routePath) 匹配已去除 index.php 的原始路径。pattern 不带外围分隔符，斜杠写成 \/；占位符正则使用 (?:...) 避免额外捕获组。</p>
 </section>

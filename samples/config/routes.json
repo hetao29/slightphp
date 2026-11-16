@@ -1,0 +1,35 @@
+[
+    {
+        "pattern": "^\\/r-json\\/:slug$",
+        ":slug": "[A-Za-z0-9_]{1,40}",
+        "zone": "lab",
+        "page": "route",
+        "entry": "entry"
+    },
+    {
+        "pattern": "^\\/r-pair\\/:year\\/:month$",
+        ":year": "\\d{4}",
+        ":month": "(?:0[1-9]|1[0-2])",
+        "zone": "lab",
+        "page": "route",
+        "entry": "entry"
+    },
+    {
+        "pattern": "^\\/tasks$",
+        "zone": "workspace",
+        "page": "main",
+        "entry": "entry"
+    },
+    {
+        "pattern": "^\\/tasks\\.json$",
+        "zone": "workspace",
+        "page": "main",
+        "entry": "api"
+    },
+    {
+        "pattern": "^\\/tasks\\/save$",
+        "zone": "workspace",
+        "page": "main",
+        "entry": "save"
+    }
+]

@@ -32,11 +32,11 @@ class RouteController
                 'plugins' => ['/workspace/main/plugins', '03', '插件与环境'],
                 'template' => ['/lab/template/entry', '04', '模板与模块组合'],
             ],
-            'json' => \SlightPHP\Json::encode($this->request->route, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE),
+            'json' => json_encode($this->request->route, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE),
             'original_uri' => $request->server['request_uri'] ?? ($request->server['path_info'] ?? ''),
-            'query_json' => \SlightPHP\Json::encode($request->get, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE),
+            'query_json' => json_encode($request->get, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE),
             'routes_php' => file_get_contents(dirname(__DIR__, 2) . '/config/routes.php'),
-            'routes_ini' => file_get_contents(dirname(__DIR__, 2) . '/config/routes.ini'),
+            'routes_json' => file_get_contents(dirname(__DIR__, 2) . '/config/routes.json'),
         ];
         $tpl = new \SlightPHP\Tpl();
         $tpl->render('workspace-head.tpl', $data);

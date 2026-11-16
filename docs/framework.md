@@ -65,7 +65,7 @@ $maxDepth = SlightPHP::getMaxDepth(); // 15
 
 别名存在实现限制：当前源码用别名计算 `zone/page`，但文件类名仍由原始 zoneParts 构造，zone 别名不能可靠替代目录映射。完整示例不依赖别名；短 URL 建议用 `SlightPHP\Route` 映射。
 
-`Route::set()` 注册 PHP 规则，`Route::setConfigFile()` 加载 INI，均在 `run()` 前执行。入口已规范化 URI 时可调用 `Route::parse($requestPath)` 显式匹配。完整配置与 samples 短地址见 [自定义 URL 路由](routes.md)。
+`Route::set()` 注册 PHP 规则，`Route::setConfigFile()` 通过 Config 加载 JSON/JSONC 路由数组，均在 `run()` 前执行。入口已规范化 URI 时可调用 `Route::parse($requestPath)` 显式匹配。完整配置与 samples 短地址见 [自定义 URL 路由](routes.md)。
 
 ## 方法前缀与 HTTP 方法
 

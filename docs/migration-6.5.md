@@ -1,4 +1,6 @@
-# 升级到 SlightPHP 6.5.0
+# 升级到 SlightPHP 6.5.1
+
+6.5.1 移除 `SlightPHP\Json` 插件，Route 文件配置改为 JSON/JSONC 数组，并将插件依赖改为 Composer `suggest`，由应用按需安装。从 6.5.0 升级也需要替换 JSON 插件调用、转换 INI 路由配置并显式声明所用插件的依赖。
 
 6.5.0 新增 Route 方法注解，核心失败统一抛出结构化异常，完善 PHP / INI 自定义路由，并优化候选查找、应用目录校验及请求内元数据缓存。官网为 [https://slightphp.com/](https://slightphp.com/)。完整记录见 [Changelog](../CHANGELOG.md)。
 
@@ -6,13 +8,60 @@
 
 ## 安装
 
-PHP 和依赖要求保持为 PHP 8.0+、PDO、Redis 扩展、Guzzle 和 Gregwar Captcha。在应用项目中更新依赖：
+当前安装仅强制要求 PHP 8.0+；PDO、Redis 扩展、Guzzle 和 Gregwar Captcha 已改为按需安装。使用相关插件的应用应先按[插件指南](plugins.md#按需安装依赖)将所需依赖加入自己的 `require`，再更新框架：
 
 ```bash
-composer require hetao29/slightphp:^6.5
+composer require hetao29/slightphp:^6.5.1
 ```
 
 仓库自身使用 `composer install` 安装锁定依赖。此版本不新增 APCu 等扩展要求。
+
+## JSON 插件移除
+
+6.5.1 删除 `plugins/Json.php` 和 `SlightPHP\Json` 类，不保留兼容别名。移除 `use SlightPHP\Json;` 和手动引入该文件的代码，改为直接调用 PHP 原生函数：
+
+| 原调用 | 原生替代 |
+| --- | --- |
+| `Json::encode($value, $flags, $depth)` | `json_encode($value, $flags, $depth)` |
+| `Json::decode($json, $assoc, $depth, $flags)` | `json_decode($json, $assoc, $depth, $flags)` |
+| `Json::error()` | `json_last_error()` |
+| `Json::errorMsg()` | `json_last_error_msg()` |
+
+原插件只是原生函数的封装，替换时保留现有参数、flags、depth 和错误处理即可。原 `decode()` 的 `$assoc` 默认值为 `false`；需要保留对象解码行为时可显式传入 `false`，尤其是同时使用 `JSON_OBJECT_AS_ARRAY` 时。
+
+```php
+header('Content-Type: application/json; charset=utf-8');
+echo json_encode(['message' => '你好'], JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
+$data = json_decode('{"ok":true}', true, 512, JSON_THROW_ON_ERROR);
+```
+
+`JSON_THROW_ON_ERROR` 模式下编解码错误抛出 `\JsonException`，由应用捕获处理；未启用时使用 `json_last_error()` / `json_last_error_msg()` 查询错误。升级时同时检查控制器、模板修饰器、CLI 任务与测试中的旧类引用。
+
+## 路由配置改为 JSON/JSONC
+
+6.5.1 的 `Route::setConfigFile()` 不再解析 INI，改为调用 `Config::parse()`；PHP 的 `Route::set()` 和方法注解 API 保持不变。
+
+将原文件的每个 INI 节转换为一个 JSON 对象，再按原顺序放入顶层数组，并将加载路径改为 `.json` 或 `.jsonc`：
+
+```json
+[
+  {
+    "pattern": "^\\/r-json\\/:slug$",
+    ":slug": "[A-Za-z0-9_]{1,40}",
+    "zone": "lab",
+    "page": "route",
+    "entry": "entry"
+  }
+]
+```
+
+```php
+Route::setConfigFile(__DIR__ . '/../config/routes.json');
+```
+
+保留 `pattern`、`:name`、`zone`、`page`、`entry` 字段，JSON 字符串中的反斜杠需要双写。顶层对象（包括命名分组或 `{ "routes": [...] }`）和数组中的非对象元素均不接受。多文件仍按加载顺序追加，首条匹配规则优先，所有规则校验通过后才追加。
+
+INI 的常量或环境变量插值不会被 JSON 自动执行；这类动态规则可以继续使用 PHP 的 `Route::set()`。JSON 语法错误现在抛出 `JsonException`，不再统一为 INI 解析的 `RuntimeException`；`.ini` 扩展名会被拒绝。Config 默认缓存且不检查文件修改时间，常驻进程应只注册一次并在配置发布后重启。完整规则与缓存说明见[自定义路由文档](routes.md#jsonjsonc-规则)。
 
 ## 核心失败改为异常
 
@@ -79,9 +128,9 @@ class MainController
 
 ## 自定义 URL 路由
 
-静态 `Route::set()` 和 `setConfigFile()` 继续可用，与方法注解共用 `Route` 类。规则只匹配路径，忽略查询串；重复前导斜杠不会被当作主机名。占位符按完整名称替换，多个 INI 文件中的同名节按加载顺序追加，不再相互覆盖。
+静态 `Route::set()` 和 `setConfigFile()` 继续可用，与方法注解共用 `Route` 类。规则只匹配路径，忽略查询串；重复前导斜杠不会被当作主机名。占位符按完整名称替换；6.5.1 的 JSON/JSONC 数组按加载顺序追加，不覆盖先前规则。
 
-新增公开的 `Route::parse(?string $path = null)`。入口若已剥离 `index.php` 或站点前缀，应在注册规则后调用 `Route::parse($path)`，匹配规范化后的实际路径。INI 不可读、规则或正则无效时抛出明确异常；检查已有配置，尤其是空 pattern 和占位符约束类型。完整示例见 [自定义 URL 路由](routes.md)。
+新增公开的 `Route::parse(?string $path = null)`。入口若已剥离 `index.php` 或站点前缀，应在注册规则后调用 `Route::parse($path)`，匹配规范化后的实际路径。配置不可读、JSON 解析失败、规则或正则无效时抛出明确异常；检查已有配置，尤其是空 pattern 和占位符约束类型。完整示例见 [自定义 URL 路由](routes.md)。
 
 ## 调度优化与缓存边界
 
@@ -95,7 +144,7 @@ class MainController
 
 - 检查正常入口、缺失入口、路径超限、重复内部调用和缺失别名的处理。
 - 验证 GET/POST/HEAD、Request-Type 前缀、继承与覆盖，以及 405 的 Allow 响应。
-- 验证包含查询串的 PHP / INI 路由、重复斜杠和多文件规则顺序。
+- 验证包含查询串的 PHP / JSON/JSONC 路由、重复斜杠和多文件规则顺序。
 - 检查可选模板模块的异常处理，以及原始业务异常的传播。
 
 仓库示例可执行 `php samples/tests/routing.php` 检查真实入口、自动加载、模板与 URI 解析；HTTP 验证方式见 [部署文档](deployment.md#验证)。

@@ -1,5 +1,11 @@
 # Changelog
 
+## 6.5.1 — 2026-11-16
+
+- `Route::setConfigFile()` 改为通过 `Config::parse()` 加载 JSON/JSONC 顶层数组，每个对象为一条规则，按数组顺序追加并匹配；不再支持 INI。保留 PHP 规则、占位符、方法注解和首条匹配优先的行为，示例改为 `routes.json`，旧配置需按[路由迁移说明](docs/migration-6.5.md#路由配置改为-jsonjsonc)转换。
+- 移除 `SlightPHP\Json` 插件及 `plugins/Json.php`，JSON 编解码与错误查询改用 PHP 原生 `json_encode()`、`json_decode()`、`json_last_error()` 和 `json_last_error_msg()`。不保留兼容类，已有调用需迁移；示例、官网插件清单与 API 参考同步更新，见 [6.5 迁移指南](docs/migration-6.5.md#json-插件移除)。
+- Composer 强制依赖仅保留 PHP >=8.0；数据库、Redis、HTTP 和验证码插件依赖改为 `suggest`，默认安装不再拉取 Guzzle、Gregwar Captcha 及其传递依赖。使用这些插件的应用需显式声明所需依赖，见[按需安装依赖](docs/plugins.md#按需安装依赖)。
+
 ## 6.5.0 — 2026-11-15
 
 - 官网地址统一为 [https://slightphp.com/](https://slightphp.com/)，更新安装示例、API 参考与 [6.5 迁移指南](docs/migration-6.5.md)。

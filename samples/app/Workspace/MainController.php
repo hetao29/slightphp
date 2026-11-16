@@ -3,7 +3,6 @@ namespace Workspace;
 
 use SlightPHP\Tpl;
 use SlightPHP\Config;
-use SlightPHP\Json;
 use SlightPHP\Route;
 
 class MainController
@@ -92,7 +91,7 @@ class MainController
         $data['done'] = count(array_filter($data['tasks'] ?? [], fn($task) => $task['done']));
         $data['flash'] = $_SESSION['flash'] ?? '';
         unset($_SESSION['flash']);
-        $data['json'] = Json::encode($data['config'] ?? [], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        $data['json'] = json_encode($data['config'] ?? [], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
         $tpl = new Tpl();
         $tpl->render('workspace-head.tpl', $data);
         $tpl->render('workspace/' . ($view === 'tasks' ? 'index' : $view) . '.tpl', $data);
@@ -116,6 +115,6 @@ class MainController
     private function json(array $data): void
     {
         header('Content-Type: application/json; charset=utf-8');
-        echo Json::encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR);
+        echo json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR);
     }
 }

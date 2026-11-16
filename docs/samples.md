@@ -23,8 +23,8 @@
 | `/lab/route/entry` | GET、POST | 命名空间控制器与实际路径数组 |
 | `/lab/route/entry/hello` | GET、POST | 演示附加路径参数 |
 | `/r/hello?source=php` | GET、POST | PHP 自定义路由与查询参数 |
-| `/r-ini/hello?source=ini` | GET、POST | INI 自定义路由 |
-| `/r-pair/2026/11` | GET、POST | INI 多参数，月份限制 01–12 |
+| `/r-json/hello?source=json` | GET、POST | JSON 自定义路由 |
+| `/r-pair/2026/11` | GET、POST | JSON 多参数，月份限制 01–12 |
 | `/tasks`、`/tasks.json` | GET | 任务页面和 JSON 接口的短地址 |
 | `/tasks/save` | POST | 写操作短地址，仍需 CSRF token |
 | `/workspace/main/plugins` | GET | 真实解析 Config 配置及检测扩展 |
@@ -34,7 +34,7 @@
 
 `save` 的错误 HTTP 方法返回 405、CSRF 失败返回 403；业务输入错误通过跳转后的提示呈现。`Save`、`Api` 与路由实验室 `Entry` 使用 [Route 注解](framework.md#route-方法注解)限制 HTTP 方法；不匹配时框架抛出异常，由示例入口生成 405、Allow 和 `Method Not Allowed` 正文。入口同时将找不到文件或入口的异常转换为 404。
 
-自定义配置在 `samples/config/routes.php` 和 `routes.ini`，入口在 run() 前加载并显式匹配规范化后的路径。路由实验室支持输入短地址参数，并显示原始请求、映射后的路径、查询参数和配置源码。用法与匹配规则见 [自定义 URL 路由](routes.md)，独立回归命令为 `php tests/RouteMappingTest.php`。
+自定义配置在 `samples/config/routes.php` 和 `routes.json`，入口在 run() 前加载并显式匹配规范化后的路径。路由实验室支持输入短地址参数，并显示原始请求、映射后的路径、查询参数和配置源码。用法与匹配规则见 [自定义 URL 路由](routes.md)，独立回归命令为 `php tests/RouteMappingTest.php`。
 
 ## 模板与模块组合
 

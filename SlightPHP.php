@@ -2,7 +2,7 @@
 
 /**
  * SlightPHP
- * @version 6.5.0
+ * @version 6.5.1
  * @link https://slightphp.com/
  * @copyright Copyright (c) 2026 SlightPHP
  * @license MIT

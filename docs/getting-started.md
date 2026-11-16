@@ -1,10 +1,10 @@
 # 快速开始
 
-当前版本为 SlightPHP 6.5.0，官网：[https://slightphp.com/](https://slightphp.com/)。
+当前版本为 SlightPHP 6.5.1，官网：[https://slightphp.com/](https://slightphp.com/)。
 
 ## 运行仓库中的完整示例
 
-要求 PHP 8.0+，启用 session。入口通过仓库的 vendor/autoload.php 加载框架及 Tpl、Config、Json 插件；缺少 vendor 时先执行 composer install，无需数据库或 Redis；PHP 的系统临时目录必须可写。
+要求 PHP 8.0+，启用 session。入口通过仓库的 vendor/autoload.php 加载框架及 Tpl、Config 插件，JSON 输出使用原生函数；缺少 vendor 时先执行 composer install，无需数据库或 Redis；PHP 的系统临时目录必须可写。
 
 部署示例站点后，访问其根路径 `/`。首页展示框架介绍；从导航进入功能、插件和使用指南，从页脚进入任务工作台。以 `samples/www` 为网站根目录并转发原始 URI，具体配置见 [部署说明](deployment.md)。
 
@@ -32,10 +32,10 @@ samples/
 ## 在新项目中使用 Composer
 
 ```bash
-composer require hetao29/slightphp:^6.5
+composer require hetao29/slightphp:^6.5.1
 ```
 
-包声明 PHP >=8.0、PDO、Redis 扩展、Guzzle 与 Gregwar Captcha；实际可用版本以 Composer 解析结果为准。核心本身不依赖 Guzzle。不要混淆完整安装要求与独立演示要求。
+包仅强制要求 PHP >=8.0；PDO、Redis 扩展、Guzzle 与 Gregwar Captcha 等插件依赖通过 `suggest` 提示，默认不安装。使用对应插件时，在应用项目中[按需安装依赖](plugins.md#按需安装依赖)；额外依赖可能提高应用的最低 PHP 版本。
 
 已有项目升级请先阅读 [6.5 迁移指南](migration-6.5.md)，调整核心异常处理；从 6.3.x 或更早版本升级时，还需按 [6.4 迁移指南](migration-6.4.md)修改模板静态调用，从 6.2.x 或更早版本升级时还需按 [6.3 迁移指南](migration-6.3.md)修改控制器构造函数与入口参数。
 

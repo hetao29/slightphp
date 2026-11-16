@@ -3,8 +3,7 @@
 return [
             ['name' => 'Tpl', 'group' => '基础', 'type' => 'base', 'text' => '模板编译与变量赋值，支持条件、循环和公共模板拆分。本站正在使用。', 'need' => '需要可信模板与可写编译目录'],
             ['name' => 'Config', 'group' => '基础', 'type' => 'base', 'text' => '解析 JSON/JSONC 配置，支持对象、数组与基本类型，并提供进程内缓存。', 'need' => '配置文件；开发时可关闭缓存'],
-            ['name' => 'Json', 'group' => '基础', 'type' => 'base', 'text' => 'JSON 编解码与错误查询，支持原生 flags 和 depth 参数。', 'need' => '应用自行设置响应头与错误策略'],
-            ['name' => 'Route', 'group' => '基础', 'type' => 'base', 'text' => '支持 PHP / INI 自定义 URL 映射，以及 Controller 方法上的 HTTP 请求方法注解。', 'need' => 'URL 规则在 run() 前注册；方法限制由核心识别'],
+            ['name' => 'Route', 'group' => '基础', 'type' => 'base', 'text' => '支持 PHP / JSON 自定义 URL 映射，以及 Controller 方法上的 HTTP 请求方法注解。', 'need' => 'URL 规则在 run() 前注册；方法限制由核心识别'],
             ['name' => 'Log', 'group' => '基础', 'type' => 'base', 'text' => '提供分级日志，可配置控制台输出与文件记录。', 'need' => '写文件时需要目录权限'],
             ['name' => 'Db', 'group' => '数据', 'type' => 'data', 'text' => '提供数据库表操作及读写配置组织能力。', 'need' => '数据库服务、对应驱动和连接配置'],
             ['name' => 'Redis', 'group' => '数据', 'type' => 'data', 'text' => '封装 Redis 的配置与访问，适合缓存等数据场景。', 'need' => 'Redis PHP 扩展及实际服务'],

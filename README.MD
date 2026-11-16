@@ -1,8 +1,10 @@
-# SlightPHP 6.5.0
+# SlightPHP 6.5.1
 
 SlightPHP 是一个轻量 PHP 框架，按照请求路径加载命名空间控制器并调用公开方法。应用负责响应输出、状态码、权限和输入校验。
 
 [官网](https://slightphp.com/) · [源码](https://github.com/hetao29/slightphp)
+
+6.5.1 移除 `SlightPHP\Json` 插件，改用 PHP 原生 JSON 函数；Route 文件配置改为 JSON/JSONC 数组；插件依赖改为 Composer `suggest`，由应用按需安装。已有 JSON 调用、路由配置和插件依赖需按 [6.5 迁移指南](docs/migration-6.5.md)调整。
 
 6.5.0 新增 Route 方法注解和结构化调度异常，完善 PHP / INI 自定义路由，并优化候选查找、目录校验和请求内注解缓存。核心失败不再返回 `false`，已有入口与内部调用需要按 [6.5 迁移指南](docs/migration-6.5.md)调整。
 
@@ -12,10 +14,10 @@ SlightPHP 是一个轻量 PHP 框架，按照请求路径加载命名空间控�
 
 ## 安装
 
-需要 PHP 8.0+、PDO 和 Redis 扩展；Composer 还会安装 Guzzle 和 Gregwar Captcha。使用数据库、Redis 服务或验证码时，还需准备相应驱动、服务和扩展。
+核心需要 PHP 8.0+。插件依赖通过 Composer 的 `suggest` 声明，默认不安装；使用 Db、Redis、Http 或 Captcha 时，再按需安装对应扩展或 Composer 包，见[插件依赖](docs/plugins.md#按需安装依赖)。
 
 ```bash
-composer require hetao29/slightphp:^6.5
+composer require hetao29/slightphp:^6.5.1
 ```
 
 ## 创建应用
@@ -82,7 +84,7 @@ class MainController
 - [6.0 迁移与不兼容事项](docs/migration-6.0.md)
 - [快速开始](docs/getting-started.md)
 - [核心调度和 API](docs/framework.md)
-- [自定义 URL 路由与 PHP / INI 示例](docs/routes.md)
+- [自定义 URL 路由与 PHP / JSON 示例](docs/routes.md)
 - [Request 与 Response](docs/http.md)
 - [插件使用](docs/plugins.md)
 - [Tpl include / part 使用手册](docs/templates.md)

@@ -2,7 +2,38 @@
 
 运行 `composer install` 后，在应用入口引入 `vendor/autoload.php`。插件由 Composer 按需加载，使用 `SlightPHP\` 命名空间；6.x 不提供旧版全局类名。模板辅助函数由 Composer 自动注册。各插件的运行条件不同，请按需准备扩展和服务。
 
-插件包括 `Captcha`、`Config`、`Db`、`Error`、`Http`、`Json`、`Language`、`Log`、`Redis`、`Route` 和 `Tpl`。`SlightPHP\Db` 提供表操作、查询和事务接口。
+插件包括 `Captcha`、`Config`、`Db`、`Error`、`Http`、`Language`、`Log`、`Redis`、`Route` 和 `Tpl`。`SlightPHP\Db` 提供表操作、查询和事务接口。
+
+## 按需安装依赖
+
+框架的 `require` 仅声明 PHP >=8.0，插件依赖放在 `suggest` 中。`suggest` 只提供安装提示，不会自动安装包或扩展，也不会强制校验版本。使用对应插件的应用应将所需依赖加入自己的 `composer.json` 的 `require`，让 Composer 检查部署环境。
+
+| 插件 | 应用需要声明或安装的依赖 |
+| --- | --- |
+| Db | `ext-pdo`、`ext-pdo_mysql`，并准备 MySQL 服务和连接配置 |
+| Redis | `ext-redis`，支持 RedisArray 或 RedisCluster，并准备服务和连接配置 |
+| Http | `guzzlehttp/guzzle:^7.0 || ^8.0` |
+| Captcha | `gregwar/captcha:^1.3 || ^2.0`、`ext-session`；GD、mbstring、fileinfo 由验证码包声明并检查 |
+
+例如，在应用项目目录执行所需命令：
+
+```bash
+# 使用 Http 插件
+composer require 'guzzlehttp/guzzle:^7.0 || ^8.0'
+
+# 使用 Captcha 插件
+composer require 'gregwar/captcha:^1.3 || ^2.0' 'ext-session:*'
+
+# 使用当前 MySQL 数据库插件
+composer require 'ext-pdo:*' 'ext-pdo_mysql:*'
+
+# 使用 Redis 插件
+composer require 'ext-redis:*'
+```
+
+`ext-*` 声明用于检查 PHP 扩展，Composer 不负责安装系统扩展。可选包根据应用的 PHP 环境解析版本，最终运行要求以应用的锁文件为准。加载 `vendor/autoload.php` 不会主动加载这些插件；调用插件前应先安装其依赖，尤其是继承第三方类的 Captcha。
+
+从旧版本升级时，应用若使用上述插件，应先显式声明所需依赖，再更新框架，避免依赖被作为无用包移除。
 
 ## Config
 
@@ -75,13 +106,13 @@ HTML 格式会转义错误消息、文件名、调用方法和参数中的 HTML 
 
 兼容性：`json` 模式已从旧的“文本前缀 + 部分参数 JSON 编码”升级为整条记录 JSON 编码。依赖旧日志格式的解析程序需要调整；应为新格式使用单独日志文件或先轮转旧文件，避免混合格式。
 
-## Json
+## JSON 使用原生函数
 
-封装 `json_encode` / `json_decode`，支持对应 flags、depth。默认编码失败返回 false，解码失败可能返回 null，应检查 `Json::error()` / `errorMsg()`，或使用 `JSON_THROW_ON_ERROR`。响应头由应用设置。
+从 6.5.1 起移除 `SlightPHP\Json`，直接使用 PHP 原生函数；原调用的参数与 flags、depth 可保持不变。迁移对应关系见 [6.5 迁移指南](migration-6.5.md#json-插件移除)。默认编码失败返回 false，解码失败可能返回 null，应检查 `json_last_error()` / `json_last_error_msg()`，或使用 `JSON_THROW_ON_ERROR`。响应头由应用设置。
 
 ```php
 header('Content-Type: application/json; charset=utf-8');
-echo \SlightPHP\Json::encode(['message' => '你好'], JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
+echo json_encode(['message' => '你好'], JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
 ```
 
 ## Route
@@ -100,7 +131,7 @@ echo \SlightPHP\Json::encode(['message' => '你好'], JSON_UNESCAPED_UNICODE | J
 SlightPHP::run();
 ```
 
-pattern 不带外围正则分隔符，斜杠必须转义。`setConfigFile()` 加载 INI，`:name` 占位符由同名键提供正则；规则按注册顺序取第一条匹配项。默认使用 PATH_INFO 或 REQUEST_URI，也可用 `Route::parse($requestPath)` 显式匹配入口已规范化的路径。samples 已启用 PHP 和 INI 自定义路由，完整用法、注意事项和可运行地址见 [自定义 URL 路由](routes.md)。
+pattern 不带外围正则分隔符，斜杠必须转义。`setConfigFile()` 通过 Config 加载 JSON/JSONC 路由数组，`:name` 占位符由同名键提供正则；规则按注册顺序取第一条匹配项。默认使用 PATH_INFO 或 REQUEST_URI，也可用 `Route::parse($requestPath)` 显式匹配入口已规范化的路径。samples 已启用 PHP 和 JSON 自定义路由，完整用法、注意事项和可运行地址见 [自定义 URL 路由](routes.md)。
 
 ## Tpl
 
@@ -130,7 +161,7 @@ $tpl->render('index.tpl', ['title' => '示例']);
 
 ## Captcha
 
-先运行 `composer install`，通过 `vendor/autoload.php` 加载插件和 `gregwar/captcha`。依赖需要 GD、mbstring 和 fileinfo；插件在会话未启动时会启动会话。图片端点应在输出其他内容之前调用：
+先按[插件依赖说明](#按需安装依赖)安装 `gregwar/captcha` 并启用 session，再通过 `vendor/autoload.php` 加载。依赖需要 GD、mbstring 和 fileinfo；插件在会话未启动时会启动会话。图片端点应在输出其他内容之前调用：
 
 ```php
 require 'vendor/autoload.php';
@@ -162,7 +193,7 @@ Session 中的记录现在包含 `code` 和 `expires_at`，存放于 `session_pr
 | Error | 错误处理 | 明确线上错误输出策略 |
 | Language | 多语言词条 | locale 文件与语言选择策略 |
 | Captcha | 验证码 | Composer 的 gregwar/captcha、GD、mbstring、fileinfo 和会话 |
-| Http | HTTP 客户端 | Composer 依赖、网络和超时策略 |
+| Http | HTTP 客户端 | Composer 安装 guzzlehttp/guzzle、网络和超时策略 |
 
 使用数据库时先了解条件构造与参数绑定，不要直接拼接用户输入。历史示例的服务地址与配置仅是样本，部署前替换为自己的配置，并将密钥置于 Web 根目录之外。
 

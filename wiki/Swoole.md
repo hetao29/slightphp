@@ -9,7 +9,7 @@ $http->on('request', function ($request, $response) {
 	if(($r=SlightPHP::run($request->server['request_uri']))===false){
 		//
 	}elseif(is_object($r) || is_array($r)){
-		$response->end(SJson::encode($r));
+		$response->end(json_encode($r));
 	}else{
 		$response->end($r);
 	}

@@ -1,4 +1,4 @@
-# Tpl 模板与模块组合手册（6.5.0）
+# Tpl 模板与模块组合手册（6.5.1）
 
 运行 samples 后访问 `/lab/template/entry`，或从 `/site/main/examples` 的「模板与模块组合」进入。工作台侧栏也提供同名入口。该页面实际执行跨目录 include、跨模块 part 和嵌套调用，无需数据库或 Redis。
 

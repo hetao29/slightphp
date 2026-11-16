@@ -11,5 +11,5 @@ Route::set([
     'entry' => 'entry',
 ]);
 
-// INI 规则追加在 PHP 规则之后，首条匹配规则优先。
-Route::setConfigFile(__DIR__ . '/routes.ini');
+// JSON 数组中的规则追加在 PHP 规则之后，首条匹配规则优先。
+Route::setConfigFile(__DIR__ . '/routes.json');
