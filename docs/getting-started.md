@@ -1,26 +1,30 @@
 # 快速开始
 
-当前版本为 SlightPHP 6.5.2，官网：[https://slightphp.com/](https://slightphp.com/)。
+当前版本为 SlightPHP 6.5.3，官网：[https://slightphp.com/](https://slightphp.com/)。
 
 ## 运行仓库中的完整示例
 
-要求 PHP 8.0+，启用 session。入口通过仓库的 vendor/autoload.php 加载框架及 Tpl、Config 插件，JSON 输出使用原生函数；缺少 vendor 时先执行 composer install，无需数据库或 Redis；PHP 的系统临时目录必须可写。
+要求 PHP 8.0+，启用 session。入口通过仓库的 vendor/autoload.php 加载框架及 Tpl、Config、Route、Language 插件，JSON 输出使用原生函数；缺少 vendor 时先执行 composer install，无需数据库或 Redis；PHP 的系统临时目录必须可写。
 
-部署示例站点后，访问其根路径 `/`。首页展示框架介绍；从导航进入功能、插件和使用指南，从页脚进入任务工作台。以 `samples/www` 为网站根目录并转发原始 URI，具体配置见 [部署说明](deployment.md)。
+部署示例站点后，访问其根路径 `/`。首页包含完整功能特性，导航顺序为「首页 → 入门 → 插件 → 示例 → 文档 → ChangeLog」。从示例索引或工作台侧栏可进入多语言实验；页面支持简体、繁体和英文，主题默认自动跟随系统。以 `samples/www` 为网站根目录并转发原始 URI，具体配置见 [部署说明](deployment.md)。
 
 ```text
 samples/
   www/index.php              官网与交互示例入口（网站根目录为 www）
   www/assets/site.css        框架官网响应式样式
   www/assets/site.js         插件搜索、代码复制和示例切换
+  www/assets/theme.js        自动、深色和浅色主题偏好
   www/assets/demo.css        任务工作台样式
   www/assets/demo.js         任务搜索、筛选、删除确认
   app/Site/                  框架官网 NAMESPACE 控制器
   app/data/site/features.php      功能介绍数据
   app/data/site/plugins.php       插件介绍数据
-  app/data/site/code.php          使用指南代码
+  app/data/site/code.php          入门指南代码
   app/Workspace/             任务工作台 NAMESPACE 控制器
-  app/Lab/                   NAMESPACE 路由实验
+  app/Lab/                   路由、模板和多语言实验
+  app/I18n.php               Language 语言选择与文本转义
+  app/languages/*/main.json  简体、繁体和英文界面词条
+  app/languages/*/demo.json  多语言实验的独立词条
   app/templates/             Tpl 页面模板与公共布局
   config/example.json        Config 可运行配置
   tests/website.py           官网 HTTP 验证
@@ -32,7 +36,7 @@ samples/
 ## 在新项目中使用 Composer
 
 ```bash
-composer require hetao29/slightphp:^6.5.2
+composer require hetao29/slightphp:^6.5.3
 ```
 
 包仅强制要求 PHP >=8.0；PDO、Redis 扩展、Guzzle 与 Gregwar Captcha 等插件依赖通过 `suggest` 提示，默认不安装。使用对应插件时，在应用项目中[按需安装依赖](plugins.md#按需安装依赖)；额外依赖可能提高应用的最低 PHP 版本。

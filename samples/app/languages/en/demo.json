@@ -1,0 +1,4 @@
+{
+    "greeting": "Hello, {name}! Welcome to SlightPHP in your language.",
+    "action": "Get started"
+}

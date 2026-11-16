@@ -1,28 +1,7 @@
 (() => {
   'use strict';
   document.documentElement.classList.add('js');
-  const themeButtons = [...document.querySelectorAll('.theme-toggle')];
-  function applyTheme(theme) {
-    document.documentElement.dataset.theme = theme;
-    const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.content = theme === 'light' ? '#ffffff' : '#101114';
-    themeButtons.forEach(button => {
-      button.setAttribute('aria-pressed', String(theme === 'light'));
-      button.setAttribute('aria-label', theme === 'light' ? '切换深色主题' : '切换浅色主题');
-      const icon = button.querySelector('[data-theme-icon]');
-      const label = button.querySelector('[data-theme-label]');
-      if (icon) icon.textContent = theme === 'light' ? '☾' : '☀';
-      if (label) label.textContent = theme === 'light' ? '深色' : '浅色';
-    });
-  }
-  let savedTheme;
-  try { savedTheme = localStorage.getItem('slightphp-theme'); } catch {}
-  applyTheme(savedTheme === 'light' ? 'light' : 'dark');
-  themeButtons.forEach(button => button.addEventListener('click', () => {
-    const theme = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
-    applyTheme(theme);
-    try { localStorage.setItem('slightphp-theme', theme); } catch {}
-  }));
+  const t = window.SampleUI.t;
   const toggle = document.querySelector('.menu-toggle');
   const nav = document.querySelector('#site-nav');
   function closeMenu() {
@@ -55,7 +34,7 @@
       if (!card.hidden) visible++;
     });
     const status = document.querySelector('#plugin-status');
-    if (status) status.textContent = `显示 ${visible} 组插件`;
+    if (status) status.textContent = t('plugin_count', { count: visible });
     const empty = document.querySelector('#plugin-empty');
     if (empty) empty.hidden = visible > 0;
     filters.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.pluginFilter === category)));
@@ -71,14 +50,14 @@
     const original = button.textContent;
     try {
       await navigator.clipboard.writeText(code.textContent);
-      button.textContent = '已复制';
+      button.textContent = t('copied');
     } catch {
       const selection = window.getSelection();
       const range = document.createRange();
       range.selectNodeContents(code);
       selection.removeAllRanges();
       selection.addRange(range);
-      button.textContent = '已选中，请手动复制';
+      button.textContent = t('copy_manually');
     }
     let status = document.querySelector('#copy-status');
     if (!status) {

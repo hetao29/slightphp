@@ -7,12 +7,12 @@ namespace SlightPHP;
  * @license MIT
  */
 /**
- * 从语言目录中的 INI 文件查找翻译。
+ * 通过 Config 从语言目录中的 JSON/JSONC 对象查找翻译。
  * @package SlightPHP
  */
 class Language{
 	/**
-	 * @var string|null 语言文件根目录，按 locale/zone.ini 组织；设置前为 null。
+	 * @var string|null 语言文件根目录，按 locale/zone.json 或 locale/zone.jsonc 组织；设置前为 null。
 	 */
 	static $languageDir;
 	/** @var string|null 强制使用的语言。 */
@@ -26,9 +26,13 @@ class Language{
 	 * 按指定语言或请求的 Accept-Language 顺序查找翻译，找不到时返回原文。
 	 * 请求语言按出现顺序处理，不按 q 值排序；defaultLocale 在请求列表中时
 	 * 会成为唯一候选语言。非法请求语言及 q=0 项会被忽略，路径必须位于语言目录内。
-	 * @param string $source 原文，同时作为 INI 键。
-	 * @param string $zone 语言文件名（不含 .ini）。
+	 * 词条必须是字符串；语言文件缺失时继续回退，格式或结构错误时抛出异常。
+	 * @param string $source 原文或词条键，对应 JSON 对象的属性名。
+	 * @param string $zone 语言文件名（不含 .json/.jsonc），同名文件优先使用 .json。
 	 * @return string 翻译结果或原文。
+	 * @throws \JsonException JSON/JSONC 解析失败。
+	 * @throws \InvalidArgumentException 语言文件不是 JSON 对象或词条不是字符串。
+	 * @throws \RuntimeException 语言文件无法读取。
 	 */
 	static public function tr($source,$zone="main"){
 		if(empty(self::$_locales)){
@@ -67,17 +71,27 @@ class Language{
 		$prefix = rtrim($root, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
 
 		foreach(self::$_locales as $locale){
-			
+			if(!isset(self::$_languageCache[$locale][$zone])){
+				foreach(['json', 'jsonc'] as $extension){
+					$path = $prefix.$locale.DIRECTORY_SEPARATOR.$zone.'.'.$extension;
+					$filename = realpath($path);
+					if($filename === false || !str_starts_with($filename, $prefix) || !is_file($filename)) continue;
+					$config = Config::parse($path);
+					if(!$config instanceof \stdClass){
+						throw new \InvalidArgumentException('Language file must be a JSON object: '.$path);
+					}
+					$translations = get_object_vars($config);
+					foreach($translations as $translation){
+						if(!is_string($translation)){
+							throw new \InvalidArgumentException('Language translations must be strings: '.$path);
+						}
+					}
+					self::$_languageCache[$locale][$zone] = $translations;
+					break;
+				}
+			}
 			if(isset(self::$_languageCache[$locale][$zone][$source])){
 				return self::$_languageCache[$locale][$zone][$source];
-			}
-
-			$filename = realpath($prefix.$locale.DIRECTORY_SEPARATOR.$zone.".ini");
-			if($filename !== false && str_starts_with($filename, $prefix) && is_file($filename) && !isset(self::$_languageCache[$locale][$zone])){
-				self::$_languageCache[$locale][$zone] = parse_ini_file($filename);
-				if(isset(self::$_languageCache[$locale][$zone][$source])){
-					return self::$_languageCache[$locale][$zone][$source];
-				}
 			}
 		}
 		return $source;

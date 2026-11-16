@@ -1,40 +1,40 @@
 {%include "workspace-head.tpl"%}
 <div class="eyebrow">TPL / INCLUDE + PART</div>
-<h1>模板与模块组合</h1>
-<p class="lead">include 复用模板和当前变量；part 调用另一个控制器方法。这里的结果都由实际调用生成。</p>
+<h1>{%SampleI18n::e('templates_and_modules')%}</h1>
+<p class="lead">{%SampleI18n::e('include_reuses_templates_and_current_variables_part_calls_another')%}</p>
 <section class="panel">
-    <h2>1. include：共享父模板变量</h2>
-    <p>父模板的 scope 为 <code>PARENT</code>。动态文件名的 include 跨目录加载 Widgets 的公共模板，继续使用同一个 Tpl 实例，子模板还会嵌套 include。</p>
+    <h2>{%SampleI18n::e('1_include_share_parent_variables')%}</h2>
+    <p>{%SampleI18n::e('the_parent_template_sets_scope_to')%} <code>PARENT</code>{%SampleI18n::e('an_include_with_a_dynamic_filename_loads_a_shared')%}</p>
     <pre><code>&#123;%include $include_child%&#125;</code></pre>
     {%include $include_child%}
 </section>
 <section class="panel">
-    <h2>2. part：调用 Widgets 模块</h2>
-    <p>Card 方法创建自己的 Tpl 实例，将 scope 设置为 <code>CHILD</code>，并从路径参数读取 <code>demo</code>。卡片内部的 include 共享 CHILD。</p>
+    <h2>{%SampleI18n::e('2_part_call_the_widgets_module')%}</h2>
+    <p>{%SampleI18n::e('card_creates_its_own_tpl_instance_sets_scope_to')%} <code>CHILD</code>{%SampleI18n::e('and_reads_the_path_parameter')%} <code>demo</code>{%SampleI18n::e('the_include_inside_the_card_shares_child')%}</p>
     <pre><code>&#123;%part "/widgets/template/card/demo"%&#125;</code></pre>
     {%part "/widgets/template/card/demo"%}
-    <p data-example="parent-after-card">调用后父模板：<strong>{%$scope|escape%}</strong></p>
-    <p><a href="/widgets/template/card/direct">单独打开模块卡片 →</a></p>
+    <p data-example="parent-after-card">{%SampleI18n::e('parent_after_the_call')%}<strong>{%$scope|escape%}</strong></p>
+    <p><a href="/widgets/template/card/direct">{%SampleI18n::e('open_the_module_card_directly')%}</a></p>
 </section>
 <section class="panel">
-    <h2>3. 字符串返回与混合输出</h2>
-    <p>part 将模块直接输出的内容与字符串返回值按顺序插入当前位置，各输出一次。</p>
+    <h2>{%SampleI18n::e('3_string_returns_and_mixed_output')%}</h2>
+    <p>{%SampleI18n::e('part_inserts_the_module_output_followed_by_its_string')%}</p>
     <pre><code>&#123;%part "/widgets/template/returned/demo"%&#125;
 &#123;%part "/widgets/template/mixed"%&#125;</code></pre>
     {%part "/widgets/template/returned/demo"%}
     <p>{%part "/widgets/template/mixed"%}</p>
 </section>
 <section class="panel">
-    <h2>4. 嵌套 part 与响应结束</h2>
-    <p>Nested 模块再次调用 Returned 方法；内部 Response::end() 输出片段后，父页面继续渲染。</p>
+    <h2>{%SampleI18n::e('4_nested_parts_and_response_completion')%}</h2>
+    <p>{%SampleI18n::e('nested_calls_returned_again_after_an_internal_response_end')%}</p>
     <pre><code>&#123;%part "/widgets/template/nested"%&#125;
 &#123;%part "/widgets/template/ended"%&#125;</code></pre>
     {%part "/widgets/template/nested"%}
     {%part "/widgets/template/ended"%}
-    <p data-example="parent-final">所有模块完成，父模板仍为：<strong>{%$scope|escape%}</strong></p>
+    <p data-example="parent-final">{%SampleI18n::e('all_modules_finished_parent_is_still')%}<strong>{%$scope|escape%}</strong></p>
 </section>
 <section class="panel">
-    <h2>继续阅读</h2>
-    <p>完整调用规则、文件位置和异常处理见仓库 <code>docs/templates.md</code>。模板与模块返回的动态 HTML 都应在输出处转义。</p>
+    <h2>{%SampleI18n::e('further_reading')%}</h2>
+    <p>{%SampleI18n::e('for_invocation_rules_file_locations_and_exception_handling_see')%} <code>docs/templates.md</code>{%SampleI18n::e('escape_dynamic_html_where_templates_and_modules_output_it')%}</p>
 </section>
 {%include "workspace-footer.tpl"%}

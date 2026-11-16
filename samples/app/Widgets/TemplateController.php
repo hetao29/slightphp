@@ -4,6 +4,7 @@ namespace Widgets;
 use SlightPHP\Request;
 use SlightPHP\Response;
 use SlightPHP\Tpl;
+use SampleI18n;
 
 /** 可直接访问，也可通过模板 part 嵌入的模块片段。 */
 class TemplateController
@@ -21,14 +22,14 @@ class TemplateController
     public function Returned(Request $request, Response $response): string
     {
         $label = htmlspecialchars($request->route[3] ?? 'demo', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-        return '<p data-example="part-return">字符串返回：'.$label.'</p>';
+        return '<p data-example="part-return">'.SampleI18n::e('string_return').$label.'</p>';
     }
 
     /** 先直接输出，再返回字符串，part 按此顺序合并。 */
     public function Mixed(Request $request, Response $response): string
     {
-        echo '<span data-example="part-mixed-output">先直接输出</span> / ';
-        return '<span data-example="part-mixed-return">再返回字符串</span>';
+        echo '<span data-example="part-mixed-output">'.SampleI18n::e('direct_output_first').'</span> / ';
+        return '<span data-example="part-mixed-return">'.SampleI18n::e('string_return_next').'</span>';
     }
 
     /** 新模板实例内再次调用其它模块方法。 */
@@ -40,6 +41,6 @@ class TemplateController
     /** 结束本次内部调用的 Response，父页面仍会继续渲染。 */
     public function Ended(Request $request, Response $response): bool
     {
-        return $response->end('<p data-example="part-ended">Response::end 输出</p>');
+        return $response->end('<p data-example="part-ended">'.SampleI18n::e('response_end_output').'</p>');
     }
 }

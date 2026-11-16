@@ -29,6 +29,7 @@
 | `/tasks/save` | POST | 写操作短地址，仍需 CSRF token |
 | `/workspace/main/plugins` | GET | 真实解析 Config 配置及检测扩展 |
 | `/lab/template/entry` | GET | 模板 include 与模块 part 组合、变量作用域及输出顺序 |
+| `/lab/language/entry` | GET | 简体、繁体、英文切换、动态称呼、JSON 词条与缺失词条回退 |
 | `/widgets/template/card/direct` | GET | 独立渲染模块卡片，读取路径参数 direct |
 | 不存在的控制器或方法 | 任意 | HTTP 404 和可返回首页的错误页 |
 
@@ -41,6 +42,12 @@
 从工作台侧栏或官网示例索引进入 `/lab/template/entry`。父模板通过动态文件名跨目录 include 公共模板，再通过 part 调用 Widgets 模块的 Card、Returned、Mixed、Nested 和 Ended 方法。页面展示 PARENT、CHILD、NESTED 三个实例的变量作用域、路径参数和实际输出顺序。调用规则及代码位置见 [Tpl 模板与模块组合手册](templates.md)。
 
 运行 `php samples/tests/tpl-composition.php`，自动使用独立临时缓存验证真实入口、嵌套模块、冷/热缓存、缓冲层数和转义。
+
+## 多语言实验
+
+从官网示例索引、插件页的 Language 卡片或工作台侧栏进入 `/lab/language/entry`。表单通过 GET 提交 `lang=zh-cn/zh-tw/en` 和 `name`，无需 JavaScript；例如 `/lab/language/entry?lang=en&name=SlightPHP`。入口在第一次翻译前选择 locale，实验实际调用 `Language::tr('greeting', 'demo')`，再用 `strtr()` 替换 `{name}`。页面同时展示当前语言、翻译结果、实际读取的 `app/languages/{locale}/demo.json` 和可复制的 PHP 代码。
+
+`missing_demo_key` 未在 demo 区域定义，实际返回原词条键。称呼要求 1–80 个字符；无效输入返回 400 并提示，所有动态文本在 HTML 输出时转义。切换语言会发起新请求，遵守 Language 已初始化的 locale 缓存语义。JSON/JSONC 格式、回退与缓存规则见 [Language 说明](plugins.md#language)。
 
 ## 数据与安全设计
 
@@ -61,4 +68,4 @@ python3 samples/tests/smoke.py "$SITE_URL"
 
 ## 清理后的范围
 
-samples 仅包含官网与当前可运行的任务、路由、配置、JSON 和模板组合示例。历史 user、photos、guestbook、Auction、数据库与 Redis 测试、backend、locale、旧配置和模板缓存已删除。插件实现仍保留在仓库 plugins 中，可参考插件文档独立使用。
+samples 仅包含官网与当前可运行的任务、路由、配置、JSON、模板组合和多语言示例。历史 user、photos、guestbook、Auction、数据库与 Redis 测试、backend、locale、旧配置和模板缓存已删除。插件实现仍保留在仓库 plugins 中，可参考插件文档独立使用。

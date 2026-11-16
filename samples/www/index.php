@@ -5,6 +5,8 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
 require_once dirname(__DIR__, 2) . '/vendor/autoload.php';
+require_once dirname(__DIR__) . '/app/I18n.php';
+SampleI18n::boot();
 SlightPHP::setAppDir(dirname(__DIR__) . '/app');
 $uri = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH);
 if (is_string($uri) && $uri !== '') {
@@ -44,7 +46,7 @@ try {
         if (!empty($error->getContext()['allowedMethods'])) {
             header('Allow: ' . implode(', ', $error->getContext()['allowedMethods']));
         }
-        echo 'Method Not Allowed';
+        echo SampleI18n::e('method_not_allowed');
     } else {
         if ($error->getStatusCode() >= 500) error_log((string) $error);
         $renderError();

@@ -1,1 +1,1 @@
-<footer>数据保存在当前浏览器会话中 · 无需数据库 · 文档见仓库 docs/README.md</footer></main></body></html>
+<footer>{%SampleI18n::e('data_stays_in_this_browser_session_no_database_required')%}</footer></main></body></html>

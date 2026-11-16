@@ -1,4 +1,6 @@
-# SlightPHP 6.5.2 框架使用文档
+# SlightPHP 6.5.3 框架使用文档
+
+6.5.3 将 Language 语言文件改为 JSON/JSONC，与 Route 共用 Config 解析；旧 INI 词条需转换为字符串键值对象。官网与示例支持简体、繁体和英文，新增多语言实验、完整文档阅读与默认自动的主题切换，见 [6.5.3 迁移说明](migration-6.5.md#language-语言文件改为-jsonjsonc653)。
 
 6.5.2 新增请求类型前缀校验，缺失或不匹配的 `Request-Type` 会在方法存在性、Route 注解和控制器构造前被拒绝（405），显式 URL 与内部调用均适用。应用仅在异常的 `allowedMethods` 非空时输出 `Allow`；从 6.5.1 升级也需检查带类型前缀的入口及异常处理，见 [6.5 迁移指南](migration-6.5.md#请求类型前缀校验652)。
 

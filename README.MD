@@ -1,8 +1,10 @@
-# SlightPHP 6.5.2
+# SlightPHP 6.5.3
 
 SlightPHP 是一个轻量 PHP 框架，按照请求路径加载命名空间控制器并调用公开方法。应用负责响应输出、状态码、权限和输入校验。
 
 [官网](https://slightphp.com/) · [源码](https://github.com/hetao29/slightphp)
+
+6.5.3 将 Language 语言文件改为 JSON/JSONC，并完善官网的简体、繁体、英文、多语言实验、完整文档与自动主题。已有 INI 语言文件需按 [6.5.3 迁移说明](docs/migration-6.5.md#language-语言文件改为-jsonjsonc653)转换。
 
 6.5.2 新增请求类型前缀校验：候选方法名以已配置类型开头时，`Request-Type` 必须匹配，否则抛出 405；显式 URL 与内部调用均适用。已有带类型前缀的入口调用及 405 响应处理需按 [升级说明](docs/migration-6.5.md#请求类型前缀校验652)调整。
 
@@ -19,7 +21,7 @@ SlightPHP 是一个轻量 PHP 框架，按照请求路径加载命名空间控�
 核心需要 PHP 8.0+。插件依赖通过 Composer 的 `suggest` 声明，默认不安装；使用 Db、Redis、Http 或 Captcha 时，再按需安装对应扩展或 Composer 包，见[插件依赖](docs/plugins.md#按需安装依赖)。
 
 ```bash
-composer require hetao29/slightphp:^6.5.2
+composer require hetao29/slightphp:^6.5.3
 ```
 
 ## 创建应用

@@ -1,14 +1,14 @@
 <?php
 // Module content, loaded only for the pages that use it.
 return [
-            ['name' => 'Tpl', 'group' => '基础', 'type' => 'base', 'text' => '模板编译与变量赋值，支持条件、循环和公共模板拆分。本站正在使用。', 'need' => '需要可信模板与可写编译目录'],
-            ['name' => 'Config', 'group' => '基础', 'type' => 'base', 'text' => '解析 JSON/JSONC 配置，支持对象、数组与基本类型，并提供进程内缓存。', 'need' => '配置文件；开发时可关闭缓存'],
-            ['name' => 'Route', 'group' => '基础', 'type' => 'base', 'text' => '支持 PHP / JSON 自定义 URL 映射，以及 Controller 方法上的 HTTP 请求方法注解。', 'need' => 'URL 规则在 run() 前注册；方法限制由核心识别'],
-            ['name' => 'Log', 'group' => '基础', 'type' => 'base', 'text' => '提供分级日志，可配置控制台输出与文件记录。', 'need' => '写文件时需要目录权限'],
-            ['name' => 'Db', 'group' => '数据', 'type' => 'data', 'text' => '提供数据库表操作及读写配置组织能力。', 'need' => '数据库服务、对应驱动和连接配置'],
-            ['name' => 'Redis', 'group' => '数据', 'type' => 'data', 'text' => '封装 Redis 的配置与访问，适合缓存等数据场景。', 'need' => 'Redis PHP 扩展及实际服务'],
-            ['name' => 'Http', 'group' => '扩展', 'type' => 'extra', 'text' => '通过 Guzzle 发起 HTTP 请求，支持超时、请求头与参数。', 'need' => 'Composer 安装 Guzzle 与可用网络'],
-            ['name' => 'Language', 'group' => '扩展', 'type' => 'extra', 'text' => '组织多语言词条与语言文件。', 'need' => '准备 locale 资源'],
-            ['name' => 'Captcha', 'group' => '扩展', 'type' => 'extra', 'text' => '基于 Gregwar Captcha 生成验证码图片。', 'need' => 'Composer 依赖、GD、mbstring、fileinfo 和会话'],
-            ['name' => 'Error', 'group' => '扩展', 'type' => 'extra', 'text' => '格式化并记录 PHP 错误和异常。', 'need' => '需配置适合运行环境的错误输出策略'],
+            ['name' => 'Tpl', 'group' => SampleI18n::t('core'), 'type' => 'base', 'text' => SampleI18n::t('template_compilation_and_variable_assignment_with_conditions_loops_and'), 'need' => SampleI18n::t('requires_trusted_templates_and_a_writable_compilation_directory')],
+            ['name' => 'Config', 'group' => SampleI18n::t('core'), 'type' => 'base', 'text' => SampleI18n::t('parse_json_jsonc_configuration_into_objects_arrays_and_basic'), 'need' => SampleI18n::t('configuration_files_disable_caching_during_development')],
+            ['name' => 'Route', 'group' => SampleI18n::t('core'), 'type' => 'base', 'text' => SampleI18n::t('php_json_custom_url_mappings_and_http_method_attributes'), 'need' => SampleI18n::t('register_url_rules_before_run_the_core_enforces_method')],
+            ['name' => 'Log', 'group' => SampleI18n::t('core'), 'type' => 'base', 'text' => SampleI18n::t('leveled_logging_with_configurable_console_and_file_output'), 'need' => SampleI18n::t('directory_write_permission_for_file_logging')],
+            ['name' => 'Db', 'group' => SampleI18n::t('data'), 'type' => 'data', 'text' => SampleI18n::t('database_table_operations_and_read_write_configuration_management'), 'need' => SampleI18n::t('database_service_driver_and_connection_configuration')],
+            ['name' => 'Redis', 'group' => SampleI18n::t('data'), 'type' => 'data', 'text' => SampleI18n::t('redis_configuration_and_access_for_caching_and_other_data'), 'need' => SampleI18n::t('redis_php_extension_and_a_running_service')],
+            ['name' => 'Http', 'group' => SampleI18n::t('extra'), 'type' => 'extra', 'text' => SampleI18n::t('http_requests_through_guzzle_with_timeouts_headers_and_parameters'), 'need' => SampleI18n::t('install_guzzle_with_composer_requires_network_access')],
+            ['name' => 'Language', 'group' => SampleI18n::t('extra'), 'type' => 'extra', 'text' => SampleI18n::t('organize_translation_entries_and_language_files'), 'need' => SampleI18n::t('prepare_locale_resources')],
+            ['name' => 'Captcha', 'group' => SampleI18n::t('extra'), 'type' => 'extra', 'text' => SampleI18n::t('generate_verification_images_using_gregwar_captcha'), 'need' => SampleI18n::t('composer_dependencies_gd_mbstring_fileinfo_and_sessions')],
+            ['name' => 'Error', 'group' => SampleI18n::t('extra'), 'type' => 'extra', 'text' => SampleI18n::t('format_and_log_php_errors_and_exceptions'), 'need' => SampleI18n::t('configure_an_error_output_policy_for_your_environment')],
         ];

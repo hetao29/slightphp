@@ -177,11 +177,34 @@ Session 中的记录现在包含 `code` 和 `expires_at`，存放于 `session_pr
 
 ## Language
 
-`Language::tr($source, $zone = 'main')` 从 `languageDir/locale/zone.ini` 查找词条，未找到时返回原文。`Accept-Language` 仅接受由 1–8 个字母开头、后接连字符及 1–8 个字母或数字子标签组成的语言标签，例如 `en`、`zh-CN`、`zh-Hans-CN`；标签不区分大小写。非法项、通配符、非法 q 值及 `q=0` 项会被忽略，合法项按原有出现顺序查找，并保留主语言回退和 `defaultLocale` 优先规则，不按 q 值排序。
+从 6.5.3 起，Language 使用 JSON/JSONC 语言文件；旧 INI 文件的迁移见 [6.5.3 升级说明](migration-6.5.md#language-语言文件改为-jsonjsonc653)。
+
+`Language::tr($source, $zone = 'main')` 从 `languageDir/locale/zone.json` 或 `zone.jsonc` 查找词条，与 Route 一样通过 `Config::parse()` 加载。相同 locale 和 zone 下优先使用 `.json`，没有位于语言目录内的同名 `.json` 文件时再查找 `.jsonc`；两者不合并。语言文件缺失或词条不存在时继续查找候选语言，最终未找到则返回原文。
+
+语言文件的顶层必须是 JSON 对象，每个值必须是字符串；支持空字符串、换行、Unicode 和包含特殊符号的键，不进行 INI 常量或环境变量展开。`.json` 使用严格 JSON；`.jsonc` 允许行注释和块注释，不支持尾随逗号。解析错误抛出 `JsonException`，顶层不是对象或词条不是字符串时抛出 `InvalidArgumentException`，读文件失败抛出 `RuntimeException`；无效文件不会回退为另一种格式来掩盖错误。
+
+例如 `languages/en/main.json`：
+
+```json
+{
+  "welcome": "Welcome to SlightPHP",
+  "任务已添加": "Task added"
+}
+```
+
+```php
+\SlightPHP\Language::setLanguageDir(__DIR__ . '/languages');
+\SlightPHP\Language::setLocale('en');
+echo \SlightPHP\Language::tr('welcome'); // Welcome to SlightPHP
+```
+
+旧的 `locale/zone.ini` 不再读取，升级时需将词条转换为字符串键值对象并保存为 `.json` 或 `.jsonc`；不能只修改扩展名。语言目录及 locale 的设置接口保持不变。
+
+`Accept-Language` 仅接受由 1–8 个字母开头、后接连字符及 1–8 个字母或数字子标签组成的语言标签，例如 `en`、`zh-CN`、`zh-Hans-CN`；标签不区分大小写。非法项、通配符、非法 q 值及 `q=0` 项会被忽略，合法项按原有出现顺序查找，并保留主语言回退和 `defaultLocale` 优先规则，不按 q 值排序。
 
 请求头最多处理 8192 字节、前 32 个条目，包含 CR、LF、NUL 或不是字符串时整个请求头被忽略。不会通过 URL 解码或删除危险字符把非法标签转换成路径。`setLocale()` 的强制语言也进行格式检查，并兼容 `en_US` 这样的下划线写法；`zone` 仅允许字母、数字、下划线开头，后续可含点或连字符。语言文件经 `realpath()` 解析后必须位于语言根目录内，指向目录外的符号链接不会读取。
 
-语言列表及翻译缓存仍保留原有进程内行为，常驻进程需隔离请求状态；修改语言目录或强制语言不会自动清空已经初始化的结果。
+语言列表及翻译缓存仍保留原有进程内行为，常驻进程需隔离请求状态；修改语言目录或强制语言不会自动清空已经初始化的结果。首次加载文件也受 `Config::$CACHE` 控制，关闭 Config 缓存不会清空 Language 已加载的词条。
 
 ## 数据库、Redis 与其他插件
 

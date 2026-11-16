@@ -4,6 +4,7 @@ namespace Lab;
 use SlightPHP\Request;
 use SlightPHP\Response;
 use SlightPHP\Tpl;
+use SampleI18n;
 
 class TemplateController
 {
@@ -14,10 +15,11 @@ class TemplateController
         $tpl->render('workspace/template.tpl', [
             'view' => 'template',
             'navigation' => [
-                'tasks' => ['/workspace/main/entry', '01', '任务工作台'],
-                'route' => ['/lab/route/entry', '02', '路由实验室'],
-                'plugins' => ['/workspace/main/plugins', '03', '插件与环境'],
-                'template' => ['/lab/template/entry', '04', '模板与模块组合'],
+                'tasks' => ['/workspace/main/entry', '01', SampleI18n::t('task_workspace')],
+                'route' => ['/lab/route/entry', '02', SampleI18n::t('route_lab')],
+                'plugins' => ['/workspace/main/plugins', '03', SampleI18n::t('plugins_and_environment')],
+                'template' => ['/lab/template/entry', '04', SampleI18n::t('templates_and_modules')],
+                'language' => ['/lab/language/entry', '05', SampleI18n::t('language_example')],
             ],
             'scope' => 'PARENT',
             'include_child' => 'widgets/template-shared.tpl',

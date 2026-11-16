@@ -1,4 +1,6 @@
-# 升级到 SlightPHP 6.5.2
+# 升级到 SlightPHP 6.5.3
+
+6.5.3 将 Language 语言文件由 INI 改为 JSON/JSONC；从 6.5.2 升级也需要转换现有语言文件，详见 [Language 迁移](#language-语言文件改为-jsonjsonc653)。官网与 samples 同步支持三种语言、默认自动的主题和完整文档阅读。
 
 6.5.2 新增请求类型前缀校验。从 6.5.1 升级也需检查带类型前缀的入口、内部调用及 405 响应处理，具体见[请求类型前缀校验](#请求类型前缀校验652)。
 
@@ -13,10 +15,29 @@
 当前安装仅强制要求 PHP 8.0+；PDO、Redis 扩展、Guzzle 和 Gregwar Captcha 已改为按需安装。使用相关插件的应用应先按[插件指南](plugins.md#按需安装依赖)将所需依赖加入自己的 `require`，再更新框架：
 
 ```bash
-composer require hetao29/slightphp:^6.5.2
+composer require hetao29/slightphp:^6.5.3
 ```
 
 仓库自身使用 `composer install` 安装锁定依赖。此版本不新增 APCu 等扩展要求。
+
+## Language 语言文件改为 JSON/JSONC（6.5.3）
+
+6.5.3 的 `Language::tr()` 与 Route 一样使用 `Config::parse()`，不再读取 `locale/zone.ini`。将原 INI 词条转换成 JSON 对象，保存到相同语言目录中的 `locale/zone.json` 或 `locale/zone.jsonc`；不能仅修改文件扩展名。例如，`languages/en/main.json`：
+
+```json
+{
+  "welcome": "Welcome to SlightPHP",
+  "任务已添加": "Task added"
+}
+```
+
+顶层必须为对象，所有词条值必须为字符串；原有数字、布尔值等内容如需作为翻译，应显式写为字符串。空对象和空字符串有效。`.json` 使用严格 JSON，`.jsonc` 允许行注释和块注释；都不支持尾随逗号。同名文件优先使用 `.json`，不与 `.jsonc` 合并。
+
+`setLanguageDir()`、`setLocale()`、`tr($source, $zone)` 的调用方式保持不变。语言列表、主语言回退、缺失词条返回原文及目录边界校验保持不变；语言目录和 locale 仍需在第一次翻译前设置。JSON 格式错误抛出 `JsonException`，非对象顶层或非字符串词条抛出 `InvalidArgumentException`，无法读取已有文件时抛出 `RuntimeException`，应修复资源文件，不能依赖解析失败后返回原文。
+
+Language 的已加载词条仍保留在进程内；首次加载文件也受 `Config::$CACHE` 影响。发布时同步部署所有语言文件，常驻进程按发布流程重启。完整格式见 [Language 插件](plugins.md#language)，可运行示例见 `/lab/language/entry`。
+
+samples 已将简体、繁体、英文资源转换为 JSON。官网的功能特性合入首页，旧 `/site/main/features` 跳转至首页功能区域；主题默认自动跟随系统，文档和 ChangeLog 直接读取仓库内容。应用自行使用框架时，只需迁移所使用的 Language 资源，无需采用 samples 的界面与导航。
 
 ## 请求类型前缀校验（6.5.2）
 

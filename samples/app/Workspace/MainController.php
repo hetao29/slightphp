@@ -4,6 +4,7 @@ namespace Workspace;
 use SlightPHP\Tpl;
 use SlightPHP\Config;
 use SlightPHP\Route;
+use SampleI18n;
 
 class MainController
 {
@@ -24,21 +25,22 @@ class MainController
     {
         if (!is_string($_POST['csrf'] ?? null) || !hash_equals($this->token(), $_POST['csrf'])) {
             http_response_code(403);
-            $this->render('error', ['message' => '表单已失效，请返回工作台刷新后重试。']);
+            $this->render('error', ['message' => SampleI18n::t('this_form_has_expired_return_to_the_workspace_refresh')]);
             return;
         }
-        $tasks = $this->tasks();
+        $this->tasks();
+        $tasks = $_SESSION['tasks'];
         $action = $_POST['action'] ?? '';
-        $message = '操作完成';
+        $message = 'operation_completed';
         if ($action === 'add') {
             $title = is_string($_POST['title'] ?? null) ? trim($_POST['title']) : '';
             if ($title === '' || preg_match('/^.{1,80}$/us', $title) !== 1) {
-                $message = '请输入 1–80 个字符的任务名称。';
+                $message = 'enter_a_task_name_with_1_80_characters';
             } elseif (count($tasks) >= 50) {
-                $message = '最多保存 50 项任务，请先删除不需要的任务。';
+                $message = 'you_can_save_up_to_50_tasks_delete_unneeded';
             } else {
                 $tasks[] = ['id' => bin2hex(random_bytes(8)), 'title' => $title, 'done' => false];
-                $message = '任务已添加';
+                $message = 'task_added';
             }
         } elseif (in_array($action, ['toggle', 'delete'], true)) {
             $found = false;
@@ -51,9 +53,9 @@ class MainController
                 }
             }
             unset($task);
-            $message = $found ? ($action === 'delete' ? '任务已删除' : '任务状态已更新') : '任务不存在，请刷新后重试。';
+            $message = $found ? ($action === 'delete' ? 'task_deleted' : 'task_status_updated') : 'task_not_found_refresh_and_try_again';
         } else {
-            $message = '无法识别此操作。';
+            $message = 'unknown_action';
         }
         $_SESSION['tasks'] = array_values($tasks);
         $_SESSION['flash'] = $message;
@@ -83,13 +85,14 @@ class MainController
         $data['view'] = $view;
         $data['csrf'] = $this->token();
         $data['navigation'] = [
-            'tasks' => ['/workspace/main/entry', '01', '任务工作台'],
-            'route' => ['/lab/route/entry', '02', '路由实验室'],
-            'plugins' => ['/workspace/main/plugins', '03', '插件与环境'],
-            'template' => ['/lab/template/entry', '04', '模板与模块组合'],
+            'tasks' => ['/workspace/main/entry', '01', SampleI18n::t('task_workspace')],
+            'route' => ['/lab/route/entry', '02', SampleI18n::t('route_lab')],
+            'plugins' => ['/workspace/main/plugins', '03', SampleI18n::t('plugins_and_environment')],
+            'template' => ['/lab/template/entry', '04', SampleI18n::t('templates_and_modules')],
+            'language' => ['/lab/language/entry', '05', SampleI18n::t('language_example')],
         ];
         $data['done'] = count(array_filter($data['tasks'] ?? [], fn($task) => $task['done']));
-        $data['flash'] = $_SESSION['flash'] ?? '';
+        $data['flash'] = isset($_SESSION['flash']) ? SampleI18n::t($_SESSION['flash']) : '';
         unset($_SESSION['flash']);
         $data['json'] = json_encode($data['config'] ?? [], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
         $tpl = new Tpl();
@@ -101,12 +104,24 @@ class MainController
     {
         if (!isset($_SESSION['tasks'])) {
             $_SESSION['tasks'] = [
-                ['id' => 'welcome', 'title' => '运行第一个 SlightPHP 示例', 'done' => true],
-                ['id' => 'route', 'title' => '在路由实验室观察控制器映射', 'done' => false],
-                ['id' => 'create', 'title' => '添加一项自己的任务', 'done' => false],
+                ['id' => 'welcome', 'title' => 'run_your_first_slightphp_example', 'done' => true],
+                ['id' => 'route', 'title' => 'inspect_controller_mapping_in_the_route_lab', 'done' => false],
+                ['id' => 'create', 'title' => 'add_a_task_of_your_own', 'done' => false],
             ];
         }
-        return $_SESSION['tasks'];
+        $tasks = $_SESSION['tasks'];
+        $seedTitles = [
+            'welcome' => 'run_your_first_slightphp_example',
+            'route' => 'inspect_controller_mapping_in_the_route_lab',
+            'create' => 'add_a_task_of_your_own',
+        ];
+        foreach ($tasks as &$task) {
+            if (isset($seedTitles[$task['id']])) {
+                $task['title'] = SampleI18n::t($seedTitles[$task['id']]);
+            }
+        }
+        unset($task);
+        return $tasks;
     }
     private function token(): string
     {
