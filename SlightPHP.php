@@ -2,7 +2,7 @@
 
 /**
  * SlightPHP
- * @version 6.5.1
+ * @version 6.5.2
  * @link https://slightphp.com/
  * @copyright Copyright (c) 2026 SlightPHP
  * @license MIT
@@ -136,13 +136,14 @@ if (!class_exists("SlightPHP", false)):
 		 * 设置允许作为方法前缀的请求类型。
 		 * HTTP_REQUEST_TYPE 在此列表中时加到入口名前；不在列表时调用无前缀入口。
 		 * 未提供请求类型时不添加前缀。
-		 * 该设置不限制 HTTP 请求方法，也不是权限控制。
-		 * @param string[] $types 允许作为入口方法前缀的请求类型。
+		 * 候选方法名以列表中的类型开头时，当前请求类型必须匹配，否则抛出 METHOD_NOT_ALLOWED。
+		 * 该设置不限制 HTTP 请求方法，也不代替登录、对象权限或 CSRF 校验。
+		 * @param string[] $types 允许作为入口方法前缀的请求类型，设置时统一转为小写并过滤空字符串；按配置顺序匹配。
 		 * @return bool 始终返回 true。
 		 */
 		public static function setAllowRequestTypes(array $types)
 		{
-			self::$allowRequestTypes = $types;
+			self::$allowRequestTypes = array_diff(array_map('strtolower', $types), ['']);
 			return true;
 		}
 
@@ -403,7 +404,7 @@ if (!class_exists("SlightPHP", false)):
 		 * @param string $path 显式路径；空字符串时从 pathInfo 或服务器请求信息读取。
 		 * @return mixed 入口方法的原始返回值，包括业务代码主动返回的 false。
 		 * 响应已通过 end()/redirect() 结束时返回 null，避免入口重复输出返回值。
-		 * @throws \SlightPHP\Exception 路径、控制器或入口不可用，或 Route 方法限制不匹配。
+		 * @throws \SlightPHP\Exception 路径、控制器或入口不可用，或请求类型、Route HTTP 方法限制不匹配。
 		 * 核心不自动输出异常响应；控制器和注解自身的异常原样传播。
 		 */
 		public static function run($path = "")
@@ -505,6 +506,19 @@ if (!class_exists("SlightPHP", false)):
 						$_method = $type . $_entry;
 					} else {
 						$_method = $_entry;
+					}
+					// 方法名与配置类型均为小写；命中第一个配置类型后立即校验。
+					foreach (self::$allowRequestTypes as $requestType) {
+						if (str_starts_with($_method, $requestType)) {
+							if ($type !== $requestType) {
+								throw new \SlightPHP\Exception('Request type not allowed', \SlightPHP\Exception::METHOD_NOT_ALLOWED, [
+									'path' => $path, 'controller' => $classname, 'method' => $_method,
+									'requestMethod' => $request->getMethod(), 'allowedMethods' => [],
+									'requestType' => $type, 'requiredRequestType' => $requestType,
+								]);
+							}
+							break;
+						}
 					}
 					if (method_exists($classname, $_method)) {
 						$methods = self::getRouteMethods($classname, $_method);

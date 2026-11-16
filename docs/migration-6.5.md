@@ -1,4 +1,6 @@
-# 升级到 SlightPHP 6.5.1
+# 升级到 SlightPHP 6.5.2
+
+6.5.2 新增请求类型前缀校验。从 6.5.1 升级也需检查带类型前缀的入口、内部调用及 405 响应处理，具体见[请求类型前缀校验](#请求类型前缀校验652)。
 
 6.5.1 移除 `SlightPHP\Json` 插件，Route 文件配置改为 JSON/JSONC 数组，并将插件依赖改为 Composer `suggest`，由应用按需安装。从 6.5.0 升级也需要替换 JSON 插件调用、转换 INI 路由配置并显式声明所用插件的依赖。
 
@@ -11,10 +13,20 @@
 当前安装仅强制要求 PHP 8.0+；PDO、Redis 扩展、Guzzle 和 Gregwar Captcha 已改为按需安装。使用相关插件的应用应先按[插件指南](plugins.md#按需安装依赖)将所需依赖加入自己的 `require`，再更新框架：
 
 ```bash
-composer require hetao29/slightphp:^6.5.1
+composer require hetao29/slightphp:^6.5.2
 ```
 
 仓库自身使用 `composer install` 安装锁定依赖。此版本不新增 APCu 等扩展要求。
+
+## 请求类型前缀校验（6.5.2）
+
+候选方法名以 `setAllowRequestTypes()` 配置的类型开头时，当前 `Request-Type` 必须匹配。缺失或不匹配会立即抛出 `SlightPHP\Exception::METHOD_NOT_ALLOWED`（405），先于方法存在性、Route 注解与控制器构造，也不会继续尝试浅层候选。普通 HTTP 请求、显式 URL、`run('/...')` 与模板 `part` 均执行此校验。
+
+例如，原来不带请求头直接访问 `/user/order/ajaxSave` 的调用会被拒绝；应使用 `/user/order/save` 并发送 `Request-Type: ajax` 来调用 `ajaxSave`。内部调用和 CLI 不会自动补充请求类型，模板 `part` 沿用当前请求头，升级时也需核对。
+
+类型列表统一转为小写并过滤空字符串；请求头先去除首尾空白再转为小写。前缀按配置顺序首匹配，不要求单词边界，因此也需检查名称恰好以 `page`、`json` 等已配置类型开头的普通入口。自定义类型重叠时将较长类型排在前面；从列表移除某类型也会移除对应的前缀校验。该校验不代替 HTTP 方法、登录、对象权限或 CSRF 校验。
+
+请求类型不匹配时，异常上下文包含 `requestType`、`requiredRequestType`，而 `allowedMethods` 为空数组；入口应仅在 `allowedMethods` 非空时输出 HTTP `Allow` 头，不要把 `ajax`、`part` 等类型写入该头。下面的入口示例已包含判断；详细规则见[方法前缀](framework.md#方法前缀与-http-方法)与[异常说明](exceptions.md)。
 
 ## JSON 插件移除
 
@@ -83,7 +95,7 @@ try {
     }
 } catch (\SlightPHP\Exception $error) {
     http_response_code($error->getStatusCode());
-    if ($error->getCode() === \SlightPHP\Exception::METHOD_NOT_ALLOWED) {
+    if ($error->getCode() === \SlightPHP\Exception::METHOD_NOT_ALLOWED && !empty($error->getContext()['allowedMethods'])) {
         header('Allow: ' . implode(', ', $error->getContext()['allowedMethods']));
     }
     echo $error->getStatusCode() === 404 ? '页面不存在' : '请求失败';
@@ -143,7 +155,8 @@ class MainController
 ## 升级验证
 
 - 检查正常入口、缺失入口、路径超限、重复内部调用和缺失别名的处理。
-- 验证 GET/POST/HEAD、Request-Type 前缀、继承与覆盖，以及 405 的 Allow 响应。
+- 验证 GET/POST/HEAD、继承与覆盖，以及 Route HTTP 方法不匹配时 405 的 Allow 响应。
+- 验证匹配、缺失和不匹配的 Request-Type，覆盖显式 URL、内部调用、CLI 与模板 part；确认类型拒绝时不构造控制器、不回退且不输出空 Allow 头。
 - 验证包含查询串的 PHP / JSON/JSONC 路由、重复斜杠和多文件规则顺序。
 - 检查可选模板模块的异常处理，以及原始业务异常的传播。
 

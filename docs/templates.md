@@ -1,4 +1,4 @@
-# Tpl 模板与模块组合手册（6.5.1）
+# Tpl 模板与模块组合手册（6.5.2）
 
 运行 samples 后访问 `/lab/template/entry`，或从 `/site/main/examples` 的「模板与模块组合」进入。工作台侧栏也提供同名入口。该页面实际执行跨目录 include、跨模块 part 和嵌套调用，无需数据库或 Redis。
 
@@ -80,7 +80,7 @@ public function Card(\SlightPHP\Request $request, \SlightPHP\Response $response)
 }
 ```
 
-Card 的模板及其 include 读取到 `CHILD`，调用结束后父模板仍读取到 `PARENT`。part 通过 `SlightPHP::run($path)` 创建控制器与新的 Request / Response；路径数组对应显式路径，请求的 GET、POST、Cookie、请求头等仍来自当前 PHP 请求。URL 路径参数保留原始内容，不自动 URL 解码；路径后的查询串不会合成为新的 GET 参数。`Request-Type` 前缀规则也适用于内部调用。
+Card 的模板及其 include 读取到 `CHILD`，调用结束后父模板仍读取到 `PARENT`。part 通过 `SlightPHP::run($path)` 创建控制器与新的 Request / Response；路径数组对应显式路径，请求的 GET、POST、Cookie、请求头等仍来自当前 PHP 请求。URL 路径参数保留原始内容，不自动 URL 解码；路径后的查询串不会合成为新的 GET 参数。6.5.2 起，`Request-Type` 前缀校验也适用于内部调用；part 不会自动补头，目标方法名以已配置类型开头而当前请求类型不匹配时会抛出 405，见[迁移说明](migration-6.5.md#请求类型前缀校验652)。
 
 part 在同一个 PHP 请求中同步执行，session、超全局变量和响应头仍属于整个请求；它保留顶层 `zone/page/entry`。指向当前顶层入口的调用会抛出 `SlightPHP\Exception::RECURSIVE_DISPATCH`，其他循环调用需由应用控制。片段路径使用固定值或白名单；模块方法负责权限、输入校验及输出转义。
 

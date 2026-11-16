@@ -8,7 +8,7 @@
 4. 缺少前三段时分别补 defaultZone、defaultPage、defaultEntry。
 5. 从最深候选区域开始向浅层尝试；区域后相邻两段作为 page、entry，每个深度寻找命名空间控制器文件。默认最多 10 个路径段，因此最多尝试 8 个区域深度。
 6. 文件必须经 realpath 验证位于 appDir 内且是普通文件，再 `require_once`。
-7. 找到类后创建 Request 并设置完整 `route`，检查目标公开方法的 `Route` 注解。HTTP 方法不匹配时，在构造控制器前抛出 `METHOD_NOT_ALLOWED`，终止查找，由应用生成 405 响应。通过检查后使用 `new $classname($request)` 构造实例；检查目标方法存在且可公开调用后执行。入口共用同一个 Request，直接按 `($request, $response)` 的顺序调用；参数名可以自定义。构造函数仍可能在方法未匹配时执行，不应在其中执行写操作。
+7. 找到类后创建 Request 并设置完整 `route`，确定候选方法名并校验已配置的请求类型前缀，再检查方法存在性与 `Route` 注解。请求类型或 HTTP 方法不匹配时，在构造控制器前抛出 `METHOD_NOT_ALLOWED`，终止查找，由应用生成 405 响应。通过检查后使用 `new $classname($request)` 构造实例；检查目标方法存在且可公开调用后执行。入口共用同一个 Request，直接按 `($request, $response)` 的顺序调用；参数名可以自定义。构造函数仍可能在方法未匹配时执行，不应在其中执行写操作。
 8. 返回方法的原始返回值；Response 已结束时返回 `null`，未匹配抛出 `SlightPHP\Exception`。注解配置、构造函数和入口方法的异常继续向外抛，由调用方处理。核心不会自动输出控制器返回值、序列化对象或发送错误响应。新签名及响应规则见 [Request 与 Response](http.md)。
 
 ## 命名空间控制器
@@ -71,7 +71,9 @@ $maxDepth = SlightPHP::getMaxDepth(); // 15
 
 `HTTP_REQUEST_TYPE` 对应客户端请求头 `Request-Type`。如果值在允许列表中，会作为方法前缀；不在列表中的值会使用无前缀方法。未提供该头时使用无前缀方法。
 
-这与 GET、POST、PUT 等 HTTP 方法无关，不是权限或路由白名单。HTTP 方法可以通过下面的 `Route` 注解限制。前缀生效时读取实际被调用方法（如 `AjaxSave`）上的注解。
+从 6.5.2 起，候选方法名 `$_method` 赋值后立即校验：若以 `allowRequestTypes` 中的类型开头，必须与当前 `Request-Type` 匹配；设置类型列表时统一转为小写并过滤空字符串，请求头先去除首尾空白并转为小写，方法名由路由统一转小写，前缀用 `str_starts_with` 比较，按配置顺序使用第一个匹配类型；自定义类型存在重叠时应将较长的类型排在前面。缺失或不匹配时抛出 `METHOD_NOT_ALLOWED`（405），不检查方法是否存在、不解析 Route 注解、不构造控制器，也不继续候选回退。例如 `/user/order/save` 配合 `Request-Type: ajax` 可以调用 `ajaxSave`，直接访问 `/user/order/ajaxSave` 而没有该头会被拒绝。HTTP 请求与 `run('/...')` 显式内部调用均执行该校验，不隐式补头。
+
+仅检查已配置的类型；从允许列表移除某类型，也会移除其方法前缀校验。通过类型校验后，普通无类型前缀入口、缺失及非公开方法沿原规则处理。此校验不限制 GET、POST、PUT 等 HTTP 方法，也不代替登录、对象权限或会话 CSRF 校验。HTTP 方法可通过下面的 `Route` 注解限制；读取实际被调用方法（如 `AjaxSave`）上的注解。
 
 ## Route 方法注解
 

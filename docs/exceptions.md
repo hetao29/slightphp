@@ -28,14 +28,16 @@
 | `CLASS_NOT_FOUND` | 文件加载后没有声明预期的控制器类 | 500 |
 | `METHOD_NOT_FOUND` | 控制器没有目标入口方法 | 404 |
 | `METHOD_NOT_CALLABLE` | 入口存在但不可公开调用 | 404 |
-| `METHOD_NOT_ALLOWED` | HTTP 方法不符合 Route 注解 | 405 |
+| `METHOD_NOT_ALLOWED` | HTTP 方法不符合 Route 注解，或候选方法名的已配置类型前缀与 Request-Type 不匹配 | 405 |
 | `ALIAS_NOT_FOUND` | getZoneAlias / getPageAlias 查询未设置的别名 | 500 |
 
 路径超限在加载控制器前抛出。Route 拒绝请求在构造控制器前抛出；其上下文包含 `requestMethod`、`allowedMethods`、`controller`、`method` 和 `path`。
 
+从 6.5.2 起，请求类型前缀校验紧接候选方法名赋值，先于方法存在性、Route 注解和控制器构造。类型不匹配时，上下文另含 `requestType`（规范化后的当前头，缺失为空字符串）及 `requiredRequestType`（方法前缀要求的类型），`allowedMethods` 为空数组，因为此时尚未解析 Route 注解。`allowedMethods` 仅用于 HTTP 方法限制，不能将 `ajax`、`part` 等类型写入 HTTP `Allow` 头；应用仅在该数组非空时输出 `Allow`。
+
 应用目录在设置或首次使用时按目录路径规范化并缓存；调度和候选解析不再重复调用 `is_dir()`。不存在的路径或普通文件仍判为 `APP_DIR_INVALID`，候选控制器仍需通过普通文件和应用目录边界校验。
 
-框架仍从深到浅查找候选控制器。中途缺失文件、类或方法时会继续查找，找到合法入口仍可执行；最终未匹配才抛出诊断异常。已经找到控制器的具体失败原因不会被后续的缺失文件覆盖。HTTP 方法不匹配时立即抛出，不尝试浅层入口。
+框架仍从深到浅查找候选控制器。通过请求类型校验后，中途缺失文件、类或方法时会继续查找，找到合法入口仍可执行；最终未匹配才抛出诊断异常。已经找到控制器的具体失败原因不会被后续的缺失文件覆盖。请求类型或 HTTP 方法不匹配时立即抛出，不尝试浅层入口。
 
 普通候选文件缺失或不是普通文件时，使用普通分支继续查找；类或入口不可用时也只记录最终诊断，避免成功回退时创建无用异常。最终文件缺失抛出 `FILE_NOT_FOUND`，不再为普通缺失构造中间异常链；文件越界等校验异常仍保留原始原因。控制器文件、构造函数和入口自身抛出的异常不参与候选回退。
 
@@ -51,7 +53,7 @@ try {
     }
 } catch (\SlightPHP\Exception $error) {
     http_response_code($error->getStatusCode());
-    if ($error->getCode() === \SlightPHP\Exception::METHOD_NOT_ALLOWED) {
+    if ($error->getCode() === \SlightPHP\Exception::METHOD_NOT_ALLOWED && !empty($error->getContext()['allowedMethods'])) {
         header('Allow: ' . implode(', ', $error->getContext()['allowedMethods']));
     }
     echo $error->getStatusCode() === 404 ? '页面不存在' : '请求失败';

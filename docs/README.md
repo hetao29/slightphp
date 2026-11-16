@@ -1,4 +1,6 @@
-# SlightPHP 6.5.1 框架使用文档
+# SlightPHP 6.5.2 框架使用文档
+
+6.5.2 新增请求类型前缀校验，缺失或不匹配的 `Request-Type` 会在方法存在性、Route 注解和控制器构造前被拒绝（405），显式 URL 与内部调用均适用。应用仅在异常的 `allowedMethods` 非空时输出 `Allow`；从 6.5.1 升级也需检查带类型前缀的入口及异常处理，见 [6.5 迁移指南](migration-6.5.md#请求类型前缀校验652)。
 
 本目录的 Markdown 文档根据当前 PHP 源码整理。[API 参考](index.html)由当前源码生成；运行 `composer install` 并按[插件指南](plugins.md#按需安装依赖)安装验证码插件依赖后，可运行 `make -C docs` 重新生成完整 API。
 

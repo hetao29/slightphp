@@ -1,5 +1,10 @@
 # Changelog
 
+## 6.5.2 — 2026-11-16
+
+- 核心在候选方法名赋值后立即核对已配置的请求类型前缀与 `HTTP_REQUEST_TYPE`，缺失或不匹配时在方法存在性、Route 注解及控制器构造前抛出 `METHOD_NOT_ALLOWED`（405），不继续候选回退。显式 URL 和内部调度均执行校验；`setAllowRequestTypes()` 统一保存小写类型并过滤空字符串，前缀按配置顺序首匹配，命中后立即校验并退出循环。应用须为带类型前缀的方法发送匹配请求头，仍保留 HTTP 方法、登录、对象权限及 CSRF 校验。
+- 请求类型错误的诊断上下文包含 `requestType`、`requiredRequestType` 和空的 `allowedMethods`；示例入口仅在 Route HTTP 方法列表非空时输出 `Allow`，避免生成空头。见[方法前缀](docs/framework.md#方法前缀与-http-方法)和[异常处理](docs/exceptions.md)。
+
 ## 6.5.1 — 2026-11-16
 
 - `Route::setConfigFile()` 改为通过 `Config::parse()` 加载 JSON/JSONC 顶层数组，每个对象为一条规则，按数组顺序追加并匹配；不再支持 INI。保留 PHP 规则、占位符、方法注解和首条匹配优先的行为，示例改为 `routes.json`，旧配置需按[路由迁移说明](docs/migration-6.5.md#路由配置改为-jsonjsonc)转换。

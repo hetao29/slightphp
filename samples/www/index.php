@@ -41,7 +41,9 @@ try {
 } catch (\SlightPHP\Exception $error) {
     http_response_code($error->getStatusCode());
     if ($error->getCode() === \SlightPHP\Exception::METHOD_NOT_ALLOWED) {
-        header('Allow: ' . implode(', ', $error->getContext()['allowedMethods']));
+        if (!empty($error->getContext()['allowedMethods'])) {
+            header('Allow: ' . implode(', ', $error->getContext()['allowedMethods']));
+        }
         echo 'Method Not Allowed';
     } else {
         if ($error->getStatusCode() >= 500) error_log((string) $error);

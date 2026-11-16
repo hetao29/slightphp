@@ -1,6 +1,6 @@
 # SlightPHP 官网与交互示例
 
-示例对应 SlightPHP 6.5.1，包含结构化调度异常、Route 方法注解与 PHP / JSON 路由。模板数据使用 Tpl 实例隔离，控制器入口使用 `Request $request, Response $response`，路径从 `$request->route` 读取。升级已有应用请先参阅 [6.5 迁移指南](../docs/migration-6.5.md)；模板实例迁移见 [6.4 迁移指南](../docs/migration-6.4.md)，旧控制器签名迁移见 [6.3 迁移指南](../docs/migration-6.3.md)。
+示例对应 SlightPHP 6.5.2，包含请求类型前缀校验、结构化调度异常、Route 方法注解与 PHP / JSON 路由。模板数据使用 Tpl 实例隔离，控制器入口使用 `Request $request, Response $response`，路径从 `$request->route` 读取。升级已有应用请先参阅 [6.5 迁移指南](../docs/migration-6.5.md)；模板实例迁移见 [6.4 迁移指南](../docs/migration-6.4.md)，旧控制器签名迁移见 [6.3 迁移指南](../docs/migration-6.3.md)。
 
 正式官网为 [https://slightphp.com/](https://slightphp.com/)。自行部署示例站点后，访问部署地址的根路径 `/`，即可浏览框架介绍并体验交互示例。
 
@@ -23,7 +23,7 @@
 
 自定义规则位于 `config/routes.php` 和 `config/routes.json`，由 `www/index.php` 在调度前加载。入口保存已去除 index.php 的原始路径，再通过 `Route::parse($routePath)` 显式匹配；查询串不参与匹配，未命中时保留默认路径。路由实验室展示完整配置、原始 URI、映射后的 Request::route 与查询参数。详细用法见 [自定义 URL 路由](../docs/routes.md)。
 
-工作台 `Save` 使用 `#[Route(method: 'POST')]`，`Api` 使用 `#[Route(method: 'GET')]`；路由实验室 `Entry` 使用 `#[Route(methods: ['GET', 'POST'])]`。方法不匹配时框架抛出异常，由示例入口返回 405 和 Allow；找不到入口时同样捕获异常生成 404。规则见 [核心异常与迁移](../docs/exceptions.md)及 [Route 方法注解](../docs/framework.md#route-方法注解)。
+工作台 `Save` 使用 `#[Route(method: 'POST')]`，`Api` 使用 `#[Route(method: 'GET')]`；路由实验室 `Entry` 使用 `#[Route(methods: ['GET', 'POST'])]`。方法不匹配时框架抛出异常，由示例入口返回 405 和 Allow；找不到入口时同样捕获异常生成 404。请求类型前缀不匹配也会返回 405，但此时 allowedMethods 为空，入口不会输出空 Allow 头；内部调用与模板 part 同样需要匹配当前 Request-Type。规则见 [核心异常与迁移](../docs/exceptions.md)及 [Route 方法注解](../docs/framework.md#route-方法注解)。
 
 仅保留官网、当前可运行示例、模板、静态资源、配置与验证脚本。旧后台、业务控制器、外部服务配置、图片和模板缓存已移除。
 

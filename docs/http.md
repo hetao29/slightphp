@@ -78,6 +78,8 @@ class MainController {
 
 ## 调度入口
 
-入口继续使用 `SlightPHP::run($path = '')`。Request 在构造控制器前创建并设置完整 `route`，Response 在调用入口方法前创建。路径深度限制、默认段、Request-Type 和显式路径的 part 语义沿用原规则。
+入口继续使用 `SlightPHP::run($path = '')`。Request 在构造控制器前创建并设置完整 `route`，Response 在调用入口方法前创建。路径深度限制、默认段和显式路径的 part 语义沿用原规则。6.5.2 起还校验候选方法名的已配置类型前缀；Request-Type 缺失或不匹配时抛出 405，内部调用同样适用，见[方法前缀说明](framework.md#方法前缀与-http-方法)。
 
 控制器入口可通过 [Route 方法注解](framework.md#route-方法注解)声明允许的 HTTP 方法。不匹配时，核心在构造控制器前抛出 `SlightPHP\Exception::METHOD_NOT_ALLOWED`，不输出响应；入口可根据异常设置 `405`，从 `getContext()['allowedMethods']` 生成 `Allow`。示例见 [核心异常与迁移](exceptions.md)。
+
+请求类型前缀不匹配时，异常的 `allowedMethods` 为空数组；入口仅在该数组非空时输出 `Allow`，不能用请求类型填充 HTTP 方法列表。

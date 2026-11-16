@@ -1,8 +1,10 @@
-# SlightPHP 6.5.1
+# SlightPHP 6.5.2
 
 SlightPHP 是一个轻量 PHP 框架，按照请求路径加载命名空间控制器并调用公开方法。应用负责响应输出、状态码、权限和输入校验。
 
 [官网](https://slightphp.com/) · [源码](https://github.com/hetao29/slightphp)
+
+6.5.2 新增请求类型前缀校验：候选方法名以已配置类型开头时，`Request-Type` 必须匹配，否则抛出 405；显式 URL 与内部调用均适用。已有带类型前缀的入口调用及 405 响应处理需按 [升级说明](docs/migration-6.5.md#请求类型前缀校验652)调整。
 
 6.5.1 移除 `SlightPHP\Json` 插件，改用 PHP 原生 JSON 函数；Route 文件配置改为 JSON/JSONC 数组；插件依赖改为 Composer `suggest`，由应用按需安装。已有 JSON 调用、路由配置和插件依赖需按 [6.5 迁移指南](docs/migration-6.5.md)调整。
 
@@ -17,7 +19,7 @@ SlightPHP 是一个轻量 PHP 框架，按照请求路径加载命名空间控�
 核心需要 PHP 8.0+。插件依赖通过 Composer 的 `suggest` 声明，默认不安装；使用 Db、Redis、Http 或 Captcha 时，再按需安装对应扩展或 Composer 包，见[插件依赖](docs/plugins.md#按需安装依赖)。
 
 ```bash
-composer require hetao29/slightphp:^6.5.1
+composer require hetao29/slightphp:^6.5.2
 ```
 
 ## 创建应用
@@ -38,7 +40,7 @@ try {
     }
 } catch (\SlightPHP\Exception $error) {
     http_response_code($error->getStatusCode());
-    if ($error->getCode() === \SlightPHP\Exception::METHOD_NOT_ALLOWED) {
+    if ($error->getCode() === \SlightPHP\Exception::METHOD_NOT_ALLOWED && !empty($error->getContext()['allowedMethods'])) {
         header('Allow: ' . implode(', ', $error->getContext()['allowedMethods']));
     }
     echo '请求失败';

@@ -26,7 +26,7 @@ class MainController
     }
 }
 PHP,
-            'install' => 'composer require hetao29/slightphp:^6.5.1',
+            'install' => 'composer require hetao29/slightphp:^6.5.2',
             'entry' => <<<'PHP'
 <?php
 require dirname(__DIR__) . '/vendor/autoload.php';
@@ -42,7 +42,7 @@ try {
     }
 } catch (\SlightPHP\Exception $error) {
     http_response_code($error->getStatusCode());
-    if ($error->getCode() === \SlightPHP\Exception::METHOD_NOT_ALLOWED) {
+    if ($error->getCode() === \SlightPHP\Exception::METHOD_NOT_ALLOWED && !empty($error->getContext()['allowedMethods'])) {
         header('Allow: ' . implode(', ', $error->getContext()['allowedMethods']));
     }
     echo $error->getStatusCode() === 404 ? '页面不存在' : '请求失败';
