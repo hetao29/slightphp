@@ -8,11 +8,12 @@
 - `/site/main/plugins`：插件搜索、分类与运行条件。
 - `/site/main/plugins#route-custom`、`#route-methods`：Route 自定义 URL 映射与方法注解，可复制代码并验证真实响应。
 - `/site/main/guide`：入门，包含安装、入口、控制器与部署说明；导航位于首页之后。
-- `/site/main/examples`：任务、路由、配置与 JSON 示例。
-- `/site/main/docs`：完整 docs 目录，包含 16 篇 Markdown 文档与生成的 API 参考；`?doc=plugins.md` 可直接打开指定文档。
-- `/site/main/changelog`：直接读取仓库 CHANGELOG.md 的版本更新记录。
+- `/site/main/examples`：以 samples 源码讲解目录规划、应用入口、路由映射、Route 方法注解、Request-Type、多语言、配置管理、模板组织、表单处理和数据库操作；提供交互运行入口。
+- `/site/main/docs`：统一浏览 docs 中的 Markdown 文档、API 参考和根目录 ChangeLog；`?doc=plugins.md` 打开插件文档，`?doc=CHANGELOG.md` 打开更新记录。
+- `/site/main/changelog`：旧地址跳转至文档中的 ChangeLog。
 - `/lab/template/entry`：跨目录 include、跨模块 part、变量隔离和嵌套调用。
 - `/lab/language/entry`：多语言实验，切换简体、繁体和英文，输入称呼，查看 demo.json 词条、实际翻译与缺失词条回退。
+- `/lab/type/entry`：普通请求调用 `Entry()`，带 `Request-Type: ajax` 时调用 `ajaxEntry()`；示例页可直接发送请求对比 200 与 405。
 - `/widgets/template/card/direct`：可独立访问的模块卡片片段。
 - `/workspace/main/entry`：可运行任务工作台。
 - `/r/hello?source=php`：PHP 自定义路由，查看映射结果和查询参数。
@@ -34,16 +35,8 @@
 
 工作台 `Save` 使用 `#[Route(method: 'POST')]`，`Api` 使用 `#[Route(method: 'GET')]`；路由实验室 `Entry` 使用 `#[Route(methods: ['GET', 'POST'])]`。方法不匹配时框架抛出异常，由示例入口返回 405 和 Allow；找不到入口时同样捕获异常生成 404。请求类型前缀不匹配也会返回 405，但此时 allowedMethods 为空，入口不会输出空 Allow 头；内部调用与模板 part 同样需要匹配当前 Request-Type。规则见 [核心异常与迁移](../docs/exceptions.md)及 [Route 方法注解](../docs/framework.md#route-方法注解)。
 
-仅保留官网、当前可运行示例、模板、静态资源、配置与验证脚本。旧后台、业务控制器、外部服务配置、图片和模板缓存已移除。
+仅保留官网、当前可运行示例、模板、静态资源与配置。旧后台、业务控制器、外部服务配置、图片和模板缓存已移除。
 
-```bash
-php tests/RouteMappingTest.php
-php samples/tests/routing.php
-php samples/tests/tpl-composition.php
-read -r -p "站点地址（包含 http:// 或 https://）: " SITE_URL
-python3 samples/tests/website.py "$SITE_URL"
-python3 samples/tests/smoke.py "$SITE_URL"
-python3 samples/tests/localization.py "$SITE_URL"
-```
+部署后通过浏览器访问官网、任务工作台、路由和模板实验，检查页面、交互及错误响应。具体步骤见[部署与排错](../docs/deployment.md#验证)。
 
 [Tpl include / part 手册](../docs/templates.md) · [官网维护说明](../docs/website.md) · [部署与排错](../docs/deployment.md) · [框架文档](../docs/README.md)

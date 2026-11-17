@@ -15,6 +15,9 @@
     const theme = mode === 'auto' ? (systemTheme.matches ? 'light' : 'dark') : mode;
     root.dataset.theme = theme;
     root.dataset.themeMode = mode;
+    document.querySelectorAll('[data-favicon-theme]').forEach(icon => {
+      icon.media = icon.dataset.faviconTheme === theme ? 'all' : 'not all';
+    });
     const meta = document.querySelector('meta[name="theme-color"]');
     if (meta) meta.content = theme === 'light' ? '#ffffff' : '#101114';
     document.querySelectorAll('.theme-toggle').forEach(button => {

@@ -6,7 +6,7 @@
 
 要求 PHP 8.0+，启用 session。入口通过仓库的 vendor/autoload.php 加载框架及 Tpl、Config、Route、Language 插件，JSON 输出使用原生函数；缺少 vendor 时先执行 composer install，无需数据库或 Redis；PHP 的系统临时目录必须可写。
 
-部署示例站点后，访问其根路径 `/`。首页包含完整功能特性，导航顺序为「首页 → 入门 → 插件 → 示例 → 文档 → ChangeLog」。从示例索引或工作台侧栏可进入多语言实验；页面支持简体、繁体和英文，主题默认自动跟随系统。以 `samples/www` 为网站根目录并转发原始 URI，具体配置见 [部署说明](deployment.md)。
+部署示例站点后，访问其根路径 `/`。首页包含完整功能特性，导航顺序为「首页 → 入门 → 示例 → 插件 → 文档」。ChangeLog 已合并在文档目录中。从示例索引或工作台侧栏可进入多语言实验；页面支持简体、繁体和英文，主题默认自动跟随系统。以 `samples/www` 为网站根目录并转发原始 URI，具体配置见 [部署说明](deployment.md)。
 
 ```text
 samples/
@@ -27,8 +27,6 @@ samples/
   app/languages/*/demo.json  多语言实验的独立词条
   app/templates/             Tpl 页面模板与公共布局
   config/example.json        Config 可运行配置
-  tests/website.py           官网 HTTP 验证
-  tests/smoke.py             工作台 HTTP 验证
 ```
 
 `app` 和配置不在公开目录内。模板编译输出位于 PHP 的系统临时目录，首次渲染自动生成。新示例沿用现有 app、config、www 目录与 Tpl 模板结构；无关的旧业务示例已清理。

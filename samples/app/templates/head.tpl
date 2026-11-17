@@ -4,6 +4,7 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="{%SampleI18n::e('slightphp_a_lightweight_php_framework_path_dispatch_namespaced_control')%}">
 <meta name="theme-color" content="#101114">
+{%include "favicons.tpl"%}
 <title>{%htmlspecialchars($title, ENT_QUOTES + ENT_SUBSTITUTE, 'UTF-8')%} · SlightPHP 6.5.3</title>
 <link rel="stylesheet" href="/assets/site.css?v={%filemtime(SlightPHP::getAppDir() . '/../www/assets/site.css')%}"><script src="/assets/site.js?v={%filemtime(SlightPHP::getAppDir() . '/../www/assets/site.js')%}" defer></script>
 <script id="sample-messages" type="application/json">{%SampleI18n::clientMessages()%}</script>

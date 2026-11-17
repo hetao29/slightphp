@@ -121,10 +121,4 @@ part 不开启、刷新或关闭输出缓冲，嵌套调用也直接输出。模
 
 页面预期展示：include 两次读取到 PARENT；Card 及其 include 读取到 CHILD；返回字符串包含 demo；混合输出先显示「先直接输出」，再显示「再返回字符串」；嵌套模块保持 NESTED；Ended 输出后父页面继续显示 PARENT。可单独访问 `/widgets/template/card/direct` 查看路径参数 direct。
 
-运行真实入口检查：
-
-```bash
-php samples/tests/tpl-composition.php
-```
-
-检查自动使用独立临时编译与会话目录，覆盖冷/热缓存、跨目录 include、嵌套 part、变量隔离、输出顺序、缓冲层数、独立模块 URL 与动态参数转义。插件层测试为 `php tests/TplPartTest.php`，额外覆盖 GET 快照、空路径、缺失入口、各类返回值、模块缓冲、异常与 Error 原样传播、异常后的部分输出、调用方捕获后继续渲染及顶层自调用。
+部署示例后，通过浏览器访问 `/lab/template/entry`，对照上述预期检查跨目录 include、嵌套 part、变量隔离与输出顺序。刷新页面检查编译缓存复用，并单独访问模块 URL 检查路径参数与动态文本转义。

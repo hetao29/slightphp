@@ -51,7 +51,6 @@ PHP,
 
             'namespace' => "<?php\n// app/Home/MainController.php\nnamespace Home;\n\nclass MainController\n{\n    /**\n     * @param \\SlightPHP\\Request \$request 当前请求。\n     * @param \\SlightPHP\\Response \$response 当前响应。\n     */\n    public function Entry(\\SlightPHP\\Request \$request, \\SlightPHP\\Response \$response)\n    {\n        return 'Hello, SlightPHP!';\n    }\n}",
             'preview' => "GET /home/main/entry\n\napp/Home/MainController.php\n  → Home\\MainController::Entry(\\SlightPHP\\Request \$request, \\SlightPHP\\Response \$response)\n  → Hello, SlightPHP!",
-            'serve' => 'php samples/tests/routing.php',
             'config' => "SlightPHP::setControllerSuffix('Controller');\nSlightPHP::setSplitFlag('/');",
             'json' => "header('Content-Type: application/json; charset=utf-8');\necho json_encode(\n    ['message' => '你好，SlightPHP'],\n    JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR\n);",
             'tpl' => "\\SlightPHP\\Tpl::setTemplateDir(__DIR__ . '/templates');\n\\SlightPHP\\Tpl::setCompileDir(__DIR__ . '/var/templates_c');\n\$tpl = new \\SlightPHP\\Tpl();\n\$tpl->render('index.tpl', ['title' => 'SlightPHP']);",

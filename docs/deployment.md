@@ -52,13 +52,13 @@ server {
 
 ## 验证
 
-部署完成后，访问站点并运行以下命令；HTTP 检查需要传入实际站点地址：
+部署完成后，通过浏览器访问以下路径并检查结果：
 
-```bash
-php samples/tests/routing.php
-read -r -p "站点地址（包含 http:// 或 https://）: " SITE_URL
-python3 samples/tests/website.py "$SITE_URL"
-python3 samples/tests/smoke.py "$SITE_URL"
-```
+- `/`、`/site/main/guide`、`/site/main/examples`：页面和静态资源正常加载，导航与示例链接可用。
+- `/r/hello?source=php`、`/r-json/hello?source=json`：路由实验室显示映射结果，查询参数保留。
+- `/tasks`：添加、切换完成状态并删除测试任务；刷新后结果保留。
+- `/tasks.json`：GET 返回当前会话的任务 JSON；浏览器直接访问 `/tasks/save` 应返回 405，并带有 `Allow: POST`。
+- `/lab/template/entry`、`/lab/language/entry`：模板组合正常，语言切换与动态称呼显示正确。
+- `/missing/main/entry`：返回 HTTP 404 和可返回首页的错误页。
 
-routing 在独立 CLI 进程中验证真实入口、Composer 自动加载、模板与 URI 解析，不启动 HTTP 服务；website 只读验证官网和示例入口；smoke 会在独立会话中添加、切换并删除测试任务，不影响其他会话。
+使用浏览器开发者工具检查响应状态及响应头，并在独立会话中执行任务操作。

@@ -66,7 +66,7 @@ final class SampleI18n
     public static function clientMessages(): string
     {
         $messages = [];
-        foreach (['auto', 'dark', 'light', 'theme_cycle', 'plugin_count', 'task_count', 'copied', 'copy_manually', 'confirm_delete'] as $key) {
+        foreach (['auto', 'dark', 'light', 'theme_cycle', 'plugin_count', 'task_count', 'copied', 'copy_manually', 'confirm_delete', 'sample_request_failed'] as $key) {
             $messages[$key] = self::t($key);
         }
         return json_encode($messages, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_THROW_ON_ERROR);

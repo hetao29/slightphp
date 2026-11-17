@@ -36,11 +36,10 @@ class MainController
      * @param \SlightPHP\Response $response 当前响应。
      */
     public function About(\SlightPHP\Request $request, \SlightPHP\Response $response) { $this->render('about'); }
-    /** Show the same release notes as the repository, without duplicating them. */
+    /** Preserve old links after merging release notes into the documentation browser. */
     public function Changelog(\SlightPHP\Request $request, \SlightPHP\Response $response): void
     {
-        require_once dirname(__DIR__) . '/Documents.php';
-        $this->render('changelog', ['changelog' => \SampleDocuments::changelog()]);
+        $response->redirect('/site/main/docs?doc=CHANGELOG.md&lang=' . rawurlencode(SampleI18n::locale()), 301);
     }
     /**
      * @param \SlightPHP\Request $request 当前请求。
@@ -70,11 +69,12 @@ class MainController
     private function render(string $view, array $data = []): void
     {
         $titles = ['home' => SampleI18n::t('lightweight_core_build_freely'), 'plugins' => SampleI18n::t('plugin_ecosystem'), 'guide' => SampleI18n::t('guide'), 'examples' => SampleI18n::t('interactive_examples'), 'about' => SampleI18n::t('about_the_framework'), 'error' => SampleI18n::t('page_notice')];
-        $data['title'] = $view === 'docs' ? $data['document']['title'] : ($view === 'changelog' ? 'ChangeLog' : $titles[$view]);
+        $data['title'] = $view === 'docs' ? $data['document']['title'] : $titles[$view];
         $data['view'] = $view;
-        $data['nav'] = ['home' => [SampleI18n::t('home'), '/site/main/entry'], 'guide' => [SampleI18n::t('guide'), '/site/main/guide'], 'plugins' => [SampleI18n::t('plugins'), '/site/main/plugins'], 'examples' => [SampleI18n::t('examples'), '/site/main/examples'], 'docs' => [SampleI18n::t('documentation'), '/site/main/docs'], 'changelog' => ['ChangeLog', '/site/main/changelog']];
+        $data['nav'] = ['home' => [SampleI18n::t('home'), '/site/main/entry'], 'guide' => [SampleI18n::t('guide'), '/site/main/guide'], 'examples' => [SampleI18n::t('examples'), '/site/main/examples'], 'plugins' => [SampleI18n::t('plugins'), '/site/main/plugins'], 'docs' => [SampleI18n::t('documentation'), '/site/main/docs']];
         if ($view === 'home') $data['features'] = require dirname(__DIR__) . '/data/site/features.php';
         if ($view === 'plugins') $data['plugins'] = require dirname(__DIR__) . '/data/site/plugins.php';
+        if ($view === 'examples') $data['chapters'] = require dirname(__DIR__) . '/data/site/examples.php';
         if (in_array($view, ['home', 'plugins', 'guide'], true)) $data['code'] = require dirname(__DIR__) . '/data/site/code.php';
         $tpl = new Tpl();
         $tpl->render('head.tpl', $data);

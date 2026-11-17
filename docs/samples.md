@@ -2,6 +2,8 @@
 
 启动方法见 [快速开始](getting-started.md)。默认首页为框架介绍官网，详见 [框架官网说明](website.md)。从页脚进入任务工作台后，可按「任务工作台 → 路由实验室 → 插件与环境」体验框架。
 
+官网 `/site/main/examples` 以 samples 源码为主线，分十节讲解目录规划、应用入口、路由映射、Route 方法注解、Request-Type、多语言设置、配置管理、模板组织、表单处理和数据库操作，并提供源码链接与交互验证。数据库章节演示 MySQL 建表、连接配置和 Db 增删改查；当前工作台仍使用 Session。
+
 ## 示例功能
 
 - 任务列表包含初始示例任务，可新增、切换完成状态和删除。
@@ -35,13 +37,13 @@
 
 `save` 的错误 HTTP 方法返回 405、CSRF 失败返回 403；业务输入错误通过跳转后的提示呈现。`Save`、`Api` 与路由实验室 `Entry` 使用 [Route 注解](framework.md#route-方法注解)限制 HTTP 方法；不匹配时框架抛出异常，由示例入口生成 405、Allow 和 `Method Not Allowed` 正文。入口同时将找不到文件或入口的异常转换为 404。
 
-自定义配置在 `samples/config/routes.php` 和 `routes.json`，入口在 run() 前加载并显式匹配规范化后的路径。路由实验室支持输入短地址参数，并显示原始请求、映射后的路径、查询参数和配置源码。用法与匹配规则见 [自定义 URL 路由](routes.md)，独立回归命令为 `php tests/RouteMappingTest.php`。
+自定义配置在 `samples/config/routes.php` 和 `routes.json`，入口在 run() 前加载并显式匹配规范化后的路径。路由实验室支持输入短地址参数，并显示原始请求、映射后的路径、查询参数和配置源码。用法、匹配规则与验证入口见 [自定义 URL 路由](routes.md)。
 
 ## 模板与模块组合
 
 从工作台侧栏或官网示例索引进入 `/lab/template/entry`。父模板通过动态文件名跨目录 include 公共模板，再通过 part 调用 Widgets 模块的 Card、Returned、Mixed、Nested 和 Ended 方法。页面展示 PARENT、CHILD、NESTED 三个实例的变量作用域、路径参数和实际输出顺序。调用规则及代码位置见 [Tpl 模板与模块组合手册](templates.md)。
 
-运行 `php samples/tests/tpl-composition.php`，自动使用独立临时缓存验证真实入口、嵌套模块、冷/热缓存、缓冲层数和转义。
+访问 `/lab/template/entry` 检查模板组合与变量作用域；预期结果见 [Tpl 模板与模块组合手册](templates.md#samples-文件与预期结果)。
 
 ## 多语言实验
 
@@ -57,14 +59,7 @@
 
 ## 验证
 
-部署示例站点后，输入站点地址运行 HTTP 验证：
-
-```bash
-read -r -p "站点地址（包含 http:// 或 https://）: " SITE_URL
-python3 samples/tests/smoke.py "$SITE_URL"
-```
-
-覆盖会话隔离、添加、切换、删除、空标题、超长标题、CSRF、方法限制、JSON、转义、404 和命名空间参数。手动验证：缩小至手机宽度，使用 Tab 操作表单与任务按钮，组合搜索和筛选，取消一次删除，然后刷新确认不会重复新增。
+部署示例站点后，按[部署文档](deployment.md#验证)检查页面、路由、任务操作与错误响应。使用独立会话验证任务隔离，并检查空标题、超长标题与动态文本转义。缩小至手机宽度，使用 Tab 操作表单与任务按钮，组合搜索和筛选，取消一次删除，然后刷新确认不会重复新增。
 
 ## 清理后的范围
 

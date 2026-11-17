@@ -125,12 +125,4 @@ if (is_string($result)) echo $result;
 
 官网 `/site/main/plugins#route-custom` 展示 PHP / JSON 配置和可运行链接，`/site/main/plugins#route-methods` 展示单方法、多方法注解，并提供 GET 200、POST 405 与 POST 200 的实际验证入口。
 
-运行自动验证：
-
-```bash
-php tests/RouteMappingTest.php
-php samples/tests/routing.php
-python3 samples/tests/smoke.py http://127.0.0.1:18787
-```
-
-最后一条命令需先启动或部署 samples，并替换为实际地址；它会在独立会话中验证任务增删、CSRF、短地址、查询参数、参数约束和方法限制。
+部署 samples 后，通过上述地址和插件页的验证入口检查短地址、查询参数、参数约束与方法限制；在独立会话中验证任务增删。完整步骤见[部署文档](deployment.md#验证)。

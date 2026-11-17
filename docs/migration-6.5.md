@@ -181,4 +181,4 @@ class MainController
 - 验证包含查询串的 PHP / JSON/JSONC 路由、重复斜杠和多文件规则顺序。
 - 检查可选模板模块的异常处理，以及原始业务异常的传播。
 
-仓库示例可执行 `php samples/tests/routing.php` 检查真实入口、自动加载、模板与 URI 解析；HTTP 验证方式见 [部署文档](deployment.md#验证)。
+部署仓库示例后，通过浏览器验证真实入口、自动加载、模板与 URI 解析；具体步骤见[部署文档](deployment.md#验证)。

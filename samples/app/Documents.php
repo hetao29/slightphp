@@ -18,15 +18,19 @@ final class SampleDocuments
         }
         $files = ['README.md' => $files['README.md']] + $files;
         $files['index.html'] = 'API Reference';
+        $files['CHANGELOG.md'] = 'ChangeLog';
         return self::$files = $files;
     }
 
-    /** Names are selected from the directory listing, never used as arbitrary paths. */
+    /** Names are selected from the known documentation list, never arbitrary paths. */
     public static function page(string $name): ?array
     {
         $files = self::files();
         if (!isset($files[$name])) return null;
-        $source = file_get_contents(dirname(__DIR__, 2) . '/docs/' . $name);
+        $path = $name === 'CHANGELOG.md'
+            ? dirname(__DIR__, 2) . '/CHANGELOG.md'
+            : dirname(__DIR__, 2) . '/docs/' . $name;
+        $source = file_get_contents($path);
         if ($source === false) throw new RuntimeException('Cannot read documentation');
         $renderer = new self();
         if ($name === 'index.html') {
@@ -41,13 +45,6 @@ final class SampleDocuments
         return ['name' => $name, 'title' => $files[$name], 'html' => $html];
     }
 
-    public static function changelog(): string
-    {
-        $source = file_get_contents(dirname(__DIR__, 2) . '/CHANGELOG.md');
-        if ($source === false) throw new RuntimeException('Cannot read CHANGELOG.md');
-        return (new self())->markdown($source);
-    }
-
     private static function escape(string $text): string
     {
         return htmlspecialchars($text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
@@ -58,7 +55,7 @@ final class SampleDocuments
     {
         if (str_starts_with($url, '#') || preg_match('~\Ahttps?://~i', $url)) return $url;
         [$path, $anchor] = array_pad(explode('#', $url, 2), 2, null);
-        if ($path === '../CHANGELOG.md') return '/site/main/changelog' . ($anchor !== null ? '#' . $anchor : '');
+        if ($path === '../CHANGELOG.md') return '/site/main/docs?doc=CHANGELOG.md' . ($anchor !== null ? '#' . $anchor : '');
         if (isset(self::files()[$path])) {
             return '/site/main/docs?doc=' . rawurlencode($path) . ($anchor !== null ? '#' . $anchor : '');
         }

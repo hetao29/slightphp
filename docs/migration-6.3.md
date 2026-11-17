@@ -165,4 +165,4 @@ $row = $db->selectOne('t_invoice', ['pk_invoice' => $id], for: 'UPDATE');
 - 验证字符串返回、JSON 输出、重定向、响应结束、404 和异常处理，确认没有重复正文或响应结束后的业务操作。
 - 验证数据库失败分支；使用锁查询时检查事务提交、回滚和数据库语法支持。
 
-仓库示例可运行 `php samples/tests/routing.php` 检查真实入口、自动加载、模板和 URI 解析；实际 HTTP 验证方式见[部署文档](deployment.md#验证)。
+部署仓库示例后，通过浏览器验证真实入口、自动加载、模板与 URI 解析；具体步骤见[部署文档](deployment.md#验证)。
