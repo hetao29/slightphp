@@ -1,5 +1,9 @@
 <!doctype html>
 <html lang="{SampleI18n::htmlLang()}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">{include "favicons.tpl"}<title>{SampleI18n::t('slightphp_playground')}</title><link rel="stylesheet" href="/assets/site.css?v={filemtime(SlightPHP::getAppDir() . '/../www/assets/site.css')}"><link rel="stylesheet" href="/assets/demo.css?v={filemtime(SlightPHP::getAppDir() . '/../www/assets/demo.css')}"><script src="/assets/site.js?v={filemtime(SlightPHP::getAppDir() . '/../www/assets/site.js')}" defer></script><script src="/assets/demo.js?v={filemtime(SlightPHP::getAppDir() . '/../www/assets/demo.js')}" defer></script><script id="sample-messages" type="application/json">{SampleI18n::clientMessages()}</script>
 <script src="/assets/theme.js?v={filemtime(SlightPHP::getAppDir() . '/../www/assets/theme.js')}"></script>
+{if ($view === 'csrf')}
+{\SlightPHP\Csrf::tokenMeta()|raw}
+{\SlightPHP\Csrf::tokenMeta(fieldName: '--csrf--token')|raw}
+{/if}
 </head>
 <body class="workspace"><a class="skip" href="#main">{SampleI18n::t('skip_to_content')}</a><aside><a class="brand" href="/"><span class="brand-mark" aria-hidden="true">s.</span><span>SlightPHP<small>PLAYGROUND</small></span></a><div class="nav-label">{SampleI18n::t('explore_the_framework')}</div><nav aria-label="{SampleI18n::t('main_navigation')}">{foreach ($navigation as $key => $item)}<a {if (strcmp($view, $key) == 0)}aria-current="page"{/if} href="{$item[0]}"><span>{$item[1]}</span>{$item[2]}</a>{/foreach}</nav><div class="sidebar-note"><b>{SampleI18n::t('working_examples')}</b><p>{SampleI18n::t('start_with_real_interactions_to_see_how_routes_controllers')}</p><code>PHP {PHP_MAJOR_VERSION}.{PHP_MINOR_VERSION}</code></div></aside><main id="main"><header><span>SLIGHTPHP / SAMPLES</span><div class="workspace-tools"><a href="/site/main/examples">{SampleI18n::t('all_examples')}</a>{include "preferences.tpl"}</div></header>

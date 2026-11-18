@@ -34,7 +34,7 @@
         buttons.forEach(item => { item.disabled = true; });
         output.setAttribute('aria-busy', 'true');
         const headers = { 'Content-Type': 'application/json' };
-        if (button.dataset.csrfCase === 'valid') headers[csrfDemo.dataset.csrfHeader] = csrfDemo.dataset.csrfToken;
+        if (button.dataset.csrfCase === 'valid') headers[csrfDemo.dataset.csrfHeader] = document.head.querySelector(`meta[name="${csrfDemo.dataset.csrfMeta}"]`).content;
         if (button.dataset.csrfCase === 'invalid') headers[csrfDemo.dataset.csrfHeader] = 'invalid';
         try {
           const response = await fetch(csrfDemo.dataset.csrfPath, {

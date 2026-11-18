@@ -4,6 +4,8 @@
 
 6.7.2 新增会话按需启动和 `Csrf::$sessionHandler` 应用初始化回调；未提供回调时使用原生 `session_start()`。原来提前启动 Session 的接入方式继续可用，会话名称、存储和 Cookie 策略应在首次使用 Csrf 前配置。本次修改见 [6.7.2 说明](../CHANGELOG.md#672--2026-11-19)。
 
+6.7.3 新增 `Csrf::tokenMeta(?string $fieldName = null)`，参数与 `tokenInput()` 一致，输出 meta 标签供 Ajax 请求头读取；见 [6.7.3 说明](../CHANGELOG.md#673--2026-11-19)。
+
 ## 运行 samples 实验
 
 部署 samples 后打开 `/lab/csrf/entry`，也可以从工作台侧栏、官网示例页或 Csrf 插件卡片进入。页面支持简体中文、繁体中文与英文。计数只记录当前会话中成功进入示例提交处理的次数，不需要数据库，也不修改任务列表。
@@ -18,7 +20,7 @@
 | 在更新前已打开的旧标签页提交 | 旧 token 返回 403；刷新旧标签页后恢复 |
 | 用 GET 访问任一提交或更新入口 | 返回 405，`Allow: POST` |
 
-普通表单和更新 token 不依赖 JavaScript；Ajax 对比需要 JavaScript。成功 JSON 响应由示例控制器生成，403 仍使用 samples 的 HTML 错误页，前端根据真实状态码显示提示。
+普通表单和更新 token 不依赖 JavaScript；Ajax 对比需要 JavaScript，默认和自定义面板分别从 `<head>` 中由 `tokenMeta()` 生成的 `_csrf` 和 `--csrf--token` meta 标签读取 token。成功 JSON 响应由示例控制器生成，403 仍使用 samples 的 HTML 错误页，前端根据真实状态码显示提示。
 
 | 路径 | 方法 | 功能 |
 | --- | --- | --- |
@@ -50,7 +52,7 @@ samples 的 `www/index.php` 已启动会话，控制器无须再次调用。Csrf
 \SlightPHP\Csrf::$sessionHandler = [AppSession::class, 'init'];
 ```
 
-回调不接收参数，在 Session 尚未启动且实际调用 Csrf API 时执行。`Route(csrf: true)` 只会在请求类型、方法限制通过且该入口需要 CSRF 时进入校验；普通 GET 或未启用 CSRF 的路由不会因此启动会话。回调复用应用自己的会话名称、Cookie、缓存头和存储配置，成功后必须处于 `PHP_SESSION_ACTIVE`，否则仍抛出 `CSRF_SESSION_NOT_STARTED`。已启动会话不重复调用回调；未配置 handler 时使用原生 `session_start()`，启动失败仍报告 `CSRF_SESSION_NOT_STARTED`。`token/tokenInput/rotate/clear` 同样按需启动，`session_write_close()` 后再次调用也会重新执行初始化回调；需要无会话的路径不调用这些 API。该回调是固定应用配置，不保存用户或请求状态。
+回调不接收参数，在 Session 尚未启动且实际调用 Csrf API 时执行。`Route(csrf: true)` 只会在请求类型、方法限制通过且该入口需要 CSRF 时进入校验；普通 GET 或未启用 CSRF 的路由不会因此启动会话。回调复用应用自己的会话名称、Cookie、缓存头和存储配置，成功后必须处于 `PHP_SESSION_ACTIVE`，否则仍抛出 `CSRF_SESSION_NOT_STARTED`。已启动会话不重复调用回调；未配置 handler 时使用原生 `session_start()`，启动失败仍报告 `CSRF_SESSION_NOT_STARTED`。`token/tokenInput/tokenMeta/rotate/clear` 同样按需启动，`session_write_close()` 后再次调用也会重新执行初始化回调；需要无会话的路径不调用这些 API。该回调是固定应用配置，不保存用户或请求状态。
 
 原生启动使用 `@session_start()` 抑制默认警告输出，并捕获 `Throwable`；启动失败统一通过 `CSRF_SESSION_NOT_STARTED` 报告。原生调用抛出的异常（包括应用将警告转换成的 `ErrorException`）通过 `getPrevious()` 保留，不替换应用错误处理器；返回 false、会话仍未激活的情况由状态检查处理。自定义初始化回调抛出的异常仍原样传播。
 
@@ -63,7 +65,7 @@ samples 的 `www/index.php` 已启动会话，控制器无须再次调用。Csrf
 \SlightPHP\Csrf::$sessionKey = 'my_app_csrf';
 ```
 
-`$fieldName` 默认 `_csrf`，影响无参数的 `tokenInput()`、默认手动校验及 `Route(csrf: true)` 的表单字段。默认请求头仍为 `X-CSRF-Token`。`$sessionKey` 默认 `_slightphp_csrf`，控制生成、校验、更新与清除 token 时使用的 Session 键；不能为空。`tokenInput('自定义名称')` 和 Route 中的字符串可覆盖字段名，不改变 Session 键。静态配置由当前应用统一管理，不用于在交错并发请求之间切换用户状态。
+`$fieldName` 默认 `_csrf`，影响无参数的 `tokenInput()`、`tokenMeta()` 的名称、默认手动校验及 `Route(csrf: true)` 的表单字段。默认请求头仍为 `X-CSRF-Token`。`$sessionKey` 默认 `_slightphp_csrf`，控制生成、校验、更新与清除 token 时使用的 Session 键；不能为空。`tokenInput('自定义名称')`、`tokenMeta('自定义名称')` 和 Route 中的字符串可覆盖字段名，不改变 Session 键。静态配置由当前应用统一管理，不用于在交错并发请求之间切换用户状态。
 
 以下示例使用框架默认配置。
 
@@ -114,10 +116,27 @@ public function Submit(Request $request, Response $response): void
 
 ## 4. Ajax / JSON
 
-从当前会话页面取得 token，通过请求头发送：
+在页面 `<head>` 中输出 token meta 标签，供 Ajax / JSON 请求读取。原生 PHP 可直接使用：
+
+```php
+echo \SlightPHP\Csrf::tokenMeta();
+// <meta name="_csrf" content="当前会话的 token"/>
+```
+
+Tpl 中可直接调用，使用末尾 `|raw` 输出完整标签：
+
+```html
+<head>
+    {\SlightPHP\Csrf::tokenMeta()|raw}
+</head>
+```
+
+`tokenMeta(?string $fieldName = null)` 返回 HTML 字符串，不直接输出；参数与 `tokenInput()` 一致，省略或传入 null 时使用 `Csrf::$fieldName`（默认 `_csrf`）。属性值已转义，与 `tokenInput()` 复用同一会话 token，并按需启动 Session。首次使用应在响应正文输出前完成会话初始化。可用 `tokenMeta(fieldName: '--csrf--token')` 自定义 meta 名称，名称允许非空 ASCII 字母、数字、下划线和横线；自定义入口需在请求中发送对应的自定义头名，默认入口仍发送 `X-CSRF-Token`。
+
+从 meta 的 `content` 读取 token，通过 `X-CSRF-Token` 请求头发送：
 
 ```js
-const token = document.querySelector('[name="_csrf"]').value;
+const token = document.querySelector('meta[name="_csrf"]').content;
 const response = await fetch('/lab/csrf/check', {
     method: 'POST',
     credentials: 'same-origin',
@@ -159,6 +178,7 @@ public function CustomSubmit(Request $request, Response $response): void
 | --- | --- |
 | `Csrf::token(): string` | 缺失时生成，存在时复用；32 随机字节转为 64 位小写十六进制字符串 |
 | `Csrf::tokenInput(?string $fieldName = null): string` | 生成 hidden input；null 使用 `$fieldName`（默认 `_csrf`），字符串指定字段名，返回 HTML 而不直接输出 |
+| `Csrf::tokenMeta(?string $fieldName = null): string` | 返回携带当前 token 的 meta 标签；null 使用 `$fieldName`（默认 `_csrf`），字符串指定名称，属性值已转义；Ajax 读取 `content` 后通过请求头发送 |
 | `Csrf::validate(Request $request, ?string $fieldName = null): void` | 手动校验；null 使用默认名称，字符串同时指定字段和头名；失败抛异常，不补发 token |
 | `Csrf::rotate(): string` | 保存并返回新 token，旧 token 立即失效 |
 | `Csrf::clear(): void` | 仅清除 token，保留其他 Session 数据；后续 `token()` 才重新生成 |

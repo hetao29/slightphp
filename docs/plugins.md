@@ -60,6 +60,8 @@ composer require 'ext-redis:*'
 
 6.7.2 新增会话按需启动和应用初始化回调，原生启动异常通过框架异常的 `getPrevious()` 保留；修改说明见 [6.7.2](../CHANGELOG.md#672--2026-11-19)。
 
+6.7.3 新增 `Csrf::tokenMeta(?string $fieldName = null)`，参数与 `tokenInput()` 一致，输出 meta 标签供 Ajax 请求头读取；见 [6.7.3 说明](../CHANGELOG.md#673--2026-11-19)。
+
 表单、Ajax、自定义字段和 token 更新实验位于 `/lab/csrf/entry`，接入步骤和预期结果见 [CSRF 使用手册](csrf.md)。
 
 `SlightPHP\Csrf` 提供基于 Session 的同步 token，并由 `#[Route(csrf: true)]` 启用入口检查；Csrf 本身不是注解。应用配置安全的 Session Cookie，并主动启动会话或设置 `Csrf::$sessionHandler` 初始化回调。回调仅在 Session 尚未启动且使用 Csrf 时调用，保留应用会话配置；未配置时在实际使用 CSRF 且会话尚未启动时调用原生 `session_start()`。普通未启用 CSRF 的路由不会触发初始化。插件不直接输出业务响应；原生会话启动可能发送会话 Cookie 和缓存头，不修改其他会话数据。Session 配置见[部署说明](deployment.md#cookie与会话安全)。
@@ -69,6 +71,7 @@ composer require 'ext-redis:*'
 | `Csrf::token(): string` | 获取当前会话 token；缺失或存储格式无效时生成。32 随机字节编码为 64 位小写十六进制字符串，同一会话复用 |
 | `Csrf::validate(Request $request, ?string $fieldName = null): void` | 校验提交值，成功正常返回，失败抛异常；不生成、更新或消费 token |
 | `Csrf::tokenInput(?string $fieldName = null): string` | 返回含当前 token 的 hidden input；null 使用 `$fieldName`（默认 `_csrf`），字符串指定字段名，HTML 属性已转义；Tpl 用末尾 `|raw` 输出 |
+| `Csrf::tokenMeta(?string $fieldName = null): string` | 返回含当前 token 的 meta 标签；null 使用 `$fieldName`（默认 `_csrf`），字符串指定名称。Ajax 读取 `content`，默认发送 `X-CSRF-Token` 请求头，自定义入口发送对应的自定义头名；HTML 属性已转义，Tpl 用末尾 `|raw` 输出，见 [Ajax 示例](csrf.md#4-ajax--json) |
 | `Csrf::rotate(): string` | 生成并保存新 token，旧 token 立即失效 |
 | `Csrf::clear(): void` | 仅清除 token，后续 `token()` 才重新生成 |
 

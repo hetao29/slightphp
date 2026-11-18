@@ -1,6 +1,6 @@
 # SlightPHP 官网与交互示例
 
-示例展示 SlightPHP 6.x 当前行为，安装命令使用发布版本 6.7.2，包含请求类型前缀校验、结构化调度异常、Route 方法注解与 PHP / JSON 路由。模板数据使用 Tpl 实例隔离，控制器入口使用 `Request $request, Response $response`，路径从 `$request->route` 读取。修改说明统一收录在 [6.x 更新记录](../CHANGELOG.md#6x)；升级已有应用请参阅 [6.x 升级与迁移指南](../CHANGELOG.md#6x-升级与迁移指南)，按起始版本和功能模块执行适用步骤。
+示例展示 SlightPHP 6.x 当前行为，安装命令使用发布版本 6.7.3，包含请求类型前缀校验、结构化调度异常、Route 方法注解与 PHP / JSON 路由。模板数据使用 Tpl 实例隔离，控制器入口使用 `Request $request, Response $response`，路径从 `$request->route` 读取。修改说明统一收录在 [6.x 更新记录](../CHANGELOG.md#6x)；升级已有应用请参阅 [6.x 升级与迁移指南](../CHANGELOG.md#6x-升级与迁移指南)，按起始版本和功能模块执行适用步骤。
 
 正式官网为 [https://slightphp.com/](https://slightphp.com/)。自行部署示例站点后，访问部署地址的根路径 `/`，即可浏览框架介绍并体验交互示例。
 

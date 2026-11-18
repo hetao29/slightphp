@@ -1,8 +1,8 @@
 # SlightPHP 6.x 框架使用文档
 
-当前发布版本为 **6.7.2**，新增 CSRF 会话按需启动与应用初始化回调，原生启动失败统一抛出框架异常。修改说明见 [6.7.2](../CHANGELOG.md#672--2026-11-19)，接入与兼容事项见 [CSRF 手册](csrf.md#1-配置-session-与按需启动)。
+当前发布版本为 **6.7.3**，新增 `Csrf::tokenMeta()`，samples 的 Ajax 示例从 meta 标签读取 token 并发送请求头。修改说明见 [6.7.3](../CHANGELOG.md#673--2026-11-19)，接入示例见 [CSRF 手册](csrf.md#4-ajax--json)。
 
-6.x 提供 Session CSRF 防护，通过 Route 的 `csrf` 参数启用，支持自定义字段/请求头、`tokenInput()` 及公共配置。samples 提供三种表单写法与 Ajax、token 更新实验；接入见 [CSRF 使用手册](csrf.md)。
+6.x 提供 Session CSRF 防护，通过 Route 的 `csrf` 参数启用，支持自定义字段/请求头、`tokenInput()`、`tokenMeta()` 及公共配置。samples 提供三种表单写法与 Ajax、token 更新实验；接入见 [CSRF 使用手册](csrf.md)。
 
 Tpl 默认启用上下文自动转义，已移除 `setContextMode()`、`getContextMode()` 及兼容编译分支。模板应传入原始数据，可信 HTML 用末尾 `|raw`；升级前需迁移手工编码、JSON 数据块和动态属性名，见 [6.x 升级与迁移指南](../CHANGELOG.md#6x-升级与迁移指南)。
 

@@ -66,7 +66,7 @@ samples 的全部模板和展示代码统一使用默认 `{` / `}`。入口调�
 
 ## CSRF 实验
 
-从工作台侧栏、示例索引或插件页进入 `/lab/csrf/entry`。分别提交普通表单与 JSON 请求，比较有效、缺失和错误 token 的 200 / 403；自定义名称面板使用 `csrf: '--csrf--token'`，表单字段和请求头均同名。页面对比手写字段、预先传入 `Csrf::tokenInput()` 的 HTML、以及模板直接调用 `{\SlightPHP\Csrf::tokenInput()|raw}` 三种写法，成功提交才增加计数。更新 token 后，旧标签页及任务工作台中的旧表单均会失效。所有实验支持三种语言，表单和更新不依赖 JavaScript。完整接入步骤、API、异常响应与验证方法见 [CSRF 使用手册](csrf.md)。
+从工作台侧栏、示例索引或插件页进入 `/lab/csrf/entry`。分别提交普通表单与 JSON 请求，比较有效、缺失和错误 token 的 200 / 403；自定义名称面板使用 `csrf: '--csrf--token'`，表单字段和请求头均同名。页面对比手写字段、预先传入 `Csrf::tokenInput()` 的 HTML、以及模板直接调用 `{\SlightPHP\Csrf::tokenInput()|raw}` 三种写法；Ajax 从 `<head>` 中由 `tokenMeta()` 生成的默认或自定义名称 meta 标签读取 `content`，发送对应请求头，成功提交才增加计数。更新 token 后，旧标签页及任务工作台中的旧表单均会失效。所有实验支持三种语言，表单和更新不依赖 JavaScript。完整接入步骤、API、异常响应与验证方法见 [CSRF 使用手册](csrf.md)。
 
 ## 数据与安全设计
 

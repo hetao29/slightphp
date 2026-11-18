@@ -31,6 +31,8 @@ use SlightPHP\Route;
 $data['csrf'] = Csrf::token();
 $data['csrf_input'] = Csrf::tokenInput();
 // In Tpl: {$csrf_input|raw}
+$data['csrf_meta'] = Csrf::tokenMeta();
+// In the Tpl <head>: {$csrf_meta|raw}
 
 #[Route(method: 'POST', csrf: true)]
 public function Submit(Request $request, Response $response): void
@@ -72,9 +74,17 @@ HTML,
     <button type="submit">提交</button>
 </form>
 HTML,
+            'meta_code' => <<<'HTML'
+<!-- In the page <head>; parameters match tokenInput(). -->
+{\SlightPHP\Csrf::tokenMeta()|raw}
+<!-- <meta name="_csrf" content="current session token"/> -->
+HTML,
             'custom_code' => <<<'PHP'
 $data['csrf_input'] = Csrf::tokenInput('--csrf--token');
 // In Tpl: {$csrf_input|raw}
+$data['csrf_meta'] = Csrf::tokenMeta(fieldName: '--csrf--token');
+// In the Tpl <head>: {$csrf_meta|raw}
+// Ajax: document.querySelector('meta[name="--csrf--token"]').content
 
 #[Route(method: 'POST', csrf: '--csrf--token')]
 public function CustomSubmit(Request $request, Response $response): void
@@ -85,7 +95,7 @@ public function CustomSubmit(Request $request, Response $response): void
 }
 PHP,
             'fetch_code' => <<<'JS'
-const token = document.querySelector('[name="_csrf"]').value;
+const token = document.querySelector('meta[name="_csrf"]').content;
 const response = await fetch('/lab/csrf/check', {
     method: 'POST',
     credentials: 'same-origin',

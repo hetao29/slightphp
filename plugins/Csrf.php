@@ -44,6 +44,20 @@ final class Csrf
     }
 
     /**
+     * 生成携带当前会话 token 的 meta 标签，返回 HTML 字符串，不直接输出。
+     * @param string|null $fieldName 字段名；null 使用 self::$fieldName，字符串对应 Route 的 csrf 自定义名称。
+     * @return string 属性值已进行 HTML 转义的 meta 标签；Tpl 中可使用末尾 |raw 输出。
+     * @throws \InvalidArgumentException 自定义字段名无效。
+     * @throws Exception Session 启动失败，原因码 CSRF_SESSION_NOT_STARTED（500）。
+     */
+    public static function tokenMeta(?string $fieldName = null): string
+    {
+        $field = self::resolveFieldName($fieldName);
+        return '<meta name="' . htmlspecialchars($field, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')
+            . '" content="' . htmlspecialchars(self::token(), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '"/>';
+    }
+
+    /**
      * 校验默认或自定义 CSRF 请求头；该头不存在时读取对应 POST 表单字段。
      * 校验所有 HTTP 方法，不从查询串或 Cookie 取值，不生成或更新 token。
      * @param Request $request 当前请求快照。

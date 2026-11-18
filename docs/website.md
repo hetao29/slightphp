@@ -2,7 +2,7 @@
 
 官网由 SlightPHP + Tpl 构建，内容依据当前仓库源码整理，不依赖外部图片、字体或 JavaScript 库。首页介绍核心定位，内页覆盖功能、插件、入门与可运行示例。
 
-正式官网地址为 [https://slightphp.com/](https://slightphp.com/)，页面统一展示 6.x 系列，安装命令使用当前发布版本 6.7.2。GitHub 链接用于源码与许可证，不作为官网地址。
+正式官网地址为 [https://slightphp.com/](https://slightphp.com/)，页面统一展示 6.x 系列，安装命令使用当前发布版本 6.7.3。GitHub 链接用于源码与许可证，不作为官网地址。
 
 ## 访问与部署
 
@@ -78,7 +78,7 @@ URL 无需改变，例如 `/workspace/main/save` 对应 `app/Workspace/MainContr
 - `samples/config/routes.php`、`routes.json`：自定义 URL 映射，配置与验证见 [自定义路由手册](routes.md)。
 - `samples/app/Lab/TemplateController.php`、`samples/app/Widgets/TemplateController.php`：模板组合页面与跨模块片段，调用说明见 [Tpl 手册](templates.md)。
 - `samples/app/Lab/LanguageController.php`、`samples/app/languages/*/demo.json`：可运行的多语言实验与三套独立词条。
-- `samples/app/Lab/CsrfController.php`、`templates/workspace/csrf.tpl`：CSRF 交互实验，包含默认/自定义名称、tokenInput 与 token 更新；手册位于 docs/csrf.md。
+- `samples/app/Lab/CsrfController.php`、`templates/workspace/csrf.tpl`：CSRF 交互实验，包含默认/自定义名称、tokenInput、tokenMeta 与 token 更新；手册位于 docs/csrf.md。
 - `samples/app/Lab/TypeController.php`：返回纯文本方法名的 Request-Type 示例，供示例页发送真实请求。
 - `samples/www/index.php`：通过 `vendor/autoload.php` 加载核心与插件，只做环境配置、URI 解析和调度。
 - `samples/app/templates/head.tpl`、`footer.tpl`：公共布局与元信息。

@@ -24,9 +24,10 @@
   </form>
   <div class="code-block"><button type="button" data-copy="csrf-direct-code">{SampleI18n::t('copy')}</button><pre><code id="csrf-direct-code">{$direct_form_code}</code></pre></div>
 </section>
-<section class="panel" data-csrf-demo data-csrf-token="{$csrf}" data-csrf-path="/lab/csrf/check" data-csrf-header="X-CSRF-Token">
+<section class="panel" data-csrf-demo data-csrf-meta="_csrf" data-csrf-path="/lab/csrf/check" data-csrf-header="X-CSRF-Token">
   <h2>{SampleI18n::t('csrf_demo_ajax_title')}</h2>
   <p>{SampleI18n::t('csrf_demo_ajax_intro')}</p>
+  <div class="code-block"><button type="button" data-copy="csrf-meta-code">{SampleI18n::t('copy')}</button><pre><code id="csrf-meta-code">{$meta_code}</code></pre></div>
   <div class="csrf-demo-actions">
     <button type="button" data-csrf-case="valid" disabled>{SampleI18n::t('csrf_demo_valid')}</button>
     <button type="button" data-csrf-case="missing" disabled>{SampleI18n::t('csrf_demo_missing')}</button>
@@ -35,7 +36,7 @@
   <pre class="sample-response" aria-live="polite" aria-atomic="true"><code data-csrf-result>{SampleI18n::t('csrf_demo_ready')}</code></pre>
   <noscript><p>{SampleI18n::t('csrf_demo_nojs')}</p></noscript>
 </section>
-<section class="panel" data-csrf-demo data-csrf-token="{$csrf}" data-csrf-path="/lab/csrf/customcheck" data-csrf-header="--csrf--token">
+<section class="panel" data-csrf-demo data-csrf-meta="--csrf--token" data-csrf-path="/lab/csrf/customcheck" data-csrf-header="--csrf--token">
   <h2>{SampleI18n::t('csrf_demo_custom_title')}</h2>
   <p>{SampleI18n::t('csrf_demo_custom_intro')}</p>
   <form method="post" action="/lab/csrf/customsubmit" data-csrf-custom-form>

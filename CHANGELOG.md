@@ -10,6 +10,11 @@
 <a id="66-迁移指南"></a>
 <a id="67-迁移指南"></a>
 
+## 6.7.3 — 2026-11-19
+
+- 新增 `Csrf::tokenMeta(?string $fieldName = null)`，参数与 `tokenInput()` 一致，null 使用 `Csrf::$fieldName`（默认 `_csrf`），返回属性值已转义的 `<meta name="_csrf" content="…"/>`；Ajax 可读取 `content` 并通过 `X-CSRF-Token` 请求头提交，Tpl 支持 `{\SlightPHP\Csrf::tokenMeta()|raw}`。
+- samples 的 CSRF 实验通过默认和自定义名称的 meta 标签读取 token 并发送 Ajax 请求头，同步三种语言说明、可复制代码与 6.7.3 安装版本。
+
 ## 6.7.2 — 2026-11-19
 
 - `Csrf::$sessionHandler` 支持无参数的自定义 Session 启动回调；未配置时按需调用原生 `session_start()`。仅在实际使用 Csrf 且会话未激活时启动，保留普通路由与公开页面缓存；启动后仍未激活报告 `CSRF_SESSION_NOT_STARTED`。
@@ -19,10 +24,11 @@
 
 ## 6.x 升级与迁移指南
 
-本文统一说明从旧版升级到当前 **6.7.2** 的最终改法，按模块执行，无需先逐个安装中间版本。每节标明相关变更首次引入的版本；已完成的步骤可以跳过。6.6 的可选自动转义已被 6.7 的默认行为取代，当前代码不要再调用模式接口。本次发布见 [6.7.2 修改说明](#672--2026-11-19)，此前修改汇总见[版本更新记录](#版本更新记录)。
+本文统一说明从旧版升级到当前 **6.7.3** 的最终改法，按模块执行，无需先逐个安装中间版本。每节标明相关变更首次引入的版本；已完成的步骤可以跳过。6.6 的可选自动转义已被 6.7 的默认行为取代，当前代码不要再调用模式接口。本次发布见 [6.7.3 修改说明](#673--2026-11-19)，此前修改汇总见[版本更新记录](#版本更新记录)。
 
 | 当前应用版本 | 需要重点检查的迁移 |
 | --- | --- |
+| 6.7.2 | 可使用 `Csrf::tokenMeta()` 输出 meta 标签供 Ajax 读取，参数与 `tokenInput()` 一致；无必需迁移 |
 | 6.7.1 | CSRF 改为按需启动会话；按应用需要提前配置 Session 或初始化回调，核对启动失败的异常处理 |
 | 6.7.0 | 按需接入 CSRF 并核对会话初始化；已完成的模板迁移无需重复 |
 | 6.6.x | 删除模式和安全模式接口，迁移所有模板的默认自动转义，重建编译缓存 |
@@ -49,7 +55,7 @@
 当前核心要求 PHP 8.0+。插件依赖通过 Composer 的 `suggest` 声明，应用应按实际使用将扩展或包加入自己的依赖：Db 使用 PDO 及相应驱动，Redis 使用 phpredis，Http 使用 Guzzle，Captcha 使用 Gregwar Captcha、GD、mbstring、fileinfo 和活动会话，Csrf 使用 Session。Sentinel 模式需要 phpredis 6.0+，详见[按需安装依赖](docs/plugins.md#按需安装依赖)。
 
 ```bash
-composer require hetao29/slightphp:^6.7.2
+composer require hetao29/slightphp:^6.7.3
 ```
 
 入口统一加载 `vendor/autoload.php`，Request/Response 和插件通过 Composer PSR-4 按需加载；仅手动引入 `SlightPHP.php` 不足以支持当前调度。删除旧的 `plugins/S*.php` 手动引用以及 `SLIGHTPHP_PLUGINS_DIR`、旧辅助函数文件的依赖，更新部署包中的自动加载文件。

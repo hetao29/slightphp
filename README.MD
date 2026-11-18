@@ -4,7 +4,7 @@ SlightPHP 是一个轻量 PHP 框架，按照请求路径加载命名空间控�
 
 [官网](https://slightphp.com/) · [源码](https://github.com/hetao29/slightphp)
 
-6.x 提供 Session CSRF 防护，通过 Route 的 `csrf` 参数启用，支持自定义字段/请求头、`tokenInput()` 及公共配置。samples 提供三种表单写法与 Ajax、token 更新实验；接入见 [CSRF 使用手册](docs/csrf.md)。
+6.x 提供 Session CSRF 防护，通过 Route 的 `csrf` 参数启用，支持自定义字段/请求头、`tokenInput()`、`tokenMeta()` 及公共配置。samples 提供三种表单写法与 Ajax、token 更新实验；接入见 [CSRF 使用手册](docs/csrf.md)。
 
 Tpl 默认启用上下文自动转义，已移除 `setContextMode()`、`getContextMode()` 及兼容编译分支。模板应传入原始数据，可信 HTML 用末尾 `|raw`；升级前需迁移手工编码、JSON 数据块和动态属性名，见 [6.x 升级与迁移指南](CHANGELOG.md#6x-升级与迁移指南)。
 
@@ -14,10 +14,10 @@ Tpl 默认启用上下文自动转义，已移除 `setContextMode()`、`getConte
 
 核心需要 PHP 8.0+。插件依赖通过 Composer 的 `suggest` 声明，默认不安装；使用 Db、Redis、Http、Csrf 或 Captcha 时，再按需安装对应扩展或 Composer 包，见[插件依赖](docs/plugins.md#按需安装依赖)。
 
-当前发布版本为 6.7.2，新增 CSRF 会话按需启动与应用初始化回调，并统一原生启动失败的异常处理，见 [6.7.2 修改说明](CHANGELOG.md#672--2026-11-19)。安装命令使用对应的包版本：
+当前发布版本为 6.7.3，新增 `Csrf::tokenMeta()`，samples 的 Ajax 示例从 meta 标签读取 token 并发送请求头，见 [6.7.3 修改说明](CHANGELOG.md#673--2026-11-19)。安装命令使用对应的包版本：
 
 ```bash
-composer require hetao29/slightphp:^6.7.2
+composer require hetao29/slightphp:^6.7.3
 ```
 
 ## 创建应用
