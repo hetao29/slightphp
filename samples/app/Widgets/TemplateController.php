@@ -23,9 +23,7 @@ class TemplateController
     {
         $text = '<访客> & "hello" </script> ${notCode}';
         $tpl = new Tpl();
-        $tpl->setContextMode(true);
         $cacheTpl = new Tpl();
-        $cacheTpl->setContextMode(true);
         $tpl->render('widgets/template-context.tpl', [
             'sample_text' => $text,
             'empty_name' => '',
@@ -57,7 +55,6 @@ class TemplateController
                 'default_delimiters' => '<span>${$price}</span>' . "\n" . '<script>function f(){return {amount:{$number}};} const native=`sum:${1+2}`;</script>' . "\n" . '{literal}{$nativeName}{/literal}',
                 'cache' => <<<'PHP'
 $tpl = new \SlightPHP\Tpl();
-$tpl->setContextMode(true);
 $tpl->render('widgets/template-cache.tpl', ['cache_name' => 'first', 'cache_value' => '<FIRST>']);
 $tpl->render('widgets/template-cache.tpl', ['cache_name' => 'second', 'cache_value' => '<SECOND>']);
 PHP,
@@ -68,7 +65,7 @@ PHP,
     /** 捕获独立示例的实际输出，供自动模式父片段以可信 HTML 嵌入。 */
     private function capture(string $file, array $data, ?Tpl $tpl = null): string
     {
-        $tpl ??= new Tpl(); $tpl->setContextMode(true);
+        $tpl ??= new Tpl();
         ob_start();
         try { $tpl->render($file, $data); return ob_get_contents(); }
         finally { ob_end_clean(); }

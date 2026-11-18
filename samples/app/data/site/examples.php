@@ -182,7 +182,6 @@ PHP],
 HTML],
             ['label' => 'SlightPHP\\Tpl · context mode', 'code' => <<<'PHP'
 $tpl = new \SlightPHP\Tpl();
-$tpl->setContextMode(true);
 $tpl->render('widgets/template-context.tpl', $data);
 PHP],
             ['label' => 'samples/app/templates/widgets/template-context.tpl', 'code' => <<<'HTML'

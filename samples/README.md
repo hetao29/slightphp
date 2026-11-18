@@ -1,12 +1,10 @@
 # SlightPHP 官网与交互示例
 
-示例对应 SlightPHP 6.6.0，包含请求类型前缀校验、结构化调度异常、Route 方法注解与 PHP / JSON 路由。模板数据使用 Tpl 实例隔离，控制器入口使用 `Request $request, Response $response`，路径从 `$request->route` 读取。升级已有应用请先参阅 [6.6 迁移指南](../docs/migration-6.6.md)，从更早版本升级还需完成 [6.5 迁移](../docs/migration-6.5.md)；模板实例迁移见 [6.4 迁移指南](../docs/migration-6.4.md)，旧控制器签名迁移见 [6.3 迁移指南](../docs/migration-6.3.md)。
+示例对应 SlightPHP 6.7.0，包含请求类型前缀校验、结构化调度异常、Route 方法注解与 PHP / JSON 路由。模板数据使用 Tpl 实例隔离，控制器入口使用 `Request $request, Response $response`，路径从 `$request->route` 读取。升级已有应用请先参阅 [6.7 迁移指南](../docs/migration-6.7.md)，6.5.x 及更早版本还需完成 [6.6 迁移](../docs/migration-6.6.md)，从更早版本升级还需完成 [6.5 迁移](../docs/migration-6.5.md)；模板实例迁移见 [6.4 迁移指南](../docs/migration-6.4.md)，旧控制器签名迁移见 [6.3 迁移指南](../docs/migration-6.3.md)。
 
 正式官网为 [https://slightphp.com/](https://slightphp.com/)。自行部署示例站点后，访问部署地址的根路径 `/`，即可浏览框架介绍并体验交互示例。
 
-6.6.0 的布局继续使用兼容模式及显式 HTML 转义，独立 Context 模块开启上下文自动转义并传入原始数据，两种模式的模板不能统一批量删除手工编码。入口在会话启动前设置 Secure、HttpOnly、SameSite，按服务器提供的 HTTPS 状态区分开发环境；反向代理部署需按[部署说明](../docs/deployment.md#cookie与会话安全)配置可信转发。新版本迁移文档可在 `/site/main/docs?doc=migration-6.6.md` 直接阅读。
-
-6.7 将默认开启 contextMode，并移除 `setContextMode()`、`getContextMode()`。当前样例中的模式切换用于 6.6；升级到 6.7 时需删除这些调用，并将兼容模式模板按[自动转义迁移说明](../docs/migration-6.6.md#tpl-自动转义迁移启用时不兼容)调整，不能直接照搬 6.6 的模式开关。
+6.7.0 的所有页面与 Context 模块均默认自动转义，不再调用 `setContextMode()` 或 `getContextMode()`。模板传原始数据和翻译原文，文档浏览器仅对自身生成的可信 HTML 使用末尾 raw；客户端词条以数组传入 application/json 数据块。入口在会话启动前设置安全 Cookie 参数，反向代理需按[部署说明](../docs/deployment.md#cookie与会话安全)配置可信转发。新版本指南可在 `/site/main/docs?doc=migration-6.7.md` 阅读。
 
 - `/#features`：首页中的功能特性、调度流程与应用职责；旧 `/site/main/features` 跳转到该区域。
 - `/site/main/plugins`：插件搜索、分类与运行条件。
@@ -32,11 +30,11 @@
 
 官网与交互工作台支持简体中文、繁體中文和 English，导航中的语言菜单可在当前页面切换。也可使用 `?lang=zh-cn`、`?lang=zh-tw`、`?lang=en`；选择通过 Cookie 保存一年。选择顺序为有效查询参数、已保存的 Cookie、浏览器 Accept-Language，最后回退到简体中文。浏览器的 en-*、zh-Hans / zh-CN、zh-Hant / zh-TW / zh-HK / zh-MO 会归入对应语言；与 Language 插件一致，按请求头中的出现顺序选择，并跳过 q=0。
 
-翻译使用 `SlightPHP\Language`，入口在首次翻译前设置语言目录与 locale。词条位于 `app/languages/{zh-cn,zh-tw,en}/main.json`，格式为字符串键值对象，与 Route 一样通过 Config 解析 JSON/JSONC；不再使用 INI。控制器用 `SampleI18n::t()` 取文本，模板用 `SampleI18n::e()` 翻译并转义，JavaScript 提示共用这些词条。新增界面文案时同步维护三份文件。用户任务原文与实际配置、示例源码不做替换；文档及 ChangeLog 直接显示仓库原文。
+翻译使用 `SlightPHP\Language`，入口在首次翻译前设置语言目录与 locale。词条位于 `app/languages/{zh-cn,zh-tw,en}/main.json`，格式为字符串键值对象，与 Route 一样通过 Config 解析 JSON/JSONC；不再使用 INI。控制器用 `SampleI18n::t()` 取文本，模板用 `SampleI18n::t()` 获取翻译原文并由 Tpl 编码，JavaScript 提示共用这些词条。新增界面文案时同步维护三份文件。用户任务原文与实际配置、示例源码不做替换；文档及 ChangeLog 直接显示仓库原文。
 
 主题按钮按「自动 → 深色 → 浅色 → 自动」切换，默认自动跟随系统主题及其实时变化，用户选择保存在浏览器 localStorage。官网、工作台和文档页共享偏好；存储不可用时仍可切换，禁用 JavaScript 时由 CSS 跟随系统。
 
-入口通过仓库根目录 `vendor/autoload.php` 自动加载框架与插件；缺少 vendor 时先在仓库根目录执行 `composer install`。框架使用命名空间控制器；官网、任务和路由功能分别位于 Site、Workspace、Lab 命名空间模块，模板使用原生转义与根路径链接。
+入口通过仓库根目录 `vendor/autoload.php` 自动加载框架与插件；缺少 vendor 时先在仓库根目录执行 `composer install`。框架使用命名空间控制器；官网、任务和路由功能分别位于 Site、Workspace、Lab 命名空间模块，模板使用上下文自动转义与根路径链接。
 
 自定义规则位于 `config/routes.php` 和 `config/routes.json`，由 `www/index.php` 在调度前加载。入口保存已去除 index.php 的原始路径，再通过 `Route::parse($routePath)` 显式匹配；查询串不参与匹配，未命中时保留默认路径。路由实验室展示完整配置、原始 URI、映射后的 Request::route 与查询参数。详细用法见 [自定义 URL 路由](../docs/routes.md)。
 

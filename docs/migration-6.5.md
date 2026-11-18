@@ -1,6 +1,8 @@
 # 升级到 SlightPHP 6.5.3
 
-本文记录 6.5.x 的历史变更；当前版本为 6.6.0，升级时还需阅读 [6.6 迁移指南](migration-6.6.md)，处理类名、模板辅助函数及 Cookie 默认策略变化。
+升级到当前版本还需完成 [6.7 迁移](migration-6.7.md)，Tpl 现在统一自动转义并移除模式接口。
+
+本文记录 6.5.x 的历史变更；当前版本为 6.7.0，升级时还需阅读 [6.6 迁移指南](migration-6.6.md)，处理类名、模板辅助函数及 Cookie 默认策略变化。
 
 6.5.3 将 Language 语言文件由 INI 改为 JSON/JSONC；从 6.5.2 升级也需要转换现有语言文件，详见 [Language 迁移](#language-语言文件改为-jsonjsonc653)。官网与 samples 同步支持三种语言、默认自动的主题和完整文档阅读。
 
@@ -20,7 +22,7 @@
 composer require hetao29/slightphp:^6.5.3
 ```
 
-仓库自身使用 `composer install` 安装锁定依赖。此版本不新增 APCu 等扩展要求。
+仓库自身使用 `composer install` 安装依赖；6.7 起不再跟踪框架仓库的 `composer.lock`，应用项目仍可管理自己的锁文件。此版本不新增 APCu 等扩展要求。
 
 ## Language 语言文件改为 JSON/JSONC（6.5.3）
 

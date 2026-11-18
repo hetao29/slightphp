@@ -1,10 +1,12 @@
 # 升级到 SlightPHP 6.3.0
 
+升级到当前版本还需完成 [6.7 迁移](migration-6.7.md)，Tpl 现在统一自动转义并移除模式接口。
+
 6.3.0 将控制器原有的 `$inPath` 数组传参改为 `SlightPHP\Request`，并向入口方法传入 `SlightPHP\Response`。这是不兼容变更，已有 6.2.x 应用也需要检查控制器和直接调用它们的代码。完整版本记录见 [Changelog](../CHANGELOG.md)，接口说明见 [Request 与 Response](http.md)。
 
 从 6.0 / 6.1 升级时，还需完成 [6.2 升级说明](migration-6.2.md)中的配置、路径、模板、验证码和日志迁移；5.x 应用需先完成 [6.0 迁移指南](migration-6.0.md)。从 6.2.0 直接升级时，也需检查本文的数据库变化。
 
-本文记录 6.3.0 的变化。升级到当前 6.6.0 时，还需按 [6.4 迁移指南](migration-6.4.md)调整模板变量及静态调用，并按 [6.5 迁移指南](migration-6.5.md)处理调度异常，并按 [6.6 迁移指南](migration-6.6.md)调整类名、辅助函数和 Cookie 默认策略；下方 `^6.3` 约束也允许安装 6.6。
+本文记录 6.3.0 的变化。升级到当前 6.7.0 时，还需按 [6.4 迁移指南](migration-6.4.md)调整模板变量及静态调用，并按 [6.5 迁移指南](migration-6.5.md)处理调度异常，并按 [6.6 迁移指南](migration-6.6.md)调整类名、辅助函数和 Cookie 默认策略；下方 `^6.3` 约束也允许安装 6.7。
 
 ## 安装与自动加载
 
@@ -14,7 +16,7 @@ PHP 和依赖要求保持为 PHP 8.0+、PDO、Redis 扩展、Guzzle 和 Gregwar 
 composer require hetao29/slightphp:^6.3
 ```
 
-仓库自身使用 `composer install` 安装锁定依赖。应用入口继续加载 `vendor/autoload.php`；Request / Response 由 Composer 的 `SlightPHP\` PSR-4 映射按需加载，仅手动引入 `SlightPHP.php` 不足以支持新的调度。部署时同步应用代码、依赖和 Composer 自动加载文件，并重启常驻进程。
+仓库自身使用 `composer install` 安装依赖；6.7 起不再跟踪框架仓库的 `composer.lock`，应用项目仍可管理自己的锁文件。应用入口继续加载 `vendor/autoload.php`；Request / Response 由 Composer 的 `SlightPHP\` PSR-4 映射按需加载，仅手动引入 `SlightPHP.php` 不足以支持新的调度。部署时同步应用代码、依赖和 Composer 自动加载文件，并重启常驻进程。
 
 注意：旧的 `^6.2` 约束允许解析到 6.3.0，不能据此认为控制器签名仍兼容。更新依赖时应一并完成下面的代码迁移。
 

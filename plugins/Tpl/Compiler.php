@@ -2,7 +2,7 @@
 namespace SlightPHP\Tpl;
 
 /**
- * 自动模式的 PHP 代码生成器，输入来自 Lexer 的有序 token。
+ * 模板源码及有序 token 的 PHP 代码生成器。
  *
  * 字面量生成普通状态机调用或带入口守卫的静态块输出；值生成通用、HTML 文本或
  * 属性编码调用。所有表达式在运行时求值，编译结果不保存请求数据或最终 HTML。
@@ -18,6 +18,21 @@ final class Compiler
 {
     /** JS 词法判定/计划语义变更时递增，同时使主模板与上下文变体缓存失效。 */
     public const JS_VERSION = 5;
+
+    /**
+     * 编译可信模板源码；源码分词及代码生成统一在编译器中完成。
+     *
+     * 不过滤或替换原生 PHP 标签；静态内容按字面量输出，模板表达式才编译为 PHP。
+     * 不读取请求数据或执行模板表达式，运行时编码及守卫由生成的 PHP 调用完成。
+     * @param string $source 模板原文。
+     * @param string $left 标签左分隔符。
+     * @param string $right 标签右分隔符。
+     * @return string 不含缓存文件头的 PHP 编译文本。
+     */
+    public static function compileSource(string $source, string $left = '{', string $right = '}'): string
+    {
+        return self::compile(Lexer::tokenize($source, $left, $right));
+    }
 
     /**
      * 将 JS 前缀的词法推进编译成编码位置及下一断点，供模板编译和上下文变体使用。

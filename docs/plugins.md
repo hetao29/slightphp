@@ -145,21 +145,19 @@ $tpl->render('index.tpl', ['title' => '示例']);
 
 模板变量保存在各个 Tpl 实例的受保护属性 `$_tpl_vars` 中，不同实例互不共享。`assign($name, $value)` 或 `assign($array)` 分配变量，`render()` 的参数覆盖同名值；同一个实例在多次渲染之间保留变量及模板循环产生的赋值。常驻服务应为每个请求创建新实例。模板目录、编译目录、分隔符等配置仍为静态配置，由所有实例共享。
 
-`setContextMode(true)` 为当前实例开启 HTML/属性、URL、JS、CSS 上下文自动转义，默认关闭并保留兼容模式。两种模式都支持 Modifier 中的 raw、escape、default、tr、tostring、version；自动模式先执行修饰链再按实际位置编码，末尾 raw 标记可信原文。默认分隔符仍为 `{` / `}`，Lexer 识别模板语法，保留普通 JS/CSS 花括号及表达式引号、嵌套括号；歧义片段可用 literal 或更换分隔符。模板错误原样抛出。完整示例和支持边界见 [上下文自动转义](templates.md#上下文自动转义)。
-
-以上模式开关适用于 6.6；6.7 将默认开启 contextMode，并移除 `setContextMode()`、`getContextMode()`。升级准备及手工编码迁移见 [6.6 迁移指南](migration-6.6.md#tpl-自动转义迁移启用时不兼容)。
+6.7.0 默认对 HTML/属性、URL、JS、CSS 执行上下文自动转义，已移除 `setContextMode()`、`getContextMode()` 及兼容编译分支。直接创建 Tpl 实例，传入原始数据；内置 raw、escape、default、tr、tostring、version 及修饰链继续可用。末尾 raw 标记可信原文。默认分隔符仍为 `{` / `}`，普通 JS/CSS 花括号会保留，歧义片段可用 literal 消歧。支持边界见 [上下文自动转义](templates.md#上下文自动转义)，升级步骤见 [6.7 迁移指南](migration-6.7.md)。
 
 自动模式的编译缓存保存静态块和编码计划。JS 词法结果由 Compiler 编译到计划表，动态新入口首次生成上下文变体，完整命中后不再执行 JS 词法扫描；CSS 仍按渲染流保存增量断点。首次编译会多做分析；HTML 实际状态、URL/CSS 检查和函数输出检测仍在运行时执行。见 [编译缓存与执行计划](templates.md#编译缓存与执行计划)。
 
 从 6.4.0 起，`assign()`、`fetch()` 为实例方法，不能再使用 `Tpl::assign()`、`Tpl::fetch()` 或从外部访问 `Tpl::$_tpl_vars`；迁移示例见 [6.4 升级说明](migration-6.4.md#模板变量与实例)。`{include "child.tpl"}` 和 `{include $child}` 自动使用父模板的实例，支持多层嵌套，子模板可以读取并修改同一张变量表。PHP 代码直接调用模板辅助函数时，需显式传入上下文：`\SlightPHP\Tpl\Func::include('child.tpl', $tpl)`。
 
-`{part "/widgets/template/card/demo"}` 调用其它模块的控制器入口，模块内容直接输出到当前位置，再输出字符串返回值，函数自身返回 null。控制器新建 Tpl 实例时使用独立变量；part 不会自动将父模板变量传给控制器。返回布尔值、数字、数组或对象时仅保留直接输出。兼容模式中的 part 不管理输出缓冲；上下文模式只允许在 HTML 文本中插入 part，将片段收集后继续跟踪上下文。异常原样抛出，已输出内容保留。完整规则与可运行示例见 [Tpl 模板与模块组合手册](templates.md)，samples 入口为 `/lab/template/entry`。
+`{part "/widgets/template/card/demo"}` 调用其它模块的控制器入口，模块内容直接输出到当前位置，再输出字符串返回值，函数自身返回 null。控制器新建 Tpl 实例时使用独立变量；part 不会自动将父模板变量传给控制器。返回布尔值、数字、数组或对象时仅保留直接输出。模板只允许在 HTML 文本中插入 part，将片段收集后继续跟踪上下文。异常原样抛出，失败片段尚未输出的临时缓冲被丢弃，之前已输出的页面内容保留。完整规则与可运行示例见 [Tpl 模板与模块组合手册](templates.md)，samples 入口为 `/lab/template/entry`。
 
-模板及编译目录由应用管理，编译目录必须可写且不应公开访问。当前实现中 `render()` 与 `display()` 均直接输出，返回值为 null（内部 fetch 使用 include），不要依赖其返回 HTML 字符串；还有 `setForceCompile()`、`setSafeMode()` 和历史拼写 `setDelimter()`。安全模式不能替代输出转义，不允许上传不可信模板。模板语法和调用方式应以当前源码及 API 为准。新工作台通过 Tpl 渲染 `head.tpl`、`index/*.tpl` 和 `footer.tpl`；模板及展示代码统一使用默认 `{`、`}`，保持默认安全模式。
+模板及编译目录由应用管理，编译目录必须可写且不应公开访问。当前实现中 `render()` 与 `display()` 均直接输出，返回值为 null（内部 fetch 使用 include），不要依赖其返回 HTML 字符串；还有 `setForceCompile()` 和历史拼写 `setDelimter()`。6.7 已移除 `$safe_mode`、`setSafeMode()` 和 Tpl 内的 `_compile()`，源码编译改由 `Tpl\Compiler::compileSource()` 负责；模板必须来自可信来源。模板语法和调用方式应以当前源码及 API 为准。新工作台通过 Tpl 渲染 `head.tpl`、`index/*.tpl` 和 `footer.tpl`；模板及展示代码统一使用默认 `{`、`}`，使用默认上下文自动转义。
 
 源文件经 `realpath()` 解析后必须位于模板目录内；编译文件和其各级子目录也必须位于编译目录内，指向目录外的符号链接会被拒绝。保留原有 CRC32 子目录和修改时间缓存逻辑。新建编译目录及子目录默认权限为 `0700`（受 umask 影响），已有目录权限不自动修改。`compile_dir` 及其 CRC32 子目录均不检查归属或权限，允许将 `compile_dir` 设为 `/tmp`。
 
-编译文件带有格式标记，每次加载时检查文件头；缺少当前标记的旧缓存会自动重新编译，即使模板源文件没有变化。兼容模式沿用已有目录布局，上下文模式使用独立的 `.context.php` 编译文件；文件头还校验分隔符和安全模式。部署时需确保运行用户能够重写旧编译文件，常驻进程需重启以加载新类定义；OPcache 刷新由部署流程管理。
+编译文件带有格式标记，每次加载时检查文件头；缺少当前标记的旧缓存会自动重新编译，即使模板源文件没有变化。统一使用 `.context.php` 编译文件；文件头还校验分隔符和 JS 计划版本。部署时需确保运行用户能够重写旧编译文件，常驻进程需重启以加载新类定义；OPcache 刷新由部署流程管理。
 
 `{$value|escape}` 使用 `ENT_QUOTES | ENT_SUBSTITUTE` 和 UTF-8 进行 HTML 转义，覆盖单双引号、尖括号和 `&`，非法 UTF-8 使用替代字符，不依赖 PHP 默认选项或 `default_charset`。此修饰器用于 HTML 文本和带引号的普通属性值；URL 编码分支仍使用 `rawurlencode()`。
 

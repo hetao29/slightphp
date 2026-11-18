@@ -1,4 +1,6 @@
-# SlightPHP 6.6.0 框架使用文档
+# SlightPHP 6.7.0 框架使用文档
+
+6.7.0 默认启用 Tpl 上下文自动转义，移除 `setContextMode()`、`getContextMode()` 及兼容编译分支。模板应传入原始数据，可信 HTML 用末尾 `|raw`；升级前需迁移手工编码、JSON 数据块和动态属性名，见 [6.7 迁移与不兼容说明](migration-6.7.md)。
 
 6.6.0 新增可选的 Tpl 上下文自动转义、编译期执行计划和默认花括号识别；默认仍为兼容模式。本版还迁移 Db 内部类和模板辅助函数，调整 Cookie 默认策略，实现 Redis Sentinel，并修复 Language 切换缓存。即使不开启自动转义，升级也需检查类名、全局函数及 Cookie 配置，见 [6.6 迁移与不兼容说明](migration-6.6.md)。
 
@@ -11,6 +13,7 @@
 官网：[https://slightphp.com/](https://slightphp.com/)。
 
 - [更新记录](../CHANGELOG.md)
+- [6.7 升级与迁移说明](migration-6.7.md)
 - [6.6 升级与迁移说明](migration-6.6.md)
 - [6.5 升级与迁移说明](migration-6.5.md)
 - [核心异常与迁移](exceptions.md)

@@ -1,4 +1,5 @@
 /.*/
 /AGENTS.md
+/composer.lock
 /tests/
 /vendor/
