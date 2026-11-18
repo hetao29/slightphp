@@ -6,7 +6,7 @@ namespace SlightPHP\Tpl;
  *
  * 采用模板语法候选识别及引号/括号配对，减少普通 JS/CSS 花括号被误编译的情况。
  * 本类不构建 DOM；只在遇到 ${ 时探测原生 JS 模板字符串，输出转义位置仍由 Context 判断。
- * 与模板语法完全同形的原文无法总是消歧，应使用 literal 或不同分隔符。
+ * 默认 { / } 分隔符下，与模板语法完全同形的原文应使用 {literal}...{/literal}。
  *
  * @internal 不提供表达式求值和不可信模板隔离。
  */
@@ -18,6 +18,9 @@ final class Lexer
      * text 保留字节内容；tag 仅包含去掉左右分隔符的主体，不在这里 trim 或执行。
      * $start 指向尚未提交的文本开头，$offset 是查找游标；跳过非标签候选时只移动
      * 查找游标，使跳过的原文最终仍随 text 输出。literal 不递归解析内部模板标签。
+     * 注释由 $left 紧接 * 开始，到首个 * 紧接 $right 结束；支持多行、不支持嵌套。
+     * 默认写作 {* ... *}，内容整体移除且不解析内部标签，注释外的空白保留。
+     * literal 内的注释语法保留原文；未闭合注释抛出 Unclosed template comment。
      *
      * @param string $source 完整模板源码。
      * @param string $left 非空左分隔符。

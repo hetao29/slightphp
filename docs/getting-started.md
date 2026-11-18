@@ -1,12 +1,12 @@
 # 快速开始
 
-当前版本为 SlightPHP 6.7.1，官网：[https://slightphp.com/](https://slightphp.com/)。
+本文介绍 SlightPHP 6.x，当前发布版本为 6.7.1，官网：[https://slightphp.com/](https://slightphp.com/)。
 
 ## 运行仓库中的完整示例
 
 要求 PHP 8.0+，启用 session。入口通过仓库的 vendor/autoload.php 加载框架及 Tpl、Config、Route、Language 插件，JSON 输出使用原生函数；缺少 vendor 时先执行 composer install，无需数据库或 Redis；PHP 的系统临时目录必须可写。
 
-部署示例站点后，访问其根路径 `/`。首页包含完整功能特性，导航顺序为「首页 → 入门 → 示例 → 插件 → 文档」。ChangeLog 已合并在文档目录中。从示例索引或工作台侧栏可进入多语言实验；页面支持简体、繁体和英文，主题默认自动跟随系统。以 `samples/www` 为网站根目录并转发原始 URI，具体配置见 [部署说明](deployment.md)。
+部署示例站点后，访问其根路径 `/`。首页包含完整功能特性，导航顺序为「首页 → 入门 → 示例 → 插件 → 文档」。文档页提供合并后的 6.x 更新记录和升级迁移指南。从示例索引或工作台侧栏可进入多语言实验；页面支持简体、繁体和英文，主题默认自动跟随系统。以 `samples/www` 为网站根目录并转发原始 URI，具体配置见 [部署说明](deployment.md)。
 
 ```text
 samples/
@@ -39,7 +39,7 @@ composer require hetao29/slightphp:^6.7.1
 
 包仅强制要求 PHP >=8.0；PDO、Redis 扩展、Guzzle 与 Gregwar Captcha 等插件依赖通过 `suggest` 提示，默认不安装。使用对应插件时，在应用项目中[按需安装依赖](plugins.md#按需安装依赖)；额外依赖可能提高应用的最低 PHP 版本。
 
-已有项目升级请先阅读 [6.7 迁移指南](../CHANGELOG.md#67-迁移指南)，删除模式接口调用并迁移模板编码；从 6.5.x 或更早版本升级还需完成 [6.6 迁移](../CHANGELOG.md#66-迁移指南)，检查类名、模板辅助函数和 Cookie 默认值。从 6.4.x 或更早版本升级，还需按 [6.5 迁移指南](../CHANGELOG.md#65-迁移指南)调整核心异常处理。从 6.3.x 或更早版本升级时，还需按 [6.4 迁移指南](../CHANGELOG.md#64-迁移指南)修改模板静态调用，从 6.2.x 或更早版本升级时还需按 [6.3 迁移指南](../CHANGELOG.md#63-迁移指南)修改控制器构造函数与入口参数。
+已有项目升级请先阅读 [6.x 升级与迁移指南](../CHANGELOG.md#6x-升级与迁移指南)，按起始版本对照表完成适用的迁移步骤，包括控制器签名、模板实例和编码、调度异常、插件类名、配置与 Cookie。
 
 创建 `public/index.php`：
 

@@ -1,6 +1,6 @@
 # 核心异常与处理
 
-从 6.5.0 起，`SlightPHP` 核心失败不再返回 `false`，统一抛出 `SlightPHP\Exception`。Route 方法不匹配也只抛异常，不由核心发送响应。这是不兼容变更，应用入口、CLI 任务与内部调用都需要调整；完整升级步骤见 [6.5 迁移指南](../CHANGELOG.md#65-迁移指南)。
+6.x 当前的 `SlightPHP` 核心失败不再返回 `false`，统一抛出 `SlightPHP\Exception`。Route 方法不匹配也只抛异常，不由核心发送响应。这是不兼容变更，应用入口、CLI 任务与内部调用都需要调整；完整升级步骤见 [6.x 升级与迁移指南](../CHANGELOG.md#6x-升级与迁移指南)。
 
 异常继承 `RuntimeException`，通过 Composer 自动加载：
 
@@ -37,7 +37,7 @@
 
 `#[Route(csrf: true)]` 在 HTTP 方法检查通过后、控制器构造前执行，失败不继续候选回退，也不更新路由状态。Csrf API 同样抛出本类异常，消息和上下文不包含 token，不会输出响应。无效 token 由入口映射为 403；Session 未启动属于应用配置错误，映射为 500。详见 [Csrf 插件](plugins.md#csrf)。
 
-从 6.5.2 起，请求类型前缀校验紧接候选方法名赋值，先于方法存在性、Route 注解和控制器构造。类型不匹配时，上下文另含 `requestType`（规范化后的当前头，缺失为空字符串）及 `requiredRequestType`（方法前缀要求的类型），`allowedMethods` 为空数组，因为此时尚未解析 Route 注解。`allowedMethods` 仅用于 HTTP 方法限制，不能将 `ajax`、`part` 等类型写入 HTTP `Allow` 头；应用仅在该数组非空时输出 `Allow`。
+请求类型前缀校验紧接候选方法名赋值，先于方法存在性、Route 注解和控制器构造。类型不匹配时，上下文另含 `requestType`（规范化后的当前头，缺失为空字符串）及 `requiredRequestType`（方法前缀要求的类型），`allowedMethods` 为空数组，因为此时尚未解析 Route 注解。`allowedMethods` 仅用于 HTTP 方法限制，不能将 `ajax`、`part` 等类型写入 HTTP `Allow` 头；应用仅在该数组非空时输出 `Allow`。
 
 应用目录在设置或首次使用时按目录路径规范化并缓存；调度和候选解析不再重复调用 `is_dir()`。不存在的路径或普通文件仍判为 `APP_DIR_INVALID`，候选控制器仍需通过普通文件和应用目录边界校验。
 

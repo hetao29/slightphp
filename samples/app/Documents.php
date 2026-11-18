@@ -3,15 +3,15 @@
 /** Read-only browser for the repository documentation and generated API reference. */
 final class SampleDocuments
 {
-    /** @var array<string,string> 旧迁移文档名到 ChangeLog 章节的映射，不作为菜单项。 */
+    /** @var array<string,string> 旧迁移文档统一指向当前 6.x 指南，不作为菜单项。 */
     private const MIGRATION_ANCHORS = [
-        'migration-6.0.md' => '60-迁移指南',
-        'migration-6.2.md' => '62-迁移指南',
-        'migration-6.3.md' => '63-迁移指南',
-        'migration-6.4.md' => '64-迁移指南',
-        'migration-6.5.md' => '65-迁移指南',
-        'migration-6.6.md' => '66-迁移指南',
-        'migration-6.7.md' => '67-迁移指南',
+        'migration-6.0.md' => '6x-升级与迁移指南',
+        'migration-6.2.md' => '6x-升级与迁移指南',
+        'migration-6.3.md' => '6x-升级与迁移指南',
+        'migration-6.4.md' => '6x-升级与迁移指南',
+        'migration-6.5.md' => '6x-升级与迁移指南',
+        'migration-6.6.md' => '6x-升级与迁移指南',
+        'migration-6.7.md' => '6x-升级与迁移指南',
     ];
     private static ?array $files = null;
     private array $headings = [];
@@ -136,6 +136,10 @@ final class SampleDocuments
                 while (++$i < $count && !preg_match('/\A```\s*\z/', $lines[$i])) $code[] = $lines[$i];
                 $id = 'doc-code-' . ++$this->codeIndex;
                 $html .= '<div class="code-block"><button type="button" data-copy="' . $id . '">' . SampleI18n::e('copy') . '</button><pre><code id="' . $id . '" class="language-' . self::escape($match[1]) . '">' . self::escape(implode("\n", $code)) . '</code></pre></div>';
+            } elseif (preg_match('/\A<a id="([\p{L}\p{N}_-]+)"><\/a>\z/u', $line, $match)) {
+                // 仅接受无内容、无其他属性的文档锚点，保留合并章节前的链接。
+                $flush();
+                $html .= '<a id="' . self::escape($match[1]) . '"></a>';
             } elseif (preg_match('/\A(#{1,6}) (.+)\z/', $line, $match)) {
                 $flush();
                 $level = strlen($match[1]);

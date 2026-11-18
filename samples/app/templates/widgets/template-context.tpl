@@ -54,6 +54,11 @@
     <pre><code>{$sources['default_delimiters']}</code></pre>
     {$default_output|raw}
 
+    <h3>{SampleI18n::t('tpl_demo_comments')}</h3>
+    <p>{SampleI18n::t('tpl_demo_comments_note')}</p>
+    <pre><code>{$sources['comments']}</code></pre>
+    {$comments_output|raw}
+
     <h3>{SampleI18n::t('tpl_demo_cache')}</h3>
     <p>{SampleI18n::t('tpl_demo_cache_note')}</p>
     <pre><code>{$sources['cache']}</code></pre>

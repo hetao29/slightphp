@@ -71,7 +71,7 @@ $maxDepth = SlightPHP::getMaxDepth(); // 15
 
 `HTTP_REQUEST_TYPE` 对应客户端请求头 `Request-Type`。如果值在允许列表中，会作为方法前缀；不在列表中的值会使用无前缀方法。未提供该头时使用无前缀方法。
 
-从 6.5.2 起，候选方法名 `$_method` 赋值后立即校验：若以 `allowRequestTypes` 中的类型开头，必须与当前 `Request-Type` 匹配；设置类型列表时统一转为小写并过滤空字符串，请求头先去除首尾空白并转为小写，方法名由路由统一转小写，前缀用 `str_starts_with` 比较，按配置顺序使用第一个匹配类型；自定义类型存在重叠时应将较长的类型排在前面。缺失或不匹配时抛出 `METHOD_NOT_ALLOWED`（405），不检查方法是否存在、不解析 Route 注解、不构造控制器，也不继续候选回退。例如 `/user/order/save` 配合 `Request-Type: ajax` 可以调用 `ajaxSave`，直接访问 `/user/order/ajaxSave` 而没有该头会被拒绝。HTTP 请求与 `run('/...')` 显式内部调用均执行该校验，不隐式补头。
+候选方法名 `$_method` 赋值后立即校验：若以 `allowRequestTypes` 中的类型开头，必须与当前 `Request-Type` 匹配；设置类型列表时统一转为小写并过滤空字符串，请求头先去除首尾空白并转为小写，方法名由路由统一转小写，前缀用 `str_starts_with` 比较，按配置顺序使用第一个匹配类型；自定义类型存在重叠时应将较长的类型排在前面。缺失或不匹配时抛出 `METHOD_NOT_ALLOWED`（405），不检查方法是否存在、不解析 Route 注解、不构造控制器，也不继续候选回退。例如 `/user/order/save` 配合 `Request-Type: ajax` 可以调用 `ajaxSave`，直接访问 `/user/order/ajaxSave` 而没有该头会被拒绝。HTTP 请求与 `run('/...')` 显式内部调用均执行该校验，不隐式补头。
 
 仅检查已配置的类型；从允许列表移除某类型，也会移除其方法前缀校验。通过类型校验后，普通无类型前缀入口、缺失及非公开方法沿原规则处理。此校验不限制 GET、POST、PUT 等 HTTP 方法，也不代替登录、对象权限或会话 CSRF 校验。HTTP 方法可通过下面的 `Route` 注解限制；读取实际被调用方法（如 `AjaxSave`）上的注解。
 

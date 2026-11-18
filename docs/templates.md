@@ -1,4 +1,4 @@
-# Tpl 模板、上下文转义与模块组合手册（6.7.1）
+# Tpl 模板、上下文转义与模块组合手册（6.x）
 
 运行 samples 后访问 `/lab/template/entry`，或从 `/site/main/examples` 的「模板与模块组合」进入。工作台侧栏也提供同名入口。该页面实际执行跨目录 include、跨模块 part 和嵌套调用，无需数据库或 Redis。
 
@@ -31,11 +31,32 @@ $tpl->render('workspace/template.tpl', [
 
 `assign()`、`render()`、`display()` 和 `fetch()` 都使用当前实例的数据。`render()` 参数覆盖同名变量，未覆盖的数据保留；循环和子模板赋值也保留在该实例。常驻服务按请求创建新实例。模板目录、编译目录、分隔符及强制编译等选项仍由所有实例共享。
 
-`render()`、`display()`、`fetch()` 直接输出，返回值为 null。`fetch()` 要求调用前已设置目录，未指定分隔符时使用默认值；`render()` 可初始化缺省配置。6.3.x 的静态调用及变量表访问方式需按 [6.4 迁移指南](../CHANGELOG.md#64-迁移指南)调整。
+`render()`、`display()`、`fetch()` 直接输出，返回值为 null。`fetch()` 要求调用前已设置目录，未指定分隔符时使用默认值；`render()` 可初始化缺省配置。旧版静态调用及变量表访问方式需按 [6.x 模板实例迁移](../CHANGELOG.md#模板变量与实例)调整。
+
+## 模板注释
+
+默认分隔符下，使用 `{* ... *}` 编写单行或多行注释。注释在编译时整体移除，内部的变量、赋值、include/part 等模板标签均不执行，也不会出现在编译结果或输出 HTML 中。注释外的空格和换行仍然保留。
+
+```html
+{* 单行注释：说明下面的标题 *}
+<h1>{$title}</h1>
+{*
+  多行注释：暂时停用这段模板
+  {$title = '不会执行'}
+  {include "widgets/template-shared.tpl"}
+  <p>这段 HTML 也不会输出</p>
+*}
+```
+
+`{` 与开头的 `*`、结尾的 `*` 与 `}` 必须紧邻。注释以第一个 `*}` 结束，不能嵌套；缺少结束标记时抛出 `InvalidArgumentException`，消息为 `Unclosed template comment`。
+
+模板注释与 HTML 的 `<!-- ... -->` 不同：HTML 注释仍会发送到浏览器，其中的模板标签仍会被解析，并受输出上下文规则约束。需要按原文显示模板注释语法时，使用 `{literal}{* 原文 *}{/literal}`；literal 内不会移除模板注释。
+
+本文和 samples 统一使用默认 `{` / `}` 分隔符，注释写作 `{* ... *}`；调用 `Tpl::setDelimter()` 可恢复默认分隔符。可在 `/lab/template/entry` 或 `/widgets/template/context` 查看实际注释示例。
 
 ## 上下文自动转义
 
-6.7.0 统一启用上下文自动转义，不再提供兼容模式。`setContextMode()`、`getContextMode()` 已移除，旧调用会报错；请删除调用并按 [6.7 迁移指南](../CHANGELOG.md#67-迁移指南)迁移数据与模板。直接创建实例即可：
+6.x 当前统一启用上下文自动转义，不再提供兼容模式。`setContextMode()`、`getContextMode()` 已移除，旧调用会报错；请删除调用并按 [6.x 升级与迁移指南](../CHANGELOG.md#6x-升级与迁移指南)迁移数据与模板。直接创建实例即可：
 
 ```php
 \SlightPHP\Tpl::setDelimter();
@@ -48,7 +69,7 @@ $tpl->render('page.tpl', [
 ]);
 ```
 
-模板应传入原始数据，让模板按输出位置编码。仅用于 HTML 输出防护的 `htmlspecialchars()`、`htmlentities()` 和末尾 `|escape` 通常可省略；URL 组成部分的手工 `urlencode()` / `rawurlencode()` 也通常可省略。完整 URL 的构造及业务/签名编码不能批量删除。普通函数没有编码意图标记，可能被再次编码；末尾内置 `escape` 的编码意图处理保留。替换示例及边界见 [自动转义迁移与不兼容说明](../CHANGELOG.md#67-手工编码与原始数据)。
+模板应传入原始数据，让模板按输出位置编码。仅用于 HTML 输出防护的 `htmlspecialchars()`、`htmlentities()` 和末尾 `|escape` 通常可省略；URL 组成部分的手工 `urlencode()` / `rawurlencode()` 也通常可省略。完整 URL 的构造及业务/签名编码不能批量删除。普通函数没有编码意图标记，可能被再次编码；末尾内置 `escape` 的编码意图处理保留。替换示例及边界见 [自动转义迁移与不兼容说明](../CHANGELOG.md#原始数据与上下文自动转义)。
 
 以下模板使用默认 `{` / `}`，与 samples 的入口配置相同：
 
@@ -174,7 +195,7 @@ URL 协议、拼接后的属性和 CSS 内容仍在运行时验证；普通表�
 
 ## 默认花括号与 literal
 
-默认分隔符为 `{` / `}`。Lexer 根据标签语法区分模板指令与普通 JS/CSS 花括号，支持表达式中的引号和嵌套括号。HTML 中的 `${$price}` 仍表示美元符号加模板变量；只有 JS 反引号模板字符串内的 `${...}` 保留为原生插值。遇到 `${` 才启用增量源码探测，不执行模板代码；源码中的控制流、include 或 raw 可能产生动态结构，复杂混合场景应使用 literal 或不同分隔符。探测无法理解某段 JS 时，会保留该 JS 作用域原有的美元花括号原文行为，实际输出转义仍由运行时上下文决定。标签语法完全相同的片段（如 JS 的 `{$name}` 对象简写）仍需显式 literal 或更换分隔符。
+默认分隔符为 `{` / `}`。Lexer 根据标签语法区分模板指令与普通 JS/CSS 花括号，支持表达式中的引号和嵌套括号。HTML 中的 `${$price}` 仍表示美元符号加模板变量；只有 JS 反引号模板字符串内的 `${...}` 保留为原生插值。遇到 `${` 才启用增量源码探测，不执行模板代码；源码中的控制流、include 或 raw 可能产生动态结构，复杂混合场景应使用 literal。探测无法理解某段 JS 时，会保留该 JS 作用域原有的美元花括号原文行为，实际输出转义仍由运行时上下文决定。标签语法完全相同的片段（如 JS 的 `{$name}` 对象简写）仍需显式 literal。
 
 模板识别 `{true}`、`{false}`、`{null}` 等 PHP 字面量标签（名称不区分大小写），在 HTML 文本中分别输出 `1`、空字符串、空字符串；也支持字面量表达式和修饰链。控制条件中的字符串不会作为原生 JS 块判断，例如 `{if strpos($s, '){') !== false}YES{/if}` 可以正常编译。
 
@@ -190,7 +211,7 @@ function show() { return {$name}; }
 {/literal}
 ```
 
-literal 块不执行任何模板标签，不能嵌套；需要插值时拆开 literal 块。samples 统一使用默认分隔符，literal 写作 `{literal}...{/literal}`。应用如需定制可向 `setDelimter()` 传入左右字符串，更换配置不会自动开启上下文转义。Else、ElseIf 及结束控制标签保留大小写兼容。
+literal 块不执行任何模板标签，不能嵌套；需要插值时拆开 literal 块。samples 统一使用默认 `{` / `}` 分隔符，literal 写作 `{literal}...{/literal}`，调用 `Tpl::setDelimter()` 可恢复默认分隔符。Else、ElseIf 及结束控制标签保留大小写兼容。
 
 模板编译、表达式执行、include/part、上下文编码发生异常时原样抛给调用方，后续渲染停止；已经输出的内容及业务副作用不会回滚。已撤销严格分隔符与逐标签错误隔离版本，不再静默跳过错误标签或控制块。上下文无法安全判断时抛出异常，不能回退为 raw。
 
@@ -243,7 +264,7 @@ public function Card(\SlightPHP\Request $request, \SlightPHP\Response $response)
 }
 ```
 
-Card 的模板及其 include 读取到 `CHILD`，调用结束后父模板仍读取到 `PARENT`。part 通过 `SlightPHP::run($path)` 创建控制器与新的 Request / Response；路径数组对应显式路径，请求的 GET、POST、Cookie、请求头等仍来自当前 PHP 请求。URL 路径参数保留原始内容，不自动 URL 解码；路径后的查询串不会合成为新的 GET 参数。6.5.2 起，`Request-Type` 前缀校验也适用于内部调用；part 不会自动补头，目标方法名以已配置类型开头而当前请求类型不匹配时会抛出 405，见[迁移说明](../CHANGELOG.md#65-请求类型前缀校验652)。
+Card 的模板及其 include 读取到 `CHILD`，调用结束后父模板仍读取到 `PARENT`。part 通过 `SlightPHP::run($path)` 创建控制器与新的 Request / Response；路径数组对应显式路径，请求的 GET、POST、Cookie、请求头等仍来自当前 PHP 请求。URL 路径参数保留原始内容，不自动 URL 解码；路径后的查询串不会合成为新的 GET 参数。`Request-Type` 前缀校验也适用于内部调用；part 不会自动补头，目标方法名以已配置类型开头而当前请求类型不匹配时会抛出 405，见[迁移说明](../CHANGELOG.md#请求类型前缀校验)。
 
 part 在同一个 PHP 请求中同步执行，session、超全局变量和响应头仍属于整个请求；它保留顶层 `zone/page/entry`。指向当前顶层入口的调用会抛出 `SlightPHP\Exception::RECURSIVE_DISPATCH`，其他循环调用需由应用控制。片段路径使用固定值或白名单；模块方法负责权限、输入校验及输出转义。
 
@@ -283,6 +304,7 @@ PHP 直接调用 `Func::part()` 时，不开启、刷新或关闭输出缓冲，
 | `samples/app/templates/widgets/template-nested.tpl` | 模块内部继续 part，保留 NESTED |
 | `samples/app/templates/widgets/template-context.tpl` | 全部修饰器、串联、HTML/URL、JS/事件、CSS 和缓存结果 |
 | `samples/app/templates/widgets/template-default.tpl` | 实际使用默认 {}，展示美元符号、JS/CSS 花括号、原生模板字符串和 literal |
+| `samples/app/templates/widgets/template-comments.tpl` | 单行、多行注释不输出也不执行内部赋值；literal 保留注释原文 |
 | `samples/app/templates/widgets/template-cache.tpl` | 同一模板先后接收 FIRST、SECOND，验证缓存不冻结数据 |
 | `samples/app/templates/widgets/template-unsafe-url.tpl`、`template-ambiguous-js.tpl` | 控制器分别捕获并丢弃输出的错误示例 |
 
@@ -295,6 +317,7 @@ PHP 直接调用 `Func::part()` 时，不开启、刷新或关闭输出缓冲，
 - JS 对象值、单/双引号字符串、反引号模板字符串、正则、动态 raw 入口，以及按钮 onclick。浏览器执行后显示 JSON；点击按钮将原始示例文本作为 textContent 写入右侧。
 - CSS 字符串与 color 简单值；特殊引号和尖括号作为 CSS 数据处理。
 - 所有 samples 均使用默认分隔符；`${$price}` 显示 `$12.50`，原生 JS/CSS 花括号保持有效，literal 保留原生对象简写。浏览器计算结果为 `7 / sum:3 / native`。
+- 模板注释中的赋值和 HTML 均被移除，实际结果仍为 `VISIBLE`；literal 中的 `{* literal text *}` 原样显示。
 - 同一缓存模板两次输出 `<FIRST>` 和 `<SECOND>`，不会沿用第一次的变量值。
 - 危险 URL、歧义 JS 位置仍抛出 `InvalidArgumentException`；控制器只为展示这些错误而捕获独立渲染，丢弃其未完成输出，Tpl 本身不提供逐标签错误隔离。
 

@@ -1,10 +1,10 @@
 # SlightPHP 官网与交互示例
 
-示例对应 SlightPHP 6.7.1，包含请求类型前缀校验、结构化调度异常、Route 方法注解与 PHP / JSON 路由。模板数据使用 Tpl 实例隔离，控制器入口使用 `Request $request, Response $response`，路径从 `$request->route` 读取。升级已有应用请先参阅 [6.7 迁移指南](../CHANGELOG.md#67-迁移指南)，6.5.x 及更早版本还需完成 [6.6 迁移](../CHANGELOG.md#66-迁移指南)，从更早版本升级还需完成 [6.5 迁移](../CHANGELOG.md#65-迁移指南)；模板实例迁移见 [6.4 迁移指南](../CHANGELOG.md#64-迁移指南)，旧控制器签名迁移见 [6.3 迁移指南](../CHANGELOG.md#63-迁移指南)。
+示例展示 SlightPHP 6.x 当前行为，安装命令使用发布版本 6.7.1，包含请求类型前缀校验、结构化调度异常、Route 方法注解与 PHP / JSON 路由。模板数据使用 Tpl 实例隔离，控制器入口使用 `Request $request, Response $response`，路径从 `$request->route` 读取。修改说明统一收录在 [6.x 更新记录](../CHANGELOG.md#6x)；升级已有应用请参阅 [6.x 升级与迁移指南](../CHANGELOG.md#6x-升级与迁移指南)，按起始版本和功能模块执行适用步骤。
 
 正式官网为 [https://slightphp.com/](https://slightphp.com/)。自行部署示例站点后，访问部署地址的根路径 `/`，即可浏览框架介绍并体验交互示例。
 
-从 6.7.0 起，所有页面与 Context 模块均默认自动转义，不再调用 `setContextMode()` 或 `getContextMode()`。模板传原始数据和翻译原文，文档浏览器仅对自身生成的可信 HTML 使用末尾 raw；客户端词条以数组传入 application/json 数据块。入口在会话启动前设置安全 Cookie 参数，反向代理需按[部署说明](../docs/deployment.md#cookie与会话安全)配置可信转发。新版本指南可在 `/site/main/docs?doc=CHANGELOG.md#67-迁移指南` 阅读。
+所有页面与 Context 模块均默认自动转义，不再调用 `setContextMode()` 或 `getContextMode()`。模板传原始数据和翻译原文，文档浏览器仅对自身生成的可信 HTML 使用末尾 raw；客户端词条以数组传入 application/json 数据块。入口在会话启动前设置安全 Cookie 参数，反向代理需按[部署说明](../docs/deployment.md#cookie与会话安全)配置可信转发。文档页首提供 6.x 更新记录和统一迁移指南的直达链接。
 
 - `/#features`：首页中的功能特性、调度流程与应用职责；旧 `/site/main/features` 跳转到该区域。
 - `/site/main/plugins`：插件搜索、分类与运行条件。
@@ -13,8 +13,8 @@
 - `/site/main/examples`：以 samples 源码讲解目录规划、应用入口、路由映射、Route 方法注解、Request-Type、多语言、配置管理、模板组织、表单处理和数据库操作；提供交互运行入口。
 - `/site/main/docs`：统一浏览 docs 中的 Markdown 文档、API 参考和根目录 ChangeLog；`?doc=plugins.md` 打开插件文档，`?doc=CHANGELOG.md` 打开更新记录。
 - `/site/main/changelog`：旧地址跳转至文档中的 ChangeLog。
-- `/lab/template/entry`：跨目录 include、跨模块 part、变量隔离，以及全部修饰器、HTML/URL/JS/CSS 自动转义、分隔符和缓存用例。
-- `/widgets/template/context`：独立自动模式片段，展示 raw/escape/default/tr/tostring/version、修饰链、JS/事件的实际运行、默认 {} 与 literal、缓存变量更新和错误捕获。
+- `/lab/template/entry`：跨目录 include、跨模块 part、变量隔离，以及全部修饰器、HTML/URL/JS/CSS 自动转义、模板注释、分隔符和缓存用例。
+- `/widgets/template/context`：独立自动模式片段，展示 raw/escape/default/tr/tostring/version、修饰链、JS/事件的实际运行、默认 {} 与 literal、模板注释、缓存变量更新和错误捕获。
 - `/lab/language/entry`：多语言实验，切换简体、繁体和英文，输入称呼，查看 demo.json 词条、实际翻译与缺失词条回退；[独立使用手册](../docs/language.md)。
 - `/lab/csrf/entry`：CSRF 实验，对比普通表单、JSON 请求、默认/自定义名称、缺失或错误 token，以及更新后旧表单失效；手册位于 `/site/main/docs?doc=csrf.md`。
 - `/lab/type/entry`：普通请求调用 `Entry()`，带 `Request-Type: ajax` 时调用 `ajaxEntry()`；示例页可直接发送请求对比 200 与 405。
@@ -28,6 +28,8 @@
 公开 URL 不包含 index.php，静态资源为 `/assets/...`。部署时以 `samples/www` 为站点根目录，将 URI 转发到 `index.php` 并保留原始 REQUEST_URI。
 
 全部模板和页面展示的代码统一使用 Tpl 默认 `{` / `}` 分隔符；入口调用 `Tpl::setDelimter()`，模块不再局部切换。与模板语法完全同形的原生 JS/CSS 代码使用 `{literal}...{/literal}` 保留。
+
+默认 `{` / `}` 分隔符下，模板注释使用 `{* ... *}`，支持单行、多行，编译时移除且不执行内部标签；不能嵌套，未闭合会抛出 `InvalidArgumentException`。`app/templates/widgets/template-comments.tpl` 实际展示注释内的赋值与 HTML 被移除，变量仍输出 `VISIBLE`，literal 内的注释语法则按原文显示。完整规则、literal 写法及与 HTML 注释的区别见[模板注释手册](../docs/templates.md#模板注释)。
 
 官网与交互工作台支持简体中文、繁體中文和 English，导航中的语言菜单可在当前页面切换。也可使用 `?lang=zh-cn`、`?lang=zh-tw`、`?lang=en`；选择通过 Cookie 保存一年。选择顺序为有效查询参数、已保存的 Cookie、浏览器 Accept-Language，最后回退到简体中文。浏览器的 en-*、zh-Hans / zh-CN、zh-Hant / zh-TW / zh-HK / zh-MO 会归入对应语言；与 Language 插件一致，按请求头中的出现顺序选择，并跳过 q=0。
 
@@ -57,4 +59,4 @@
 
 所有 POST 实验由 Route 校验 CSRF，提交结果后 303 跳转；Request JSON 返回独立 JSON 响应。日志和错误实验使用临时文件并清理，验证码在 Session 中一次性校验。Db / Redis 必须在私有的 `samples/config/services.local.json` 中配置服务并启用，配置模板为 `samples/config/services.example.json`；也支持环境变量 `SLIGHTPHP_SAMPLE_SERVICES` 指向私有文件。未准备好依赖或配置时显示提示。Http 默认访问固定 httpbin 服务，网络失败会提示错误。
 
-文档页左侧将所有版本更新与迁移说明统一放在最下方的 ChangeLog 入口；旧的迁移文档地址会跳转到 ChangeLog 对应章节。
+文档页左侧将所有版本更新与迁移说明统一放在最下方的 ChangeLog 入口；旧的迁移文档地址统一跳转到 6.x 升级与迁移指南，旧章节锚点继续可用。

@@ -38,7 +38,7 @@ Route::set([
 
 ## JSON/JSONC 规则
 
-从 6.5.1 起，`setConfigFile()` 通过 `Config::parse()` 加载 `.json` 或 `.jsonc`，不再支持 INI。顶层必须为数组，每个元素必须为规则对象；数组顺序就是匹配优先级，不需要分组名称。配置文件位于公开目录之外：
+`setConfigFile()` 通过 `Config::parse()` 加载 `.json` 或 `.jsonc`，不再支持 INI。顶层必须为数组，每个元素必须为规则对象；数组顺序就是匹配优先级，不需要分组名称。配置文件位于公开目录之外：
 
 ```json
 [

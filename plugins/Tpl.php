@@ -16,6 +16,8 @@ namespace SlightPHP;
  * 处理流程为 render/display -> fetch -> Compiler::compileSource -> include。
  * 6.7 起统一使用上下文自动转义，不提供模式切换接口。
  * 编译结果包含静态块、属性和 JS 候选计划，最终编码取决于实际 Context。
+ * 默认分隔符下用 {* ... *} 编写单行或多行模板注释，编译时移除，内部标签不执行。
+ * 注释不能嵌套，未闭合抛出 InvalidArgumentException；literal 块内按原文输出。
  *
  * 变量表属于实例；模板目录、编译目录、分隔符及编译选项由所有实例共享。
  * 同实例的 include 沿用变量和 Context；最外层 fetch 负责创建、完成及释放输出状态。
@@ -58,7 +60,8 @@ class Tpl
 
     /**
      * 设置共享的左右分隔符，保留历史方法名 setDelimter 的拼写。
-     * 普通花括号与模板语法完全相同时，可使用 literal 或改为 {% / %} 等分隔符。
+     * 默认左右分隔符为 { / }；普通花括号与模板语法完全相同时，可使用 {literal}...{/literal}。
+     * 默认分隔符下模板注释写作 {* ... *}，开头和结尾的星号必须紧邻分隔符。
      * @param string $left 左分隔符。
      * @param string $right 右分隔符。
      * @return void

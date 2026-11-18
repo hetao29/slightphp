@@ -1,5 +1,7 @@
 # 完整示例说明
 
+示例统一展示 SlightPHP 6.x 当前行为。6.0 至 6.7 的修改已合并为 [6.x 更新记录](../CHANGELOG.md#6x)，旧应用按[统一迁移指南](../CHANGELOG.md#6x-升级与迁移指南)中的起始版本对照表和模块步骤升级。官网文档页首提供这两个入口。
+
 启动方法见 [快速开始](getting-started.md)。默认首页为框架介绍官网，详见 [框架官网说明](website.md)。从页脚进入任务工作台后，可按「任务工作台 → 路由实验室 → 插件与环境」体验框架。
 
 官网 `/site/main/examples` 以 samples 源码为主线，分十节讲解目录规划、应用入口、路由映射、Route 方法注解、Request-Type、多语言设置、配置管理、模板组织、表单处理和数据库操作，并提供源码链接与交互验证。数据库章节演示 MySQL 建表、连接配置和 Db 增删改查；当前工作台仍使用 Session。
@@ -30,7 +32,7 @@
 | `/tasks`、`/tasks.json` | GET | 任务页面和 JSON 接口的短地址 |
 | `/tasks/save` | POST | 写操作短地址，仍需 CSRF token |
 | `/workspace/main/plugins` | GET | 真实解析 Config 配置及检测扩展 |
-| `/lab/template/entry` | GET | include/part、变量作用域、全部修饰器、上下文转义与编译缓存 |
+| `/lab/template/entry` | GET | include/part、变量作用域、全部修饰器、模板注释、上下文转义与编译缓存 |
 | `/lab/csrf/entry` | GET | 表单、Ajax、自定义字段、403 拒绝与 token 更新实验 |
 | `/lab/csrf/submit`、`/lab/csrf/customsubmit` | POST | 校验成功后计数并 303 跳转 |
 | `/lab/csrf/check`、`/lab/csrf/customcheck` | POST | 默认或自定义请求头校验，返回 JSON |
@@ -48,9 +50,11 @@
 
 从工作台侧栏或官网示例索引进入 `/lab/template/entry`。父模板通过动态文件名跨目录 include 公共模板，再通过 part 调用 Widgets 模块的 Card、Returned、Mixed、Nested 和 Ended 方法。页面展示 PARENT、CHILD、NESTED 三个实例的变量作用域、路径参数和实际输出顺序。调用规则及代码位置见 [Tpl 模板与模块组合手册](templates.md)。
 
-第 5 节的 Context 模块与主页面默认自动转义，运行 raw、escape、default、tr、tostring、version 和串联修饰器，并展示 HTML 属性、URL、JS 值/字符串/正则/事件、CSS、默认 {}、literal 和缓存变量更新。JS 结果由浏览器实际计算；错误示例由控制器分别捕获，不向主页面插入未完成的输出。三种界面语言均有对应说明。
+第 5 节的 Context 模块与主页面默认自动转义，运行 raw、escape、default、tr、tostring、version 和串联修饰器，并展示 HTML 属性、URL、JS 值/字符串/正则/事件、CSS、默认 {}、模板注释、literal 和缓存变量更新。JS 结果由浏览器实际计算；错误示例由控制器分别捕获，不向主页面插入未完成的输出。三种界面语言均有对应说明。
 
 samples 的全部模板和展示代码统一使用默认 `{` / `}`。入口调用不带参数的 `Tpl::setDelimter()`，各模块无需切换分隔符；原生 JS/CSS 中与模板同形的代码使用 `{literal}...{/literal}`。
+
+模板注释示例实际执行 `widgets/template-comments.tpl`：`{* ... *}` 内的赋值和 HTML 被移除，输出仍为 `VISIBLE`；literal 中的注释语法原样显示。支持单行、多行，不能嵌套，未闭合会报错，详见[模板注释](templates.md#模板注释)。
 
 访问 `/lab/template/entry` 检查模板组合与变量作用域；预期结果见 [Tpl 模板与模块组合手册](templates.md#samples-文件与预期结果)。
 

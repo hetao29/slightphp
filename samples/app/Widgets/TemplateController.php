@@ -18,7 +18,7 @@ class TemplateController
         ]);
     }
 
-    /** 独立自动模式片段：修饰器、各输出上下文、默认分隔符和编译缓存。 */
+    /** 独立自动模式片段：修饰器、各输出上下文、模板注释、默认分隔符和编译缓存。 */
     public function Context(Request $request, Response $response): void
     {
         $text = '<访客> & "hello" </script> ${notCode}';
@@ -37,10 +37,12 @@ class TemplateController
             'payload' => ['text' => $text, 'items' => [1, 2], 'ok' => true],
             'js_prefix' => 'const viaRaw="',
             'default_output' => $this->defaultDelimiterExample(),
+            'comments_output' => $this->capture('widgets/template-comments.tpl', ['comment_value' => 'VISIBLE']),
             'cache_first' => $this->capture('widgets/template-cache.tpl', ['cache_name' => 'first', 'cache_value' => '<FIRST>'], $cacheTpl),
             'cache_second' => $this->capture('widgets/template-cache.tpl', ['cache_name' => 'second', 'cache_value' => '<SECOND>'], $cacheTpl),
             'rejections' => $this->rejectedExamples(),
             'sources' => [
+                'comments' => file_get_contents(__DIR__.'/../templates/widgets/template-comments.tpl'),
                 'default' => '{$empty_name|default:"Guest"}',
                 'escape' => '{$sample_text|escape}',
                 'tr' => '{$translation_key|tr}',

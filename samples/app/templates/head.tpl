@@ -5,7 +5,7 @@
 <meta name="description" content="{SampleI18n::t('slightphp_a_lightweight_php_framework_path_dispatch_namespaced_control')}">
 <meta name="theme-color" content="#101114">
 {include "favicons.tpl"}
-<title>{$title} · SlightPHP 6.7.1</title>
+<title>{$title} · SlightPHP 6.x</title>
 <link rel="stylesheet" href="/assets/site.css?v={filemtime(SlightPHP::getAppDir() . '/../www/assets/site.css')}"><script src="/assets/site.js?v={filemtime(SlightPHP::getAppDir() . '/../www/assets/site.js')}" defer></script>
 <script id="sample-messages" type="application/json">{SampleI18n::clientMessages()}</script>
 <script src="/assets/theme.js?v={filemtime(SlightPHP::getAppDir() . '/../www/assets/theme.js')}"></script>
@@ -13,7 +13,7 @@
 <body>
 <a class="skip-link" href="#main">{SampleI18n::t('skip_to_main_content')}</a>
 <header class="site-header"><div class="container nav-row">
-<a class="brand" href="/" aria-label="{SampleI18n::t('slightphp_home')}"><span class="brand-mark" aria-hidden="true">s.</span><span>SlightPHP</span><small class="version-tag">6.7.1</small></a>
+<a class="brand" href="/" aria-label="{SampleI18n::t('slightphp_home')}"><span class="brand-mark" aria-hidden="true">s.</span><span>SlightPHP</span><small class="version-tag">6.x</small></a>
 <button class="menu-toggle" aria-expanded="false" aria-controls="site-nav" type="button">{SampleI18n::t('menu')}</button>
 <nav id="site-nav" aria-label="{SampleI18n::t('main_navigation')}">{foreach ($nav as $key => $item)}<a href="{$item[1]}" {if (strcmp($view, $key) == 0)}aria-current="page"{/if}><span class="nav-label">{$item[0]}</span></a>{/foreach}<a class="github-link" href="https://github.com/hetao29/slightphp" target="_blank" rel="noopener noreferrer">GitHub ↗</a></nav>
 {include "preferences.tpl"}

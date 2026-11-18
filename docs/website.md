@@ -1,8 +1,8 @@
-# SlightPHP 框架介绍官网（6.7.1）
+# SlightPHP 框架介绍官网（6.x）
 
 官网由 SlightPHP + Tpl 构建，内容依据当前仓库源码整理，不依赖外部图片、字体或 JavaScript 库。首页介绍核心定位，内页覆盖功能、插件、入门与可运行示例。
 
-正式官网地址为 [https://slightphp.com/](https://slightphp.com/)，当前展示版本为 6.7.1。GitHub 链接用于源码与许可证，不作为官网地址。
+正式官网地址为 [https://slightphp.com/](https://slightphp.com/)，页面统一展示 6.x 系列，安装命令使用当前发布版本 6.7.1。GitHub 链接用于源码与许可证，不作为官网地址。
 
 ## 访问与部署
 
@@ -20,8 +20,8 @@
 | `/site/main/guide` | 入门：运行样例、Composer 安装、入口、控制器、部署注意事项 |
 | `/site/main/examples` | 十节 samples 源码讲解：目录、入口、路由、Route 注解、Request-Type、多语言、配置、模板、表单与数据库操作，以及交互验证 |
 | `/site/main/docs`、`?doc=plugins.md`、`?doc=index.html` | 完整 docs 目录、单篇指南与生成的 API 参考 |
-| `/site/main/docs?doc=CHANGELOG.md#67-迁移指南` | 6.7 升级：6.7.0 模板迁移与 6.7.1 CSRF 接入 |
-| `/site/main/docs?doc=CHANGELOG.md` | 直接读取仓库 CHANGELOG.md 的完整版本记录 |
+| `/site/main/docs?doc=CHANGELOG.md#6x-升级与迁移指南` | 6.x 统一升级与迁移：起始版本对照表及各模块步骤 |
+| `/site/main/docs?doc=CHANGELOG.md#6x` | 直接读取仓库 CHANGELOG.md 中合并后的 6.x 修改记录 |
 | `/site/main/changelog` | 旧地址跳转至文档中的 ChangeLog |
 | `/lab/template/entry`、`/widgets/template/context` | include / part、变量作用域、默认自动转义、全部修饰器及 HTML/URL/JS/CSS 自动转义 |
 | `/lab/language/entry` | 三种语言的实时翻译、动态称呼、JSON 语言文件与缺失词条回退 |
@@ -46,7 +46,7 @@
 
 入口在首次调用 Language::tr() 之前设置 locale；三份 JSON 词条位于 `samples/app/languages/{zh-cn,zh-tw,en}/main.json`，通过 Config 解析，格式与语言文件说明见 [Language 使用手册](language.md)。`SampleI18n::t()` 提供控制器文本，`e()` 在翻译后转义 HTML，客户端主题、筛选、复制和删除提示通过 JSON 共享同一批词条。预置任务随语言切换，用户输入的任务内容保留原文。
 
-顶栏导航顺序为「首页 → 入门 → 示例 → 插件 → 文档」。「文档」统一读取 docs 中的 Markdown、index.html API 参考和根目录 CHANGELOG.md，提供目录、代码块、表格、文档间跳转和章节锚点。内容保留仓库原文，更新无需另行复制。仅允许文档清单中的文件和固定的根目录 ChangeLog，路径越界、非文档文件和无效参数返回 404。
+顶栏导航顺序为「首页 → 入门 → 示例 → 插件 → 文档」。「文档」统一读取 docs 中的 Markdown、index.html API 参考和根目录 CHANGELOG.md，提供目录、代码块、表格、文档间跳转和章节锚点；页首提供 6.x 更新记录和升级迁移的直达链接。内容保留仓库原文，更新无需另行复制。仅允许文档清单中的文件和固定的根目录 ChangeLog，路径越界、非文档文件和无效参数返回 404。
 
 ## 交互
 
@@ -96,4 +96,4 @@ URL 无需改变，例如 `/workspace/main/save` 对应 `app/Workspace/MainContr
 
 已通过 Chromium 验证简体、繁体和英文在 1440、1101、1024、820、390、320 宽度下的官网、完整文档和工作台没有横向溢出；同时验证自动跟随系统、手动切换、刷新后偏好保留、存储不可用时切换、语言切换保留查询与片段，以及动态筛选提示。
 
-文档页左侧将所有版本更新与迁移说明统一放在最下方的 ChangeLog 入口；旧的迁移文档地址会跳转到 ChangeLog 对应章节。
+文档页左侧将所有版本更新与迁移说明统一放在最下方的 ChangeLog 入口；旧的迁移文档地址统一跳转到 6.x 升级与迁移指南，旧章节锚点继续可用。
