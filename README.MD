@@ -14,10 +14,10 @@ Tpl 默认启用上下文自动转义，已移除 `setContextMode()`、`getConte
 
 核心需要 PHP 8.0+。插件依赖通过 Composer 的 `suggest` 声明，默认不安装；使用 Db、Redis、Http、Csrf 或 Captcha 时，再按需安装对应扩展或 Composer 包，见[插件依赖](docs/plugins.md#按需安装依赖)。
 
-当前发布版本为 6.7.1，安装命令使用对应的包版本：
+当前发布版本为 6.7.2，新增 CSRF 会话按需启动与应用初始化回调，并统一原生启动失败的异常处理，见 [6.7.2 修改说明](CHANGELOG.md#672--2026-11-19)。安装命令使用对应的包版本：
 
 ```bash
-composer require hetao29/slightphp:^6.7.1
+composer require hetao29/slightphp:^6.7.2
 ```
 
 ## 创建应用
@@ -72,7 +72,7 @@ class MainController
 
 在控制器方法上添加 `#[\SlightPHP\Route(method: 'POST')]` 或 `#[\SlightPHP\Route(methods: ['POST', 'GET'])]` 可限制 HTTP 方法；不匹配时抛出异常，由入口返回 405 和 Allow。详见 [Route 方法注解](docs/framework.md#route-方法注解)。
 
-写操作可在 Route 注解中设置 `csrf: true`，例如 `#[\SlightPHP\Route(method: 'POST', csrf: true)]`：应用启动 Session 后通过 `Csrf::token()` 生成表单 `_csrf` 字段或 `X-CSRF-Token` 请求头的值，调度器在构造控制器前校验，失败抛出异常。详见 [Csrf 插件](docs/plugins.md#csrf)。
+写操作可在 Route 注解中设置 `csrf: true`，例如 `#[\SlightPHP\Route(method: 'POST', csrf: true)]`：通过按需启动会话的 `Csrf::token()` 生成表单 `_csrf` 字段或 `X-CSRF-Token` 请求头的值，调度器在构造控制器前校验，失败抛出异常。应用可配置 `Csrf::$sessionHandler` 自定义启动，默认按需调用原生 `session_start()`。详见 [Csrf 插件](docs/plugins.md#csrf)。
 
 核心调度失败统一抛出 `SlightPHP\Exception`，不再返回 `false` 或直接生成错误响应。已有入口及内部调用需按 [核心异常与处理](docs/exceptions.md)调整。
 

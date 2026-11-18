@@ -2,7 +2,7 @@
 
 官网由 SlightPHP + Tpl 构建，内容依据当前仓库源码整理，不依赖外部图片、字体或 JavaScript 库。首页介绍核心定位，内页覆盖功能、插件、入门与可运行示例。
 
-正式官网地址为 [https://slightphp.com/](https://slightphp.com/)，页面统一展示 6.x 系列，安装命令使用当前发布版本 6.7.1。GitHub 链接用于源码与许可证，不作为官网地址。
+正式官网地址为 [https://slightphp.com/](https://slightphp.com/)，页面统一展示 6.x 系列，安装命令使用当前发布版本 6.7.2。GitHub 链接用于源码与许可证，不作为官网地址。
 
 ## 访问与部署
 

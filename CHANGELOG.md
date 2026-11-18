@@ -10,13 +10,21 @@
 <a id="66-迁移指南"></a>
 <a id="67-迁移指南"></a>
 
+## 6.7.2 — 2026-11-19
+
+- `Csrf::$sessionHandler` 支持无参数的自定义 Session 启动回调；未配置时按需调用原生 `session_start()`。仅在实际使用 Csrf 且会话未激活时启动，保留普通路由与公开页面缓存；启动后仍未激活报告 `CSRF_SESSION_NOT_STARTED`。
+- Csrf 原生会话启动使用 `@session_start()` 配合 `catch (Throwable)`，失败统一报告 `CSRF_SESSION_NOT_STARTED`，通过 `getPrevious()` 保留原始异常；返回 false 时继续检查会话状态。自定义初始化回调的异常仍原样传播。
+- `token()`、`tokenInput()`、`rotate()`、`clear()` 及受保护入口均沿用同一初始化流程；已激活的会话不会重复初始化，`session_write_close()` 后再次使用时按需重新启动。token 生成、轮换和请求校验规则保持不变。
+- 同步 CSRF 手册、插件与异常说明、API 参考和 samples 安装版本。已有应用仍可提前启动 Session；依赖应用会话名称、存储或 Cookie 策略时，在首次调用 Csrf 前配置回调或会话参数，见 [CSRF 手册](docs/csrf.md#1-配置-session-与按需启动)。
+
 ## 6.x 升级与迁移指南
 
-本文统一说明从旧版升级到当前 **6.7.1** 的最终改法，按模块执行，无需先逐个安装中间版本。每节标明相关变更首次引入的版本；已完成的步骤可以跳过。6.6 的可选自动转义已被 6.7 的默认行为取代，当前代码不要再调用模式接口。本系列的修改汇总见[版本更新记录](#版本更新记录)。
+本文统一说明从旧版升级到当前 **6.7.2** 的最终改法，按模块执行，无需先逐个安装中间版本。每节标明相关变更首次引入的版本；已完成的步骤可以跳过。6.6 的可选自动转义已被 6.7 的默认行为取代，当前代码不要再调用模式接口。本次发布见 [6.7.2 修改说明](#672--2026-11-19)，此前修改汇总见[版本更新记录](#版本更新记录)。
 
 | 当前应用版本 | 需要重点检查的迁移 |
 | --- | --- |
-| 6.7.0 | 按需接入 CSRF；已完成的模板迁移无需重复 |
+| 6.7.1 | CSRF 改为按需启动会话；按应用需要提前配置 Session 或初始化回调，核对启动失败的异常处理 |
+| 6.7.0 | 按需接入 CSRF 并核对会话初始化；已完成的模板迁移无需重复 |
 | 6.6.x | 删除模式和安全模式接口，迁移所有模板的默认自动转义，重建编译缓存 |
 | 6.5.3 | 内部类与模板辅助函数、Cookie、语言重置、Sentinel、入口构造时机、默认自动转义 |
 | 6.5.0–6.5.2 | 按补丁版本补齐 JSON 插件/路由配置（6.5.1）、请求类型前缀（6.5.2）、语言资源（6.5.3），再检查后续各项 |
@@ -41,7 +49,7 @@
 当前核心要求 PHP 8.0+。插件依赖通过 Composer 的 `suggest` 声明，应用应按实际使用将扩展或包加入自己的依赖：Db 使用 PDO 及相应驱动，Redis 使用 phpredis，Http 使用 Guzzle，Captcha 使用 Gregwar Captcha、GD、mbstring、fileinfo 和活动会话，Csrf 使用 Session。Sentinel 模式需要 phpredis 6.0+，详见[按需安装依赖](docs/plugins.md#按需安装依赖)。
 
 ```bash
-composer require hetao29/slightphp:^6.7.1
+composer require hetao29/slightphp:^6.7.2
 ```
 
 入口统一加载 `vendor/autoload.php`，Request/Response 和插件通过 Composer PSR-4 按需加载；仅手动引入 `SlightPHP.php` 不足以支持当前调度。删除旧的 `plugins/S*.php` 手动引用以及 `SLIGHTPHP_PLUGINS_DIR`、旧辅助函数文件的依赖，更新部署包中的自动加载文件。
@@ -658,7 +666,7 @@ session_start();
 
 6.7.1 新增 `SlightPHP\Csrf`，入口通过 `#[Route(method: 'POST', csrf: true)]` 启用；字符串形式（如 `csrf: '--csrf--token'`）可同时指定表单字段与请求头名称。省略或设置 false 的入口保持原有行为。
 
-应用先启动 Session，再通过 `Csrf::token()` 手写隐藏字段，或用 `Csrf::tokenInput()` 生成 HTML。Tpl 支持预先传入 `{$csrf_input|raw}`，也支持直接调用 `{\SlightPHP\Csrf::tokenInput()|raw}`。公共静态变量 `$fieldName` / `$sessionKey` 默认分别为 `_csrf` / `_slightphp_csrf`。无效 token 抛出 `CSRF_INVALID`（403），Session 未启动抛出 `CSRF_SESSION_NOT_STARTED`（500），由入口生成响应。
+应用按需启动 Session，可通过 `Csrf::$sessionHandler` 自定义启动，默认使用原生 `session_start()`；通过 `Csrf::token()` 手写隐藏字段，或用 `Csrf::tokenInput()` 生成 HTML。Tpl 支持预先传入 `{$csrf_input|raw}`，也支持直接调用 `{\SlightPHP\Csrf::tokenInput()|raw}`。公共静态变量 `$fieldName` / `$sessionKey` 默认分别为 `_csrf` / `_slightphp_csrf`。无效 token 抛出 `CSRF_INVALID`（403），Session 启动失败抛出 `CSRF_SESSION_NOT_STARTED`（500），由入口生成响应。
 
 HTTP 方法检查通过后、构造控制器之前执行 CSRF 校验；应用需自行生成异常响应。完整接入、Ajax 和 token 更新示例见 [CSRF 使用手册](docs/csrf.md)。
 
@@ -758,7 +766,7 @@ samples 当前均默认自动转义，模板实验为 `/lab/template/entry`、`/
 
 - Route 保留静态 URL 映射，并支持 `#[Route(method: 'POST')]` / `#[Route(methods: ['POST', 'GET'])]`。两者取并集，方法统一大写去重；未声明限制时不增加 HTTP 方法校验。不匹配时在构造控制器前抛出 405，由应用输出 Allow；同一入口重复 Route 注解抛出 `InvalidArgumentException`。
 - 新增 Session CSRF 防护 `SlightPHP\Csrf`，提供 `token()`、`tokenInput(?string $fieldName = null)`、`validate(Request $request, ?string $fieldName = null)`、`rotate()` 和 `clear()`。`$fieldName` / `$sessionKey` 默认分别为 `_csrf` / `_slightphp_csrf`，应用可统一配置。
-- Route 的 `csrf: true` 使用默认表单字段和 `X-CSRF-Token`，字符串同时指定字段和同名请求头，省略或 false 不增加检查。应用先启动 Session，调度在 HTTP 方法通过后、构造控制器前校验；无效 token 抛出 `CSRF_INVALID`（403），Session 未启动抛出 `CSRF_SESSION_NOT_STARTED`（500）。完整接入见 [CSRF 手册](docs/csrf.md)。
+- Route 的 `csrf: true` 使用默认表单字段和 `X-CSRF-Token`，字符串同时指定字段和同名请求头，省略或 false 不增加检查。会话由应用预先启动或按需初始化，调度在 HTTP 方法通过后、构造控制器前校验；无效 token 抛出 `CSRF_INVALID`（403），Session 启动失败抛出 `CSRF_SESSION_NOT_STARTED`（500）。完整接入见 [CSRF 手册](docs/csrf.md)。
 - `Route::setConfigFile()` 使用 Config 加载 JSON/JSONC 顶层数组，每个对象为一条规则，校验通过后按加载顺序追加；不再读取 INI。保留 PHP 规则和占位符，首条匹配优先，修复相同前缀占位符替换及多文件规则覆盖问题。
 - URL 规则只匹配路径，忽略查询串；保留重复前导斜杠，避免 `//articles/42` 的首段被误当作主机名。公开 `Route::parse($path)` 支持显式匹配已规范化路径，无效配置和正则抛出明确异常。示例见[自定义 URL 路由](docs/routes.md)。
 

@@ -2,7 +2,11 @@
 
 namespace SlightPHP;
 
-/** Session CSRF token API；通过 Route 的 csrf 参数启用入口校验。 */
+/**
+ * Session CSRF token API；通过 Route 的 csrf 参数启用入口校验。
+ * 会话未激活时按需启动；sessionHandler 可提供应用初始化回调，null 使用原生启动。
+ * 原生启动失败统一报告 CSRF_SESSION_NOT_STARTED，抛出的原始异常通过 getPrevious() 保留。
+ */
 final class Csrf
 {
     /** @var string 默认表单字段名；Route 的字符串 csrf 参数可覆盖当前入口的名称。 */
@@ -11,10 +15,13 @@ final class Csrf
     /** @var string 当前应用保存 token 的 Session 键名，由应用入口统一配置。 */
     public static string $sessionKey = '_slightphp_csrf';
 
+    /** @var callable|null 未启动 Session 时按需调用的应用 handler；null 使用原生 session_start()。 */
+    public static $sessionHandler = null;
+
     /**
      * 获取当前会话的 token；不存在或存储格式无效时生成 32 随机字节的十六进制字符串。
      * @return string 64 位小写十六进制 token，同一会话重复调用保持不变。
-     * @throws Exception Session 未启动，原因码 CSRF_SESSION_NOT_STARTED（500）。
+     * @throws Exception Session 启动失败，原因码 CSRF_SESSION_NOT_STARTED（500）。
      */
     public static function token(): string
     {
@@ -27,7 +34,7 @@ final class Csrf
      * @param string|null $fieldName 字段名；null 使用 self::$fieldName，字符串对应 Route 的 csrf 自定义名称。
      * @return string 属性值已进行 HTML 转义的 input 标签；Tpl 中可使用末尾 |raw 输出。
      * @throws \InvalidArgumentException 自定义字段名无效。
-     * @throws Exception Session 未启动，原因码 CSRF_SESSION_NOT_STARTED（500）。
+     * @throws Exception Session 启动失败，原因码 CSRF_SESSION_NOT_STARTED（500）。
      */
     public static function tokenInput(?string $fieldName = null): string
     {
@@ -42,7 +49,7 @@ final class Csrf
      * @param Request $request 当前请求快照。
      * @param string|null $fieldName 自定义表单字段与同名请求头；null 使用 self::$fieldName / X-CSRF-Token。
      * @throws \InvalidArgumentException 自定义名称为空或包含字母、数字、下划线、横线以外的字符。
-     * @throws Exception Session 未启动（CSRF_SESSION_NOT_STARTED，500），或 token 无效（CSRF_INVALID，403）。
+     * @throws Exception Session 启动失败（CSRF_SESSION_NOT_STARTED，500），或 token 无效（CSRF_INVALID，403）。
      */
     public static function validate(Request $request, ?string $fieldName = null): void
     {
@@ -63,7 +70,7 @@ final class Csrf
     /**
      * 生成并保存新的 token，使旧 token 失效；应用可在登录或身份切换后调用。
      * @return string 新的 64 位小写十六进制 token。
-     * @throws Exception Session 未启动，原因码 CSRF_SESSION_NOT_STARTED（500）。
+     * @throws Exception Session 启动失败，原因码 CSRF_SESSION_NOT_STARTED（500）。
      */
     public static function rotate(): string
     {
@@ -73,7 +80,7 @@ final class Csrf
 
     /**
      * 清除当前会话的 token，保留其他会话数据；后续 token() 调用才重新生成。
-     * @throws Exception Session 未启动，原因码 CSRF_SESSION_NOT_STARTED（500）。
+     * @throws Exception Session 启动失败，原因码 CSRF_SESSION_NOT_STARTED（500）。
      */
     public static function clear(): void
     {
@@ -99,8 +106,24 @@ final class Csrf
         if (self::$sessionKey === '') {
             throw new \InvalidArgumentException('CSRF session key must not be empty');
         }
+        if (function_exists('session_status') && session_status() !== PHP_SESSION_ACTIVE) {
+            if (self::$sessionHandler === null) {
+                try {
+                    // PHP 8 的存储/响应头错误仍可能发出警告并返回 false。
+                    @session_start();
+                } catch (\Throwable $error) {
+                    throw new Exception('Unable to start the application session for CSRF protection',
+                        Exception::CSRF_SESSION_NOT_STARTED, previous: $error);
+                }
+            } else {
+                if (!is_callable(self::$sessionHandler)) {
+                    throw new \InvalidArgumentException('CSRF session handler must be callable');
+                }
+                (self::$sessionHandler)();
+            }
+        }
         if (!function_exists('session_status') || session_status() !== PHP_SESSION_ACTIVE) {
-            throw new Exception('Start the application session before using CSRF protection', Exception::CSRF_SESSION_NOT_STARTED);
+            throw new Exception('Unable to start the application session for CSRF protection', Exception::CSRF_SESSION_NOT_STARTED);
         }
     }
 

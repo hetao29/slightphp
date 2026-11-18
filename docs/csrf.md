@@ -2,6 +2,8 @@
 
 `SlightPHP\Csrf` 提供基于 Session 的同步 token；入口通过 `#[Route(method: 'POST', csrf: true)]` 开启校验。Csrf 本身不是注解。框架在构造控制器前验证，失败只抛异常，应用入口决定 HTTP 状态码与响应正文。
 
+6.7.2 新增会话按需启动和 `Csrf::$sessionHandler` 应用初始化回调；未提供回调时使用原生 `session_start()`。原来提前启动 Session 的接入方式继续可用，会话名称、存储和 Cookie 策略应在首次使用 Csrf 前配置。本次修改见 [6.7.2 说明](../CHANGELOG.md#672--2026-11-19)。
+
 ## 运行 samples 实验
 
 部署 samples 后打开 `/lab/csrf/entry`，也可以从工作台侧栏、官网示例页或 Csrf 插件卡片进入。页面支持简体中文、繁体中文与英文。计数只记录当前会话中成功进入示例提交处理的次数，不需要数据库，也不修改任务列表。
@@ -27,9 +29,9 @@
 | `/lab/csrf/customcheck` | POST | 自定义名称校验，返回 JSON |
 | `/lab/csrf/rotate` | POST | 默认名称校验后更新 token |
 
-## 1. 应用入口先启动 Session
+## 1. 配置 Session 与按需启动
 
-在输出正文前配置并启动 Session，再进行调度。生产 HTTPS 应启用 Secure；HTTP 本地开发及反向代理部署见[部署手册](deployment.md#cookie与会话安全)。
+可以在输出正文前配置并启动 Session，再进行调度；也可以由应用提供初始化回调，在实际使用 Csrf 时按需启动。生产 HTTPS 应启用 Secure；HTTP 本地开发及反向代理部署见[部署手册](deployment.md#cookie与会话安全)。
 
 ```php
 require dirname(__DIR__) . '/vendor/autoload.php';
@@ -42,7 +44,15 @@ session_set_cookie_params([
 session_start();
 ```
 
-samples 的 `www/index.php` 已启动会话，控制器无须再次调用。Csrf 不自动启动 Session；应在 `session_write_close()` 之前使用这些 API。
+samples 的 `www/index.php` 已启动会话，控制器无须再次调用。Csrf 默认在首次需要会话时调用原生 `session_start()`，不会在普通路由调度时提前启动。应用需要自己的会话配置时在入口提供 handler：
+
+```php
+\SlightPHP\Csrf::$sessionHandler = [AppSession::class, 'init'];
+```
+
+回调不接收参数，在 Session 尚未启动且实际调用 Csrf API 时执行。`Route(csrf: true)` 只会在请求类型、方法限制通过且该入口需要 CSRF 时进入校验；普通 GET 或未启用 CSRF 的路由不会因此启动会话。回调复用应用自己的会话名称、Cookie、缓存头和存储配置，成功后必须处于 `PHP_SESSION_ACTIVE`，否则仍抛出 `CSRF_SESSION_NOT_STARTED`。已启动会话不重复调用回调；未配置 handler 时使用原生 `session_start()`，启动失败仍报告 `CSRF_SESSION_NOT_STARTED`。`token/tokenInput/rotate/clear` 同样按需启动，`session_write_close()` 后再次调用也会重新执行初始化回调；需要无会话的路径不调用这些 API。该回调是固定应用配置，不保存用户或请求状态。
+
+原生启动使用 `@session_start()` 抑制默认警告输出，并捕获 `Throwable`；启动失败统一通过 `CSRF_SESSION_NOT_STARTED` 报告。原生调用抛出的异常（包括应用将警告转换成的 `ErrorException`）通过 `getPrevious()` 保留，不替换应用错误处理器；返回 false、会话仍未激活的情况由状态检查处理。自定义初始化回调抛出的异常仍原样传播。
 
 ## 2. 全局配置
 
@@ -174,7 +184,7 @@ try {
 }
 ```
 
-`CSRF_INVALID` 建议映射为 403；`CSRF_SESSION_NOT_STARTED` 表示 Session 未启动、已关闭或缺少扩展，属于配置错误，建议返回 500。校验异常不携带 token，应用也不要把 token 写入 URL 或日志。权限、输出转义、幂等和防重复提交仍由应用分别处理。
+`CSRF_INVALID` 建议映射为 403；`CSRF_SESSION_NOT_STARTED` 表示原生启动失败、自定义回调返回后会话仍未激活或缺少扩展，建议返回 500。原生调用抛出的异常可通过 `getPrevious()` 读取；自定义初始化回调抛出的异常仍由应用处理。框架异常消息和上下文不携带 token，应用也不要把 token 写入 URL 或日志。权限、输出转义、幂等和防重复提交仍由应用分别处理。
 
 ## 源码位置
 
