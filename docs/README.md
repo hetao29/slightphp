@@ -1,14 +1,17 @@
-# SlightPHP 6.5.3 框架使用文档
+# SlightPHP 6.6.0 框架使用文档
+
+6.6.0 新增可选的 Tpl 上下文自动转义、编译期执行计划和默认花括号识别；默认仍为兼容模式。本版还迁移 Db 内部类和模板辅助函数，调整 Cookie 默认策略，实现 Redis Sentinel，并修复 Language 切换缓存。即使不开启自动转义，升级也需检查类名、全局函数及 Cookie 配置，见 [6.6 迁移与不兼容说明](migration-6.6.md)。
 
 6.5.3 将 Language 语言文件改为 JSON/JSONC，与 Route 共用 Config 解析；旧 INI 词条需转换为字符串键值对象。官网与示例支持简体、繁体和英文，新增多语言实验、完整文档阅读与默认自动的主题切换，见 [6.5.3 迁移说明](migration-6.5.md#language-语言文件改为-jsonjsonc653)。
 
 6.5.2 新增请求类型前缀校验，缺失或不匹配的 `Request-Type` 会在方法存在性、Route 注解和控制器构造前被拒绝（405），显式 URL 与内部调用均适用。应用仅在异常的 `allowedMethods` 非空时输出 `Allow`；从 6.5.1 升级也需检查带类型前缀的入口及异常处理，见 [6.5 迁移指南](migration-6.5.md#请求类型前缀校验652)。
 
-本目录的 Markdown 文档根据当前 PHP 源码整理。[API 参考](index.html)由当前源码生成；运行 `composer install` 并按[插件指南](plugins.md#按需安装依赖)安装验证码插件依赖后，可运行 `make -C docs` 重新生成完整 API。
+本目录的 Markdown 文档根据当前 PHP 源码整理。[API 参考](index.html)由当前源码生成。
 
 官网：[https://slightphp.com/](https://slightphp.com/)。
 
 - [更新记录](../CHANGELOG.md)
+- [6.6 升级与迁移说明](migration-6.6.md)
 - [6.5 升级与迁移说明](migration-6.5.md)
 - [核心异常与迁移](exceptions.md)
 - [6.4 升级与迁移说明](migration-6.4.md)

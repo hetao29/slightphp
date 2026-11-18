@@ -2,7 +2,7 @@
 
 /**
  * SlightPHP
- * @version 6.5.3
+ * @version 6.6.0
  * @link https://slightphp.com/
  * @copyright Copyright (c) 2026 SlightPHP
  * @license MIT
@@ -520,20 +520,23 @@ if (!class_exists("SlightPHP", false)):
 							break;
 						}
 					}
-					if (method_exists($classname, $_method)) {
-						$methods = self::getRouteMethods($classname, $_method);
-						if ($methods !== false && $methods !== [] && !in_array(strtoupper((string) $request->getMethod()), $methods, true)) {
-							throw new \SlightPHP\Exception('HTTP method not allowed', \SlightPHP\Exception::METHOD_NOT_ALLOWED, [
-								'path' => $path, 'controller' => $classname, 'method' => $_method,
-								'requestMethod' => $request->getMethod(), 'allowedMethods' => $methods,
-							]);
-						}
+					$methodExists = method_exists($classname, $_method);
+					$methods = $methodExists ? self::getRouteMethods($classname, $_method) : false;
+					// 缺失或非公开入口不构造控制器，仍继续查找浅层候选。
+					if ($methods === false) {
+						$failure = ['Controller entry is missing or not callable',
+							$methodExists ? \SlightPHP\Exception::METHOD_NOT_CALLABLE : \SlightPHP\Exception::METHOD_NOT_FOUND,
+							['path' => $path, 'controller' => $classname, 'method' => $_method]];
+						continue;
+					}
+					if ($methods !== [] && !in_array(strtoupper((string) $request->getMethod()), $methods, true)) {
+						throw new \SlightPHP\Exception('HTTP method not allowed', \SlightPHP\Exception::METHOD_NOT_ALLOWED, [
+							'path' => $path, 'controller' => $classname, 'method' => $_method,
+							'requestMethod' => $request->getMethod(), 'allowedMethods' => $methods,
+						]);
 					}
 					$classInstance = new $classname($request);
-					/**
-					 * 方法必须存在并且可调用；private 和 protected 方法不可调用。
-					 */
-					if (method_exists($classInstance, $_method) && is_callable(array(&$classInstance, $_method))) {
+					if (is_callable(array(&$classInstance, $_method))) {
 						if (!$isPart) {
 							self::$zone  = $_zone;
 							self::$page  = $_page;
@@ -544,7 +547,7 @@ if (!class_exists("SlightPHP", false)):
 						return $response->isWritable() ? $result : null;
 					}
 					$failure = ['Controller entry is missing or not callable',
-						method_exists($classInstance, $_method) ? \SlightPHP\Exception::METHOD_NOT_CALLABLE : \SlightPHP\Exception::METHOD_NOT_FOUND,
+						\SlightPHP\Exception::METHOD_NOT_CALLABLE,
 						['path' => $path, 'controller' => $classname, 'method' => $_method]];
 				} else {
 					$failure = ['Controller class not found', \SlightPHP\Exception::CLASS_NOT_FOUND, ['path' => $path, 'controller' => $classname, 'file' => $file]];

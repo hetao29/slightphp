@@ -55,6 +55,8 @@ final class SampleDocuments
     {
         if (str_starts_with($url, '#') || preg_match('~\Ahttps?://~i', $url)) return $url;
         [$path, $anchor] = array_pad(explode('#', $url, 2), 2, null);
+        // Root-level ChangeLog links use docs/...; keep them inside the document browser.
+        if (str_starts_with($path, 'docs/')) $path = substr($path, 5);
         if ($path === '../CHANGELOG.md') return '/site/main/docs?doc=CHANGELOG.md' . ($anchor !== null ? '#' . $anchor : '');
         if (isset(self::files()[$path])) {
             return '/site/main/docs?doc=' . rawurlencode($path) . ($anchor !== null ? '#' . $anchor : '');

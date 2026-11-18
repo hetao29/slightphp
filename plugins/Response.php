@@ -3,6 +3,8 @@ namespace SlightPHP;
 
 /** 通过当前 PHP SAPI 输出响应；每次请求单独创建，不保存静态请求状态。 */
 class Response {
+    /** @var array{secure:bool,httponly:bool,samesite:string} 进程级 Cookie 默认策略，由应用入口配置。 */
+    private static array $cookieDefaults = ['secure' => true, 'httponly' => true, 'samesite' => 'Lax'];
     /** @var bool 是否已通过本实例输出正文。 */
     private bool $started = false;
     /** @var bool 是否已结束响应。 */
@@ -46,23 +48,39 @@ class Response {
     }
 
     /**
+     * 配置所有 Response 实例的 Cookie 默认策略；不设置 PHP 会话参数或发送 Cookie。
+     * @param bool $secure 是否仅通过 HTTPS 发送，默认 true；HTTP 开发环境需明确设为 false。
+     * @param bool $httponly 是否禁止脚本读取，默认 true。
+     * @param string $samesite Lax、Strict、None 或空字符串，默认 Lax；不区分大小写。
+     * @throws \ValueError SameSite 无效，或 None 未同时启用 Secure；失败时保留原策略。
+     */
+    public static function setCookieDefaults(bool $secure = true, bool $httponly = true, string $samesite = 'Lax'): void {
+        self::$cookieDefaults = self::cookieOptions($secure, $httponly, $samesite);
+    }
+
+    /** @return array{secure:bool,httponly:bool,samesite:string} 当前应用级 Cookie 默认策略。 */
+    public static function getCookieDefaults(): array {
+        return self::$cookieDefaults;
+    }
+
+    /**
      * 设置经过 URL 编码的 Cookie。
      * @param string $name Cookie 名称。
      * @param string $value Cookie 值；空字符串沿用 PHP 的删除 Cookie 语义。
      * @param int $expires 到期 Unix 时间戳，0 为会话 Cookie。
      * @param string $path Cookie 路径。
      * @param string $domain Cookie 域名。
-     * @param bool $secure 是否仅通过 HTTPS 发送。
-     * @param bool $httponly 是否禁止脚本读取。
-     * @param string $samesite SameSite 属性；空字符串表示省略。
+     * @param bool|null $secure 是否仅通过 HTTPS 发送；null 使用应用默认值（初始 true）。
+     * @param bool|null $httponly 是否禁止脚本读取；null 使用应用默认值（初始 true）。
+     * @param string|null $samesite null 使用应用默认值（初始 Lax）；空字符串表示省略。
      * @return bool PHP 设置结果；响应已开始或结束时为 false。
-     * @throws \ValueError PHP 拒绝非法 Cookie 名称或属性。
+     * @throws \ValueError Cookie 名称或属性非法、SameSite 无效，或 None 未启用 Secure。
      */
-    public function cookie(string $name, string $value = '', int $expires = 0, string $path = '/', string $domain = '', bool $secure = false, bool $httponly = false, string $samesite = ''): bool {
+    public function cookie(string $name, string $value = '', int $expires = 0, string $path = '/', string $domain = '', ?bool $secure = null, ?bool $httponly = null, ?string $samesite = null): bool {
         if (!$this->canSendHeaders()) {
             return false;
         }
-        return \setcookie($name, $value, compact('expires', 'path', 'domain', 'secure', 'httponly', 'samesite'));
+        return \setcookie($name, $value, compact('expires', 'path', 'domain') + self::cookieOptions($secure, $httponly, $samesite));
     }
 
     /**
@@ -72,17 +90,31 @@ class Response {
      * @param int $expires 到期 Unix 时间戳，0 为会话 Cookie。
      * @param string $path Cookie 路径。
      * @param string $domain Cookie 域名。
-     * @param bool $secure 是否仅通过 HTTPS 发送。
-     * @param bool $httponly 是否禁止脚本读取。
-     * @param string $samesite SameSite 属性；空字符串表示省略。
+     * @param bool|null $secure 是否仅通过 HTTPS 发送；null 使用应用默认值（初始 true）。
+     * @param bool|null $httponly 是否禁止脚本读取；null 使用应用默认值（初始 true）。
+     * @param string|null $samesite null 使用应用默认值（初始 Lax）；空字符串表示省略。
      * @return bool PHP 设置结果；响应已开始或结束时为 false。
-     * @throws \ValueError PHP 拒绝非法 Cookie 名称、值或属性。
+     * @throws \ValueError Cookie 名称、值或属性非法、SameSite 无效，或 None 未启用 Secure。
      */
-    public function rawcookie(string $name, string $value = '', int $expires = 0, string $path = '/', string $domain = '', bool $secure = false, bool $httponly = false, string $samesite = ''): bool {
+    public function rawcookie(string $name, string $value = '', int $expires = 0, string $path = '/', string $domain = '', ?bool $secure = null, ?bool $httponly = null, ?string $samesite = null): bool {
         if (!$this->canSendHeaders()) {
             return false;
         }
-        return \setrawcookie($name, $value, compact('expires', 'path', 'domain', 'secure', 'httponly', 'samesite'));
+        return \setrawcookie($name, $value, compact('expires', 'path', 'domain') + self::cookieOptions($secure, $httponly, $samesite));
+    }
+
+    /** 合并并校验默认策略与单次覆盖；校验完成前不修改策略或发送 Cookie。 */
+    private static function cookieOptions(?bool $secure, ?bool $httponly, ?string $samesite): array {
+        $secure = $secure ?? self::$cookieDefaults['secure'];
+        $httponly = $httponly ?? self::$cookieDefaults['httponly'];
+        $samesite = match (strtolower($samesite ?? self::$cookieDefaults['samesite'])) {
+            '' => '', 'lax' => 'Lax', 'strict' => 'Strict', 'none' => 'None',
+            default => throw new \ValueError('SameSite must be Lax, Strict, None or an empty string'),
+        };
+        if ($samesite === 'None' && !$secure) {
+            throw new \ValueError('SameSite=None requires Secure');
+        }
+        return compact('secure', 'httponly', 'samesite');
     }
 
     /**

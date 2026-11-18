@@ -1,6 +1,6 @@
 # 快速开始
 
-当前版本为 SlightPHP 6.5.3，官网：[https://slightphp.com/](https://slightphp.com/)。
+当前版本为 SlightPHP 6.6.0，官网：[https://slightphp.com/](https://slightphp.com/)。
 
 ## 运行仓库中的完整示例
 
@@ -34,12 +34,12 @@ samples/
 ## 在新项目中使用 Composer
 
 ```bash
-composer require hetao29/slightphp:^6.5.3
+composer require hetao29/slightphp:^6.6.0
 ```
 
 包仅强制要求 PHP >=8.0；PDO、Redis 扩展、Guzzle 与 Gregwar Captcha 等插件依赖通过 `suggest` 提示，默认不安装。使用对应插件时，在应用项目中[按需安装依赖](plugins.md#按需安装依赖)；额外依赖可能提高应用的最低 PHP 版本。
 
-已有项目升级请先阅读 [6.5 迁移指南](migration-6.5.md)，调整核心异常处理；从 6.3.x 或更早版本升级时，还需按 [6.4 迁移指南](migration-6.4.md)修改模板静态调用，从 6.2.x 或更早版本升级时还需按 [6.3 迁移指南](migration-6.3.md)修改控制器构造函数与入口参数。
+已有项目升级请先阅读 [6.6 迁移指南](migration-6.6.md)，检查类名、模板辅助函数、Cookie 默认值与可选自动转义；从 6.4.x 或更早版本升级，还需按 [6.5 迁移指南](migration-6.5.md)调整核心异常处理。从 6.3.x 或更早版本升级时，还需按 [6.4 迁移指南](migration-6.4.md)修改模板静态调用，从 6.2.x 或更早版本升级时还需按 [6.3 迁移指南](migration-6.3.md)修改控制器构造函数与入口参数。
 
 创建 `public/index.php`：
 

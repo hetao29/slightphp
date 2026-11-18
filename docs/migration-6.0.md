@@ -2,11 +2,11 @@
 
 6.0 是不兼容的主版本。先在测试环境升级依赖和应用代码，覆盖控制器、插件及部署路径，再发布到生产环境。
 
-当前版本为 6.5.3。本页保留从 5.x 迁移到 6.x 的基础说明；升级到当前版本时，还需阅读 [6.2 升级说明](migration-6.2.md)、[6.3 迁移指南](migration-6.3.md)、[6.4 迁移指南](migration-6.4.md)及 [6.5 迁移指南](migration-6.5.md)。
+当前版本为 6.6.0。本页保留从 5.x 迁移到 6.x 的基础说明；升级到当前版本时，还需阅读 [6.2 升级说明](migration-6.2.md)、[6.3 迁移指南](migration-6.3.md)、[6.4 迁移指南](migration-6.4.md)、[6.5 迁移指南](migration-6.5.md)及 [6.6 迁移指南](migration-6.6.md)。
 
 ## 安装与加载
 
-将依赖约束改为 `hetao29/slightphp:^6.5.3`，并在入口加载 `vendor/autoload.php`。当前包仅强制要求 PHP 8.0+；使用数据库、Redis、HTTP 或验证码插件时，先按[插件指南](plugins.md#按需安装依赖)将所需依赖加入应用的 `require`，再执行 `composer update hetao29/slightphp`。验证码还需 GD、mbstring、fileinfo 和可用的会话；数据库和 Redis 功能分别需要对应驱动和服务。
+将依赖约束改为 `hetao29/slightphp:^6.6.0`，并在入口加载 `vendor/autoload.php`。当前包仅强制要求 PHP 8.0+；使用数据库、Redis、HTTP 或验证码插件时，先按[插件指南](plugins.md#按需安装依赖)将所需依赖加入应用的 `require`，再执行 `composer update hetao29/slightphp`。验证码还需 GD、mbstring、fileinfo 和可用的会话；数据库和 Redis 功能分别需要对应驱动和服务。
 
 旧版手动引用 `plugins/S*.php` 的路径和 `SLIGHTPHP_PLUGINS_DIR` 常量已移除。模板辅助函数仍由 Composer 自动加载。切换部署版本后清理并重新生成模板编译缓存。
 

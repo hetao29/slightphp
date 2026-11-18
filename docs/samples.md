@@ -30,9 +30,10 @@
 | `/tasks`、`/tasks.json` | GET | 任务页面和 JSON 接口的短地址 |
 | `/tasks/save` | POST | 写操作短地址，仍需 CSRF token |
 | `/workspace/main/plugins` | GET | 真实解析 Config 配置及检测扩展 |
-| `/lab/template/entry` | GET | 模板 include 与模块 part 组合、变量作用域及输出顺序 |
+| `/lab/template/entry` | GET | include/part、变量作用域、全部修饰器、上下文转义与编译缓存 |
 | `/lab/language/entry` | GET | 简体、繁体、英文切换、动态称呼、JSON 词条与缺失词条回退 |
 | `/widgets/template/card/direct` | GET | 独立渲染模块卡片，读取路径参数 direct |
+| `/widgets/template/context` | GET | 独立自动模式片段：修饰链、JS/CSS、事件、分隔符、缓存和错误用例 |
 | 不存在的控制器或方法 | 任意 | HTTP 404 和可返回首页的错误页 |
 
 `save` 的错误 HTTP 方法返回 405、CSRF 失败返回 403；业务输入错误通过跳转后的提示呈现。`Save`、`Api` 与路由实验室 `Entry` 使用 [Route 注解](framework.md#route-方法注解)限制 HTTP 方法；不匹配时框架抛出异常，由示例入口生成 405、Allow 和 `Method Not Allowed` 正文。入口同时将找不到文件或入口的异常转换为 404。
@@ -43,13 +44,17 @@
 
 从工作台侧栏或官网示例索引进入 `/lab/template/entry`。父模板通过动态文件名跨目录 include 公共模板，再通过 part 调用 Widgets 模块的 Card、Returned、Mixed、Nested 和 Ended 方法。页面展示 PARENT、CHILD、NESTED 三个实例的变量作用域、路径参数和实际输出顺序。调用规则及代码位置见 [Tpl 模板与模块组合手册](templates.md)。
 
+第 5 节的 Context 模块独立开启自动模式，运行 raw、escape、default、tr、tostring、version 和串联修饰器，并展示 HTML 属性、URL、JS 值/字符串/正则/事件、CSS、默认 {}、literal 和缓存变量更新。JS 结果由浏览器实际计算；错误示例由控制器分别捕获，不向主页面插入未完成的输出。三种界面语言均有对应说明。
+
+samples 的全部模板和展示代码统一使用默认 `{` / `}`。入口调用不带参数的 `Tpl::setDelimter()`，各模块无需切换分隔符；原生 JS/CSS 中与模板同形的代码使用 `{literal}...{/literal}`。
+
 访问 `/lab/template/entry` 检查模板组合与变量作用域；预期结果见 [Tpl 模板与模块组合手册](templates.md#samples-文件与预期结果)。
 
 ## 多语言实验
 
 从官网示例索引、插件页的 Language 卡片或工作台侧栏进入 `/lab/language/entry`。表单通过 GET 提交 `lang=zh-cn/zh-tw/en` 和 `name`，无需 JavaScript；例如 `/lab/language/entry?lang=en&name=SlightPHP`。入口在第一次翻译前选择 locale，实验实际调用 `Language::tr('greeting', 'demo')`，再用 `strtr()` 替换 `{name}`。页面同时展示当前语言、翻译结果、实际读取的 `app/languages/{locale}/demo.json` 和可复制的 PHP 代码。
 
-`missing_demo_key` 未在 demo 区域定义，实际返回原词条键。称呼要求 1–80 个字符；无效输入返回 400 并提示，所有动态文本在 HTML 输出时转义。切换语言会发起新请求，遵守 Language 已初始化的 locale 缓存语义。JSON/JSONC 格式、回退与缓存规则见 [Language 说明](plugins.md#language)。
+`missing_demo_key` 未在 demo 区域定义，实际返回原词条键。称呼要求 1–80 个字符；无效输入返回 400 并提示，所有动态文本在 HTML 输出时转义。示例切换语言会发起新请求，由入口调用 `setLocale()` 更新候选语言；应用在同一请求内也可通过该 setter 切换语言。JSON/JSONC 格式、回退与缓存规则见 [Language 说明](plugins.md#language)。
 
 ## 数据与安全设计
 

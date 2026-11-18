@@ -14,16 +14,10 @@ final class SampleI18n
             ?? self::browserLocale($_SERVER['HTTP_ACCEPT_LANGUAGE'] ?? '')
             ?? 'zh-cn';
         Language::setLanguageDir(__DIR__ . '/languages');
-        // Set the locale before the first tr(): Language caches its locale list.
+        // The setter rebuilds language candidates on the next tr().
         Language::setLocale($locale);
         if (self::supported($_GET['lang'] ?? null) !== null) {
-            setcookie('slightphp-language', $locale, [
-                'expires' => time() + 31536000,
-                'path' => '/',
-                'secure' => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
-                'httponly' => true,
-                'samesite' => 'Lax',
-            ]);
+            (new \SlightPHP\Response())->cookie('slightphp-language', $locale, time() + 31536000);
         }
         header('Content-Language: ' . self::htmlLang());
         header('Vary: Accept-Language, Cookie');

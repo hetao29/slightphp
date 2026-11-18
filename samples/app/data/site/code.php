@@ -26,7 +26,7 @@ class MainController
     }
 }
 PHP,
-            'install' => 'composer require hetao29/slightphp:^6.5.3',
+            'install' => 'composer require hetao29/slightphp:^6.6.0',
             'entry' => <<<'PHP'
 <?php
 require dirname(__DIR__) . '/vendor/autoload.php';

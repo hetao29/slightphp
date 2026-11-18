@@ -1,8 +1,8 @@
-# SlightPHP 框架介绍官网（6.5.3）
+# SlightPHP 框架介绍官网（6.6.0）
 
 官网由 SlightPHP + Tpl 构建，内容依据当前仓库源码整理，不依赖外部图片、字体或 JavaScript 库。首页介绍核心定位，内页覆盖功能、插件、入门与可运行示例。
 
-正式官网地址为 [https://slightphp.com/](https://slightphp.com/)，当前展示版本为 6.5.3。GitHub 链接用于源码与许可证，不作为官网地址。
+正式官网地址为 [https://slightphp.com/](https://slightphp.com/)，当前展示版本为 6.6.0。GitHub 链接用于源码与许可证，不作为官网地址。
 
 ## 访问与部署
 
@@ -20,9 +20,10 @@
 | `/site/main/guide` | 入门：运行样例、Composer 安装、入口、控制器、部署注意事项 |
 | `/site/main/examples` | 十节 samples 源码讲解：目录、入口、路由、Route 注解、Request-Type、多语言、配置、模板、表单与数据库操作，以及交互验证 |
 | `/site/main/docs`、`?doc=plugins.md`、`?doc=index.html` | 完整 docs 目录、单篇指南与生成的 API 参考 |
+| `/site/main/docs?doc=migration-6.6.md` | 6.6.0 升级、不兼容事项与可选自动转义迁移 |
 | `/site/main/docs?doc=CHANGELOG.md` | 直接读取仓库 CHANGELOG.md 的完整版本记录 |
 | `/site/main/changelog` | 旧地址跳转至文档中的 ChangeLog |
-| `/lab/template/entry` | include / part、跨模块调用和实例变量作用域 |
+| `/lab/template/entry`、`/widgets/template/context` | include / part、变量作用域、两种模式、全部修饰器及 HTML/URL/JS/CSS 自动转义 |
 | `/lab/language/entry` | 三种语言的实时翻译、动态称呼、JSON 语言文件与缺失词条回退 |
 | `/lab/type/entry` | Request-Type 示例：普通请求调用 Entry，ajax 请求头调用 ajaxEntry，直接访问前缀方法缺少匹配头返回 405 |
 | `/r/hello`、`/r-json/hello`、`/r-pair/2026/11` | PHP / JSON 自定义路由实验与多参数 |
@@ -83,7 +84,7 @@ URL 无需改变，例如 `/workspace/main/save` 对应 `app/Workspace/MainContr
 - `samples/app/templates/site/`：首页、功能、插件、指南、示例、文档、关于、错误页。
 - `samples/www/assets/site.css`、`site.js`、`theme.js`：响应式样式、页面交互和默认自动的主题偏好。
 
-动态文本在模板中使用原生 `htmlspecialchars()` 转义，固定链接直接使用根路径；示例代码作为字符串传入模板，避免被 Tpl 当作模板代码执行。模板继续使用 `{%` / `%}` 分隔符，编译目录是 PHP 的系统临时目录。
+动态文本在模板中使用原生 `htmlspecialchars()` 转义，固定链接直接使用根路径；示例代码作为字符串传入模板，避免被 Tpl 当作模板代码执行。模板及展示的代码统一使用默认 `{` / `}` 分隔符，编译目录是 PHP 的系统临时目录。
 
 更新核心或插件实现时，同步更新官网与 docs 文档，尤其是路径规则、响应行为及插件依赖。不要把所有历史插件表述为无需外部服务或已全面兼容当前 PHP。
 

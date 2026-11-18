@@ -65,7 +65,9 @@ class MainController {
 | --- | --- |
 | `header(string $key, string $value, bool $format = true)` | 设置/替换同名响应头，默认规范头名称大小写 |
 | `status(int $http_code, string $reason = '')` | 设置 100–599 状态码，可指定原因短语 |
-| `cookie($name, $value = '', $expires = 0, $path = '/', $domain = '', $secure = false, $httponly = false, $samesite = '')` | 使用 PHP `setcookie()`，值经过 URL 编码；到期时间为 Unix 时间戳 |
+| `Response::setCookieDefaults($secure = true, $httponly = true, $samesite = 'Lax')` | 设置所有 Response 实例使用的应用级 Cookie 默认策略 |
+| `Response::getCookieDefaults()` | 返回 secure、httponly、samesite 默认配置，可复用于 PHP 会话配置 |
+| `cookie($name, $value = '', $expires = 0, $path = '/', $domain = '', $secure = null, $httponly = null, $samesite = null)` | 使用 PHP `setcookie()`，值经过 URL 编码；最后三项省略或为 null 时使用应用默认策略 |
 | `rawcookie(...)` | 同上，使用 `setrawcookie()` 保留原始值 |
 | `write(string $content)` | 输出一段正文，缓冲由 PHP SAPI 管理 |
 | `end(string $content = '')` | 输出最后一段正文，标记本实例结束 |
@@ -75,6 +77,23 @@ class MainController {
 操作成功返回 `true`，响应已结束或不能设置响应头时返回 `false`。非法响应头名称、含换行/NUL 的头值与原因短语、非法状态码均返回 `false`；非法 Cookie 参数沿 PHP 抛出 `ValueError`。Cookie 空字符串沿 PHP 的删除语义，多次调用不同 Cookie 不会互相覆盖。
 
 状态码、响应头和 Cookie 应在 `write()` 输出非空正文前设置；本实例一旦开始输出，即使 PHP 还在缓冲，也不再接受这些修改。重复 `end()`、结束后 `write()` 返回 `false`。`end()` 不调用 `exit` 或 `fastcgi_finish_request()`，不阻止直接 `echo`；控制器应使用 `return $response->end(...)` 停止自身执行。
+
+### Cookie 安全配置
+
+从 6.6.0 起，Cookie 初始默认策略为 `Secure=true`、`HttpOnly=true`、`SameSite=Lax`。`cookie()` 与 `rawcookie()` 均使用这一策略；默认路径为 `/`，不设置 Domain，限制在当前主机。旧调用的配置迁移见 [6.6 迁移指南](migration-6.6.md#cookie-默认策略与会话)。统一配置可在创建 Response 之前或之后设置，但必须在发送相应 Cookie 之前完成：
+
+```php
+use SlightPHP\Response;
+
+Response::setCookieDefaults(); // HTTPS 生产站点：Secure + HttpOnly + SameSite=Lax。
+$response = new Response();
+$response->cookie('preference', 'dark');
+$response->rawcookie('js-readable', 'value', httponly: false); // 确实需要脚本读取时单独覆盖。
+```
+
+纯 HTTP 本地开发需明确调用 `Response::setCookieDefaults(secure: false)`，否则浏览器不会通过普通 HTTP 回传 Secure Cookie。已有省略最后三项的调用现在采用安全默认值；显式 `false` 及 `samesite: ''` 仍可覆盖，后者表示不发送 SameSite。SameSite 支持 `Lax`、`Strict`、`None` 和空字符串，不区分大小写；非法值或 `None` 配合 `Secure=false` 会在发出 Cookie 前抛出 `ValueError`。删除 Cookie 时应沿用创建时的名称、Path、Domain 和安全策略。
+
+默认策略是进程级应用配置，不自动识别 HTTPS，也不读取 `Forwarded` / `X-Forwarded-Proto`。同进程串行复用应用时，每次请求入口都应明确设置适用策略；不应在同进程交错处理的请求之间共享动态策略。该配置只影响 Response Cookie，不会自动修改原生 `setcookie()` 或已经启动的 PHP 会话。会话配置、HTTPS 和可信反向代理示例见[生产部署](deployment.md#cookie与会话安全)。SameSite 不能代替应用的 CSRF 校验。
 
 ## 调度入口
 

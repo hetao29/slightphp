@@ -11,10 +11,10 @@
  * @subpackage Db
  */
 
-namespace SlightPHP;
+namespace SlightPHP\Db;
 
 /** 分页查询结果及其统计信息。 */
-class DbData
+class Data
 {
 	/**
 	 * @var int 当前页码，从 1 开始。

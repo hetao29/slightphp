@@ -167,7 +167,7 @@ PHP],
             ['label' => 'samples/www/index.php · Tpl', 'code' => <<<'PHP'
 \SlightPHP\Tpl::setTemplateDir(dirname(__DIR__) . '/app/templates');
 \SlightPHP\Tpl::setCompileDir(sys_get_temp_dir());
-\SlightPHP\Tpl::setDelimter('{%', '%}');
+\SlightPHP\Tpl::setDelimter();
 PHP],
             ['label' => 'Workspace\\MainController::render', 'code' => <<<'PHP'
 $tpl = new \SlightPHP\Tpl();
@@ -176,13 +176,27 @@ $tpl->render('workspace/' . ($view === 'tasks' ? 'index' : $view) . '.tpl', $dat
 $tpl->render('workspace-footer.tpl', $data);
 PHP],
             ['label' => 'samples/app/templates/workspace/template.tpl', 'code' => <<<'HTML'
-{%include $include_child%}
-{%part "/widgets/template/card/demo"%}
-<p>{%$scope|escape%}</p>
+{include $include_child}
+{part "/widgets/template/card/demo"}
+<p>{$scope|escape}</p>
+HTML],
+            ['label' => 'SlightPHP\\Tpl · context mode', 'code' => <<<'PHP'
+$tpl = new \SlightPHP\Tpl();
+$tpl->setContextMode(true);
+$tpl->render('widgets/template-context.tpl', $data);
+PHP],
+            ['label' => 'samples/app/templates/widgets/template-context.tpl', 'code' => <<<'HTML'
+<input value="{$empty_name|default:"Guest"|escape}">
+<p>{$translation_key|tr}</p>
+<pre>{$debug_value|tostring}</pre>
+<code>{$asset|version:"2.0"}</code>
+<section>{$trusted_html|raw}</section>
+<script>const data = {$payload};</script>
+<a href="/search?q={$query|escape:"url"}">Search</a>
 HTML],
         ],
         'notes' => ['sample_templates_composition', 'sample_templates_output'],
-        'sources' => ['samples/app/Workspace/MainController.php', 'samples/app/Lab/TemplateController.php', 'samples/app/templates/workspace/template.tpl'],
+        'sources' => ['samples/app/Workspace/MainController.php', 'samples/app/Lab/TemplateController.php', 'samples/app/Widgets/TemplateController.php', 'samples/app/templates/workspace/template.tpl', 'samples/app/templates/widgets/template-context.tpl', 'samples/app/templates/widgets/template-default.tpl'],
         'links' => [['/lab/template/entry', 'run_the_template_example'], ['/site/main/docs?doc=templates.md', 'sample_read_guide']],
     ],
     [
@@ -191,7 +205,7 @@ HTML],
         'blocks' => [
             ['label' => 'samples/app/templates/workspace/index.tpl', 'code' => <<<'HTML'
 <form method="post" action="/workspace/main/save">
-    <input type="hidden" name="csrf" value="{%$csrf%}">
+    <input type="hidden" name="csrf" value="{$csrf}">
     <input type="hidden" name="action" value="add">
     <input name="title" maxlength="80" required>
     <button type="submit">Add task</button>
@@ -272,7 +286,7 @@ if ($deleted === false) throw new \RuntimeException('Delete failed');
 PHP],
         ],
         'notes' => ['sample_database_setup', 'sample_database_binding', 'sample_database_results', 'sample_database_integration'],
-        'sources' => ['plugins/Db.php', 'plugins/DbPDO.php'],
+        'sources' => ['plugins/Db.php', 'plugins/Db/PDO.php'],
         'links' => [['/site/main/docs?doc=plugins.md#数据库失败处理', 'sample_read_guide'], ['/site/main/docs?doc=index.html#SlightPHP%5CDb', 'sample_database_api']],
     ],
 ];

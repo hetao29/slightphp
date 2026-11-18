@@ -97,24 +97,36 @@ class Language{
 		return $source;
 	}
 	/**
-	 * 设置语言文件根目录；已加载的翻译缓存不会清除。
+	 * 设置语言文件根目录，并清空 Language 已加载的翻译缓存；不清理 Config 缓存。
 	 * @param string $dir 语言文件根目录。
 	 * @return void
 	 */
 	static public function setLanguageDir($dir){
 		self::$languageDir = $dir;
+		self::$_languageCache = [];
 	}
 	/** @return string|null 语言文件根目录。 */
 	static public function getLanguageDir(){
 		return self::$languageDir;
 	}
 	/**
-	 * 设置强制语言；已初始化的语言列表不会因此重建。
+	 * 设置强制语言，并清空候选语言列表，下次翻译时重新选择；保留已加载词条。
 	 * @param string|null $locale 强制使用的语言标识。
 	 * @return void
 	 */
 	static public function setLocale($locale){
 		self::$locale = $locale;
+		self::$_locales = [];
+	}
+	/**
+	 * 清除当前请求的强制语言及候选列表，下次翻译时重新读取请求语言。
+	 * 保留语言目录、defaultLocale、已加载词条及 Config 缓存。
+	 * 仅重置 Language 的静态请求状态，不提供并发请求隔离。
+	 * @return void
+	 */
+	static public function resetRequest(): void {
+		self::$locale = null;
+		self::$_locales = [];
 	}
 	/** @return string|null 强制使用的语言标识。 */
 	static public function getLocale(){

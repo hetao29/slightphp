@@ -11,7 +11,7 @@
 | 插件 | 应用需要声明或安装的依赖 |
 | --- | --- |
 | Db | `ext-pdo`、`ext-pdo_mysql`，并准备 MySQL 服务和连接配置 |
-| Redis | `ext-redis`，支持 RedisArray 或 RedisCluster，并准备服务和连接配置 |
+| Redis | `ext-redis`，支持 RedisArray、RedisCluster 或 Sentinel（需 phpredis 6.0+），并准备服务和连接配置 |
 | Http | `guzzlehttp/guzzle:^7.0 || ^8.0` |
 | Captcha | `gregwar/captcha:^1.3 || ^2.0`、`ext-session`；GD、mbstring、fileinfo 由验证码包声明并检查 |
 
@@ -145,17 +145,23 @@ $tpl->render('index.tpl', ['title' => '示例']);
 
 模板变量保存在各个 Tpl 实例的受保护属性 `$_tpl_vars` 中，不同实例互不共享。`assign($name, $value)` 或 `assign($array)` 分配变量，`render()` 的参数覆盖同名值；同一个实例在多次渲染之间保留变量及模板循环产生的赋值。常驻服务应为每个请求创建新实例。模板目录、编译目录、分隔符等配置仍为静态配置，由所有实例共享。
 
-从 6.4.0 起，`assign()`、`fetch()` 为实例方法，不能再使用 `Tpl::assign()`、`Tpl::fetch()` 或从外部访问 `Tpl::$_tpl_vars`；迁移示例见 [6.4 升级说明](migration-6.4.md#模板变量与实例)。`{%include "child.tpl"%}` 和 `{%include $child%}` 自动使用父模板的实例，支持多层嵌套，子模板可以读取并修改同一张变量表。PHP 代码直接调用模板辅助函数时，需显式传入上下文：`tpl_function_include('child.tpl', $tpl)`。
+`setContextMode(true)` 为当前实例开启 HTML/属性、URL、JS、CSS 上下文自动转义，默认关闭并保留兼容模式。两种模式都支持 Modifier 中的 raw、escape、default、tr、tostring、version；自动模式先执行修饰链再按实际位置编码，末尾 raw 标记可信原文。默认分隔符仍为 `{` / `}`，Lexer 识别模板语法，保留普通 JS/CSS 花括号及表达式引号、嵌套括号；歧义片段可用 literal 或更换分隔符。模板错误原样抛出。完整示例和支持边界见 [上下文自动转义](templates.md#上下文自动转义)。
 
-`{%part "/widgets/template/card/demo"%}` 调用其它模块的控制器入口，模块内容直接输出到当前位置，再输出字符串返回值，函数自身返回 null。控制器新建 Tpl 实例时使用独立变量；part 不会自动将父模板变量传给控制器。返回布尔值、数字、数组或对象时仅保留直接输出。part 不管理输出缓冲；异常原样抛出，已输出内容保留。完整规则与可运行示例见 [Tpl 模板与模块组合手册](templates.md)，samples 入口为 `/lab/template/entry`。
+以上模式开关适用于 6.6；6.7 将默认开启 contextMode，并移除 `setContextMode()`、`getContextMode()`。升级准备及手工编码迁移见 [6.6 迁移指南](migration-6.6.md#tpl-自动转义迁移启用时不兼容)。
 
-模板及编译目录由应用管理，编译目录必须可写且不应公开访问。当前实现中 `render()` 与 `display()` 均直接输出，返回值为 null（内部 fetch 使用 include），不要依赖其返回 HTML 字符串；还有 `setForceCompile()`、`setSafeMode()` 和历史拼写 `setDelimter()`。安全模式不能替代输出转义，不允许上传不可信模板。模板语法和调用方式应以当前源码及 API 为准。新工作台通过 Tpl 渲染 `head.tpl`、`index/*.tpl` 和 `footer.tpl`；使用 `{%`、`%}` 分隔符，保持默认安全模式。
+自动模式的编译缓存保存静态块和编码计划。JS 词法结果由 Compiler 编译到计划表，动态新入口首次生成上下文变体，完整命中后不再执行 JS 词法扫描；CSS 仍按渲染流保存增量断点。首次编译会多做分析；HTML 实际状态、URL/CSS 检查和函数输出检测仍在运行时执行。见 [编译缓存与执行计划](templates.md#编译缓存与执行计划)。
+
+从 6.4.0 起，`assign()`、`fetch()` 为实例方法，不能再使用 `Tpl::assign()`、`Tpl::fetch()` 或从外部访问 `Tpl::$_tpl_vars`；迁移示例见 [6.4 升级说明](migration-6.4.md#模板变量与实例)。`{include "child.tpl"}` 和 `{include $child}` 自动使用父模板的实例，支持多层嵌套，子模板可以读取并修改同一张变量表。PHP 代码直接调用模板辅助函数时，需显式传入上下文：`\SlightPHP\Tpl\Func::include('child.tpl', $tpl)`。
+
+`{part "/widgets/template/card/demo"}` 调用其它模块的控制器入口，模块内容直接输出到当前位置，再输出字符串返回值，函数自身返回 null。控制器新建 Tpl 实例时使用独立变量；part 不会自动将父模板变量传给控制器。返回布尔值、数字、数组或对象时仅保留直接输出。兼容模式中的 part 不管理输出缓冲；上下文模式只允许在 HTML 文本中插入 part，将片段收集后继续跟踪上下文。异常原样抛出，已输出内容保留。完整规则与可运行示例见 [Tpl 模板与模块组合手册](templates.md)，samples 入口为 `/lab/template/entry`。
+
+模板及编译目录由应用管理，编译目录必须可写且不应公开访问。当前实现中 `render()` 与 `display()` 均直接输出，返回值为 null（内部 fetch 使用 include），不要依赖其返回 HTML 字符串；还有 `setForceCompile()`、`setSafeMode()` 和历史拼写 `setDelimter()`。安全模式不能替代输出转义，不允许上传不可信模板。模板语法和调用方式应以当前源码及 API 为准。新工作台通过 Tpl 渲染 `head.tpl`、`index/*.tpl` 和 `footer.tpl`；模板及展示代码统一使用默认 `{`、`}`，保持默认安全模式。
 
 源文件经 `realpath()` 解析后必须位于模板目录内；编译文件和其各级子目录也必须位于编译目录内，指向目录外的符号链接会被拒绝。保留原有 CRC32 子目录和修改时间缓存逻辑。新建编译目录及子目录默认权限为 `0700`（受 umask 影响），已有目录权限不自动修改。`compile_dir` 及其 CRC32 子目录均不检查归属或权限，允许将 `compile_dir` 设为 `/tmp`。
 
-编译文件带有格式标记，每次加载时检查文件头；缺少当前标记的旧缓存会自动重新编译，即使模板源文件没有变化。已有目录布局保持不变。部署时需确保运行用户能够重写旧编译文件，常驻进程需重启以加载新类定义；OPcache 刷新由部署流程管理。
+编译文件带有格式标记，每次加载时检查文件头；缺少当前标记的旧缓存会自动重新编译，即使模板源文件没有变化。兼容模式沿用已有目录布局，上下文模式使用独立的 `.context.php` 编译文件；文件头还校验分隔符和安全模式。部署时需确保运行用户能够重写旧编译文件，常驻进程需重启以加载新类定义；OPcache 刷新由部署流程管理。
 
-`{%$value|escape%}` 使用 `ENT_QUOTES | ENT_SUBSTITUTE` 和 UTF-8 进行 HTML 转义，覆盖单双引号、尖括号和 `&`，非法 UTF-8 使用替代字符，不依赖 PHP 默认选项或 `default_charset`。此修饰器用于 HTML 文本和带引号的普通属性值；URL 编码分支仍使用 `rawurlencode()`。
+`{$value|escape}` 使用 `ENT_QUOTES | ENT_SUBSTITUTE` 和 UTF-8 进行 HTML 转义，覆盖单双引号、尖括号和 `&`，非法 UTF-8 使用替代字符，不依赖 PHP 默认选项或 `default_charset`。此修饰器用于 HTML 文本和带引号的普通属性值；URL 编码分支仍使用 `rawurlencode()`。
 
 不检查编译文件的所属用户或权限。新建或重新写入编译文件时，将文件权限设置为 `0600`；命中已有缓存时不修改其权限。目录需要执行位以访问内部文件，因此新建目录默认使用 `0700`，不使用 `0600`。实际读写仍受操作系统权限限制，编译目录及其父级应由可信用户管理。
 
@@ -169,6 +175,8 @@ $captcha = new \SlightPHP\Captcha();
 $captcha->CreateImage(); // 输出 PNG 并将验证码保存到会话
 ```
 
+生产环境应在首次加载 Captcha 类之前按[Cookie与会话安全](deployment.md#cookie与会话安全)配置并启动会话；类加载时的自动 `session_start()` 不会替应用补齐安全参数。
+
 提交表单时，在同一活动会话中调用 `\SlightPHP\Captcha::check($code)`。同一会话、同一前缀仅保存最新验证码，刷新图片立即替换旧记录。验证码默认有效期为 300 秒，可在生成前通过 `Captcha::$ttl` 设置正整数秒数；到期及异常记录在检查时移除并返回 `false`。成功校验后立即移除，重复提交返回 `false`；错误输入保留当前未过期验证码，空值或非字符串输入返回 `false`。不要在校验前调用 `session_write_close()`，也不要在同一业务流程中重复调用 `check()`。原有 `del($code)` 可以继续调用，也可用于主动作废尚未使用的验证码。默认图片为 140×50、文本长度为 4–5；可在生成前修改 `width`、`height`、`minWordLength`、`maxWordLength` 和 `imageFormat`。父类现为 `Gregwar\Captcha\CaptchaBuilder`，旧版 `SimpleCaptcha` 的其他属性和方法不再提供。
 
 Session 中的记录现在包含 `code` 和 `expires_at`，存放于 `session_prefix` 对应的固定键中；旧的“前缀 + 验证码”记录不再接受，升级后需重新获取验证码。不同用途可使用不同前缀隔离；生成图片时必须有活动会话。
@@ -177,7 +185,7 @@ Session 中的记录现在包含 `code` 和 `expires_at`，存放于 `session_pr
 
 ## Language
 
-从 6.5.3 起，Language 使用 JSON/JSONC 语言文件；旧 INI 文件的迁移见 [6.5.3 升级说明](migration-6.5.md#language-语言文件改为-jsonjsonc653)。
+从 6.5.3 起，Language 使用 JSON/JSONC 语言文件；旧 INI 文件的迁移见 [6.5.3 升级说明](migration-6.5.md#language-语言文件改为-jsonjsonc653)。6.6.0 修复运行中切换 locale/语言目录的缓存失效行为，并新增请求状态重置，见 [6.6 迁移指南](migration-6.6.md#language-语言切换与请求重置)。
 
 `Language::tr($source, $zone = 'main')` 从 `languageDir/locale/zone.json` 或 `zone.jsonc` 查找词条，与 Route 一样通过 `Config::parse()` 加载。相同 locale 和 zone 下优先使用 `.json`，没有位于语言目录内的同名 `.json` 文件时再查找 `.jsonc`；两者不合并。语言文件缺失或词条不存在时继续查找候选语言，最终未找到则返回原文。
 
@@ -204,7 +212,67 @@ echo \SlightPHP\Language::tr('welcome'); // Welcome to SlightPHP
 
 请求头最多处理 8192 字节、前 32 个条目，包含 CR、LF、NUL 或不是字符串时整个请求头被忽略。不会通过 URL 解码或删除危险字符把非法标签转换成路径。`setLocale()` 的强制语言也进行格式检查，并兼容 `en_US` 这样的下划线写法；`zone` 仅允许字母、数字、下划线开头，后续可含点或连字符。语言文件经 `realpath()` 解析后必须位于语言根目录内，指向目录外的符号链接不会读取。
 
-语言列表及翻译缓存仍保留原有进程内行为，常驻进程需隔离请求状态；修改语言目录或强制语言不会自动清空已经初始化的结果。首次加载文件也受 `Config::$CACHE` 控制，关闭 Config 缓存不会清空 Language 已加载的词条。
+`setLocale($locale)` 会清空已初始化的候选语言列表，下次 `tr()` 按新语言重新选择；传入 `null` 或空字符串时重新使用当前 `Accept-Language`。已加载的词条按语言复用，不因切换 locale 而丢弃。运行中切换语言应调用 setter，直接赋值公开属性 `$locale` 不会使候选列表失效。
+
+`setLanguageDir($dir)` 每次调用都会清空 Language 的词条缓存，避免切换目录后仍返回旧目录的翻译；不会重置强制语言或 `defaultLocale`。词条首次加载仍受 `Config::$CACHE` 控制，清理 Language 缓存不会清理 Config 缓存，关闭 Config 缓存也不会清空 Language 已加载的词条。修改同一路径的语言文件后，生产部署应重启工作进程以更新两层缓存；开发时可关闭 Config 缓存，再调用 `setLanguageDir()` 清理 Language 缓存。
+
+`resetRequest()` 清除强制语言（恢复为 `null`）及候选语言列表，保留语言目录、`defaultLocale`、已加载词条和 Config 缓存。串行复用同一个 PHP 工作进程时，在每次请求开始、设置本次语言前调用；可在 `finally` 中再清理，确保异常请求也不会留下强制语言：
+
+```php
+\SlightPHP\Language::resetRequest();
+try {
+    // $locale 为本次请求的语言；null 表示使用当前请求头。
+    \SlightPHP\Language::setLocale($locale);
+    $text = \SlightPHP\Language::tr('welcome');
+} finally {
+    \SlightPHP\Language::resetRequest();
+}
+```
+
+`defaultLocale` 作为应用配置保留；若应用按请求修改该属性，须在本次请求开始时明确设置。宿主适配器负责提供本次请求的 `$_SERVER` 等数据；`resetRequest()` 只重置 Language，不重置框架路由、会话或其他插件。Language 仍使用进程内静态状态，不支持同一进程内协程或其他交错执行请求之间的自动隔离；重置接口不能据此视为整个框架已兼容常驻并发运行。
+
+## Redis
+
+`SlightPHP\Redis` 的 `engine: "cluster"` 使用 RedisCluster，`engine: "sentinel"` 通过 RedisSentinel 发现并连接主节点，其他模式使用 RedisArray。Sentinel 模式要求 phpredis 6.0+；`host` 是 Sentinel 地址列表，`options.service` 是 Sentinel 监控的服务名，不是 Redis 主节点地址。
+
+例如应用配置 `redis.json`（地址、服务名及凭据按实际部署替换）：
+
+```json
+{
+  "cache": {
+    "engine": "sentinel",
+    "host": ["127.0.0.1:26379", "127.0.0.1:26380"],
+    "options": {
+      "service": "mymaster",
+      "sentinel_auth": ["sentinel-user", "replace-sentinel-password"],
+      "auth": ["cache-user", "replace-redis-password"],
+      "database": 0,
+      "timeout": 1,
+      "read_timeout": 1,
+      "sentinel_timeout": 0.5,
+      "sentinel_read_timeout": 0.5,
+      "persistent": false
+    }
+  }
+}
+```
+
+```php
+\SlightPHP\Redis::setConfigFile(__DIR__ . '/redis.json');
+$cache = \SlightPHP\Redis::useConfig('cache');
+$cache->set('example', 'value');
+$value = $cache->get('example');
+```
+
+`sentinel_auth` 与 `auth` 分别用于 Sentinel 和数据主节点；无认证时省略对应项，仅密码认证时传字符串，ACL 认证时传 `[用户名, 密码]`。Sentinel 服务端的 ACL 认证需 Redis 6.2+；较早版本的 Sentinel 使用仅密码认证。数据节点 ACL 需允许 `ROLE`、`SELECT` 和业务使用的命令。`database` 默认为 0，连接及重连后都会明确选择该数据库；默认连接和读取超时为 1 秒，Sentinel 两项超时默认为 0.5 秒。
+
+节点地址支持 `host[:port]`、`[IPv6]:port` 和 `tls://host:port`，Sentinel 默认端口为 26379。Sentinel 使用 TLS 时在其地址中加 `tls://`；数据节点使用 TLS 时设置 `options.tls: true`。`context` 使用 phpredis 的 `['stream' => [...]]` 格式，`sentinel_context` 可为 Sentinel 单独指定这一上下文，未指定时复用 `context.stream`；JSON 中的嵌套对象会转换为数组。TLS 连接需部署对应证书及信任配置。
+
+实现按列表依次尝试 Sentinel，取得主节点地址后连接并认证，验证目标 `ROLE` 为 master，再选库并执行命令。不可达、未知服务或返回非主节点时继续尝试其他 Sentinel，成功节点会优先用于同实例的下次发现；全部失败时构造函数抛出 `RedisException`，不会回退到 RedisArray。
+
+运行中的连接断开或返回 READONLY 后，该连接会失效；后续调用重新查询 Sentinel 并连接当前主节点。失败的当前命令不会自动重放：实例调用沿用捕获 `RedisException` 后记录错误并返回 `false` 的约定，应用应自行判断后续操作，不能盲目重试结果不确定的写入。底层透明重试已关闭，以免重新连接到旧主节点。此流程遵循 Redis 的[Sentinel 客户端发现规范](https://redis.io/docs/latest/develop/reference/sentinel-clients/)；扩展接口见 [phpredis Sentinel](https://github.com/phpredis/phpredis/blob/6.3.0/sentinel.md)。
+
+静态业务调用每次创建新客户端并重新发现主节点。事务、pipeline 或需共享连接的操作应复用实例；链式方法返回底层原生 Redis 对象，直接使用该对象的调用不经过本封装的异常与重连处理。重连会根据配置重新认证和选库，不恢复未完成事务，也不会重放运行中通过 `setOption()`、`select()` 等设置的连接状态。
 
 ## 数据库、Redis 与其他插件
 

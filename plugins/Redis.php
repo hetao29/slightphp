@@ -15,7 +15,7 @@ use RedisException;
 /**
  * @package SlightPHP
  */
-/** phpredis 客户端封装，支持通过配置选择 RedisArray 或 RedisCluster。 */
+/** phpredis 客户端封装，支持通过配置选择 RedisArray、RedisCluster 或 Sentinel 主节点。 */
 class Redis
 {
 	private static $hosts = array();
@@ -26,15 +26,21 @@ class Redis
 	 */
 	private static $_configFile;
 	/**
-	 * @var RedisArray|RedisCluster 当前使用的客户端。
+	 * @var \Redis|RedisArray|RedisCluster|null 当前使用的客户端。
 	 */
 	private $_redis;
+	/** @var string[] Sentinel 节点列表，连接成功的节点优先用于下次发现。 */
+	private array $sentinelHosts = [];
+	/** @var array Sentinel 服务与连接参数。 */
+	private array $sentinelOptions = [];
 	/**
-	 * 创建 Redis 客户端。cluster 使用传入的主机和选项；其他模式同样使用传入的主机和选项。
-	 * sentinel 分支同样创建 RedisArray，不会创建单独的 Sentinel 客户端。
-	 * @param array $hosts 集群节点地址列表。
-	 * @param array $options 客户端选项，如 timeout、read_timeout、persistent、auth 和 context。
-	 * @param string $engine 为 cluster 时创建 RedisCluster，否则创建 RedisArray。
+	 * 创建 Redis 客户端。sentinel 查询服务名并连接经 ROLE 验证的主节点。
+	 * @param array $hosts 数据节点地址列表；sentinel 模式时为 Sentinel 节点地址。
+	 * @param array $options 客户端选项；sentinel 必须提供 service，支持独立 sentinel_auth、auth 及 database。
+	 * @param string $engine cluster、sentinel，或其他值（RedisArray）。
+	 * @throws \InvalidArgumentException Sentinel 配置缺失或节点格式非法。
+	 * @throws \RuntimeException Sentinel 模式缺少 phpredis 6.0+。
+	 * @throws RedisException 无法发现或连接主节点。
 	 */
 	public function __construct(array $hosts, array $options, $engine = "")
 	{
@@ -50,13 +56,104 @@ class Redis
 				$options['context'] ?? NULL
 			);
 		} elseif ($engine == "sentinel") {
-			//https://github.com/phpredis/phpredis/blob/develop/sentinel.md
-			$this->_redis = new RedisArray($hosts, $options);
+			if (!class_exists('RedisSentinel') || version_compare((string) phpversion('redis'), '6.0', '<')) {
+				throw new \RuntimeException('Sentinel mode requires phpredis 6.0 or later');
+			}
+			if ($hosts === [] || !is_string($options['service'] ?? null) || trim($options['service']) === '') {
+				throw new \InvalidArgumentException('Sentinel hosts and service are required');
+			}
+			$this->sentinelHosts = array_values($hosts);
+			$this->sentinelOptions = self::normalizeSentinelOptions($options);
+			// 校验全部地址，配置错误不应被当作临时节点故障忽略。
+			foreach ($this->sentinelHosts as $host) self::sentinelAddress($host);
+			$this->_redis = $this->connectSentinel();
 		} else {
 			//https://github.com/phpredis/phpredis/blob/develop/arrays.md
 			$this->_redis = new RedisArray($hosts, $options);
 		}
 		return $this->_redis;
+	}
+
+	/** 将 JSON 配置中的嵌套对象转换为 phpredis 所需的数组。 */
+	private static function normalizeSentinelOptions(array $options): array
+	{
+		foreach ($options as $key => $value) {
+			if ($value instanceof \stdClass) $value = get_object_vars($value);
+			$options[$key] = is_array($value) ? self::normalizeSentinelOptions($value) : $value;
+		}
+		return $options;
+	}
+
+	/** @return array{string,int} 支持 host[:port]、[IPv6]:port 和 tls://host:port。 */
+	private static function sentinelAddress($address): array
+	{
+		if (!is_string($address) || $address === '') {
+			throw new \InvalidArgumentException('Invalid Sentinel address');
+		}
+		$parts = parse_url(str_contains($address, '://') ? $address : 'tcp://' . $address);
+		if ($parts === false || empty($parts['host']) || !in_array($parts['scheme'] ?? '', ['tcp', 'tls'], true)
+			|| isset($parts['user']) || isset($parts['pass']) || isset($parts['path']) || isset($parts['query']) || isset($parts['fragment'])
+			|| ($parts['port'] ?? 26379) < 1) {
+			throw new \InvalidArgumentException('Invalid Sentinel address');
+		}
+		return [($parts['scheme'] === 'tls' ? 'tls://' : '') . $parts['host'], $parts['port'] ?? 26379];
+	}
+
+	/** 发现并验证主节点；仅建立连接，不重放任何业务命令。 */
+	private function connectSentinel(): \Redis
+	{
+		$options = $this->sentinelOptions;
+		$service = $options['service'];
+		$answered = false;
+		$found = false;
+		$lastError = null;
+		foreach ($this->sentinelHosts as $index => $endpoint) {
+			$redis = null;
+			try {
+				[$host, $port] = self::sentinelAddress($endpoint);
+				$sentinel = new \RedisSentinel(array_filter([
+					'host' => $host, 'port' => $port,
+					'connectTimeout' => $options['sentinel_timeout'] ?? 0.5,
+					'readTimeout' => $options['sentinel_read_timeout'] ?? 0.5,
+					'auth' => $options['sentinel_auth'] ?? null,
+					'ssl' => str_starts_with($host, 'tls://') ? ($options['sentinel_context']['stream'] ?? $options['context']['stream'] ?? []) : null,
+				], static fn($value) => $value !== null));
+				$master = $sentinel->getMasterAddrByName($service);
+				$answered = true;
+				if (!is_array($master) || count($master) !== 2 || !is_string($master[0]) || $master[0] === ''
+					|| !preg_match('/\A[0-9]+\z/', (string) $master[1]) || (int) $master[1] < 1 || (int) $master[1] > 65535) continue;
+				$found = true;
+				$redis = new \Redis();
+				$connect = !empty($options['persistent']) ? 'pconnect' : 'connect';
+				$target = (!empty($options['tls']) ? 'tls://' : '') . $master[0];
+				$persistentId = 'slightphp-sentinel-' . hash('sha256', serialize($options));
+				if (!$redis->$connect($target, (int) $master[1], $options['timeout'] ?? 1,
+					$persistentId, 0, $options['read_timeout'] ?? 1, $options['context'] ?? null)) {
+					throw new RedisException('Cannot connect to Sentinel master');
+				}
+				// 禁止 phpredis 在旧地址透明重连，故障后应重新通过 Sentinel 发现。
+				$redis->setOption(\Redis::OPT_MAX_RETRIES, 0);
+				if (isset($options['auth']) && !$redis->auth($options['auth'])) {
+					throw new RedisException('Cannot authenticate with Sentinel master');
+				}
+				$role = $redis->role();
+				if (!is_array($role) || ($role[0] ?? null) !== 'master') {
+					throw new RedisException('Sentinel target is not a master');
+				}
+				if (!$redis->select($options['database'] ?? 0)) {
+					throw new RedisException('Cannot select Sentinel master database');
+				}
+				unset($this->sentinelHosts[$index]);
+				array_unshift($this->sentinelHosts, $endpoint);
+				return $redis;
+			} catch (RedisException $error) {
+				$lastError = $error;
+				try { $redis?->close(); } catch (RedisException $ignored) {}
+			}
+		}
+		$message = !$answered ? 'Redis Sentinels are unreachable for service: '
+			: ($found ? 'No usable master found for Sentinel service: ' : 'Sentinel service not found: ');
+		throw new RedisException($message . $service, 0, $lastError);
 	}
 
 	/**
@@ -124,8 +221,20 @@ class Redis
 	public function __call($name, $args)
 	{
 		try {
-			return call_user_func_array(array($this->_redis, $name), $args);
+			if ($this->sentinelHosts !== [] && ($this->_redis === null || !$this->_redis->isConnected())) {
+				$this->_redis = $this->connectSentinel();
+			}
+			$result = call_user_func_array(array($this->_redis, $name), $args);
+			if ($this->sentinelHosts !== [] && $result === false && str_starts_with((string) $this->_redis->getLastError(), 'READONLY')) {
+				$this->_redis->close();
+				$this->_redis = null;
+			}
+			return $result;
 		} catch (RedisException $e) {
+			if ($this->sentinelHosts !== []) {
+				try { $this->_redis?->close(); } catch (RedisException $ignored) {}
+				$this->_redis = null;
+			}
 			trigger_error($e);
 		}
 		return false;

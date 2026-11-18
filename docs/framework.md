@@ -8,7 +8,7 @@
 4. 缺少前三段时分别补 defaultZone、defaultPage、defaultEntry。
 5. 从最深候选区域开始向浅层尝试；区域后相邻两段作为 page、entry，每个深度寻找命名空间控制器文件。默认最多 10 个路径段，因此最多尝试 8 个区域深度。
 6. 文件必须经 realpath 验证位于 appDir 内且是普通文件，再 `require_once`。
-7. 找到类后创建 Request 并设置完整 `route`，确定候选方法名并校验已配置的请求类型前缀，再检查方法存在性与 `Route` 注解。请求类型或 HTTP 方法不匹配时，在构造控制器前抛出 `METHOD_NOT_ALLOWED`，终止查找，由应用生成 405 响应。通过检查后使用 `new $classname($request)` 构造实例；检查目标方法存在且可公开调用后执行。入口共用同一个 Request，直接按 `($request, $response)` 的顺序调用；参数名可以自定义。构造函数仍可能在方法未匹配时执行，不应在其中执行写操作。
+7. 找到类后创建 Request 并设置完整 `route`，确定候选方法名并校验已配置的请求类型前缀，再检查方法存在性、公开可见性与 `Route` 注解。缺失或非公开入口跳过当前候选，不执行其构造函数，继续查找浅层候选。请求类型或 HTTP 方法不匹配时，在构造控制器前抛出 `METHOD_NOT_ALLOWED`，终止查找，由应用生成 405 响应。通过检查后使用 `new $classname($request)` 构造实例并调用入口。入口共用同一个 Request，直接按 `($request, $response)` 的顺序调用；参数名可以自定义。
 8. 返回方法的原始返回值；Response 已结束时返回 `null`，未匹配抛出 `SlightPHP\Exception`。注解配置、构造函数和入口方法的异常继续向外抛，由调用方处理。核心不会自动输出控制器返回值、序列化对象或发送错误响应。新签名及响应规则见 [Request 与 Response](http.md)。
 
 ## 命名空间控制器

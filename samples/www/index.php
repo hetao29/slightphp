@@ -1,10 +1,17 @@
 <?php
+require_once dirname(__DIR__, 2) . '/vendor/autoload.php';
+// HTTPS 来自 Web 服务器；不直接信任客户端的 Forwarded / X-Forwarded-Proto。
+$cookieSecure = !empty($_SERVER['HTTPS']) && strcasecmp((string) $_SERVER['HTTPS'], 'off') !== 0;
+\SlightPHP\Response::setCookieDefaults(secure: $cookieSecure);
 if (session_status() !== PHP_SESSION_ACTIVE) {
     ini_set('session.save_handler', 'files');
     ini_set('session.save_path', sys_get_temp_dir());
+    ini_set('session.use_strict_mode', '1');
+    ini_set('session.use_only_cookies', '1');
+    ini_set('session.use_trans_sid', '0');
+    session_set_cookie_params(['lifetime' => 0, 'path' => '/', 'domain' => ''] + \SlightPHP\Response::getCookieDefaults());
     session_start();
 }
-require_once dirname(__DIR__, 2) . '/vendor/autoload.php';
 require_once dirname(__DIR__) . '/app/I18n.php';
 SampleI18n::boot();
 SlightPHP::setAppDir(dirname(__DIR__) . '/app');
@@ -17,7 +24,7 @@ if (is_string($uri) && $uri !== '') {
 }
 \SlightPHP\Tpl::setTemplateDir(dirname(__DIR__) . '/app/templates');
 \SlightPHP\Tpl::setCompileDir(sys_get_temp_dir());
-\SlightPHP\Tpl::setDelimter('{%', '%}');
+\SlightPHP\Tpl::setDelimter();
 SlightPHP::setDefaultZone('site');
 SlightPHP::setDefaultPage('main');
 SlightPHP::setDefaultEntry('entry');

@@ -1,5 +1,7 @@
 # 升级到 SlightPHP 6.5.3
 
+本文记录 6.5.x 的历史变更；当前版本为 6.6.0，升级时还需阅读 [6.6 迁移指南](migration-6.6.md)，处理类名、模板辅助函数及 Cookie 默认策略变化。
+
 6.5.3 将 Language 语言文件由 INI 改为 JSON/JSONC；从 6.5.2 升级也需要转换现有语言文件，详见 [Language 迁移](#language-语言文件改为-jsonjsonc653)。官网与 samples 同步支持三种语言、默认自动的主题和完整文档阅读。
 
 6.5.2 新增请求类型前缀校验。从 6.5.1 升级也需检查带类型前缀的入口、内部调用及 405 响应处理，具体见[请求类型前缀校验](#请求类型前缀校验652)。
@@ -33,7 +35,7 @@ composer require hetao29/slightphp:^6.5.3
 
 顶层必须为对象，所有词条值必须为字符串；原有数字、布尔值等内容如需作为翻译，应显式写为字符串。空对象和空字符串有效。`.json` 使用严格 JSON，`.jsonc` 允许行注释和块注释；都不支持尾随逗号。同名文件优先使用 `.json`，不与 `.jsonc` 合并。
 
-`setLanguageDir()`、`setLocale()`、`tr($source, $zone)` 的调用方式保持不变。语言列表、主语言回退、缺失词条返回原文及目录边界校验保持不变；语言目录和 locale 仍需在第一次翻译前设置。JSON 格式错误抛出 `JsonException`，非对象顶层或非字符串词条抛出 `InvalidArgumentException`，无法读取已有文件时抛出 `RuntimeException`，应修复资源文件，不能依赖解析失败后返回原文。
+`setLanguageDir()`、`setLocale()`、`tr($source, $zone)` 的调用方式保持不变。语言列表、主语言回退、缺失词条返回原文及目录边界校验保持不变；首次翻译前应设置语言目录和 locale。6.6.0 进一步修复 setter 的缓存失效行为并新增 `resetRequest()`，见 [6.6 迁移指南](migration-6.6.md#language-语言切换与请求重置)。JSON 格式错误抛出 `JsonException`，非对象顶层或非字符串词条抛出 `InvalidArgumentException`，无法读取已有文件时抛出 `RuntimeException`，应修复资源文件，不能依赖解析失败后返回原文。
 
 Language 的已加载词条仍保留在进程内；首次加载文件也受 `Config::$CACHE` 影响。发布时同步部署所有语言文件，常驻进程按发布流程重启。完整格式见 [Language 插件](plugins.md#language)，可运行示例见 `/lab/language/entry`。
 
@@ -182,3 +184,11 @@ class MainController
 - 检查可选模板模块的异常处理，以及原始业务异常的传播。
 
 部署仓库示例后，通过浏览器验证真实入口、自动加载、模板与 URI 解析；具体步骤见[部署文档](deployment.md#验证)。
+
+## 内部类与模板辅助函数迁移
+
+此项变更归入 6.6.0，详见 [6.6 类名与辅助函数迁移](migration-6.6.md#内部类与模板辅助函数迁移)。
+
+## Tpl 自动转义迁移
+
+上下文自动转义从 6.6.0 开始提供，默认关闭；启用后的手工编码替换规则见 [6.6 自动转义迁移说明](migration-6.6.md#tpl-自动转义迁移启用时不兼容)。

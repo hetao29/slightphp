@@ -314,7 +314,7 @@ class Db
 	}
 
 	/**
-	 * @var DbPDO 数据库适配器，初始化后可用。
+	 * @var \SlightPHP\Db\PDO 数据库适配器，初始化后可用。
 	 */
 	private $engine;
 	private $engine_name = "pdo_mysql";
@@ -382,7 +382,7 @@ class Db
 		}
 		$this->setEngine($params['engine']);
 
-		$this->engine = new \SlightPHP\DbPDO();
+		$this->engine = new \SlightPHP\Db\PDO();
 		$this->engine->init($params);
 		if ($this->engine->connect() === false) {
 			$this->error['code'] = $this->engine->errno();
@@ -445,7 +445,7 @@ class Db
 	 * @param string|array|object $leftjoin LEFT JOIN 表与 ON 条件。
 	 * @param string $hits 原样放入 SELECT 优化器提示中的内容。
 	 * @param string $for 锁模式；UPDATE/SHARE 在 LIMIT 之后追加 FOR UPDATE/FOR SHARE，其他值不追加。
-	 * @return DbData|false 查询结果；查询或计数失败时为 false。
+	 * @return \SlightPHP\Db\Data|false 查询结果；查询或计数失败时为 false。
 	 */
 	public function select($table, $condition = "", $item = "", $groupby = "", $orderby = "", $leftjoin = "", $hits = "", $for = "")
 	{
@@ -505,7 +505,7 @@ class Db
 		$start = microtime(true);
 		$result = $this->query($sql, $params);
 		if ($result !== false) {
-			$data = new DbData;
+			$data = new \SlightPHP\Db\Data;
 			$count_failed = false;
 			$data->page = (int)$this->page;
 			$data->limit = (int)$this->limit;

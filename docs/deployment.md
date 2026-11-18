@@ -30,7 +30,98 @@ server {
 }
 ```
 
-以上只展示 HTTP 入口转发；实际部署时按站点需要配置 HTTPS。不要公开仓库根目录、配置、应用源码或模板编译目录。
+以上只展示本地 HTTP 入口转发；生产部署使用下方 HTTPS 配置。不要公开仓库根目录、配置、应用源码或模板编译目录。
+
+## Cookie与会话安全
+
+Response Cookie 默认使用 `Secure=true`、`HttpOnly=true`、`SameSite=Lax`。示例入口在 `session_start()` 前明确启用严格会话 ID、仅 Cookie 传递会话、关闭 URL 会话 ID，并为会话设置 `HttpOnly`、`SameSite=Lax`、路径 `/`、空 Domain。Secure 根据 Web 服务器提供的 `HTTPS` 变量设置，因此纯 HTTP 本地开发仍可使用会话；语言偏好 Cookie 复用相同策略。入口不直接采用客户端发送的 `Forwarded` 或 `X-Forwarded-Proto`。
+
+生产站点可固定安全策略，在第一次 `session_start()` 前完成配置：
+
+```php
+require dirname(__DIR__) . '/vendor/autoload.php';
+
+\SlightPHP\Response::setCookieDefaults();
+ini_set('session.use_strict_mode', '1');
+ini_set('session.use_only_cookies', '1');
+ini_set('session.use_trans_sid', '0');
+session_set_cookie_params([
+    'lifetime' => 0,
+    'path' => '/',
+    'domain' => '',
+] + \SlightPHP\Response::getCookieDefaults());
+session_start();
+```
+
+需关闭 `session.auto_start`，且入口前不能已有其他代码启动会话。示例不会重新配置已经活动的会话；由宿主预先启动会话时，宿主负责同等安全配置。生产环境的会话存储位置及访问权限由部署配置管理；这里沿用示例的存储方式。安全设置的含义及调用顺序见 PHP 官方的[会话安全设置](https://www.php.net/manual/en/session.security.ini.php)和[会话 Cookie 参数](https://www.php.net/manual/en/function.session-set-cookie-params.php)。
+
+### Nginx 直接终止 HTTPS
+
+使用实际证书、域名、根路径和 FPM 地址替换示例。HTTP 只重定向到固定 HTTPS 域名，HTTPS 请求才进入 PHP：
+
+```nginx
+server {
+    listen 80;
+    server_name app.example.test;
+    return 308 https://app.example.test$request_uri;
+}
+server {
+    listen 443 ssl;
+    server_name app.example.test;
+    ssl_certificate /etc/nginx/tls/fullchain.pem;
+    ssl_certificate_key /etc/nginx/tls/privkey.pem;
+    root /var/www/slightphp/samples/www;
+    index index.php;
+    location / { try_files $uri $uri/ /index.php$is_args$args; }
+    location = /index.php {
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root/index.php;
+        fastcgi_param REQUEST_URI $request_uri;
+        fastcgi_param HTTPS on;
+        fastcgi_pass unix:/run/php/php-fpm.sock;
+    }
+    location ~ \.php(?:/|$) { return 404; }
+}
+```
+
+如果发行版的 `fastcgi_params` 已定义 `HTTPS`，应统一修改原定义或使用专用参数文件，确保没有冲突的同名参数。[Nginx FastCGI 参数说明](https://nginx.org/en/docs/http/ngx_http_fastcgi_module.html#fastcgi_param)
+
+### HTTPS 在反向代理处终止
+
+例如可信代理位于 `10.0.0.10`，应用后端位于 `10.0.0.20:8080`。代理的 HTTP 入口同样只做 HTTPS 重定向；在代理的 HTTPS server 中转发：
+
+```nginx
+location / {
+    proxy_pass http://10.0.0.20:8080;
+    proxy_set_header Host app.example.test;
+    proxy_set_header X-Forwarded-Proto https;
+    proxy_set_header X-Forwarded-For $remote_addr;
+}
+```
+
+后端监听私网地址，并通过防火墙和访问控制仅接受该可信代理。这个后端专门承载来自代理 HTTPS 入口的请求，所以明确传递 `HTTPS on`，不使用客户端可伪造的请求头判断：
+
+```nginx
+server {
+    listen 10.0.0.20:8080;
+    server_name app.example.test;
+    allow 10.0.0.10;
+    deny all;
+    root /var/www/slightphp/samples/www;
+    index index.php;
+    location / { try_files $uri $uri/ /index.php$is_args$args; }
+    location = /index.php {
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root/index.php;
+        fastcgi_param REQUEST_URI $request_uri;
+        fastcgi_param HTTPS on;
+        fastcgi_pass unix:/run/php/php-fpm.sock;
+    }
+    location ~ \.php(?:/|$) { return 404; }
+}
+```
+
+不要把代理的明文 HTTP 请求转发到这个 HTTPS 专用后端。不要直接将 `$http_x_forwarded_proto` 传作可信 HTTPS 状态；代理应覆盖转发头，后端也必须限制访问来源。生产验证时检查响应中会话 Cookie 及语言 Cookie 均含 `Secure; HttpOnly; SameSite=Lax`，并确认通过 HTTPS 刷新后会话仍然保留。
 
 ## 会话和模板
 

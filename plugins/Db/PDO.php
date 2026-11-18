@@ -11,10 +11,10 @@
  * @subpackage Db
  */
 
-namespace SlightPHP;
+namespace SlightPHP\Db;
 
 /** PDO 数据库连接及最近一次预处理语句的适配器。 */
-class DbPDO
+class PDO
 {
 	/** @var \PDO|null */
 	private $_pdo;

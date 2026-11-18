@@ -1,2 +1,2 @@
-<link rel="icon" type="image/png" href="/assets/favicon_dark.png?v={%filemtime(SlightPHP::getAppDir() . '/../www/assets/favicon_dark.png')%}" media="(prefers-color-scheme: dark)" data-favicon-theme="dark">
-<link rel="icon" type="image/png" href="/assets/favicon_light.png?v={%filemtime(SlightPHP::getAppDir() . '/../www/assets/favicon_light.png')%}" media="(prefers-color-scheme: light)" data-favicon-theme="light">
+<link rel="icon" type="image/png" href="/assets/favicon_dark.png?v={filemtime(SlightPHP::getAppDir() . '/../www/assets/favicon_dark.png')}" media="(prefers-color-scheme: dark)" data-favicon-theme="dark">
+<link rel="icon" type="image/png" href="/assets/favicon_light.png?v={filemtime(SlightPHP::getAppDir() . '/../www/assets/favicon_light.png')}" media="(prefers-color-scheme: light)" data-favicon-theme="light">
