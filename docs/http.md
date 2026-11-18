@@ -1,6 +1,8 @@
 # Request 与 Response
 
-6.3.0 新增 `SlightPHP\Request` 提供请求数据，`SlightPHP\Response` 负责设置并输出响应，适用于 PHP-FPM、PHP 内置服务器和 CLI。旧应用的修改步骤见 [6.3 迁移指南](migration-6.3.md)。
+独立交互实验与用法见 [Request 手册](request.md)和 [Response 手册](response.md)。
+
+6.3.0 新增 `SlightPHP\Request` 提供请求数据，`SlightPHP\Response` 负责设置并输出响应，适用于 PHP-FPM、PHP 内置服务器和 CLI。旧应用的修改步骤见 [6.3 迁移指南](../CHANGELOG.md#63-迁移指南)。
 
 应用入口加载 `vendor/autoload.php` 后，Composer 按 PSR-4 将 `SlightPHP\` 映射到 `plugins/`，可直接使用 `new \SlightPHP\Request()`、`new \SlightPHP\Response()`。控制器调度也复用此自动加载规则。
 
@@ -36,7 +38,7 @@ class MainController {
 
 这是不兼容变更：调度不再向构造函数或入口方法传入 `$inPath` 数组。原 `$inPath` 参数改为 Request 参数，并从 `$request->route` 读取路径。`array $request` 等数组参数也不会自动接收路径。
 
-没有使用 Response 结束响应时，`run()` 保持返回控制器原始返回值（包括业务代码返回的 `false`），由应用入口处理；成功调用 `end()` 或 `redirect()` 结束响应后则返回 `null`，避免入口重复输出其布尔结果。调度失败通过异常报告，见 [核心异常与迁移](exceptions.md)。仅调用 `write()` 不会结束响应，入口仍会收到控制器的返回值。
+没有使用 Response 结束响应时，`run()` 保持返回控制器原始返回值（包括业务代码返回的 `false`），由应用入口处理；成功调用 `end()` 或 `redirect()` 结束响应后则返回 `null`，避免入口重复输出其布尔结果。调度失败通过异常报告，见 [核心异常与处理](exceptions.md)。仅调用 `write()` 不会结束响应，入口仍会收到控制器的返回值。
 
 ## Request
 
@@ -80,7 +82,7 @@ class MainController {
 
 ### Cookie 安全配置
 
-从 6.6.0 起，Cookie 初始默认策略为 `Secure=true`、`HttpOnly=true`、`SameSite=Lax`。`cookie()` 与 `rawcookie()` 均使用这一策略；默认路径为 `/`，不设置 Domain，限制在当前主机。旧调用的配置迁移见 [6.6 迁移指南](migration-6.6.md#cookie-默认策略与会话)。统一配置可在创建 Response 之前或之后设置，但必须在发送相应 Cookie 之前完成：
+从 6.6.0 起，Cookie 初始默认策略为 `Secure=true`、`HttpOnly=true`、`SameSite=Lax`。`cookie()` 与 `rawcookie()` 均使用这一策略；默认路径为 `/`，不设置 Domain，限制在当前主机。旧调用的配置迁移见 [6.6 迁移指南](../CHANGELOG.md#66-cookie-默认策略与会话)。统一配置可在创建 Response 之前或之后设置，但必须在发送相应 Cookie 之前完成：
 
 ```php
 use SlightPHP\Response;
@@ -99,6 +101,6 @@ $response->rawcookie('js-readable', 'value', httponly: false); // 确实需要�
 
 入口继续使用 `SlightPHP::run($path = '')`。Request 在构造控制器前创建并设置完整 `route`，Response 在调用入口方法前创建。路径深度限制、默认段和显式路径的 part 语义沿用原规则。6.5.2 起还校验候选方法名的已配置类型前缀；Request-Type 缺失或不匹配时抛出 405，内部调用同样适用，见[方法前缀说明](framework.md#方法前缀与-http-方法)。
 
-控制器入口可通过 [Route 方法注解](framework.md#route-方法注解)声明允许的 HTTP 方法。不匹配时，核心在构造控制器前抛出 `SlightPHP\Exception::METHOD_NOT_ALLOWED`，不输出响应；入口可根据异常设置 `405`，从 `getContext()['allowedMethods']` 生成 `Allow`。示例见 [核心异常与迁移](exceptions.md)。
+控制器入口可通过 [Route 方法注解](framework.md#route-方法注解)声明允许的 HTTP 方法。不匹配时，核心在构造控制器前抛出 `SlightPHP\Exception::METHOD_NOT_ALLOWED`，不输出响应；入口可根据异常设置 `405`，从 `getContext()['allowedMethods']` 生成 `Allow`。示例见 [核心异常与处理](exceptions.md)。
 
 请求类型前缀不匹配时，异常的 `allowedMethods` 为空数组；入口仅在该数组非空时输出 `Allow`，不能用请求类型填充 HTTP 方法列表。

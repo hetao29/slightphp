@@ -58,7 +58,7 @@ samples 的全部模板和展示代码统一使用默认 `{` / `}`。入口调�
 
 从官网示例索引、插件页的 Language 卡片或工作台侧栏进入 `/lab/language/entry`。表单通过 GET 提交 `lang=zh-cn/zh-tw/en` 和 `name`，无需 JavaScript；例如 `/lab/language/entry?lang=en&name=SlightPHP`。入口在第一次翻译前选择 locale，实验实际调用 `Language::tr('greeting', 'demo')`，再用 `strtr()` 替换 `{name}`。页面同时展示当前语言、翻译结果、实际读取的 `app/languages/{locale}/demo.json` 和可复制的 PHP 代码。
 
-`missing_demo_key` 未在 demo 区域定义，实际返回原词条键。称呼要求 1–80 个字符；无效输入返回 400 并提示，所有动态文本在 HTML 输出时转义。示例切换语言会发起新请求，由入口调用 `setLocale()` 更新候选语言；应用在同一请求内也可通过该 setter 切换语言。JSON/JSONC 格式、回退与缓存规则见 [Language 说明](plugins.md#language)。
+`missing_demo_key` 未在 demo 区域定义，实际返回原词条键。称呼要求 1–80 个字符；无效输入返回 400 并提示，所有动态文本在 HTML 输出时转义。示例切换语言会发起新请求，由入口调用 `setLocale()` 更新候选语言；应用在同一请求内也可通过该 setter 切换语言。JSON/JSONC 格式、回退与缓存规则见 [Language 使用手册](language.md)。
 
 ## CSRF 实验
 
@@ -77,3 +77,11 @@ samples 的全部模板和展示代码统一使用默认 `{` / `}`。入口调�
 ## 清理后的范围
 
 samples 仅包含官网与当前可运行的任务、路由、配置、JSON、模板组合、多语言和 CSRF 示例。历史 user、photos、guestbook、Auction、数据库与 Redis 测试、backend、locale、旧配置和模板缓存已删除。插件实现仍保留在仓库 plugins 中，可参考插件文档独立使用。
+
+## 插件交互实验
+
+官网插件页为 Tpl、Config、Log、Db、Redis、Http、Error、Captcha、Request、Response 提供独立运行与手册入口。Tpl 沿用 `/lab/template/entry`；其他入口为 `/lab/plugin/entry/{插件小写名}`。
+
+完整索引见[插件指南](plugins.md)。[Request 手册](request.md)包含 GET、multipart 上传元信息与 JSON / 请求头实验；[Response 手册](response.md)包含状态、响应头、write / end、Cookie 和 303 跳转实验。
+
+所有 POST 实验由 Route 校验 CSRF，提交结果后 303 跳转；Request JSON 返回独立 JSON 响应。日志和错误实验使用临时文件并清理，验证码在 Session 中一次性校验。Db / Redis 必须在私有的 `samples/config/services.local.json` 中配置服务并启用，配置模板为 `samples/config/services.example.json`；也支持环境变量 `SLIGHTPHP_SAMPLE_SERVICES` 指向私有文件。未准备好依赖或配置时显示提示。Http 默认访问固定 httpbin 服务，网络失败会提示错误。

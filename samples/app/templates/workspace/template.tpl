@@ -43,6 +43,6 @@ $tpl-&gt;render('widgets/template-context.tpl', $data);</code></pre>
 </section>
 <section class="panel">
     <h2>{SampleI18n::t('further_reading')}</h2>
-    <p>{SampleI18n::t('for_invocation_rules_file_locations_and_exception_handling_see')} <code>docs/templates.md</code>{SampleI18n::t('escape_dynamic_html_where_templates_and_modules_output_it')}</p>
+    <p>{SampleI18n::t('for_invocation_rules_file_locations_and_exception_handling_see')} <a href="/site/main/docs?doc=templates.md">docs/templates.md</a>{SampleI18n::t('escape_dynamic_html_where_templates_and_modules_output_it')}</p>
 </section>
 {include "workspace-footer.tpl"}

@@ -61,6 +61,7 @@
   </div>
 </div>
 <section class="container" id="sample-demos">
+  <p><a class="text-link" href="/site/main/plugins">{SampleI18n::t('lab_catalog')} →</a></p>
   <div class="eyebrow">TRY IT / SAMPLES</div>
   <h2>{SampleI18n::t('sample_live_demos')}</h2>
   <p>{SampleI18n::t('these_examples_run_in_this_app_without_an_external')}</p>

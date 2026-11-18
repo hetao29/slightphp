@@ -59,6 +59,11 @@ class MainController
     {
         require_once dirname(__DIR__) . '/Documents.php';
         $name = $request->get['doc'] ?? 'README.md';
+        $migrationAnchor = is_string($name) ? \SampleDocuments::migrationAnchor($name) : null;
+        if ($migrationAnchor !== null) {
+            $response->redirect('/site/main/docs?doc=CHANGELOG.md&lang=' . rawurlencode(SampleI18n::locale()) . '#' . rawurlencode($migrationAnchor), 301);
+            return;
+        }
         $document = is_string($name) ? \SampleDocuments::page($name) : null;
         if ($document === null) {
             http_response_code(404);

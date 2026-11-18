@@ -105,7 +105,7 @@ if (is_string($result)) echo $result;
 
 方法元数据先按实际控制器类名和入口方法名查缓存，未命中才反射；无注解的空结果和非公开方法的可见性也缓存。继承方法仍读取实际声明上的注解，子类覆盖按子类入口独立解析。缓存不保存 HTTP 方法的匹配结果，405 检查仍在构造控制器前逐次执行；无效注解抛出后不会被缓存为无限制。普通 PHP-FPM 中缓存只在当前请求内复用，不会自动跨请求保留。
 
-配置文件不存在或不可读时抛出 `RuntimeException`；JSON/JSONC 语法错误时抛出 `JsonException`；扩展名不受支持、顶层不是数组、元素不是对象、规则缺少 pattern、占位符约束类型不正确、正则无效或无法完成匹配时抛出 `InvalidArgumentException`。无效配置不会被加入规则列表。调度异常由入口捕获并生成 404、405 和 Allow，见 [核心异常与迁移](exceptions.md)。
+配置文件不存在或不可读时抛出 `RuntimeException`；JSON/JSONC 语法错误时抛出 `JsonException`；扩展名不受支持、顶层不是数组、元素不是对象、规则缺少 pattern、占位符约束类型不正确、正则无效或无法完成匹配时抛出 `InvalidArgumentException`。无效配置不会被加入规则列表。调度异常由入口捕获并生成 404、405 和 Allow，见 [核心异常与处理](exceptions.md)。
 
 ## samples 与验证
 

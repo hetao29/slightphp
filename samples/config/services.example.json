@@ -1,0 +1,20 @@
+{
+    "db": {
+        "enabled": false,
+        "engine": "pdo_mysql",
+        "host": "127.0.0.1",
+        "port": 3306,
+        "database": "slightphp_sample",
+        "user": "sample_reader",
+        "password": "change-me",
+        "charset": "utf8mb4",
+        "persistent": false
+    },
+    "redis": {
+        "enabled": false,
+        "hosts": ["127.0.0.1:6379"],
+        "options": {"connect_timeout": 1, "read_timeout": 1},
+        "engine": ""
+    },
+    "http": {"base_url": "https://httpbin.org"}
+}

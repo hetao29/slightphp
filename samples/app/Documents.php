@@ -3,6 +3,16 @@
 /** Read-only browser for the repository documentation and generated API reference. */
 final class SampleDocuments
 {
+    /** @var array<string,string> 旧迁移文档名到 ChangeLog 章节的映射，不作为菜单项。 */
+    private const MIGRATION_ANCHORS = [
+        'migration-6.0.md' => '60-迁移指南',
+        'migration-6.2.md' => '62-迁移指南',
+        'migration-6.3.md' => '63-迁移指南',
+        'migration-6.4.md' => '64-迁移指南',
+        'migration-6.5.md' => '65-迁移指南',
+        'migration-6.6.md' => '66-迁移指南',
+        'migration-6.7.md' => '67-迁移指南',
+    ];
     private static ?array $files = null;
     private array $headings = [];
     private int $codeIndex = 0;
@@ -18,8 +28,15 @@ final class SampleDocuments
         }
         $files = ['README.md' => $files['README.md']] + $files;
         $files['index.html'] = 'API Reference';
+        // 更新与迁移只保留 ChangeLog 一个入口，并放在菜单最后。
         $files['CHANGELOG.md'] = 'ChangeLog';
         return self::$files = $files;
+    }
+
+    /** @return string|null 旧版迁移入口对应的 ChangeLog 章节。 */
+    public static function migrationAnchor(string $name): ?string
+    {
+        return self::MIGRATION_ANCHORS[$name] ?? null;
     }
 
     /** Names are selected from the known documentation list, never arbitrary paths. */

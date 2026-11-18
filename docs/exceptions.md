@@ -1,6 +1,6 @@
-# 核心异常与迁移
+# 核心异常与处理
 
-从 6.5.0 起，`SlightPHP` 核心失败不再返回 `false`，统一抛出 `SlightPHP\Exception`。Route 方法不匹配也只抛异常，不由核心发送响应。这是不兼容变更，应用入口、CLI 任务与内部调用都需要调整；完整升级步骤见 [6.5 迁移指南](migration-6.5.md)。
+从 6.5.0 起，`SlightPHP` 核心失败不再返回 `false`，统一抛出 `SlightPHP\Exception`。Route 方法不匹配也只抛异常，不由核心发送响应。这是不兼容变更，应用入口、CLI 任务与内部调用都需要调整；完整升级步骤见 [6.5 迁移指南](../CHANGELOG.md#65-迁移指南)。
 
 异常继承 `RuntimeException`，通过 Composer 自动加载：
 

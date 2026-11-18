@@ -3,3 +3,4 @@
 /composer.lock
 /tests/
 /vendor/
+/samples/config/services.local.json

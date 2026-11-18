@@ -58,3 +58,36 @@
     });
   });
 })();
+// Plugin experiments render response text with textContent, including HTML logs.
+document.querySelectorAll('[data-lab-json]').forEach(panel => {
+  panel.querySelectorAll('[data-json-case]').forEach(button => {
+    button.disabled = false;
+    button.addEventListener('click', async () => {
+      button.disabled = true;
+      const output = panel.querySelector('[data-lab-output]');
+      try {
+        const response = await fetch('/lab/plugin/decode', {
+          method: 'POST', credentials: 'same-origin',
+          headers: {'Content-Type': 'application/json', 'X-CSRF-Token': panel.dataset.token, 'X-Sample': 'SlightPHP'},
+          body: button.dataset.jsonCase === 'valid' ? JSON.stringify({message: 'Hello SlightPHP'}) : '{invalid'
+        });
+        output.textContent = `HTTP ${response.status}\n${await response.text()}`;
+      } catch (error) {
+        output.textContent = window.SampleUI.t('sample_request_failed');
+      } finally { button.disabled = false; }
+    });
+  });
+});
+document.querySelectorAll('[data-lab-response]').forEach(panel => {
+  panel.querySelectorAll('[data-preview]').forEach(link => {
+    link.addEventListener('click', async event => {
+      if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+      event.preventDefault();
+      const output = panel.querySelector('[data-lab-output]');
+      try {
+        const response = await fetch(link.href, {credentials: 'same-origin'});
+        output.textContent = `HTTP ${response.status}\nContent-Type: ${response.headers.get('content-type')}\nX-Sample: ${response.headers.get('x-sample')}\n\n${await response.text()}`;
+      } catch (error) { output.textContent = window.SampleUI.t('sample_request_failed'); }
+    });
+  });
+});

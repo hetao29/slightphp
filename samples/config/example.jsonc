@@ -1,0 +1,6 @@
+{
+    // Config 支持注释；字符串中的 // 不会被删去。
+    "application": {"name": "SlightPHP", "debug": false, "limit": 50, "url": "https://slightphp.com/"},
+    /* 指定 zone 不存在时返回 default。 */
+    "default": {"name": "fallback", "limit": 10}
+}

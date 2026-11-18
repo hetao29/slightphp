@@ -2,6 +2,7 @@
 <div class="eyebrow">LANGUAGE / JSON</div>
 <h1>{SampleI18n::t('language_example')}</h1>
 <p class="lead">{SampleI18n::t('language_example_intro')}</p>
+<p><a class="text-link" href="/site/main/docs?doc=language.md">{SampleI18n::t('lab_manual')} →</a> · <a href="/site/main/plugins">{SampleI18n::t('lab_catalog')}</a></p>
 <section class="panel">
 <h2>{SampleI18n::t('language_demo_try')}</h2>
 <form class="language-demo-form" method="get" action="/lab/language/entry">
@@ -26,6 +27,6 @@
 <h2>{SampleI18n::t('language_demo_code')}</h2>
 <p>{SampleI18n::t('language_demo_boot_note')}</p>
 <div class="code-block"><button type="button" data-copy="language-php">{SampleI18n::t('copy')}</button><pre><code id="language-php">{$code|escape}</code></pre></div>
-<a href="/site/main/docs?doc=plugins.md#language">{SampleI18n::t('language_demo_docs')}</a>
+<a href="/site/main/docs?doc=language.md">{SampleI18n::t('lab_manual')} →</a>
 </section>
 {include "workspace-footer.tpl"}

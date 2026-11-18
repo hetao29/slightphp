@@ -4,3 +4,10 @@
 .language-demo-form{display:flex;align-items:flex-end;flex-wrap:wrap;gap:14px;margin-block:18px}.language-demo-form label{display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--muted)}.language-demo-form select{background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:5px;padding:10px 12px;min-height:44px}.language-demo-form input{width:240px;max-width:100%}.language-demo-form button{min-height:44px}.workspace [data-language-greeting]{overflow-wrap:anywhere}.language-demo-form select:focus-visible{outline:2px solid var(--accent);outline-offset:4px}@media(max-width:500px){.language-demo-form label{width:100%}.language-demo-form input,.language-demo-form select{width:100%}.language-demo-form button{width:100%}}
 
 .csrf-demo-actions{display:flex;flex-wrap:wrap;gap:10px}.csrf-demo-actions button{min-height:44px}.workspace [data-csrf-demo] button:disabled{opacity:.55;cursor:wait}.workspace [data-csrf-result]{white-space:pre-wrap;overflow-wrap:anywhere}@media(max-width:500px){.csrf-demo-actions{flex-direction:column}.csrf-demo-actions button{width:100%}}
+.lab-links{display:flex;flex-wrap:wrap;gap:.6rem 1rem;margin:1rem 0}
+.lab-links [aria-current="page"]{font-weight:700;text-decoration:underline}
+.lab-form{display:flex;flex-direction:column;align-items:flex-start;gap:1rem;margin:1.5rem 0;max-width:100%}
+.lab-form label{display:flex;flex-direction:column;gap:.5rem;width:min(100%,28rem)}
+.lab-form input,.lab-form select{box-sizing:border-box;max-width:100%;min-width:0;padding:.65rem;border:1px solid var(--line);border-radius:.5rem;background:var(--surface);color:var(--text);font:inherit}
+.lab-form p{margin:0}
+.workspace main,.workspace .panel{min-width:0}

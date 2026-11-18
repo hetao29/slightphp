@@ -4,6 +4,26 @@
 
 插件包括 `Captcha`、`Config`、`Csrf`、`Db`、`Error`、`Http`、`Language`、`Log`、`Redis`、`Route` 和 `Tpl`。`SlightPHP\Db` 提供表操作、查询和事务接口。
 
+## 示例与独立手册
+
+官网插件页的每张卡片均提供运行示例与使用手册。Tpl 使用已有模板组合实验，其余实验通过真实插件调用展示结果。
+
+| 插件 | 运行地址 | 手册 |
+| --- | --- | --- |
+| Tpl | `/lab/template/entry` | [模板与模块](templates.md) |
+| Language | `/lab/language/entry` | [Language 手册](language.md) |
+| Config | `/lab/plugin/entry/config` | [Config 手册](config.md) |
+| Log | `/lab/plugin/entry/log` | [Log 手册](log.md) |
+| Db | `/lab/plugin/entry/db` | [Db 手册](db.md) |
+| Redis | `/lab/plugin/entry/redis` | [Redis 手册](redis.md) |
+| Http | `/lab/plugin/entry/http` | [Http 手册](http-client.md) |
+| Error | `/lab/plugin/entry/error` | [Error 手册](error.md) |
+| Captcha | `/lab/plugin/entry/captcha` | [Captcha 手册](captcha.md) |
+| Request | `/lab/plugin/entry/request` | [Request 手册](request.md) |
+| Response | `/lab/plugin/entry/response` | [Response 手册](response.md) |
+
+Db / Redis 需要管理员准备独立服务，在 `samples/config/services.local.json` 启用；模板位于 [services.example.json](../samples/config/services.example.json)。私有配置不提交，缺少依赖或配置时页面显示运行条件，不使用模拟结果。Http 默认调用固定 httpbin 服务。
+
 ## 按需安装依赖
 
 框架的 `require` 仅声明 PHP >=8.0，插件依赖放在 `suggest` 中。`suggest` 只提供安装提示，不会自动安装包或扩展，也不会强制校验版本。使用对应插件的应用应将所需依赖加入自己的 `composer.json` 的 `require`，让 Composer 检查部署环境。
@@ -169,7 +189,7 @@ HTML 格式会转义错误消息、文件名、调用方法和参数中的 HTML 
 
 ## JSON 使用原生函数
 
-从 6.5.1 起移除 `SlightPHP\Json`，直接使用 PHP 原生函数；原调用的参数与 flags、depth 可保持不变。迁移对应关系见 [6.5 迁移指南](migration-6.5.md#json-插件移除)。默认编码失败返回 false，解码失败可能返回 null，应检查 `json_last_error()` / `json_last_error_msg()`，或使用 `JSON_THROW_ON_ERROR`。响应头由应用设置。
+从 6.5.1 起移除 `SlightPHP\Json`，直接使用 PHP 原生函数；原调用的参数与 flags、depth 可保持不变。迁移对应关系见 [6.5 迁移指南](../CHANGELOG.md#65-json-插件移除)。默认编码失败返回 false，解码失败可能返回 null，应检查 `json_last_error()` / `json_last_error_msg()`，或使用 `JSON_THROW_ON_ERROR`。响应头由应用设置。
 
 ```php
 header('Content-Type: application/json; charset=utf-8');
@@ -206,11 +226,11 @@ $tpl->render('index.tpl', ['title' => '示例']);
 
 模板变量保存在各个 Tpl 实例的受保护属性 `$_tpl_vars` 中，不同实例互不共享。`assign($name, $value)` 或 `assign($array)` 分配变量，`render()` 的参数覆盖同名值；同一个实例在多次渲染之间保留变量及模板循环产生的赋值。常驻服务应为每个请求创建新实例。模板目录、编译目录、分隔符等配置仍为静态配置，由所有实例共享。
 
-6.7.0 默认对 HTML/属性、URL、JS、CSS 执行上下文自动转义，已移除 `setContextMode()`、`getContextMode()` 及兼容编译分支。直接创建 Tpl 实例，传入原始数据；内置 raw、escape、default、tr、tostring、version 及修饰链继续可用。末尾 raw 标记可信原文。默认分隔符仍为 `{` / `}`，普通 JS/CSS 花括号会保留，歧义片段可用 literal 消歧。支持边界见 [上下文自动转义](templates.md#上下文自动转义)，升级步骤见 [6.7 迁移指南](migration-6.7.md)。
+6.7.0 默认对 HTML/属性、URL、JS、CSS 执行上下文自动转义，已移除 `setContextMode()`、`getContextMode()` 及兼容编译分支。直接创建 Tpl 实例，传入原始数据；内置 raw、escape、default、tr、tostring、version 及修饰链继续可用。末尾 raw 标记可信原文。默认分隔符仍为 `{` / `}`，普通 JS/CSS 花括号会保留，歧义片段可用 literal 消歧。支持边界见 [上下文自动转义](templates.md#上下文自动转义)，升级步骤见 [6.7 迁移指南](../CHANGELOG.md#67-迁移指南)。
 
 自动模式的编译缓存保存静态块和编码计划。JS 词法结果由 Compiler 编译到计划表，动态新入口首次生成上下文变体，完整命中后不再执行 JS 词法扫描；CSS 仍按渲染流保存增量断点。首次编译会多做分析；HTML 实际状态、URL/CSS 检查和函数输出检测仍在运行时执行。见 [编译缓存与执行计划](templates.md#编译缓存与执行计划)。
 
-从 6.4.0 起，`assign()`、`fetch()` 为实例方法，不能再使用 `Tpl::assign()`、`Tpl::fetch()` 或从外部访问 `Tpl::$_tpl_vars`；迁移示例见 [6.4 升级说明](migration-6.4.md#模板变量与实例)。`{include "child.tpl"}` 和 `{include $child}` 自动使用父模板的实例，支持多层嵌套，子模板可以读取并修改同一张变量表。PHP 代码直接调用模板辅助函数时，需显式传入上下文：`\SlightPHP\Tpl\Func::include('child.tpl', $tpl)`。
+从 6.4.0 起，`assign()`、`fetch()` 为实例方法，不能再使用 `Tpl::assign()`、`Tpl::fetch()` 或从外部访问 `Tpl::$_tpl_vars`；迁移示例见 [6.4 升级说明](../CHANGELOG.md#64-模板变量与实例)。`{include "child.tpl"}` 和 `{include $child}` 自动使用父模板的实例，支持多层嵌套，子模板可以读取并修改同一张变量表。PHP 代码直接调用模板辅助函数时，需显式传入上下文：`\SlightPHP\Tpl\Func::include('child.tpl', $tpl)`。
 
 `{part "/widgets/template/card/demo"}` 调用其它模块的控制器入口，模块内容直接输出到当前位置，再输出字符串返回值，函数自身返回 null。控制器新建 Tpl 实例时使用独立变量；part 不会自动将父模板变量传给控制器。返回布尔值、数字、数组或对象时仅保留直接输出。模板只允许在 HTML 文本中插入 part，将片段收集后继续跟踪上下文。异常原样抛出，失败片段尚未输出的临时缓冲被丢弃，之前已输出的页面内容保留。完整规则与可运行示例见 [Tpl 模板与模块组合手册](templates.md)，samples 入口为 `/lab/template/entry`。
 
@@ -244,7 +264,9 @@ Session 中的记录现在包含 `code` 和 `expires_at`，存放于 `session_pr
 
 ## Language
 
-从 6.5.3 起，Language 使用 JSON/JSONC 语言文件；旧 INI 文件的迁移见 [6.5.3 升级说明](migration-6.5.md#language-语言文件改为-jsonjsonc653)。6.6.0 修复运行中切换 locale/语言目录的缓存失效行为，并新增请求状态重置，见 [6.6 迁移指南](migration-6.6.md#language-语言切换与请求重置)。
+独立实验位于 `/lab/language/entry`，可切换简体、繁体、英文，输入称呼并观察词条替换与缺失键回退；目录组织、完整 API、缓存和验证方法见 [Language 使用手册](language.md)。
+
+从 6.5.3 起，Language 使用 JSON/JSONC 语言文件；旧 INI 文件的迁移见 [6.5.3 升级说明](../CHANGELOG.md#65-language-语言文件改为-jsonjsonc653)。6.6.0 修复运行中切换 locale/语言目录的缓存失效行为，并新增请求状态重置，见 [6.6 迁移指南](../CHANGELOG.md#66-language-语言切换与请求重置)。
 
 `Language::tr($source, $zone = 'main')` 从 `languageDir/locale/zone.json` 或 `zone.jsonc` 查找词条，与 Route 一样通过 `Config::parse()` 加载。相同 locale 和 zone 下优先使用 `.json`，没有位于语言目录内的同名 `.json` 文件时再查找 `.jsonc`；两者不合并。语言文件缺失或词条不存在时继续查找候选语言，最终未找到则返回原文。
 
@@ -349,7 +371,7 @@ $value = $cache->get('example');
 
 ### 数据库失败处理
 
-以下接口变化分别从 6.2.1（移除自动重试）和 6.2.2（查询锁参数）开始生效。升级旧应用时参阅 [6.3 迁移指南](migration-6.3.md#数据库调用)。
+以下接口变化分别从 6.2.1（移除自动重试）和 6.2.2（查询锁参数）开始生效。升级旧应用时参阅 [6.3 迁移指南](../CHANGELOG.md#63-数据库调用)。
 
 `Db::query($sql, $params = [])` 只执行一次 SQL，失败保留原错误并返回 `false`，框架不自动重连或重试。第三个重试次数参数及重连逻辑已移除；旧调用中的 `query($sql, $params, 1)`、`query($sql, $params, false)` 都应迁移为两个参数。
 

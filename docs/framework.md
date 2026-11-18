@@ -107,7 +107,7 @@ class ProfileController {
 - `method` 是单个方法，`methods` 是方法数组；同时设置时取并集。上例 `Check` 允许 POST 和 GET，响应中的 `Allow` 为 `POST, GET`。
 - 声明会去掉首尾空白、转为大写并去重；空字符串、逗号拼接的方法或非字符串数组项会抛出 `InvalidArgumentException`。HTTP 扩展方法同样支持。
 - 未加注解、`#[Route]` 或 `#[Route(methods: [])]` 不限制方法，保持已有行为。Route 注解只用于方法；同一方法可以有多个不同类型的注解，调度器只解析 Route。重复声明 Route 会在构造控制器前抛出 `InvalidArgumentException`，不会只取第一条或缓存为无限制入口。
-- 不匹配时抛出 `SlightPHP\Exception::METHOD_NOT_ALLOWED`；不执行控制器构造函数或入口，也不继续尝试浅层路由。核心不发送响应；应用入口可根据 `getStatusCode()` 和 `getContext()['allowedMethods']` 生成 405 和 Allow，见 [核心异常与迁移](exceptions.md)。
+- 不匹配时抛出 `SlightPHP\Exception::METHOD_NOT_ALLOWED`；不执行控制器构造函数或入口，也不继续尝试浅层路由。核心不发送响应；应用入口可根据 `getStatusCode()` 和 `getContext()['allowedMethods']` 生成 405 和 Allow，见 [核心异常与处理](exceptions.md)。
 - GET 不隐含 HEAD；OPTIONS 也不会自动放行。需要时明确加入 `methods`。
 - 继承的入口沿用该方法上的注解；子类重写入口时需重新声明。非 public 方法仍不可调度。
 - 正常请求与 `run('/...')` 内部调用都校验当前 Request 的 HTTP 方法；CLI 没有 `REQUEST_METHOD` 时，受限制入口会抛出 `METHOD_NOT_ALLOWED`。测试或 CLI 调用时需明确提供方法。
@@ -137,4 +137,4 @@ $result = SlightPHP::run('/your/controller/entry');
 
 ## 调度失败与异常
 
-核心失败统一抛出 `SlightPHP\Exception`，通过 `getCode()` 区分原因，通过 `getContext()` 获取诊断上下文；`getStatusCode()` 仅给出建议 HTTP 状态，不发送响应。未定义别名的查询也改为抛出异常。控制器主动返回的 `false` 仍是业务返回值，不能用来判断调度失败。原因列表、入口 catch 示例和内部调用迁移见 [核心异常与迁移](exceptions.md)。
+核心失败统一抛出 `SlightPHP\Exception`，通过 `getCode()` 区分原因，通过 `getContext()` 获取诊断上下文；`getStatusCode()` 仅给出建议 HTTP 状态，不发送响应。未定义别名的查询也改为抛出异常。控制器主动返回的 `false` 仍是业务返回值，不能用来判断调度失败。原因列表、入口 catch 示例和内部调用迁移见 [核心异常与处理](exceptions.md)。

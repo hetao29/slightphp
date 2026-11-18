@@ -16,11 +16,11 @@
 | --- | --- |
 | `/`、`/site/main/entry`、`/#features` | 框架首页、安装命令、完整功能特性、调度流程、控制器映射与应用职责 |
 | `/site/main/features` | 保留旧地址，跳转至首页功能特性区域并保留所选语言 |
-| `/site/main/plugins` | 插件分类、搜索、依赖说明，原生 JSON、Tpl 与 Route 功能示例 |
+| `/site/main/plugins` | 插件分类、搜索、依赖说明，各插件运行示例与独立手册，Tpl 与 Route 功能示例 |
 | `/site/main/guide` | 入门：运行样例、Composer 安装、入口、控制器、部署注意事项 |
 | `/site/main/examples` | 十节 samples 源码讲解：目录、入口、路由、Route 注解、Request-Type、多语言、配置、模板、表单与数据库操作，以及交互验证 |
 | `/site/main/docs`、`?doc=plugins.md`、`?doc=index.html` | 完整 docs 目录、单篇指南与生成的 API 参考 |
-| `/site/main/docs?doc=migration-6.7.md` | 6.7 升级：6.7.0 模板迁移与 6.7.1 CSRF 接入 |
+| `/site/main/docs?doc=CHANGELOG.md#67-迁移指南` | 6.7 升级：6.7.0 模板迁移与 6.7.1 CSRF 接入 |
 | `/site/main/docs?doc=CHANGELOG.md` | 直接读取仓库 CHANGELOG.md 的完整版本记录 |
 | `/site/main/changelog` | 旧地址跳转至文档中的 ChangeLog |
 | `/lab/template/entry`、`/widgets/template/context` | include / part、变量作用域、默认自动转义、全部修饰器及 HTML/URL/JS/CSS 自动转义 |
@@ -44,7 +44,7 @@
 
 官网及交互工作台使用 `SlightPHP\Language` 提供简体中文（zh-cn）、繁體中文（zh-tw）与英文（en）。有效 `lang` 查询参数优先于 `slightphp-language` Cookie，然后按 Accept-Language 中的出现顺序匹配，跳过 q=0，最终回退到简体中文。浏览器语言的地区与文字变体归入这三种语言；手动选择保存一年，切换保留当前路径、查询参数和浏览器片段。
 
-入口在首次调用 Language::tr() 之前设置 locale；三份 JSON 词条位于 `samples/app/languages/{zh-cn,zh-tw,en}/main.json`，通过 Config 解析，格式与语言文件说明见 [Language](plugins.md#language)。`SampleI18n::t()` 提供控制器文本，`e()` 在翻译后转义 HTML，客户端主题、筛选、复制和删除提示通过 JSON 共享同一批词条。预置任务随语言切换，用户输入的任务内容保留原文。
+入口在首次调用 Language::tr() 之前设置 locale；三份 JSON 词条位于 `samples/app/languages/{zh-cn,zh-tw,en}/main.json`，通过 Config 解析，格式与语言文件说明见 [Language 使用手册](language.md)。`SampleI18n::t()` 提供控制器文本，`e()` 在翻译后转义 HTML，客户端主题、筛选、复制和删除提示通过 JSON 共享同一批词条。预置任务随语言切换，用户输入的任务内容保留原文。
 
 顶栏导航顺序为「首页 → 入门 → 示例 → 插件 → 文档」。「文档」统一读取 docs 中的 Markdown、index.html API 参考和根目录 CHANGELOG.md，提供目录、代码块、表格、文档间跳转和章节锚点。内容保留仓库原文，更新无需另行复制。仅允许文档清单中的文件和固定的根目录 ChangeLog，路径越界、非文档文件和无效参数返回 404。
 
@@ -95,3 +95,5 @@ URL 无需改变，例如 `/workspace/main/save` 对应 `app/Workspace/MainContr
 部署示例站点后，按[部署文档](deployment.md#验证)访问官网和示例入口，检查当前导航、代码转义、复制按钮、插件清单、无入口前缀链接与错误页；在独立会话中检查任务操作、输入校验与会话隔离。前端脚本可通过 `node --check samples/www/assets/site.js` 检查语法。
 
 已通过 Chromium 验证简体、繁体和英文在 1440、1101、1024、820、390、320 宽度下的官网、完整文档和工作台没有横向溢出；同时验证自动跟随系统、手动切换、刷新后偏好保留、存储不可用时切换、语言切换保留查询与片段，以及动态筛选提示。
+
+文档页左侧将所有版本更新与迁移说明统一放在最下方的 ChangeLog 入口；旧的迁移文档地址会跳转到 ChangeLog 对应章节。

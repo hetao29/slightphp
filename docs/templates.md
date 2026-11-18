@@ -31,11 +31,11 @@ $tpl->render('workspace/template.tpl', [
 
 `assign()`、`render()`、`display()` 和 `fetch()` 都使用当前实例的数据。`render()` 参数覆盖同名变量，未覆盖的数据保留；循环和子模板赋值也保留在该实例。常驻服务按请求创建新实例。模板目录、编译目录、分隔符及强制编译等选项仍由所有实例共享。
 
-`render()`、`display()`、`fetch()` 直接输出，返回值为 null。`fetch()` 要求调用前已设置目录，未指定分隔符时使用默认值；`render()` 可初始化缺省配置。6.3.x 的静态调用及变量表访问方式需按 [6.4 迁移指南](migration-6.4.md)调整。
+`render()`、`display()`、`fetch()` 直接输出，返回值为 null。`fetch()` 要求调用前已设置目录，未指定分隔符时使用默认值；`render()` 可初始化缺省配置。6.3.x 的静态调用及变量表访问方式需按 [6.4 迁移指南](../CHANGELOG.md#64-迁移指南)调整。
 
 ## 上下文自动转义
 
-6.7.0 统一启用上下文自动转义，不再提供兼容模式。`setContextMode()`、`getContextMode()` 已移除，旧调用会报错；请删除调用并按 [6.7 迁移指南](migration-6.7.md)迁移数据与模板。直接创建实例即可：
+6.7.0 统一启用上下文自动转义，不再提供兼容模式。`setContextMode()`、`getContextMode()` 已移除，旧调用会报错；请删除调用并按 [6.7 迁移指南](../CHANGELOG.md#67-迁移指南)迁移数据与模板。直接创建实例即可：
 
 ```php
 \SlightPHP\Tpl::setDelimter();
@@ -48,7 +48,7 @@ $tpl->render('page.tpl', [
 ]);
 ```
 
-模板应传入原始数据，让模板按输出位置编码。仅用于 HTML 输出防护的 `htmlspecialchars()`、`htmlentities()` 和末尾 `|escape` 通常可省略；URL 组成部分的手工 `urlencode()` / `rawurlencode()` 也通常可省略。完整 URL 的构造及业务/签名编码不能批量删除。普通函数没有编码意图标记，可能被再次编码；末尾内置 `escape` 的编码意图处理保留。替换示例及边界见 [自动转义迁移与不兼容说明](migration-6.7.md#手工编码与原始数据)。
+模板应传入原始数据，让模板按输出位置编码。仅用于 HTML 输出防护的 `htmlspecialchars()`、`htmlentities()` 和末尾 `|escape` 通常可省略；URL 组成部分的手工 `urlencode()` / `rawurlencode()` 也通常可省略。完整 URL 的构造及业务/签名编码不能批量删除。普通函数没有编码意图标记，可能被再次编码；末尾内置 `escape` 的编码意图处理保留。替换示例及边界见 [自动转义迁移与不兼容说明](../CHANGELOG.md#67-手工编码与原始数据)。
 
 以下模板使用默认 `{` / `}`，与 samples 的入口配置相同：
 
@@ -243,7 +243,7 @@ public function Card(\SlightPHP\Request $request, \SlightPHP\Response $response)
 }
 ```
 
-Card 的模板及其 include 读取到 `CHILD`，调用结束后父模板仍读取到 `PARENT`。part 通过 `SlightPHP::run($path)` 创建控制器与新的 Request / Response；路径数组对应显式路径，请求的 GET、POST、Cookie、请求头等仍来自当前 PHP 请求。URL 路径参数保留原始内容，不自动 URL 解码；路径后的查询串不会合成为新的 GET 参数。6.5.2 起，`Request-Type` 前缀校验也适用于内部调用；part 不会自动补头，目标方法名以已配置类型开头而当前请求类型不匹配时会抛出 405，见[迁移说明](migration-6.5.md#请求类型前缀校验652)。
+Card 的模板及其 include 读取到 `CHILD`，调用结束后父模板仍读取到 `PARENT`。part 通过 `SlightPHP::run($path)` 创建控制器与新的 Request / Response；路径数组对应显式路径，请求的 GET、POST、Cookie、请求头等仍来自当前 PHP 请求。URL 路径参数保留原始内容，不自动 URL 解码；路径后的查询串不会合成为新的 GET 参数。6.5.2 起，`Request-Type` 前缀校验也适用于内部调用；part 不会自动补头，目标方法名以已配置类型开头而当前请求类型不匹配时会抛出 405，见[迁移说明](../CHANGELOG.md#65-请求类型前缀校验652)。
 
 part 在同一个 PHP 请求中同步执行，session、超全局变量和响应头仍属于整个请求；它保留顶层 `zone/page/entry`。指向当前顶层入口的调用会抛出 `SlightPHP\Exception::RECURSIVE_DISPATCH`，其他循环调用需由应用控制。片段路径使用固定值或白名单；模块方法负责权限、输入校验及输出转义。
 
