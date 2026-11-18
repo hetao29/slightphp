@@ -31,6 +31,10 @@
 | `/tasks/save` | POST | 写操作短地址，仍需 CSRF token |
 | `/workspace/main/plugins` | GET | 真实解析 Config 配置及检测扩展 |
 | `/lab/template/entry` | GET | include/part、变量作用域、全部修饰器、上下文转义与编译缓存 |
+| `/lab/csrf/entry` | GET | 表单、Ajax、自定义字段、403 拒绝与 token 更新实验 |
+| `/lab/csrf/submit`、`/lab/csrf/customsubmit` | POST | 校验成功后计数并 303 跳转 |
+| `/lab/csrf/check`、`/lab/csrf/customcheck` | POST | 默认或自定义请求头校验，返回 JSON |
+| `/lab/csrf/rotate` | POST | 校验当前 token 后更新 |
 | `/lab/language/entry` | GET | 简体、繁体、英文切换、动态称呼、JSON 词条与缺失词条回退 |
 | `/widgets/template/card/direct` | GET | 独立渲染模块卡片，读取路径参数 direct |
 | `/widgets/template/context` | GET | 独立自动模式片段：修饰链、JS/CSS、事件、分隔符、缓存和错误用例 |
@@ -56,11 +60,15 @@ samples 的全部模板和展示代码统一使用默认 `{` / `}`。入口调�
 
 `missing_demo_key` 未在 demo 区域定义，实际返回原词条键。称呼要求 1–80 个字符；无效输入返回 400 并提示，所有动态文本在 HTML 输出时转义。示例切换语言会发起新请求，由入口调用 `setLocale()` 更新候选语言；应用在同一请求内也可通过该 setter 切换语言。JSON/JSONC 格式、回退与缓存规则见 [Language 说明](plugins.md#language)。
 
+## CSRF 实验
+
+从工作台侧栏、示例索引或插件页进入 `/lab/csrf/entry`。分别提交普通表单与 JSON 请求，比较有效、缺失和错误 token 的 200 / 403；自定义名称面板使用 `csrf: '--csrf--token'`，表单字段和请求头均同名。页面对比手写字段、预先传入 `Csrf::tokenInput()` 的 HTML、以及模板直接调用 `{\SlightPHP\Csrf::tokenInput()|raw}` 三种写法，成功提交才增加计数。更新 token 后，旧标签页及任务工作台中的旧表单均会失效。所有实验支持三种语言，表单和更新不依赖 JavaScript。完整接入步骤、API、异常响应与验证方法见 [CSRF 使用手册](csrf.md)。
+
 ## 数据与安全设计
 
 入口显式选择 files 会话后端并使用系统临时目录，避免依赖机器默认的 Redis 会话配置。数据保存在 PHP session 中，首次访问初始化三条任务。不同会话相互隔离；同一会话的 JSON 接口与页面共享数据。关闭浏览器、会话清理等可能导致数据丢失，不承诺持久存储。
 
-任务标题要求 1–80 个 Unicode 字符，每会话最多 50 项；浏览器校验之外还有服务端校验。所有动态 HTML 使用 `htmlspecialchars` 转义，写操作需要 CSRF token。不要将其当作带用户体系的生产任务系统：没有登录、跨设备同步、持久数据库或权限管理。
+任务标题要求 1–80 个 Unicode 字符，每会话最多 50 项；浏览器校验之外还有服务端校验。动态 HTML 由 Tpl 按上下文自动转义；写操作使用 `#[Route(method: 'POST', csrf: true)]`，表单通过 `_csrf` 提交 `Csrf::token()` 的值，校验失败抛异常并由入口返回 403。不要将其当作带用户体系的生产任务系统：没有登录、跨设备同步、持久数据库或权限管理。
 
 ## 验证
 
@@ -68,4 +76,4 @@ samples 的全部模板和展示代码统一使用默认 `{` / `}`。入口调�
 
 ## 清理后的范围
 
-samples 仅包含官网与当前可运行的任务、路由、配置、JSON、模板组合和多语言示例。历史 user、photos、guestbook、Auction、数据库与 Redis 测试、backend、locale、旧配置和模板缓存已删除。插件实现仍保留在仓库 plugins 中，可参考插件文档独立使用。
+samples 仅包含官网与当前可运行的任务、路由、配置、JSON、模板组合、多语言和 CSRF 示例。历史 user、photos、guestbook、Auction、数据库与 Redis 测试、backend、locale、旧配置和模板缓存已删除。插件实现仍保留在仓库 plugins 中，可参考插件文档独立使用。

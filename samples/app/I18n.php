@@ -60,7 +60,7 @@ final class SampleI18n
     public static function clientMessages(): array
     {
         $messages = [];
-        foreach (['auto', 'dark', 'light', 'theme_cycle', 'plugin_count', 'task_count', 'copied', 'copy_manually', 'confirm_delete', 'sample_request_failed'] as $key) {
+        foreach (['auto', 'dark', 'light', 'theme_cycle', 'plugin_count', 'task_count', 'copied', 'copy_manually', 'confirm_delete', 'sample_request_failed', 'csrf_demo_accepted', 'csrf_demo_rejected'] as $key) {
             $messages[$key] = self::t($key);
         }
         return $messages;

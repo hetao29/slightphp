@@ -66,7 +66,10 @@ final class Compiler
     public static function compile(array $tokens): string
     {
         // 闭合栈校验结构；预测失败置 null，只影响快路径选择，不隐藏运行时错误。
+        /** @var array<int,array{end:int,code:string}> $blocks 按起始 token 下标索引的 HTML 候选块。 */
         $tokens = array_values($tokens); $blocks = self::htmlBlocks($tokens); $blockEnd = -1;
+        /** @var list<array{entry:list<Context|null>,branches:list<Context|null>,else:bool}> $frames 控制结构的分支状态栈。 */
+        /** @var list<Context|null> $predictions 当前分支可能到达的输出状态；null 表示无法预测。 */
         $output = ''; $stack = []; $frames = []; $javascriptPlanCache = new JsPlanCache(); $predictions = [new Context($javascriptPlanCache)];
         foreach ($tokens as $index => [$kind, $body]) {
             if ($blockEnd >= 0 && $index > $blockEnd) { $output .= '<?php } ?>'; $blockEnd = -1; }
@@ -172,6 +175,8 @@ final class Compiler
     /**
      * 把连续的字面量及纯变量/常量键查找作为候选块；控制、函数、修饰器和赋值均切断。
      * 原代码仍逐 token 编译在 else 分支中，候选上下文/JS 计划不因直接输出路径而丢失。
+     * @param list<array{0:'text'|'tag',1:string}> $tokens 已按顺序重排的模板 token。
+     * @return array<int,array{end:int,code:string}> 以起始 token 下标为键，记录结束下标和快路径 PHP 源码。
      */
     private static function htmlBlocks(array $tokens): array
     {
@@ -187,7 +192,11 @@ final class Compiler
         return $blocks;
     }
 
-    /** 只接受变量及整数/不插值字符串常量键，路径本身不会调用用户函数。 */
+    /**
+     * 只接受变量及整数/不插值字符串常量键，路径本身不会调用用户函数。
+     * @param string $source 待识别的模板变量表达式。
+     * @return string|null 描述根变量名与键列表的 PHP 数组表达式；不支持的表达式返回 null。
+     */
     private static function lookupPath(string $source): ?string
     {
         $tokens = token_get_all('<?php ' . trim($source)); array_shift($tokens);
@@ -211,6 +220,8 @@ final class Compiler
      * 运行时还要求路径节点为原生数组、叶子为标量/null，且实际入口为 HTML 文本。
      * URL 仅接受不含其它变量的固定 / 前缀，并保留拼接后的协议检查；其它敏感位置回退。
      * 每块限制源码大小，避免给大型静态文档额外生成重复代码。
+     * @param list<array{0:'text'|'tag',1:string}> $tokens 一个候选块中的字面量与只读变量 token。
+     * @return string|null 包含入口守卫和 else 开头的 PHP 源码；无法采用快路径时返回 null。
      */
     private static function htmlBlock(array $tokens): ?string
     {
@@ -220,6 +231,7 @@ final class Compiler
         foreach ($tokens as [$kind, $body]) $source .= $body;
         $prefix = '__slight_html_' . substr(hash('sha256', $source), 0, 16) . '_';
         while (str_contains($source, $prefix)) $prefix .= '_';
+        /** @var array<string,array{id:int,attribute:string|null,url:bool}> $markers 占位符到编码结果和属性类别的映射。 */
         $paths = []; $pathIds = []; $encoded = []; $encodingIds = []; $markers = []; $context = new Context();
         ob_start();
         try {
@@ -291,7 +303,11 @@ final class Compiler
             . '$__tpl_html_encoded=[' . implode(',', $encoded) . '];' . $code . '} else { ?>';
     }
 
-    /** 单次前进切分完整 HTML 标签，忽略属性引号内的 >；不对每个 < 重扫剩余全文。 */
+    /**
+     * 单次前进切分完整 HTML 标签，忽略属性引号内的 >；不对每个 < 重扫剩余全文。
+     * @param string $html 带编译期占位符的 HTML 候选文本。
+     * @return list<string>|null 完整标签与标签外文本组成的有序片段；标签不完整时返回 null。
+     */
     private static function htmlPieces(string $html): ?array
     {
         $pieces = []; $offset = 0; $length = strlen($html);
@@ -312,7 +328,13 @@ final class Compiler
         return $pieces;
     }
 
-    /** 将编译期标记替换为编码后的局部变量引用；真实请求值不会参与源码替换。 */
+    /**
+     * 将编译期标记替换为编码后的局部变量引用；真实请求值不会参与源码替换。
+     * @param string $source 含编译期占位符的 HTML 片段或属性值。
+     * @param string $pattern 捕获占位符的完整正则。
+     * @param array<string,array{id:int,attribute:string|null,url:bool}> $markers 占位符与编码结果下标的映射。
+     * @return string 拼接可信字面量与编码结果引用的 PHP 表达式。
+     */
     private static function htmlExpression(string $source, string $pattern, array $markers): string
     {
         $parts = preg_split($pattern, $source, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY); $code = [];
@@ -350,7 +372,11 @@ final class Compiler
         return self::textLiteralPlan($text);
     }
 
-    /** 在干净的 HTML 文本入口预演一次，保存静态输出及未完成标签，不保存动态数据。 */
+    /**
+     * 在干净的 HTML 文本入口预演一次，保存静态输出及未完成标签，不保存动态数据。
+     * @param string $text 需要预演的可信模板字面量。
+     * @return array{mode?:'text'|'open',tag?:string,quote?:string,output?:string} 静态出口与输出；无法预测时为空数组。
+     */
     private static function textLiteralPlan(string $text): array
     {
         ob_start();

@@ -20,6 +20,7 @@ final class JsPlanCache
     /** @var string|null null 为模板编译阶段；非空为当前外层模板的上下文侧缓存。 */
     private ?string $file;
 
+    /** @param string|null $file JS 计划侧缓存的文件路径；null 表示只保留内存计划。 */
     public function __construct(?string $file = null)
     {
         $this->file = $file;
@@ -33,7 +34,11 @@ final class JsPlanCache
         }
     }
 
-    /** 由可信的 PHP 编译文件注册；同键优先采用编译文件里的计划。 */
+    /**
+     * 由可信的 PHP 编译文件注册；同键优先采用编译文件里的计划。
+     * @param array<string,array<string,mixed>> $plans 以状态和源码摘要为键的 JS 计划表。
+     * @return void
+     */
     public function register(array $plans): void { $this->plans = $plans + $this->plans; }
 
     /** @return array<string,array<string,mixed>> 模板编译结果需要嵌入的计划。 */
@@ -59,6 +64,7 @@ final class JsPlanCache
     /**
      * 正常渲染结束后保存新上下文，锁内合并避免并发请求互相覆盖；已命中时不写文件。
      * 侧缓存有界，旧变体可淘汰后重编译；普通数据已规范化，raw 按可信源码处理。
+     * @return void
      * @throws \RuntimeException 新变体无法保存。
      */
     public function save(): void
@@ -80,11 +86,16 @@ final class JsPlanCache
         } finally { fclose($handle); }
     }
 
-    /** 侧缓存损坏/版本不符视为编译未命中，不使用不完整的状态数据。 */
+    /**
+     * 侧缓存损坏/版本不符视为编译未命中，不使用不完整的状态数据。
+     * @param string $json 从侧缓存读取的完整 JSON 文本。
+     * @return array<string,array<string,mixed>> 已通过版本和基本结构检查的 JS 计划表。
+     */
     private static function read(string $json): array
     {
         $data = json_decode($json, true);
         if (!is_array($data) || ($data['version'] ?? '') !== self::VERSION || ($data['compiler'] ?? null) !== Compiler::JS_VERSION || !is_array($data['plans'] ?? null)) return [];
+        /** @var array<string,array<string,mixed>> $plans 仅保留符合计划结构的缓存项。 */
         $plans = [];
         foreach ($data['plans'] as $key => $plan) {
             if (!is_string($key) || strlen($key) !== 64 || !is_array($plan)) continue;

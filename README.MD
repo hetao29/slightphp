@@ -1,8 +1,10 @@
-# SlightPHP 6.7.0
+# SlightPHP 6.7.1
 
 SlightPHP 是一个轻量 PHP 框架，按照请求路径加载命名空间控制器并调用公开方法。应用负责响应输出、状态码、权限和输入校验。
 
 [官网](https://slightphp.com/) · [源码](https://github.com/hetao29/slightphp)
+
+6.7.1 新增 Session CSRF 防护，通过 Route 的 `csrf` 参数启用，支持自定义字段/请求头、`tokenInput()` 及公共配置。samples 提供三种表单写法与 Ajax、token 更新实验；接入见 [CSRF 使用手册](docs/csrf.md)。
 
 6.7.0 默认启用 Tpl 上下文自动转义，移除 `setContextMode()`、`getContextMode()` 及兼容编译分支。模板应传入原始数据，可信 HTML 用末尾 `|raw`；升级前需迁移手工编码、JSON 数据块和动态属性名，见 [6.7 迁移与不兼容说明](docs/migration-6.7.md)。
 
@@ -22,10 +24,10 @@ SlightPHP 是一个轻量 PHP 框架，按照请求路径加载命名空间控�
 
 ## 安装
 
-核心需要 PHP 8.0+。插件依赖通过 Composer 的 `suggest` 声明，默认不安装；使用 Db、Redis、Http 或 Captcha 时，再按需安装对应扩展或 Composer 包，见[插件依赖](docs/plugins.md#按需安装依赖)。
+核心需要 PHP 8.0+。插件依赖通过 Composer 的 `suggest` 声明，默认不安装；使用 Db、Redis、Http、Csrf 或 Captcha 时，再按需安装对应扩展或 Composer 包，见[插件依赖](docs/plugins.md#按需安装依赖)。
 
 ```bash
-composer require hetao29/slightphp:^6.7.0
+composer require hetao29/slightphp:^6.7.1
 ```
 
 ## 创建应用
@@ -79,6 +81,8 @@ class MainController
 控制器可使用 `Entry(\SlightPHP\Request $request, \SlightPHP\Response $response)`，通过 `$request->route` 读取完整路由分段，通过 `get/post/request/cookie/files/header/server` 读取请求数据，使用 Response 设置响应并输出。入口按 Request、Response 的顺序传入两个位置参数，参数名不限；原 `$inPath` 签名需要迁移，详见 [Request 与 Response](docs/http.md)。
 
 在控制器方法上添加 `#[\SlightPHP\Route(method: 'POST')]` 或 `#[\SlightPHP\Route(methods: ['POST', 'GET'])]` 可限制 HTTP 方法；不匹配时抛出异常，由入口返回 405 和 Allow。详见 [Route 方法注解](docs/framework.md#route-方法注解)。
+
+写操作可在 Route 注解中设置 `csrf: true`，例如 `#[\SlightPHP\Route(method: 'POST', csrf: true)]`：应用启动 Session 后通过 `Csrf::token()` 生成表单 `_csrf` 字段或 `X-CSRF-Token` 请求头的值，调度器在构造控制器前校验，失败抛出异常。详见 [Csrf 插件](docs/plugins.md#csrf)。
 
 从 6.5.0 起，核心调度失败统一抛出 `SlightPHP\Exception`，不再返回 `false` 或直接生成错误响应。已有入口及内部调用需按 [核心异常与迁移](docs/exceptions.md)调整。
 

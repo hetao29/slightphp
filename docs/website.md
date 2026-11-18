@@ -1,8 +1,8 @@
-# SlightPHP 框架介绍官网（6.7.0）
+# SlightPHP 框架介绍官网（6.7.1）
 
 官网由 SlightPHP + Tpl 构建，内容依据当前仓库源码整理，不依赖外部图片、字体或 JavaScript 库。首页介绍核心定位，内页覆盖功能、插件、入门与可运行示例。
 
-正式官网地址为 [https://slightphp.com/](https://slightphp.com/)，当前展示版本为 6.7.0。GitHub 链接用于源码与许可证，不作为官网地址。
+正式官网地址为 [https://slightphp.com/](https://slightphp.com/)，当前展示版本为 6.7.1。GitHub 链接用于源码与许可证，不作为官网地址。
 
 ## 访问与部署
 
@@ -20,11 +20,12 @@
 | `/site/main/guide` | 入门：运行样例、Composer 安装、入口、控制器、部署注意事项 |
 | `/site/main/examples` | 十节 samples 源码讲解：目录、入口、路由、Route 注解、Request-Type、多语言、配置、模板、表单与数据库操作，以及交互验证 |
 | `/site/main/docs`、`?doc=plugins.md`、`?doc=index.html` | 完整 docs 目录、单篇指南与生成的 API 参考 |
-| `/site/main/docs?doc=migration-6.7.md` | 6.7.0 升级、不兼容事项与默认自动转义迁移 |
+| `/site/main/docs?doc=migration-6.7.md` | 6.7 升级：6.7.0 模板迁移与 6.7.1 CSRF 接入 |
 | `/site/main/docs?doc=CHANGELOG.md` | 直接读取仓库 CHANGELOG.md 的完整版本记录 |
 | `/site/main/changelog` | 旧地址跳转至文档中的 ChangeLog |
 | `/lab/template/entry`、`/widgets/template/context` | include / part、变量作用域、默认自动转义、全部修饰器及 HTML/URL/JS/CSS 自动转义 |
 | `/lab/language/entry` | 三种语言的实时翻译、动态称呼、JSON 语言文件与缺失词条回退 |
+| `/lab/csrf/entry` | CSRF 实验：普通表单、JSON 请求头、自定义名称、403 对比与 token 更新；手册 `?doc=csrf.md` |
 | `/lab/type/entry` | Request-Type 示例：普通请求调用 Entry，ajax 请求头调用 ajaxEntry，直接访问前缀方法缺少匹配头返回 405 |
 | `/r/hello`、`/r-json/hello`、`/r-pair/2026/11` | PHP / JSON 自定义路由实验与多参数 |
 | `/site/main/about` | 框架定位、许可与源码入口 |
@@ -77,6 +78,7 @@ URL 无需改变，例如 `/workspace/main/save` 对应 `app/Workspace/MainContr
 - `samples/config/routes.php`、`routes.json`：自定义 URL 映射，配置与验证见 [自定义路由手册](routes.md)。
 - `samples/app/Lab/TemplateController.php`、`samples/app/Widgets/TemplateController.php`：模板组合页面与跨模块片段，调用说明见 [Tpl 手册](templates.md)。
 - `samples/app/Lab/LanguageController.php`、`samples/app/languages/*/demo.json`：可运行的多语言实验与三套独立词条。
+- `samples/app/Lab/CsrfController.php`、`templates/workspace/csrf.tpl`：CSRF 交互实验，包含默认/自定义名称、tokenInput 与 token 更新；手册位于 docs/csrf.md。
 - `samples/app/Lab/TypeController.php`：返回纯文本方法名的 Request-Type 示例，供示例页发送真实请求。
 - `samples/www/index.php`：通过 `vendor/autoload.php` 加载核心与插件，只做环境配置、URI 解析和调度。
 - `samples/app/templates/head.tpl`、`footer.tpl`：公共布局与元信息。

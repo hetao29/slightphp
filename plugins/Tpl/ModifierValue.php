@@ -19,6 +19,12 @@ final class ModifierValue
     /** @var bool 最后一个修饰器是否为 raw；中间 raw 不放弃后续自动编码。 */
     public bool $raw;
 
+    /**
+     * @param mixed $value 修饰链的最终结果。
+     * @param bool $raw 最后一个修饰器是否要求可信原文输出。
+     * @param string|null $escape 保留的 html/url 编码意图；null 表示没有可复用意图。
+     * @param mixed $beforeEscape 最后一次有效 escape 之前的原值。
+     */
     public function __construct($value, bool $raw, ?string $escape = null, $beforeEscape = null)
     {
         $this->value = $value;

@@ -2,7 +2,7 @@
 
 /**
  * SlightPHP
- * @version 6.7.0
+ * @version 6.7.1
  * @link https://slightphp.com/
  * @copyright Copyright (c) 2026 SlightPHP
  * @license MIT
@@ -404,7 +404,7 @@ if (!class_exists("SlightPHP", false)):
 		 * @param string $path 显式路径；空字符串时从 pathInfo 或服务器请求信息读取。
 		 * @return mixed 入口方法的原始返回值，包括业务代码主动返回的 false。
 		 * 响应已通过 end()/redirect() 结束时返回 null，避免入口重复输出返回值。
-		 * @throws \SlightPHP\Exception 路径、控制器或入口不可用，或请求类型、Route HTTP 方法限制不匹配。
+		 * @throws \SlightPHP\Exception 路径、控制器或入口不可用，请求类型、Route HTTP 方法限制不匹配，或 Csrf 校验失败。
 		 * 核心不自动输出异常响应；控制器和注解自身的异常原样传播。
 		 */
 		public static function run($path = "")
@@ -520,35 +520,39 @@ if (!class_exists("SlightPHP", false)):
 							break;
 						}
 					}
-					$methodExists = method_exists($classname, $_method);
-					$methods = $methodExists ? self::getRouteMethods($classname, $_method) : false;
-					// 缺失或非公开入口不构造控制器，仍继续查找浅层候选。
-					if ($methods === false) {
+					// 先确认入口存在，再读取可见性和路由策略；失败时继续查找浅层候选。
+					if (!method_exists($classname, $_method)) {
 						$failure = ['Controller entry is missing or not callable',
-							$methodExists ? \SlightPHP\Exception::METHOD_NOT_CALLABLE : \SlightPHP\Exception::METHOD_NOT_FOUND,
+							\SlightPHP\Exception::METHOD_NOT_FOUND,
 							['path' => $path, 'controller' => $classname, 'method' => $_method]];
 						continue;
 					}
-					if ($methods !== [] && !in_array(strtoupper((string) $request->getMethod()), $methods, true)) {
+					$entryMetadata = self::getEntryMetadata($classname, $_method);
+					if (!$entryMetadata['isPublic']) {
+						$failure = ['Controller entry is missing or not callable',
+							\SlightPHP\Exception::METHOD_NOT_CALLABLE,
+							['path' => $path, 'controller' => $classname, 'method' => $_method]];
+						continue;
+					}
+					$allowedMethods = $entryMetadata['allowedMethods'];
+					if ($allowedMethods !== [] && !in_array(strtoupper((string) $request->getMethod()), $allowedMethods, true)) {
 						throw new \SlightPHP\Exception('HTTP method not allowed', \SlightPHP\Exception::METHOD_NOT_ALLOWED, [
 							'path' => $path, 'controller' => $classname, 'method' => $_method,
-							'requestMethod' => $request->getMethod(), 'allowedMethods' => $methods,
+							'requestMethod' => $request->getMethod(), 'allowedMethods' => $allowedMethods,
 						]);
 					}
-					$classInstance = new $classname($request);
-					if (is_callable(array(&$classInstance, $_method))) {
-						if (!$isPart) {
-							self::$zone  = $_zone;
-							self::$page  = $_page;
-							self::$entry = $_entry;
-						}
-						$response = new \SlightPHP\Response();
-						$result = $classInstance->$_method($request, $response);
-						return $response->isWritable() ? $result : null;
+					if ($entryMetadata['csrfRequired']) {
+						\SlightPHP\Csrf::validate($request, $entryMetadata['csrfField']);
 					}
-					$failure = ['Controller entry is missing or not callable',
-						\SlightPHP\Exception::METHOD_NOT_CALLABLE,
-						['path' => $path, 'controller' => $classname, 'method' => $_method]];
+					$classInstance = new $classname($request);
+					if (!$isPart) {
+						self::$zone  = $_zone;
+						self::$page  = $_page;
+						self::$entry = $_entry;
+					}
+					$response = new \SlightPHP\Response();
+					$result = $classInstance->$_method($request, $response);
+					return $response->isWritable() ? $result : null;
 				} else {
 					$failure = ['Controller class not found', \SlightPHP\Exception::CLASS_NOT_FOUND, ['path' => $path, 'controller' => $classname, 'file' => $file]];
 				}
@@ -561,21 +565,33 @@ if (!class_exists("SlightPHP", false)):
 		}
 
 		/**
-		 * 按实际控制器与入口缓存 Route 元数据；命中后不再创建反射对象。
-		 * 不缓存当前请求的匹配结果；非公开方法不解析注解。
-		 * @return string[]|false 允许的 HTTP 方法；未限制为空数组，非公开方法为 false。
+		 * 读取已存在入口的可见性与 Route 策略，按实际控制器和方法缓存元数据。
+		 * 不缓存当前请求的匹配结果；非公开方法不解析注解，无注解时不增加请求限制。
+		 * @param string $classname 已加载的控制器类名。
+		 * @param string $method 已确认存在的入口方法名。
+		 * @return array{isPublic:bool,allowedMethods:string[],csrfRequired:bool,csrfField:string|null} 结构固定的入口元数据。
 		 */
-		private static function getRouteMethods(string $classname, string $method): array|false
+		private static function getEntryMetadata(string $classname, string $method): array
 		{
 			static $cache = [];
 			$key = strtolower($classname . '::' . $method);
 			if (!isset($cache[$key])) {
 				$reflection = new \ReflectionMethod($classname, $method);
-				if (!$reflection->isPublic()) {
-					return $cache[$key] = false;
+				$metadata = ['isPublic' => $reflection->isPublic(), 'allowedMethods' => [], 'csrfRequired' => false, 'csrfField' => null];
+				if ($metadata['isPublic']) {
+					// 其他类型的注解不参与路由策略；同一入口只允许声明一个 Route。
+					$routeAttributes = $reflection->getAttributes(\SlightPHP\Route::class);
+					if (count($routeAttributes) > 1) {
+						throw new \InvalidArgumentException('Route attribute must not be repeated');
+					}
+					foreach ($routeAttributes as $routeAttribute) {
+						$route = $routeAttribute->newInstance();
+						$metadata['allowedMethods'] = $route->getMethods();
+						$metadata['csrfRequired'] = $route->isCsrfRequired();
+						$metadata['csrfField'] = $route->getCsrfField();
+					}
 				}
-				$attributes = $reflection->getAttributes(\SlightPHP\Route::class);
-				$cache[$key] = $attributes === [] ? [] : $attributes[0]->newInstance()->getMethods();
+				$cache[$key] = $metadata;
 			}
 			return $cache[$key];
 		}

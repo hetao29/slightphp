@@ -204,33 +204,29 @@ HTML],
         'blocks' => [
             ['label' => 'samples/app/templates/workspace/index.tpl', 'code' => <<<'HTML'
 <form method="post" action="/workspace/main/save">
-    <input type="hidden" name="csrf" value="{$csrf}">
+    <input type="hidden" name="_csrf" value="{$csrf}">
     <input type="hidden" name="action" value="add">
     <input name="title" maxlength="80" required>
     <button type="submit">Add task</button>
 </form>
 HTML],
             ['label' => 'Workspace\\MainController::Save', 'code' => <<<'PHP'
-#[\SlightPHP\Route(method: 'POST')]
+#[\SlightPHP\Route(method: 'POST', csrf: true)]
 public function Save(\SlightPHP\Request $request, \SlightPHP\Response $response)
 {
-    if (!is_string($_POST['csrf'] ?? null)
-        || !hash_equals($this->token(), $_POST['csrf'])) {
-        http_response_code(403);
-        $this->render('error', [
-            'message' => SampleI18n::t('this_form_has_expired_return_to_the_workspace_refresh'),
-        ]);
-        return;
-    }
+    // The dispatcher validates CSRF before constructing the controller.
     // Validate action and title, then update the tasks.
     // See the complete Save() method in the source file.
     header('Location: /workspace/main/entry', true, 303);
 }
 PHP],
+            ['label' => 'Workspace\\MainController::render', 'code' => <<<'PHP'
+$data['csrf'] = \SlightPHP\Csrf::token();
+PHP],
         ],
         'notes' => ['sample_forms_validation', 'sample_forms_redirect'],
         'sources' => ['samples/app/Workspace/MainController.php', 'samples/app/templates/workspace/index.tpl'],
-        'links' => [['/tasks', 'open_the_workspace']],
+        'links' => [['/tasks', 'open_the_workspace'], ['/lab/csrf/entry', 'csrf_demo_open'], ['/site/main/docs?doc=csrf.md', 'csrf_demo_manual']],
     ],
     [
         'id' => 'sample-database', 'number' => '10', 'title' => 'sample_database_title',

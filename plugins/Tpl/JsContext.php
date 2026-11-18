@@ -22,9 +22,14 @@ final class JsContext
     /** @var array<string,mixed>|null 当前边界的编译结果；追加非空内容后失效。 */
     private ?array $context = null;
 
+    /** @param JsPlanCache $cache 当前输出流共享的 JS 计划集。 */
     public function __construct(JsPlanCache $cache) { $this->cache = $cache; }
 
-    /** 追加可信 JS 源码；事件属性增量须由调用者先做 HTML 实体解码。 */
+    /**
+     * 追加可信 JS 源码；事件属性增量须由调用者先做 HTML 实体解码。
+     * @param string $source 需要追加的源码或编码值对应的词法占位符。
+     * @return void
+     */
     public function literal(string $source): void
     {
         if ($source === '') return;
@@ -63,6 +68,7 @@ final class JsContext
      * 覆盖跨空值形成 ${...}、// 或 /* 等新词法边界的情况。
      * @param string $encoded 完成 JS 编码、未加 HTML 属性层的结果。
      * @param array{kind:string,regexStart?:bool} $context 本次已验证的编码位置。
+     * @return void
      */
     public function value(string $encoded, array $context): void
     {

@@ -33,6 +33,7 @@ class RouteController
                 'plugins' => ['/workspace/main/plugins', '03', SampleI18n::t('plugins_and_environment')],
                 'template' => ['/lab/template/entry', '04', SampleI18n::t('templates_and_modules')],
                 'language' => ['/lab/language/entry', '05', SampleI18n::t('language_example')],
+                'csrf' => ['/lab/csrf/entry', '06', SampleI18n::t('csrf_demo_title')],
             ],
             'json' => json_encode($this->request->route, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE),
             'original_uri' => $request->server['request_uri'] ?? ($request->server['path_info'] ?? ''),

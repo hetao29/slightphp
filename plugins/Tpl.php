@@ -249,7 +249,12 @@ class Tpl
         $this->outputContext->literal($text);
     }
 
-    /** 执行静态 HTML 转换计划，Context 负责实际入口守卫与标签组合校验。 */
+    /**
+     * 执行静态 HTML 转换计划，Context 负责实际入口守卫与标签组合校验。
+     * @param string $text 可信模板字面量。
+     * @param array{mode?:'text'|'open'|'close',tag?:string,quote?:string,output?:string,after?:array} $plan 编译器生成的静态状态计划。
+     * @return void
+     */
     private function writeContextLiteralPlan(string $text, array $plan): void {
         $this->outputContext->plannedLiteral($text, $plan);
     }
@@ -264,12 +269,21 @@ class Tpl
         $this->outputContext->value($value, $raw);
     }
 
-    /** 注册编译阶段生成的 JS 编码/状态计划，include 沿用当前渲染流。 */
+    /**
+     * 注册编译阶段生成的 JS 编码/状态计划，include 沿用当前渲染流。
+     * @param array<string,array<string,mixed>> $plans 以状态和源码摘要为键的 JS 计划表。
+     * @return void
+     */
     private function registerJavascriptPlans(array $plans): void {
         $this->outputContext->registerJavascriptPlans($plans);
     }
 
-    /** 执行已编译的 JS 编码调用，实参求值后仍校验实际入口。 */
+    /**
+     * 执行已编译的 JS 编码调用，实参求值后仍校验实际入口。
+     * @param mixed $value 已求值的数据，仍需按实际 JS/JSON 位置编码。
+     * @param array{kind:string,regexStart?:bool} $hint 编译期预测的 JS 编码位置。
+     * @return void
+     */
     private function writeContextJavascript($value, array $hint): void {
         $this->outputContext->javascriptPlannedValue($value, $hint);
     }

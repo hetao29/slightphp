@@ -17,6 +17,8 @@ class Exception extends \RuntimeException
     public const METHOD_NOT_ALLOWED = 10;
     public const ALIAS_NOT_FOUND = 11;
     public const INVALID_PATH = 12;
+    public const CSRF_INVALID = 13;
+    public const CSRF_SESSION_NOT_STARTED = 14;
 
     /** @var array<string,mixed> 失败时的路径、控制器或允许方法等诊断数据。 */
     private array $context;
@@ -46,6 +48,7 @@ class Exception extends \RuntimeException
             self::PATH_NOT_SET, self::PATH_TOO_DEEP, self::INVALID_PATH => 400,
             self::FILE_NOT_FOUND, self::FILE_NOT_ALLOWED, self::METHOD_NOT_FOUND, self::METHOD_NOT_CALLABLE => 404,
             self::METHOD_NOT_ALLOWED => 405,
+            self::CSRF_INVALID => 403,
             default => 500,
         };
     }

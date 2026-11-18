@@ -106,6 +106,7 @@ final class Lexer
      * 每个片段最多提交一次；已跳过的原生 ${...} 仍作为原文提交，保留嵌套表达式状态。
      * @param Context $probe Lexer 独享的源码状态，不与渲染上下文共用。
      * @param string $text 下一段原文字节。
+     * @return void
      */
     private static function probeLiteral(Context $probe, string $text): void
     {
@@ -120,6 +121,7 @@ final class Lexer
      * 因此这是原生 JS 插值的源码消歧提示，绝不能用于选择安全编码器。
      * @param Context $probe Lexer 独享的源码状态。
      * @param string $body 不含分隔符的模板标签。
+     * @return void
      */
     private static function probeTag(Context $probe, string $body): void
     {
@@ -215,6 +217,8 @@ final class Lexer
     /**
      * 仅在字符串/注释之外识别 ) 后的控制块左花括号。条件中的 '){' 等只是数据，
      * 不能使合法模板控制标签被跳过。扫描不执行表达式，也不改变原始标签内容。
+     * @param string $body 不含分隔符的候选控制标签主体。
+     * @return bool 是否在字符串和注释之外发现控制块的左花括号。
      */
     private static function nativeControlBlock(string $body): bool
     {

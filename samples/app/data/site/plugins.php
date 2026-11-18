@@ -1,6 +1,7 @@
 <?php
 // Module content, loaded only for the pages that use it.
 return [
+            ['name' => 'Csrf', 'group' => SampleI18n::t('core'), 'type' => 'base', 'text' => SampleI18n::t('csrf_session_tokens_and_entry_attributes'), 'need' => SampleI18n::t('start_session_before_using_csrf')],
             ['name' => 'Tpl', 'group' => SampleI18n::t('core'), 'type' => 'base', 'text' => SampleI18n::t('template_compilation_and_variable_assignment_with_conditions_loops_and'), 'need' => SampleI18n::t('requires_trusted_templates_and_a_writable_compilation_directory')],
             ['name' => 'Config', 'group' => SampleI18n::t('core'), 'type' => 'base', 'text' => SampleI18n::t('parse_json_jsonc_configuration_into_objects_arrays_and_basic'), 'need' => SampleI18n::t('configuration_files_disable_caching_during_development')],
             ['name' => 'Route', 'group' => SampleI18n::t('core'), 'type' => 'base', 'text' => SampleI18n::t('php_json_custom_url_mappings_and_http_method_attributes'), 'need' => SampleI18n::t('register_url_rules_before_run_the_core_enforces_method')],

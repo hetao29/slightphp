@@ -1,5 +1,13 @@
 # Changelog
 
+## 6.7.1 — 2026-11-18
+
+- 新增 `SlightPHP\Csrf`：提供 `token()`、`tokenInput(?string $fieldName = null)`、`validate(Request $request, ?string $fieldName = null)`、`rotate()` 和 `clear()`。公共静态变量 `$fieldName` / `$sessionKey` 默认分别为 `_csrf` / `_slightphp_csrf`，可由应用入口统一配置。
+- Route 新增 `csrf` 参数：true 使用默认字段和 `X-CSRF-Token`，字符串同时指定表单字段与同名请求头，省略或 false 不增加检查。在 HTTP 方法校验通过后、构造控制器前校验；无效 token 抛出 `CSRF_INVALID`（403），Session 未启动抛出 `CSRF_SESSION_NOT_STARTED`（500），由应用生成响应。
+- 整理核心入口检查：方法缺失、非公开分别判断，元数据始终返回固定结构；只缓存可见性和 Route 策略，每次请求重新校验。Route 属性统一置于方法前，同一入口允许不同类型注解共存，重复 Route 明确抛出 `InvalidArgumentException`。
+- samples 工作台改用 Route 的 CSRF 策略，新增 `/lab/csrf/entry` 三语言实验与 [CSRF 使用手册](docs/csrf.md)，展示手写字段、预先传入 hidden HTML、模板直接调用 `{\SlightPHP\Csrf::tokenInput()|raw}`，以及 JSON 请求、默认/自定义名称、403 拒绝和 token 更新。已验证首次编译、缓存复用及浏览器实际提交。
+- 补齐 `Tpl.php` 与 `Tpl/*` 方法缺失的参数、返回值及关键局部变量类型注释，明确编译计划和上下文数据的数组结构。
+
 ## 6.7.0 — 2026-11-18
 
 - 移除 Tpl 的 `$safe_mode`、`setSafeMode()` 及本地 `_compile()`；源码分词和编译统一由 `Tpl\Compiler::compileSource()` 完成。静态 PHP 标签不再替换为注释，按字面量输出；缓存选项去掉安全模式，旧缓存自动重建。Tpl 属性集中在类顶部，公开方法与内部渲染方法在后。

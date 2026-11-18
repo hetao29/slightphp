@@ -16,7 +16,7 @@
         "ext-pdo": "Required by the Db plugin",
         "ext-pdo_mysql": "Required by the current MySQL adapter of the Db plugin",
         "ext-redis": "Required by the Redis plugin (RedisArray, RedisCluster, or Sentinel; Sentinel requires phpredis 6.0+)",
-        "ext-session": "Required by the Captcha plugin and the sample application",
+        "ext-session": "Required by the Csrf and Captcha plugins and the sample application",
         "gregwar/captcha": "Required by the Captcha plugin (^1.3 || ^2.0); also requires GD, mbstring and fileinfo",
         "guzzlehttp/guzzle": "Required by the Http plugin (^7.0 || ^8.0)"
     },

@@ -1,10 +1,10 @@
 # SlightPHP 官网与交互示例
 
-示例对应 SlightPHP 6.7.0，包含请求类型前缀校验、结构化调度异常、Route 方法注解与 PHP / JSON 路由。模板数据使用 Tpl 实例隔离，控制器入口使用 `Request $request, Response $response`，路径从 `$request->route` 读取。升级已有应用请先参阅 [6.7 迁移指南](../docs/migration-6.7.md)，6.5.x 及更早版本还需完成 [6.6 迁移](../docs/migration-6.6.md)，从更早版本升级还需完成 [6.5 迁移](../docs/migration-6.5.md)；模板实例迁移见 [6.4 迁移指南](../docs/migration-6.4.md)，旧控制器签名迁移见 [6.3 迁移指南](../docs/migration-6.3.md)。
+示例对应 SlightPHP 6.7.1，包含请求类型前缀校验、结构化调度异常、Route 方法注解与 PHP / JSON 路由。模板数据使用 Tpl 实例隔离，控制器入口使用 `Request $request, Response $response`，路径从 `$request->route` 读取。升级已有应用请先参阅 [6.7 迁移指南](../docs/migration-6.7.md)，6.5.x 及更早版本还需完成 [6.6 迁移](../docs/migration-6.6.md)，从更早版本升级还需完成 [6.5 迁移](../docs/migration-6.5.md)；模板实例迁移见 [6.4 迁移指南](../docs/migration-6.4.md)，旧控制器签名迁移见 [6.3 迁移指南](../docs/migration-6.3.md)。
 
 正式官网为 [https://slightphp.com/](https://slightphp.com/)。自行部署示例站点后，访问部署地址的根路径 `/`，即可浏览框架介绍并体验交互示例。
 
-6.7.0 的所有页面与 Context 模块均默认自动转义，不再调用 `setContextMode()` 或 `getContextMode()`。模板传原始数据和翻译原文，文档浏览器仅对自身生成的可信 HTML 使用末尾 raw；客户端词条以数组传入 application/json 数据块。入口在会话启动前设置安全 Cookie 参数，反向代理需按[部署说明](../docs/deployment.md#cookie与会话安全)配置可信转发。新版本指南可在 `/site/main/docs?doc=migration-6.7.md` 阅读。
+从 6.7.0 起，所有页面与 Context 模块均默认自动转义，不再调用 `setContextMode()` 或 `getContextMode()`。模板传原始数据和翻译原文，文档浏览器仅对自身生成的可信 HTML 使用末尾 raw；客户端词条以数组传入 application/json 数据块。入口在会话启动前设置安全 Cookie 参数，反向代理需按[部署说明](../docs/deployment.md#cookie与会话安全)配置可信转发。新版本指南可在 `/site/main/docs?doc=migration-6.7.md` 阅读。
 
 - `/#features`：首页中的功能特性、调度流程与应用职责；旧 `/site/main/features` 跳转到该区域。
 - `/site/main/plugins`：插件搜索、分类与运行条件。
@@ -16,6 +16,7 @@
 - `/lab/template/entry`：跨目录 include、跨模块 part、变量隔离，以及全部修饰器、HTML/URL/JS/CSS 自动转义、分隔符和缓存用例。
 - `/widgets/template/context`：独立自动模式片段，展示 raw/escape/default/tr/tostring/version、修饰链、JS/事件的实际运行、默认 {} 与 literal、缓存变量更新和错误捕获。
 - `/lab/language/entry`：多语言实验，切换简体、繁体和英文，输入称呼，查看 demo.json 词条、实际翻译与缺失词条回退。
+- `/lab/csrf/entry`：CSRF 实验，对比普通表单、JSON 请求、默认/自定义名称、缺失或错误 token，以及更新后旧表单失效；手册位于 `/site/main/docs?doc=csrf.md`。
 - `/lab/type/entry`：普通请求调用 `Entry()`，带 `Request-Type: ajax` 时调用 `ajaxEntry()`；示例页可直接发送请求对比 200 与 405。
 - `/widgets/template/card/direct`：可独立访问的模块卡片片段。
 - `/workspace/main/entry`：可运行任务工作台。
@@ -38,10 +39,12 @@
 
 自定义规则位于 `config/routes.php` 和 `config/routes.json`，由 `www/index.php` 在调度前加载。入口保存已去除 index.php 的原始路径，再通过 `Route::parse($routePath)` 显式匹配；查询串不参与匹配，未命中时保留默认路径。路由实验室展示完整配置、原始 URI、映射后的 Request::route 与查询参数。详细用法见 [自定义 URL 路由](../docs/routes.md)。
 
-工作台 `Save` 使用 `#[Route(method: 'POST')]`，`Api` 使用 `#[Route(method: 'GET')]`；路由实验室 `Entry` 使用 `#[Route(methods: ['GET', 'POST'])]`。方法不匹配时框架抛出异常，由示例入口返回 405 和 Allow；找不到入口时同样捕获异常生成 404。请求类型前缀不匹配也会返回 405，但此时 allowedMethods 为空，入口不会输出空 Allow 头；内部调用与模板 part 同样需要匹配当前 Request-Type。规则见 [核心异常与迁移](../docs/exceptions.md)及 [Route 方法注解](../docs/framework.md#route-方法注解)。
+工作台 `Save` 使用 `#[Route(method: 'POST', csrf: true)]`，`Api` 使用 `#[Route(method: 'GET')]`；路由实验室 `Entry` 使用 `#[Route(methods: ['GET', 'POST'])]`。方法不匹配时框架抛出异常，由示例入口返回 405 和 Allow；找不到入口时同样捕获异常生成 404。请求类型前缀不匹配也会返回 405，但此时 allowedMethods 为空，入口不会输出空 Allow 头；内部调用与模板 part 同样需要匹配当前 Request-Type。规则见 [核心异常与迁移](../docs/exceptions.md)及 [Route 方法注解](../docs/framework.md#route-方法注解)。
 
 仅保留官网、当前可运行示例、模板、静态资源与配置。旧后台、业务控制器、外部服务配置、图片和模板缓存已移除。
 
 部署后通过浏览器访问官网、任务工作台、路由和模板实验，检查页面、交互及错误响应。具体步骤见[部署与排错](../docs/deployment.md#验证)。
 
 [Tpl include / part 手册](../docs/templates.md) · [官网维护说明](../docs/website.md) · [部署与排错](../docs/deployment.md) · [框架文档](../docs/README.md)
+
+[CSRF 使用手册](../docs/csrf.md)提供默认/自定义字段、`tokenInput()`、Ajax 请求头、token 生命周期与异常处理示例。

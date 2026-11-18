@@ -2,7 +2,7 @@
 
 运行 `composer install` 后，在应用入口引入 `vendor/autoload.php`。插件由 Composer 按需加载，使用 `SlightPHP\` 命名空间；6.x 不提供旧版全局类名。模板辅助函数由 Composer 自动注册。各插件的运行条件不同，请按需准备扩展和服务。
 
-插件包括 `Captcha`、`Config`、`Db`、`Error`、`Http`、`Language`、`Log`、`Redis`、`Route` 和 `Tpl`。`SlightPHP\Db` 提供表操作、查询和事务接口。
+插件包括 `Captcha`、`Config`、`Csrf`、`Db`、`Error`、`Http`、`Language`、`Log`、`Redis`、`Route` 和 `Tpl`。`SlightPHP\Db` 提供表操作、查询和事务接口。
 
 ## 按需安装依赖
 
@@ -14,6 +14,7 @@
 | Redis | `ext-redis`，支持 RedisArray、RedisCluster 或 Sentinel（需 phpredis 6.0+），并准备服务和连接配置 |
 | Http | `guzzlehttp/guzzle:^7.0 || ^8.0` |
 | Captcha | `gregwar/captcha:^1.3 || ^2.0`、`ext-session`；GD、mbstring、fileinfo 由验证码包声明并检查 |
+| Csrf | `ext-session`；应用在使用前启动并配置 Session |
 
 例如，在应用项目目录执行所需命令：
 
@@ -34,6 +35,66 @@ composer require 'ext-redis:*'
 `ext-*` 声明用于检查 PHP 扩展，Composer 不负责安装系统扩展。可选包根据应用的 PHP 环境解析版本，最终运行要求以应用的锁文件为准。加载 `vendor/autoload.php` 不会主动加载这些插件；调用插件前应先安装其依赖，尤其是继承第三方类的 Captcha。
 
 从旧版本升级时，应用若使用上述插件，应先显式声明所需依赖，再更新框架，避免依赖被作为无用包移除。
+
+## Csrf
+
+表单、Ajax、自定义字段和 token 更新实验位于 `/lab/csrf/entry`，接入步骤和预期结果见 [CSRF 使用手册](csrf.md)。
+
+`SlightPHP\Csrf` 提供基于 Session 的同步 token，并由 `#[Route(csrf: true)]` 启用入口检查；Csrf 本身不是注解。应用先配置安全的 Session Cookie 并调用 `session_start()`；插件不自动启动会话、不发送响应头，也不修改其他会话数据。Session 配置见[部署说明](deployment.md#cookie与会话安全)。
+
+| API | 行为 |
+| --- | --- |
+| `Csrf::token(): string` | 获取当前会话 token；缺失或存储格式无效时生成。32 随机字节编码为 64 位小写十六进制字符串，同一会话复用 |
+| `Csrf::validate(Request $request, ?string $fieldName = null): void` | 校验提交值，成功正常返回，失败抛异常；不生成、更新或消费 token |
+| `Csrf::tokenInput(?string $fieldName = null): string` | 返回含当前 token 的 hidden input；null 使用 `$fieldName`（默认 `_csrf`），字符串指定字段名，HTML 属性已转义；Tpl 用末尾 `|raw` 输出 |
+| `Csrf::rotate(): string` | 生成并保存新 token，旧 token 立即失效 |
+| `Csrf::clear(): void` | 仅清除 token，后续 `token()` 才重新生成 |
+
+公共静态变量 `Csrf::$fieldName`（默认 `_csrf`）与 `Csrf::$sessionKey`（默认 `_slightphp_csrf`）可由应用入口统一配置；Session 键不能为空。默认请求头仍为 `X-CSRF-Token`，Route 字符串可覆盖当前入口的字段与同名头。所有 API 都要求 Session 处于活动状态；未启动、已关闭或缺少 session 扩展时抛出 `SlightPHP\Exception::CSRF_SESSION_NOT_STARTED`，建议状态为 500。读取或写入 token 应在 `session_write_close()` 之前完成。
+
+控制器示例（Session 已由应用入口启动）：
+
+```php
+namespace User;
+
+use SlightPHP\Csrf;
+use SlightPHP\Request;
+use SlightPHP\Response;
+use SlightPHP\Route;
+use SlightPHP\Tpl;
+
+class ProfileController {
+    #[Route(method: 'GET')]
+    public function Edit(Request $request, Response $response) {
+        (new Tpl())->render('profile.tpl', ['csrf' => Csrf::token()]);
+    }
+
+    #[Route(method: 'POST', csrf: true)]
+    public function Save(Request $request, Response $response) {
+        // CSRF 已通过；继续执行身份、权限和业务字段校验。
+        return $response->redirect('/user/profile/edit', 303);
+    }
+}
+```
+
+普通表单显式提交 `_csrf`，模板使用带引号的属性：
+
+```html
+<form method="post" action="/user/profile/save">
+    <input type="hidden" name="_csrf" value="{$csrf}">
+    <button type="submit">保存</button>
+</form>
+```
+
+表单也可以传入 `Csrf::tokenInput()` 的结果并写 `{$csrf_input|raw}`，或直接写 `{\SlightPHP\Csrf::tokenInput()|raw}`，后者无需预先传入变量。具体示例见 [CSRF 手册](csrf.md#3-普通表单)。
+
+`Route` 的 `csrf` 参数也可为字符串，例如 `#[Route(method: 'POST', csrf: '--csrf--token')]`，此时表单字段和请求头都使用 `--csrf--token`，不再读取默认名称。`getCsrfField()` 返回该名称，`isCsrfRequired()` 为 true。名称允许非空 ASCII 字母、数字、下划线及横线；请求头不区分大小写，下划线按 Request 规则归一化为横线。手动校验可调用 `Csrf::validate($request, fieldName: '--csrf--token')`，生成字段可调用 `Csrf::tokenInput('--csrf--token')`。
+
+使用默认配置时，Ajax/JSON 请求通过 `X-CSRF-Token` 请求头提交从当前会话页面取得的 token。该头存在时优先使用，即使为空或无效也不回退到表单；不存在时才读取 `$request->post['_csrf']`。不读取 GET、Cookie、`$request->request` 或 JSON 正文字段，不修剪或转换提交值。缺失、空值、数组、非字符串或不匹配的 token 均抛出 `CSRF_INVALID`（建议 403），校验采用 `hash_equals()`。Session 中没有有效 token 时同样拒绝，不在校验过程中补发。
+
+只有 Route 中将 csrf 设置为 true 或自定义名称字符串的入口会由调度器自动校验；直接调用普通 PHP 方法需要自行调用 `Csrf::validate($request)`。注解不按 HTTP 方法跳过：即使请求为 GET、HEAD、OPTIONS 或 CLI 也必须通过 token 校验；写入口应同时通过 Route 的 `method` 或 `methods` 限制 HTTP 方法。实际入口、继承/覆盖、Request-Type 和内部调度规则见[核心调度](framework.md#route-的-csrf-校验)。
+
+校验失败只抛异常，不输出正文、不修改状态码、不继续候选回退；异常消息与上下文不包含 token。应用入口按 `getStatusCode()` 生成响应，见[异常处理](exceptions.md)。应用在登录、退出或身份切换时更新或清除 token，并自行维护 Session 生命周期；普通提交不自动更新，方便多标签页使用。CSRF 防护不替代权限、输出转义或防重复提交，SameSite Cookie 也不替代 token 校验。常驻进程不缓存用户 token，应用必须保证各请求 Session 的隔离；PHP 全局 Session 不适合交错并发请求。
 
 ## Config
 

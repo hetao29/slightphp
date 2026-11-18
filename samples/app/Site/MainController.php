@@ -47,9 +47,11 @@ class MainController
      */
     public function Error(\SlightPHP\Request $request, \SlightPHP\Response $response)
     {
-        $this->render('error', ['message' => http_response_code() === 404
-            ? SampleI18n::t('this_page_could_not_be_found_return_home_or')
-            : SampleI18n::t('the_request_could_not_be_completed_please_try_again')]);
+        $this->render('error', ['message' => SampleI18n::t(match (http_response_code()) {
+            403 => 'this_form_has_expired_return_to_the_workspace_refresh',
+            404 => 'this_page_could_not_be_found_return_home_or',
+            default => 'the_request_could_not_be_completed_please_try_again',
+        })]);
     }
 
     /** Browse every Markdown guide and the generated API reference in docs/. */

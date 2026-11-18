@@ -8,7 +8,7 @@
 4. 缺少前三段时分别补 defaultZone、defaultPage、defaultEntry。
 5. 从最深候选区域开始向浅层尝试；区域后相邻两段作为 page、entry，每个深度寻找命名空间控制器文件。默认最多 10 个路径段，因此最多尝试 8 个区域深度。
 6. 文件必须经 realpath 验证位于 appDir 内且是普通文件，再 `require_once`。
-7. 找到类后创建 Request 并设置完整 `route`，确定候选方法名并校验已配置的请求类型前缀，再检查方法存在性、公开可见性与 `Route` 注解。缺失或非公开入口跳过当前候选，不执行其构造函数，继续查找浅层候选。请求类型或 HTTP 方法不匹配时，在构造控制器前抛出 `METHOD_NOT_ALLOWED`，终止查找，由应用生成 405 响应。通过检查后使用 `new $classname($request)` 构造实例并调用入口。入口共用同一个 Request，直接按 `($request, $response)` 的顺序调用；参数名可以自定义。
+7. 找到类后创建 Request 并设置完整 `route`，确定候选方法名并校验已配置的请求类型前缀，再检查方法存在性、公开可见性与 `Route` 注解。缺失或非公开入口跳过当前候选，不执行其构造函数，继续查找浅层候选。请求类型或 HTTP 方法不匹配时，在构造控制器前抛出 `METHOD_NOT_ALLOWED`，终止查找，由应用生成 405 响应。HTTP 方法通过后，设置 `Route(csrf: true)` 的入口还会校验 Session token，失败抛异常并终止查找。通过检查后使用 `new $classname($request)` 构造实例并调用入口。入口共用同一个 Request，直接按 `($request, $response)` 的顺序调用；参数名可以自定义。
 8. 返回方法的原始返回值；Response 已结束时返回 `null`，未匹配抛出 `SlightPHP\Exception`。注解配置、构造函数和入口方法的异常继续向外抛，由调用方处理。核心不会自动输出控制器返回值、序列化对象或发送错误响应。新签名及响应规则见 [Request 与 Response](http.md)。
 
 ## 命名空间控制器
@@ -106,7 +106,7 @@ class ProfileController {
 
 - `method` 是单个方法，`methods` 是方法数组；同时设置时取并集。上例 `Check` 允许 POST 和 GET，响应中的 `Allow` 为 `POST, GET`。
 - 声明会去掉首尾空白、转为大写并去重；空字符串、逗号拼接的方法或非字符串数组项会抛出 `InvalidArgumentException`。HTTP 扩展方法同样支持。
-- 未加注解、`#[Route]` 或 `#[Route(methods: [])]` 不限制方法，保持已有行为。注解只用于方法，不能重复声明。
+- 未加注解、`#[Route]` 或 `#[Route(methods: [])]` 不限制方法，保持已有行为。Route 注解只用于方法；同一方法可以有多个不同类型的注解，调度器只解析 Route。重复声明 Route 会在构造控制器前抛出 `InvalidArgumentException`，不会只取第一条或缓存为无限制入口。
 - 不匹配时抛出 `SlightPHP\Exception::METHOD_NOT_ALLOWED`；不执行控制器构造函数或入口，也不继续尝试浅层路由。核心不发送响应；应用入口可根据 `getStatusCode()` 和 `getContext()['allowedMethods']` 生成 405 和 Allow，见 [核心异常与迁移](exceptions.md)。
 - GET 不隐含 HEAD；OPTIONS 也不会自动放行。需要时明确加入 `methods`。
 - 继承的入口沿用该方法上的注解；子类重写入口时需重新声明。非 public 方法仍不可调度。
@@ -124,6 +124,16 @@ $result = SlightPHP::run('/your/controller/entry');
 ```
 
 传入非空参数会进入内部调用（part）语义：不更新静态 `zone/page/entry`；若目标与当前顶层路由相同，则抛出 `RECURSIVE_DISPATCH`，防止直接自调用。它不是通用递归保护，循环调用仍需应用控制。常驻进程中的静态配置会保留，应隔离每次请求的环境。
+
+## Route 的 CSRF 校验
+
+在写操作入口使用 `#[Route(method: 'POST', csrf: true)]`；`Csrf` 本身不是注解。`csrf: true` 使用默认名称开启检查，字符串（如 `csrf: '--csrf--token'`）同时指定表单字段和请求头名；省略参数或显式写 `csrf: false` 均关闭，`isCsrfRequired()` 返回是否启用，`getCsrfField()` 返回自定义名称（默认或关闭为 null）。`#[Route(method: 'POST', csrf)]` 不符合 PHP 的参数语法，不能使用。表单发送 `_csrf` 隐藏字段，Ajax 发送 `X-CSRF-Token`；应用先启动 Session，再通过 `Csrf::token()` 取得 token。完整 API 与模板示例见 [Csrf 插件](plugins.md#csrf)。
+
+调度器在请求类型、方法存在性、公开可见性及 HTTP 方法检查通过后，构造控制器之前校验 token。失败立即抛出 `SlightPHP\Exception`，不继续浅层候选查找、不更新当前顶层路由，也不执行构造函数和入口。无效 token 为 `CSRF_INVALID`（403）；未启动 Session 为 `CSRF_SESSION_NOT_STARTED`（500）。异常不直接发送响应。
+
+检查实际调用方法上的注解，如 `ajaxSave()`；继承方法保留原注解，子类覆盖后以覆盖方法自身的注解为准。显式 `run('/...')`、URL 映射后的调度及模板 part 均执行检查。只缓存 Route 的方法与 CSRF 策略元数据，不缓存 token 或校验结果；同一方法每次调用均读取当前请求和 Session。非公开入口不解析这些注解，无注解入口不增加 CSRF 或 Session 要求。
+
+启用 CSRF 后校验所有请求方法，不因 GET、HEAD、OPTIONS 或 CLI 自动跳过；HTTP 方法仍由 Route 独立限制。直接调用 PHP 方法不会经过调度检查，需显式调用 `Csrf::validate($request)`。
 
 ## 调度失败与异常
 

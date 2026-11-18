@@ -1,11 +1,19 @@
-# 升级到 SlightPHP 6.7.0
+# 升级到 SlightPHP 6.7
 
 6.7.0 将 Tpl 上下文自动转义设为统一行为，删除兼容编译分支及 `setContextMode()`、`getContextMode()`。这是不兼容变更，即使 6.6 中从未调用模式接口，也需要迁移依赖原样输出的模板。完整记录见 [Changelog](../CHANGELOG.md)；从 6.5.x 或更早版本升级，还需完成 [6.6 迁移](migration-6.6.md)。
+
+## 6.7.1：按需启用 CSRF
+
+6.7.1 新增 `SlightPHP\Csrf`，入口通过 `#[Route(method: 'POST', csrf: true)]` 启用；字符串形式（如 `csrf: '--csrf--token'`）可同时指定表单字段与请求头名称。省略或设置 false 的入口保持原有行为。
+
+应用先启动 Session，再通过 `Csrf::token()` 手写隐藏字段，或用 `Csrf::tokenInput()` 生成 HTML。Tpl 支持预先传入 `{$csrf_input|raw}`，也支持直接调用 `{\SlightPHP\Csrf::tokenInput()|raw}`。公共静态变量 `$fieldName` / `$sessionKey` 默认分别为 `_csrf` / `_slightphp_csrf`。无效 token 抛出 `CSRF_INVALID`（403），Session 未启动抛出 `CSRF_SESSION_NOT_STARTED`（500），由入口生成响应。
+
+完整接入、Ajax、异常处理及 samples 实验见 [CSRF 使用手册](csrf.md)。6.7.0 的模板迁移仍按本文后续章节执行；本次还补齐 Tpl 方法类型注释，并整理入口可见性、方法限制与 CSRF 策略的读取逻辑。
 
 ## 安装与接口移除
 
 ```bash
-composer require hetao29/slightphp:^6.7.0
+composer require hetao29/slightphp:^6.7.1
 ```
 
 删除所有模式设置和读取调用，包括 `setContextMode(true)`、`setContextMode(false)` 和 `getContextMode()`；这两个方法不提供兼容别名。直接创建模板实例：

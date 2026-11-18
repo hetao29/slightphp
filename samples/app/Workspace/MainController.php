@@ -4,6 +4,7 @@ namespace Workspace;
 use SlightPHP\Tpl;
 use SlightPHP\Config;
 use SlightPHP\Route;
+use SlightPHP\Csrf;
 use SampleI18n;
 
 class MainController
@@ -20,14 +21,9 @@ class MainController
      * @param \SlightPHP\Request $request 当前请求。
      * @param \SlightPHP\Response $response 当前响应。
      */
-    #[Route(method: 'POST')]
+    #[Route(method: 'POST', csrf: true)]
     public function Save(\SlightPHP\Request $request, \SlightPHP\Response $response)
     {
-        if (!is_string($_POST['csrf'] ?? null) || !hash_equals($this->token(), $_POST['csrf'])) {
-            http_response_code(403);
-            $this->render('error', ['message' => SampleI18n::t('this_form_has_expired_return_to_the_workspace_refresh')]);
-            return;
-        }
         $this->tasks();
         $tasks = $_SESSION['tasks'];
         $action = $_POST['action'] ?? '';
@@ -83,13 +79,14 @@ class MainController
     private function render(string $view, array $data = []): void
     {
         $data['view'] = $view;
-        $data['csrf'] = $this->token();
+        $data['csrf'] = Csrf::token();
         $data['navigation'] = [
             'tasks' => ['/workspace/main/entry', '01', SampleI18n::t('task_workspace')],
             'route' => ['/lab/route/entry', '02', SampleI18n::t('route_lab')],
             'plugins' => ['/workspace/main/plugins', '03', SampleI18n::t('plugins_and_environment')],
             'template' => ['/lab/template/entry', '04', SampleI18n::t('templates_and_modules')],
             'language' => ['/lab/language/entry', '05', SampleI18n::t('language_example')],
+            'csrf' => ['/lab/csrf/entry', '06', SampleI18n::t('csrf_demo_title')],
         ];
         $data['done'] = count(array_filter($data['tasks'] ?? [], fn($task) => $task['done']));
         $data['flash'] = isset($_SESSION['flash']) ? SampleI18n::t($_SESSION['flash']) : '';
@@ -122,10 +119,6 @@ class MainController
         }
         unset($task);
         return $tasks;
-    }
-    private function token(): string
-    {
-        return $_SESSION['csrf'] ??= bin2hex(random_bytes(24));
     }
     private function json(array $data): void
     {

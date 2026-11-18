@@ -29,20 +29,30 @@ final class Context
     /** @var int 实际输出流的修订号，用于拒绝转换回调中途改变已经选定的输出位置。 */
     private int $revision = 0;
 
-    /** 默认用于编译分析；实际渲染由 Tpl 传入带持久上下文缓存的计划集。 */
+    /**
+     * 默认用于编译分析；实际渲染由 Tpl 传入带持久上下文缓存的计划集。
+     * @param JsPlanCache|null $javascriptPlanCache 共享的 JS 计划集；null 时创建仅用于当前流的计划集。
+     */
     public function __construct(?JsPlanCache $javascriptPlanCache = null)
     {
         $this->javascriptPlanCache = $javascriptPlanCache ?? new JsPlanCache();
     }
 
-    /** 编译期分支共享计划表，但每条路径独立推进元素/属性的执行状态。 */
+    /**
+     * 编译期分支共享计划表，但每条路径独立推进元素/属性的执行状态。
+     * @return void
+     */
     public function __clone()
     {
         if ($this->javascriptContext !== null) $this->javascriptContext = clone $this->javascriptContext;
         if ($this->attributeJavascriptContext !== null) $this->attributeJavascriptContext = clone $this->attributeJavascriptContext;
     }
 
-    /** 子模板的编译文件向共享渲染流注册它自身预先分析的 JS 计划。 */
+    /**
+     * 子模板的编译文件向共享渲染流注册它自身预先分析的 JS 计划。
+     * @param array<string,array<string,mixed>> $plans 以状态和源码摘要为键的 JS 计划表。
+     * @return void
+     */
     public function registerJavascriptPlans(array $plans): void { $this->javascriptPlanCache->register($plans); }
 
     /** @var string 当前词法状态：text、tag、comment 或 body；不记录普通 DOM 元素栈。 */
@@ -99,6 +109,7 @@ final class Context
      * 该方法只解析输出结构，不识别模板标签，不替可信原文做 HTML 编码。
      *
      * @param string $text 可以是部分标签/正文，后续 literal/value/include 会继续该状态。
+     * @param bool $encodedJavascript true 表示 JS 数据已经编码并推进计划，不再将其当作静态 JS 源码积累。
      * @return void
      * @throws \InvalidArgumentException 已组合的动态 URL、style 或正文校验失败。
      */
@@ -300,6 +311,9 @@ final class Context
      * open 只从干净文本入口初始化静态标签前缀，后续动态值仍经 attributeValue 编码。
      * close 只消费当前实际引号及 >，实际标签仍交 closeTag 完整校验；不能假定它一定
      * 是编译期预测的普通标签，可能进入 script、style 或 SVG，余下文本须重新守卫。
+     * @param string $text 编译计划对应的可信模板字面量。
+     * @param array{mode?:'text'|'open'|'close',tag?:string,quote?:string,output?:string,after?:array} $plan 静态转换计划；close 的 after 是剩余片段的计划。
+     * @return void
      */
     public function plannedLiteral(string $text, array $plan): void
     {
@@ -343,6 +357,9 @@ final class Context
     /**
      * 运行编译文件保存的 JS 编码调用；实际入口以共享计划集校验，不运行词法扫描器。
      * 模板表达式可以包含嵌套 include，实参求值后必须重新读取实际上下文。
+     * @param mixed $value 已求值的数据或带修饰器意图的 ModifierValue。
+     * @param array{kind:string,regexStart?:bool} $hint 编译期预测的 JS 编码位置。
+     * @return void
      */
     public function javascriptPlannedValue($value, array $hint): void
     {
@@ -353,7 +370,12 @@ final class Context
         $this->javascriptValue($value, $actual === $hint ? $hint : $actual);
     }
 
-    /** 执行计划已确定的 JS 编码，并用短占位符推进后续计划，不重新分析编码后的数据。 */
+    /**
+     * 执行计划已确定的 JS 编码，并用短占位符推进后续计划，不重新分析编码后的数据。
+     * @param mixed $value 待按当前 JS/JSON 位置编码的数据。
+     * @param array{kind:string,regexStart?:bool} $context 已校验的 JS 编码位置，JSON script 中转换为对应 JSON 位置。
+     * @return void
+     */
     private function javascriptValue($value, array $context): void
     {
         if ($this->jsonScript) {
@@ -369,6 +391,8 @@ final class Context
 
     /**
      * 把文本/属性中的 Stringable 转成字符串；标量无需缓冲，用户转换必须受守卫保护。
+     * @param mixed $value 待转换的数据；具体可接受类型由 CodeContext::string() 判断。
+     * @return string 尚未进行 HTML 编码的字符串。
      */
     private function stringValue($value): string
     {
@@ -376,7 +400,12 @@ final class Context
         return $this->guardConversion(static fn() => CodeContext::string($value));
     }
 
-    /** JS/JSON/CSS 编码均可能执行用户转换或序列化，不能中途改变输出位置。 */
+    /**
+     * JS/JSON/CSS 编码均可能执行用户转换或序列化，不能中途改变输出位置。
+     * @param mixed $value 待编码的数据；可接受类型由编码位置决定。
+     * @param array{kind:string,prefix?:string,quote?:string,regexStart?:bool} $context JS、JSON 或 CSS 编码位置。
+     * @return string 完成语言层编码、尚未添加 HTML 属性编码的源码片段。
+     */
     private function encodeValue($value, array $context): string
     {
         if (!is_object($value) && !is_array($value)) return CodeContext::encode($value, $context);
@@ -386,6 +415,8 @@ final class Context
     /**
      * 拒绝转换回调直接输出、嵌套渲染改变上下文或修改缓冲层级；异常时丢弃捕获的内容。
      * 修订号也覆盖属性快路径的直接追加，不能只比较转换前后的状态名称或输出缓冲。
+     * @param callable():string $convert 只返回编码结果、不改变输出流的转换回调。
+     * @return string 回调返回的编码结果。
      */
     private function guardConversion(callable $convert): string
     {
@@ -430,6 +461,8 @@ final class Context
      * 末尾 HTML escape 由真实输出位置重新编码，保留数据含义且避免重复编码。
      * 末尾 escape:url 在 URL 属性已有静态前缀时交给组件编码；其它位置保留转换结果。
      * URL 协议、属性组合等检查仍由正常 value/attributeValue 路径执行。
+     * @param ModifierValue $value 修饰链结果、转义前原值及最后一个编码意图。
+     * @return mixed 根据实际位置选出的原值或修饰链结果，后续仍需上下文编码。
      */
     private function modifierValue(ModifierValue $value)
     {
@@ -509,7 +542,10 @@ final class Context
      */
     public function isText(): bool { return $this->state === 'text' && $this->foreign === 0; }
 
-    /** 编译后的完整 HTML 块只从实际文本入口输出；修订号仍使外层转换回调守卫生效。 */
+    /**
+     * 编译后的完整 HTML 块只从实际文本入口输出；修订号仍使外层转换回调守卫生效。
+     * @return bool true 表示当前是普通 HTML 文本入口，并已推进修订号。
+     */
     public function beginHtml(): bool
     {
         if (!$this->isText()) return false;
@@ -700,6 +736,8 @@ final class Context
      * 按 HTML 属性边界读取首个 type（包括空值/布尔属性），不匹配其它属性值中的文字。
      * JSON MIME（含 +json）、importmap/speculationrules 使用 JSON；其它类型保留 JS 路径。
      * MIME 参数不影响 JSON 识别；实体先采用敏感属性规则解码，不猜测浏览器解码差异。
+     * @param string $tag 完整的 HTML 标签原文。
+     * @return bool 是否为应使用 JSON 编码规则的 script 开始标签。
      */
     private static function scriptUsesJson(string $tag): bool
     {

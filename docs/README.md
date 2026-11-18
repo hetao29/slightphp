@@ -1,4 +1,6 @@
-# SlightPHP 6.7.0 框架使用文档
+# SlightPHP 6.7.1 框架使用文档
+
+6.7.1 新增 Session CSRF 防护，通过 Route 的 `csrf` 参数启用，支持自定义字段/请求头、`tokenInput()` 及公共配置。samples 提供三种表单写法与 Ajax、token 更新实验；接入见 [CSRF 使用手册](csrf.md)。
 
 6.7.0 默认启用 Tpl 上下文自动转义，移除 `setContextMode()`、`getContextMode()` 及兼容编译分支。模板应传入原始数据，可信 HTML 用末尾 `|raw`；升级前需迁移手工编码、JSON 数据块和动态属性名，见 [6.7 迁移与不兼容说明](migration-6.7.md)。
 
@@ -28,10 +30,11 @@
 - [框架官网与维护说明](website.md)
 - [完整示例与交互说明](samples.md)
 - [插件与扩展](plugins.md)
+- [CSRF 使用手册与可运行示例](csrf.md)
 - [Tpl 模板与模块组合手册](templates.md)
 - [部署、排错与安全边界](deployment.md)
 
-SlightPHP 是轻量级调度框架：核心负责从路径加载控制器并调用方法，应用负责响应输出、状态码、权限、校验和数据管理。插件独立使用，并不由核心自动启用。
+SlightPHP 是轻量级调度框架：核心负责从路径加载控制器并调用方法，应用负责响应输出、状态码、权限、校验和数据管理。插件按需使用；Route 方法注解的 HTTP 方法与 CSRF 策略由核心调度时执行，Csrf 仍需应用显式启动 Session。
 
 6.5.1 移除 `SlightPHP\Json` 插件，改用原生 JSON 函数；Route 文件配置改为 JSON/JSONC 数组；插件依赖改为按需安装。6.5.0 新增 Route 方法注解，核心失败统一抛出结构化异常，并完善自定义 URL 路由与请求内元数据缓存。从 6.4.x 升级也需调整调度失败处理，具体见 [6.5 迁移指南](migration-6.5.md)。
 

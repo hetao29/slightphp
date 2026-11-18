@@ -30,8 +30,12 @@
 | `METHOD_NOT_CALLABLE` | 入口存在但不可公开调用 | 404 |
 | `METHOD_NOT_ALLOWED` | HTTP 方法不符合 Route 注解，或候选方法名的已配置类型前缀与 Request-Type 不匹配 | 405 |
 | `ALIAS_NOT_FOUND` | getZoneAlias / getPageAlias 查询未设置的别名 | 500 |
+| `CSRF_INVALID` | Csrf 校验时，Session 或请求中 token 缺失、格式无效或不匹配 | 403 |
+| `CSRF_SESSION_NOT_STARTED` | 调用 Csrf API 或受保护入口时 Session 未处于活动状态 | 500 |
 
 路径超限在加载控制器前抛出。Route 拒绝请求在构造控制器前抛出；其上下文包含 `requestMethod`、`allowedMethods`、`controller`、`method` 和 `path`。
+
+`#[Route(csrf: true)]` 在 HTTP 方法检查通过后、控制器构造前执行，失败不继续候选回退，也不更新路由状态。Csrf API 同样抛出本类异常，消息和上下文不包含 token，不会输出响应。无效 token 由入口映射为 403；Session 未启动属于应用配置错误，映射为 500。详见 [Csrf 插件](plugins.md#csrf)。
 
 从 6.5.2 起，请求类型前缀校验紧接候选方法名赋值，先于方法存在性、Route 注解和控制器构造。类型不匹配时，上下文另含 `requestType`（规范化后的当前头，缺失为空字符串）及 `requiredRequestType`（方法前缀要求的类型），`allowedMethods` 为空数组，因为此时尚未解析 Route 注解。`allowedMethods` 仅用于 HTTP 方法限制，不能将 `ajax`、`part` 等类型写入 HTTP `Allow` 头；应用仅在该数组非空时输出 `Allow`。
 
