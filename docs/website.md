@@ -2,7 +2,7 @@
 
 官网由 SlightPHP + Tpl 构建，内容依据当前仓库源码整理，不依赖外部图片、字体或 JavaScript 库。首页介绍核心定位，内页覆盖功能、插件、入门与可运行示例。
 
-正式官网地址为 [https://slightphp.com/](https://slightphp.com/)，页面统一展示 6.x 系列，安装命令使用当前发布版本 6.7.3。GitHub 链接用于源码与许可证，不作为官网地址。
+正式官网地址为 [https://slightphp.com/](https://slightphp.com/)，页面统一展示 6.x 系列，安装命令使用当前发布版本 6.7.4。GitHub 链接用于源码与许可证，不作为官网地址。
 
 ## 访问与部署
 
@@ -25,6 +25,7 @@
 | `/site/main/changelog` | 旧地址跳转至文档中的 ChangeLog |
 | `/lab/template/entry`、`/widgets/template/context` | include / part、变量作用域、默认自动转义、全部修饰器及 HTML/URL/JS/CSS 自动转义 |
 | `/lab/language/entry` | 三种语言的实时翻译、动态称呼、JSON 语言文件与缺失词条回退 |
+| `/lab/plugin/entry/session` | Session 实验：引用读写、提交计数、刷新保留与浏览器会话隔离；手册 `?doc=session.md` |
 | `/lab/csrf/entry` | CSRF 实验：普通表单、JSON 请求头、自定义名称、403 对比与 token 更新；手册 `?doc=csrf.md` |
 | `/lab/type/entry` | Request-Type 示例：普通请求调用 Entry，ajax 请求头调用 ajaxEntry，直接访问前缀方法缺少匹配头返回 405 |
 | `/r/hello`、`/r-json/hello`、`/r-pair/2026/11` | PHP / JSON 自定义路由实验与多参数 |

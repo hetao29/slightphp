@@ -10,6 +10,12 @@
 <a id="66-迁移指南"></a>
 <a id="67-迁移指南"></a>
 
+## 6.7.4 — 2026-11-20
+
+- 新增 `SlightPHP\Session`，按需提供引用读写、会话 ID 和名称访问；可配置 `sessionName`、`cookieOptions` 和 `cacheLimiter`。默认通过原生 `session_cache_limiter('nocache')` 禁止缓存，不调用 `header()`；已激活的会话直接复用。Csrf 默认调用 `Session::start()`，保留 `sessionHandler` 自定义回调及原生流式重开和 FPM 会话边界，见 [Session 手册](docs/session.md)。
+- 已有 `Csrf::$sessionHandler` 回调与提前启动的原生会话继续可用；默认启动分支使用 Session 的名称、Cookie 和缓存策略，升级时核对默认 `nocache` 行为，见 [Session 接入迁移](#session-接入迁移)。
+- 同步安装版本、Session / CSRF 手册、插件依赖说明和 API 参考；samples 入口使用 Session 启动会话，新增引用读写与跨请求保存的 Session 实验及三种语言说明。
+
 ## 6.7.3 — 2026-11-19
 
 - 新增 `Csrf::tokenMeta(?string $fieldName = null)`，参数与 `tokenInput()` 一致，null 使用 `Csrf::$fieldName`（默认 `_csrf`），返回属性值已转义的 `<meta name="_csrf" content="…"/>`；Ajax 可读取 `content` 并通过 `X-CSRF-Token` 请求头提交，Tpl 支持 `{\SlightPHP\Csrf::tokenMeta()|raw}`。
@@ -24,12 +30,13 @@
 
 ## 6.x 升级与迁移指南
 
-本文统一说明从旧版升级到当前 **6.7.3** 的最终改法，按模块执行，无需先逐个安装中间版本。每节标明相关变更首次引入的版本；已完成的步骤可以跳过。6.6 的可选自动转义已被 6.7 的默认行为取代，当前代码不要再调用模式接口。本次发布见 [6.7.3 修改说明](#673--2026-11-19)，此前修改汇总见[版本更新记录](#版本更新记录)。
+本文统一说明从旧版升级到当前 **6.7.4** 的最终改法，按模块执行，无需先逐个安装中间版本。每节标明相关变更首次引入的版本；已完成的步骤可以跳过。6.6 的可选自动转义已被 6.7 的默认行为取代，当前代码不要再调用模式接口。本次发布见 [6.7.4 修改说明](#674--2026-11-20)，此前修改汇总见[版本更新记录](#版本更新记录)。
 
 | 当前应用版本 | 需要重点检查的迁移 |
 | --- | --- |
-| 6.7.2 | 可使用 `Csrf::tokenMeta()` 输出 meta 标签供 Ajax 读取，参数与 `tokenInput()` 一致；无必需迁移 |
-| 6.7.1 | CSRF 改为按需启动会话；按应用需要提前配置 Session 或初始化回调，核对启动失败的异常处理 |
+| 6.7.3 | Csrf 默认使用 Session 启动，核对名称、Cookie 与 `nocache` 缓存策略；已有 `sessionHandler` 回调继续可用 |
+| 6.7.2 | 完成 Session 接入迁移；可使用 `Csrf::tokenMeta()` 输出 meta 标签供 Ajax 读取 |
+| 6.7.1 | CSRF 改为通过 Session 按需启动会话；按应用需要提前配置或初始化，核对启动失败的异常处理 |
 | 6.7.0 | 按需接入 CSRF 并核对会话初始化；已完成的模板迁移无需重复 |
 | 6.6.x | 删除模式和安全模式接口，迁移所有模板的默认自动转义，重建编译缓存 |
 | 6.5.3 | 内部类与模板辅助函数、Cookie、语言重置、Sentinel、入口构造时机、默认自动转义 |
@@ -52,10 +59,10 @@
 
 ### 安装与加载
 
-当前核心要求 PHP 8.0+。插件依赖通过 Composer 的 `suggest` 声明，应用应按实际使用将扩展或包加入自己的依赖：Db 使用 PDO 及相应驱动，Redis 使用 phpredis，Http 使用 Guzzle，Captcha 使用 Gregwar Captcha、GD、mbstring、fileinfo 和活动会话，Csrf 使用 Session。Sentinel 模式需要 phpredis 6.0+，详见[按需安装依赖](docs/plugins.md#按需安装依赖)。
+当前核心要求 PHP 8.0+。插件依赖通过 Composer 的 `suggest` 声明，应用应按实际使用将扩展或包加入自己的依赖：Db 使用 PDO 及相应驱动，Redis 使用 phpredis，Http 使用 Guzzle，Captcha 使用 Gregwar Captcha、GD、mbstring、fileinfo 和活动会话，Session 与 Csrf 使用 `ext-session`。Sentinel 模式需要 phpredis 6.0+，详见[按需安装依赖](docs/plugins.md#按需安装依赖)。
 
 ```bash
-composer require hetao29/slightphp:^6.7.3
+composer require hetao29/slightphp:^6.7.4
 ```
 
 入口统一加载 `vendor/autoload.php`，Request/Response 和插件通过 Composer PSR-4 按需加载；仅手动引入 `SlightPHP.php` 不足以支持当前调度。删除旧的 `plugins/S*.php` 手动引用以及 `SLIGHTPHP_PLUGINS_DIR`、旧辅助函数文件的依赖，更新部署包中的自动加载文件。
@@ -666,13 +673,31 @@ session_start();
 
 单次 `cookie()` 调用可显式覆盖默认值；需要浏览器脚本读取的特定 Cookie 应显式设置 `httponly: false`。跨站 Cookie 的 `SameSite=None` 必须与 `Secure=true` 同时使用，不合法组合抛出 `ValueError`。会话不会因设置 Response 默认值而自动更新，需在 `session_start()` 前配置；HTTPS 与可信反向代理的完整示例见 [生产部署](docs/deployment.md#cookie与会话安全)。不要直接信任客户端传来的 `Forwarded` / `X-Forwarded-Proto`。
 
+#### Session 接入迁移
+
+涉及版本：6.7.4。新增 `SlightPHP\Session`，Csrf 未配置 `sessionHandler` 时改为调用 `Session::start()`。已有回调和提前启动原生会话的方式继续可用，无需删除原配置。
+
+采用默认启动方式时，可在入口配置会话名称、Cookie 和缓存策略：
+
+```php
+\SlightPHP\Session::$sessionName = 'ExampleSession';
+\SlightPHP\Session::$cookieOptions = ['lifetime' => 0, 'path' => '/', 'domain' => '']
+    + \SlightPHP\Response::getCookieDefaults();
+\SlightPHP\Session::$cacheLimiter = 'nocache';
+// 配置不会启动会话；由 Csrf 或 Session::get() 在实际使用时启动。
+```
+
+存储后端、`session_set_save_handler()`、严格 ID 等其他初始化在首次使用 Session / Csrf 前由应用完成，或继续通过 `Csrf::$sessionHandler = [AppSession::class, 'init'];` 按需执行。回调无参数，返回后必须已激活会话，异常原样传播。已激活会话直接复用，不调用回调或重设配置；关闭后再次使用 Csrf 会重新按需初始化。
+
+未配置回调且会话未激活时，默认缓存策略改由原生 `session_cache_limiter('nocache')` 产生禁止缓存头。原应用依赖其他 limiter 时，显式设置 `$cacheLimiter`；`null` 保留 PHP 当前配置，空字符串关闭自动缓存头。检查页面缓存策略及 `session_write_close()` 后的重开流程。独立使用 Session 时，`start()` 失败返回 false，`get()` 失败抛出 `RuntimeException`；Csrf 默认启动失败或回调返回后会话仍未激活时报告 `CSRF_SESSION_NOT_STARTED`；默认启动抛出的原始异常通过 `getPrevious()` 保留，应用回调异常仍原样传播。完整读写、ID 与流式响应边界见 [Session 手册](docs/session.md)。
+
 <a id="671-按需启用-csrf"></a>
 
 #### 按需启用 CSRF
 
 6.7.1 新增 `SlightPHP\Csrf`，入口通过 `#[Route(method: 'POST', csrf: true)]` 启用；字符串形式（如 `csrf: '--csrf--token'`）可同时指定表单字段与请求头名称。省略或设置 false 的入口保持原有行为。
 
-应用按需启动 Session，可通过 `Csrf::$sessionHandler` 自定义启动，默认使用原生 `session_start()`；通过 `Csrf::token()` 手写隐藏字段，或用 `Csrf::tokenInput()` 生成 HTML。Tpl 支持预先传入 `{$csrf_input|raw}`，也支持直接调用 `{\SlightPHP\Csrf::tokenInput()|raw}`。公共静态变量 `$fieldName` / `$sessionKey` 默认分别为 `_csrf` / `_slightphp_csrf`。无效 token 抛出 `CSRF_INVALID`（403），Session 启动失败抛出 `CSRF_SESSION_NOT_STARTED`（500），由入口生成响应。
+应用可通过 Session 配置名称、Cookie 和缓存策略，Csrf 默认调用 `Session::start()` 按需启动会话；也可配置 `Csrf::$sessionHandler` 自定义初始化；通过 `Csrf::token()` 手写隐藏字段，或用 `Csrf::tokenInput()` 生成 HTML。Tpl 支持预先传入 `{$csrf_input|raw}`，也支持直接调用 `{\SlightPHP\Csrf::tokenInput()|raw}`。公共静态变量 `$fieldName` / `$sessionKey` 默认分别为 `_csrf` / `_slightphp_csrf`。无效 token 抛出 `CSRF_INVALID`（403），Session 启动失败抛出 `CSRF_SESSION_NOT_STARTED`（500），由入口生成响应。
 
 HTTP 方法检查通过后、构造控制器之前执行 CSRF 校验；应用需自行生成异常响应。完整接入、Ajax 和 token 更新示例见 [CSRF 使用手册](docs/csrf.md)。
 

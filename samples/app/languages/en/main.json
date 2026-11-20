@@ -499,7 +499,7 @@
     "tpl_demo_unexpected": "Unexpectedly accepted",
     "tpl_demo_direct": "Open the automatic-mode example on its own →",
     "csrf_session_tokens_and_entry_attributes": "Session CSRF token generation, validation, rotation and entry method attributes.",
-    "start_session_before_using_csrf": "Start the Session first; forms send _csrf and Ajax sends X-CSRF-Token.",
+    "start_session_before_using_csrf": "Configure Session before first use; Csrf starts it on demand. Forms send _csrf and Ajax sends X-CSRF-Token.",
     "csrf_demo_title": "CSRF form protection",
     "csrf_demo_intro": "Submit forms and JSON requests in this browser session, then compare valid, missing and invalid tokens.",
     "csrf_demo_count": "Accepted submissions:",
@@ -570,5 +570,8 @@
     "lab_intro_response": "Inspect real statuses and headers, compare write / end, and test cookies and a 303 redirect.",
     "lab_request_card": "Request snapshots: query parameters, forms, files, headers and raw bodies.",
     "lab_response_card": "Send statuses, headers, cookies, bodies and redirects.",
-    "lab_request_need": "The framework creates Request / Response. Set headers before writing the body."
+    "lab_request_need": "The framework creates Request / Response. Set headers before writing the body.",
+    "lab_session_card": "Start native sessions on demand, update data by reference and read the session name and ID.",
+    "lab_session_need": "Requires ext-session; configure the name, cookies and cache policy before first use.",
+    "lab_intro_session": "Submit text to save it in this browser session and increment the counter. Refresh to read the saved data, or use another browser session to compare isolation. The session ID is not displayed."
 }

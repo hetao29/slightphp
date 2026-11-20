@@ -38,7 +38,7 @@ $response->cookie('slightphp_sample', '', time() - 3600);
 
 cookie 使用 URL 编码值，rawcookie 使用原值。可在单次调用覆盖 secure、httponly、samesite；null 使用默认值。SameSite=None 必须同时 Secure=true。非法参数会抛 ValueError；设置成功仅代表发送响应头，浏览器是否接受仍取决于协议、域、路径等规则。
 
-Response 的 Cookie 默认策略不自动配置 PHP Session Cookie；Session 策略须在 session_start 前另行设置。`getCookieDefaults()` 可读取当前默认策略。
+Response 的 Cookie 默认策略不自动配置 PHP Session Cookie；Session 策略须在启动前另行设置，可使用 `Session::$cookieOptions`；见 [Session 手册](session.md)。`getCookieDefaults()` 可读取当前默认策略。
 
 示例 POST 表单受 CSRF 保护，仅设置或删除名为 slightphp_sample 的专用 Cookie。结果中的 before 是本次请求带来的旧值；点击“重新读取”后才能观察新请求中的值。它不显示 Session Cookie。
 

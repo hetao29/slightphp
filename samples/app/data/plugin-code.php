@@ -1,6 +1,24 @@
 <?php
 // 与对应手册一致的最小 API 示例；完整控制器见 Lab/PluginController.php。
 return [
+    'session' => <<<'PHP'
+use SlightPHP\Session;
+
+// 在入口首次使用前配置；仅配置不会启动会话。
+Session::$sessionName = 'ExampleSession';
+Session::$cookieOptions = ['lifetime' => 0, 'path' => '/',
+    'secure' => true, 'httponly' => true, 'samesite' => 'Lax'];
+// 纯 HTTP 本地开发时显式设置 secure: false。
+// samples 已在入口启动会话，实验直接复用，不更改会话配置。
+
+// 写操作放在 #[Route(method: 'POST', csrf: true)] 的入口中。
+$session = &Session::get();
+$session['plugin_session']['counter'] = ($session['plugin_session']['counter'] ?? 0) + 1;
+Session::get()['plugin_session']['message'] = $message; // 已校验的表单文本
+$id = Session::id();
+$name = Session::name();
+// 当前请求的所有会话写入完成后，可用 session_write_close() 释放锁。
+PHP,
     'config' => <<<'PHP'
 use SlightPHP\Config;
 

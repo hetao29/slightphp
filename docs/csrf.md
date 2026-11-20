@@ -2,7 +2,7 @@
 
 `SlightPHP\Csrf` 提供基于 Session 的同步 token；入口通过 `#[Route(method: 'POST', csrf: true)]` 开启校验。Csrf 本身不是注解。框架在构造控制器前验证，失败只抛异常，应用入口决定 HTTP 状态码与响应正文。
 
-6.7.2 新增会话按需启动和 `Csrf::$sessionHandler` 应用初始化回调；未提供回调时使用原生 `session_start()`。原来提前启动 Session 的接入方式继续可用，会话名称、存储和 Cookie 策略应在首次使用 Csrf 前配置。本次修改见 [6.7.2 说明](../CHANGELOG.md#672--2026-11-19)。
+6.7.4 起，Csrf 默认通过 `SlightPHP\Session::start()` 按需启动会话，复用 Session 的名称、Cookie 和缓存配置。`Csrf::$sessionHandler` 自定义初始化回调及提前启动的原生会话继续支持，见 [Session 接入迁移](../CHANGELOG.md#session-接入迁移)。
 
 6.7.3 新增 `Csrf::tokenMeta(?string $fieldName = null)`，参数与 `tokenInput()` 一致，输出 meta 标签供 Ajax 请求头读取；见 [6.7.3 说明](../CHANGELOG.md#673--2026-11-19)。
 
@@ -33,28 +33,29 @@
 
 ## 1. 配置 Session 与按需启动
 
-可以在输出正文前配置并启动 Session，再进行调度；也可以由应用提供初始化回调，在实际使用 Csrf 时按需启动。生产 HTTPS 应启用 Secure；HTTP 本地开发及反向代理部署见[部署手册](deployment.md#cookie与会话安全)。
+在首次调用 Csrf 或调度前配置框架 [Session 插件](session.md)。仅配置不会启动会话；实际使用 Csrf 时默认调用 `Session::start()`：
 
 ```php
-require dirname(__DIR__) . '/vendor/autoload.php';
-ini_set('session.use_strict_mode', '1');
-ini_set('session.use_only_cookies', '1');
-session_set_cookie_params([
+\SlightPHP\Session::$sessionName = 'ExampleSession';
+\SlightPHP\Session::$cookieOptions = [
     'lifetime' => 0, 'path' => '/',
     'secure' => true, 'httponly' => true, 'samesite' => 'Lax',
-]);
-session_start();
+];
 ```
 
-samples 的 `www/index.php` 已启动会话，控制器无须再次调用。Csrf 默认在首次需要会话时调用原生 `session_start()`，不会在普通路由调度时提前启动。应用需要自己的会话配置时在入口提供 handler：
+生产 HTTPS 应启用 Secure；HTTP 本地开发及反向代理部署见[部署手册](deployment.md#cookie与会话安全)。samples 入口已通过 `Session::start()` 提前启动会话，Csrf 直接复用，不重新设置 Cookie 或缓存策略。
+
+`Route(csrf: true)` 只会在请求类型和 HTTP 方法限制通过后准备会话并校验 token；普通 GET 或未启用 CSRF 的路由不会因此启动会话。`token/tokenInput/tokenMeta/rotate/clear` 使用相同路径；会话已激活时直接复用，`session_write_close()` 后按需重开。无需会话的路径不要调用这些 API。
+
+应用需要自定义初始化时，仍可配置无参数回调：
 
 ```php
 \SlightPHP\Csrf::$sessionHandler = [AppSession::class, 'init'];
 ```
 
-回调不接收参数，在 Session 尚未启动且实际调用 Csrf API 时执行。`Route(csrf: true)` 只会在请求类型、方法限制通过且该入口需要 CSRF 时进入校验；普通 GET 或未启用 CSRF 的路由不会因此启动会话。回调复用应用自己的会话名称、Cookie、缓存头和存储配置，成功后必须处于 `PHP_SESSION_ACTIVE`，否则仍抛出 `CSRF_SESSION_NOT_STARTED`。已启动会话不重复调用回调；未配置 handler 时使用原生 `session_start()`，启动失败仍报告 `CSRF_SESSION_NOT_STARTED`。`token/tokenInput/tokenMeta/rotate/clear` 同样按需启动，`session_write_close()` 后再次调用也会重新执行初始化回调；需要无会话的路径不调用这些 API。该回调是固定应用配置，不保存用户或请求状态。
+回调仅在会话未激活且实际使用 Csrf 时执行，返回后必须处于 `PHP_SESSION_ACTIVE`；已激活时不重复执行，`session_write_close()` 后再次使用 Csrf 会重新执行。回调可自行设置存储、Cookie 和缓存策略并启动原生会话，也可调用 `Session::start()`。回调抛出的异常原样传播，返回后仍未激活则报告 `CSRF_SESSION_NOT_STARTED`；回调是固定应用配置，不保存用户或请求状态。
 
-原生启动使用 `@session_start()` 抑制默认警告输出，并捕获 `Throwable`；启动失败统一通过 `CSRF_SESSION_NOT_STARTED` 报告。原生调用抛出的异常（包括应用将警告转换成的 `ErrorException`）通过 `getPrevious()` 保留，不替换应用错误处理器；返回 false、会话仍未激活的情况由状态检查处理。自定义初始化回调抛出的异常仍原样传播。
+未配置回调时，Session 默认通过原生 `session_cache_limiter('nocache')` 设置禁缓存响应头，不手写 `header()`。默认启动失败、会话未激活或缺少扩展统一报告 `CSRF_SESSION_NOT_STARTED`；默认启动抛出的异常通过 `getPrevious()` 保留。Session 配置只保存固定策略，不保存请求或用户状态，不提供协程隔离。
 
 ## 2. 全局配置
 
@@ -204,7 +205,7 @@ try {
 }
 ```
 
-`CSRF_INVALID` 建议映射为 403；`CSRF_SESSION_NOT_STARTED` 表示原生启动失败、自定义回调返回后会话仍未激活或缺少扩展，建议返回 500。原生调用抛出的异常可通过 `getPrevious()` 读取；自定义初始化回调抛出的异常仍由应用处理。框架异常消息和上下文不携带 token，应用也不要把 token 写入 URL 或日志。权限、输出转义、幂等和防重复提交仍由应用分别处理。
+`CSRF_INVALID` 建议映射为 403；`CSRF_SESSION_NOT_STARTED` 表示默认 Session 启动失败、回调返回后会话未激活或缺少扩展，建议返回 500。默认启动抛出的异常可通过 `getPrevious()` 读取；应用初始化回调抛出的异常原样传播。框架异常消息和上下文不携带 token，应用也不要把 token 写入 URL 或日志。权限、输出转义、幂等和防重复提交仍由应用分别处理。
 
 ## 源码位置
 

@@ -2,7 +2,9 @@
 
 运行 `composer install` 后，在应用入口引入 `vendor/autoload.php`。插件由 Composer 按需加载，使用 `SlightPHP\` 命名空间；6.x 不提供旧版全局类名。模板辅助函数由 Composer 自动注册。各插件的运行条件不同，请按需准备扩展和服务。
 
-插件包括 `Captcha`、`Config`、`Csrf`、`Db`、`Error`、`Http`、`Language`、`Log`、`Redis`、`Route` 和 `Tpl`。`SlightPHP\Db` 提供表操作、查询和事务接口。
+插件包括 `Captcha`、`Config`、`Csrf`、`Db`、`Error`、`Http`、`Language`、`Log`、`Redis`、`Route`、`Session` 和 `Tpl`。`SlightPHP\Db` 提供表操作、查询和事务接口。
+
+6.7.4 新增 `Session`，封装按需启动的原生 PHP 会话，支持自定义名称、Cookie options 和缓存 limiter，依赖 `ext-session`；引用读写及 CSRF 接入见 [Session 手册](session.md)。
 
 ## 示例与独立手册
 
@@ -10,6 +12,8 @@
 
 | 插件 | 运行地址 | 手册 |
 | --- | --- | --- |
+| Session | `/lab/plugin/entry/session` | [Session 手册](session.md) |
+| Csrf | `/lab/csrf/entry` | [CSRF 手册](csrf.md) |
 | Tpl | `/lab/template/entry` | [模板与模块](templates.md) |
 | Language | `/lab/language/entry` | [Language 手册](language.md) |
 | Config | `/lab/plugin/entry/config` | [Config 手册](config.md) |
@@ -34,7 +38,7 @@ Db / Redis 需要管理员准备独立服务，在 `samples/config/services.loca
 | Redis | `ext-redis`，支持 RedisArray、RedisCluster 或 Sentinel（需 phpredis 6.0+），并准备服务和连接配置 |
 | Http | `guzzlehttp/guzzle:^7.0 || ^8.0` |
 | Captcha | `gregwar/captcha:^1.3 || ^2.0`、`ext-session`；GD、mbstring、fileinfo 由验证码包声明并检查 |
-| Csrf | `ext-session`；实际使用时按需启动，支持应用自定义 handler |
+| Session / Csrf | `ext-session`；实际使用时由 Session 按需启动，名称、Cookie 和缓存策略在首次使用前配置 |
 
 例如，在应用项目目录执行所需命令：
 
@@ -58,13 +62,13 @@ composer require 'ext-redis:*'
 
 ## Csrf
 
-6.7.2 新增会话按需启动和应用初始化回调，原生启动异常通过框架异常的 `getPrevious()` 保留；修改说明见 [6.7.2](../CHANGELOG.md#672--2026-11-19)。
+6.7.4 起，Csrf 默认通过 `Session::start()` 准备会话，名称、Cookie 和缓存策略由 Session 配置；`Csrf::$sessionHandler` 自定义初始化回调继续可用，见 [Session 接入迁移](../CHANGELOG.md#session-接入迁移)。
 
 6.7.3 新增 `Csrf::tokenMeta(?string $fieldName = null)`，参数与 `tokenInput()` 一致，输出 meta 标签供 Ajax 请求头读取；见 [6.7.3 说明](../CHANGELOG.md#673--2026-11-19)。
 
 表单、Ajax、自定义字段和 token 更新实验位于 `/lab/csrf/entry`，接入步骤和预期结果见 [CSRF 使用手册](csrf.md)。
 
-`SlightPHP\Csrf` 提供基于 Session 的同步 token，并由 `#[Route(csrf: true)]` 启用入口检查；Csrf 本身不是注解。应用配置安全的 Session Cookie，并主动启动会话或设置 `Csrf::$sessionHandler` 初始化回调。回调仅在 Session 尚未启动且使用 Csrf 时调用，保留应用会话配置；未配置时在实际使用 CSRF 且会话尚未启动时调用原生 `session_start()`。普通未启用 CSRF 的路由不会触发初始化。插件不直接输出业务响应；原生会话启动可能发送会话 Cookie 和缓存头，不修改其他会话数据。Session 配置见[部署说明](deployment.md#cookie与会话安全)。
+`SlightPHP\Csrf` 提供基于 Session 的同步 token，并由 `#[Route(csrf: true)]` 启用入口检查；Csrf 本身不是注解。应用提前配置 `Session::$sessionName`、`Session::$cookieOptions`，Csrf 在首次需要时默认调用 `Session::start()`；配置 `Csrf::$sessionHandler` 后改为执行该回调。普通未启用 CSRF 的路由不会因此启动会话；已激活的会话直接复用，默认由原生 Session 产生 Cookie 和禁缓存头。会话配置见 [Session 手册](session.md)。
 
 | API | 行为 |
 | --- | --- |
@@ -75,7 +79,7 @@ composer require 'ext-redis:*'
 | `Csrf::rotate(): string` | 生成并保存新 token，旧 token 立即失效 |
 | `Csrf::clear(): void` | 仅清除 token，后续 `token()` 才重新生成 |
 
-公共静态变量 `Csrf::$fieldName`（默认 `_csrf`）与 `Csrf::$sessionKey`（默认 `_slightphp_csrf`）可由应用入口统一配置；Session 键不能为空。默认请求头仍为 `X-CSRF-Token`，Route 字符串可覆盖当前入口的字段与同名头。`Csrf::$sessionHandler`（默认 null）是无参数的固定应用回调；未定义时实际使用中按需调用原生 `session_start()`。Session 已活动时不重复调用；原生启动失败、回调返回后仍未激活或缺少 session 扩展时抛出 `SlightPHP\Exception::CSRF_SESSION_NOT_STARTED`，建议状态为 500。`session_write_close()` 后再次使用 Csrf 会重新按需启动会话，不需要会话的路径不要调用这些 API。
+公共静态变量 `Csrf::$fieldName`（默认 `_csrf`）与 `Csrf::$sessionKey`（默认 `_slightphp_csrf`）由应用入口配置，Session 键不能为空。默认请求头为 `X-CSRF-Token`，Route 字符串可覆盖当前入口的字段与同名头。`Csrf::$sessionHandler` 默认为 null，此时使用 `Session::start()`；设置为无参数回调后由应用负责启动会话。默认启动失败、回调返回后仍未激活或缺少扩展时抛出 `CSRF_SESSION_NOT_STARTED`（500）。默认启动的原始异常通过 `getPrevious()` 保留，应用回调异常原样传播。会话已激活时直接复用，不执行回调；关闭后再次使用会按需重开。
 
 控制器示例（Session 已由应用入口启动）：
 

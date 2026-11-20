@@ -1,6 +1,6 @@
 # SlightPHP 6.x 框架使用文档
 
-当前发布版本为 **6.7.3**，新增 `Csrf::tokenMeta()`，samples 的 Ajax 示例从 meta 标签读取 token 并发送请求头。修改说明见 [6.7.3](../CHANGELOG.md#673--2026-11-19)，接入示例见 [CSRF 手册](csrf.md#4-ajax--json)。
+当前发布版本为 **6.7.4**，新增 `SlightPHP\Session`，统一配置会话名称、Cookie 和缓存策略；Csrf 默认改用 `Session::start()`，保留 `Csrf::$sessionHandler` 自定义回调。修改说明见 [6.7.4](../CHANGELOG.md#674--2026-11-20)，接入见 [Session 手册](session.md)与 [CSRF 手册](csrf.md)。
 
 6.x 提供 Session CSRF 防护，通过 Route 的 `csrf` 参数启用，支持自定义字段/请求头、`tokenInput()`、`tokenMeta()` 及公共配置。samples 提供三种表单写法与 Ajax、token 更新实验；接入见 [CSRF 使用手册](csrf.md)。
 
@@ -21,6 +21,7 @@ Tpl 默认启用上下文自动转义，已移除 `setContextMode()`、`getConte
 - [完整示例与交互说明](samples.md)
 - [插件与扩展](plugins.md)
 - [CSRF 使用手册与可运行示例](csrf.md)
+- [Session 使用手册](session.md)
 - [Tpl 模板与模块组合手册](templates.md)
 - [Language 使用手册与示例](language.md)
 - [Config 使用手册与示例](config.md)
@@ -35,4 +36,4 @@ Tpl 默认启用上下文自动转义，已移除 `setContextMode()`、`getConte
 - [部署、排错与安全边界](deployment.md)
 - [ChangeLog：更新记录与升级迁移](../CHANGELOG.md)
 
-SlightPHP 是轻量级调度框架：核心负责从路径加载控制器并调用方法，应用负责响应输出、状态码、权限、校验和数据管理。插件按需使用；Route 方法注解的 HTTP 方法与 CSRF 策略由核心调度时执行，Csrf 按需启动 Session，应用负责会话配置或提供初始化回调。
+SlightPHP 是轻量级调度框架：核心负责从路径加载控制器并调用方法，应用负责响应输出、状态码、权限、校验和数据管理。插件按需使用；Route 方法注解的 HTTP 方法与 CSRF 策略由核心调度时执行，Csrf 按需启动 Session，应用负责会话策略，可使用 Session 配置或提供 `Csrf::$sessionHandler` 初始化回调；默认调用 `Session::start()`。

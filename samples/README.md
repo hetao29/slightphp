@@ -1,10 +1,10 @@
 # SlightPHP 官网与交互示例
 
-示例展示 SlightPHP 6.x 当前行为，安装命令使用发布版本 6.7.3，包含请求类型前缀校验、结构化调度异常、Route 方法注解与 PHP / JSON 路由。模板数据使用 Tpl 实例隔离，控制器入口使用 `Request $request, Response $response`，路径从 `$request->route` 读取。修改说明统一收录在 [6.x 更新记录](../CHANGELOG.md#6x)；升级已有应用请参阅 [6.x 升级与迁移指南](../CHANGELOG.md#6x-升级与迁移指南)，按起始版本和功能模块执行适用步骤。
+示例展示 SlightPHP 6.x 当前行为，安装命令使用发布版本 6.7.4，新增 Session 引用读写实验，Csrf 默认使用 Session 启动并保留自定义回调；包含请求类型前缀校验、结构化调度异常、Route 方法注解与 PHP / JSON 路由。模板数据使用 Tpl 实例隔离，控制器入口使用 `Request $request, Response $response`，路径从 `$request->route` 读取。修改说明统一收录在 [6.x 更新记录](../CHANGELOG.md#6x)；升级已有应用请参阅 [6.x 升级与迁移指南](../CHANGELOG.md#6x-升级与迁移指南)，按起始版本和功能模块执行适用步骤。
 
 正式官网为 [https://slightphp.com/](https://slightphp.com/)。自行部署示例站点后，访问部署地址的根路径 `/`，即可浏览框架介绍并体验交互示例。
 
-所有页面与 Context 模块均默认自动转义，不再调用 `setContextMode()` 或 `getContextMode()`。模板传原始数据和翻译原文，文档浏览器仅对自身生成的可信 HTML 使用末尾 raw；客户端词条以数组传入 application/json 数据块。入口在会话启动前设置安全 Cookie 参数，反向代理需按[部署说明](../docs/deployment.md#cookie与会话安全)配置可信转发。文档页首提供 6.x 更新记录和统一迁移指南的直达链接。
+所有页面与 Context 模块均默认自动转义，不再调用 `setContextMode()` 或 `getContextMode()`。模板传原始数据和翻译原文，文档浏览器仅对自身生成的可信 HTML 使用末尾 raw；客户端词条以数组传入 application/json 数据块。入口通过 `Session::$cookieOptions` 配置安全 Cookie 并调用 `Session::start()`，默认采用原生 `nocache` 缓存策略；反向代理需按[部署说明](../docs/deployment.md#cookie与会话安全)配置可信转发。文档页首提供 6.x 更新记录和统一迁移指南的直达链接。
 
 - `/#features`：首页中的功能特性、调度流程与应用职责；旧 `/site/main/features` 跳转到该区域。
 - `/site/main/plugins`：插件搜索、分类与运行条件。
@@ -17,6 +17,7 @@
 - `/widgets/template/context`：独立自动模式片段，展示 raw/escape/default/tr/tostring/version、修饰链、JS/事件的实际运行、默认 {} 与 literal、模板注释、缓存变量更新和错误捕获。
 - `/lab/language/entry`：多语言实验，切换简体、繁体和英文，输入称呼，查看 demo.json 词条、实际翻译与缺失词条回退；[独立使用手册](../docs/language.md)。
 - `/lab/csrf/entry`：CSRF 实验，对比普通表单、JSON 请求、默认/自定义名称、缺失或错误 token，以及更新后旧表单失效；手册位于 `/site/main/docs?doc=csrf.md`。
+- `/lab/plugin/entry/session`：Session 引用读写、提交计数、刷新保留与会话隔离；手册位于 `/site/main/docs?doc=session.md`。
 - `/lab/type/entry`：普通请求调用 `Entry()`，带 `Request-Type: ajax` 时调用 `ajaxEntry()`；示例页可直接发送请求对比 200 与 405。
 - `/widgets/template/card/direct`：可独立访问的模块卡片片段。
 - `/workspace/main/entry`：可运行任务工作台。
@@ -53,7 +54,9 @@
 
 ## 插件交互实验
 
-官网插件页为 Tpl、Config、Log、Db、Redis、Http、Error、Captcha、Request、Response 提供独立运行与手册入口。Tpl 沿用 `/lab/template/entry`；其他入口为 `/lab/plugin/entry/{插件小写名}`。
+官网插件页为 Session、Tpl、Config、Log、Db、Redis、Http、Error、Captcha、Request、Response 提供独立运行与手册入口。Tpl 沿用 `/lab/template/entry`；其他入口为 `/lab/plugin/entry/{插件小写名}`。
+
+[Session 手册](../docs/session.md)对应 `/lab/plugin/entry/session`：提交文本后观察计数、刷新验证数据保存，用独立浏览器会话验证隔离。
 
 完整索引见[插件指南](../docs/plugins.md)。[Request 手册](../docs/request.md)包含 GET、multipart 上传元信息与 JSON / 请求头实验；[Response 手册](../docs/response.md)包含状态、响应头、write / end、Cookie 和 303 跳转实验。
 

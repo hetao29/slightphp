@@ -2,12 +2,12 @@
 namespace Lab;
 
 use SampleI18n;
-use SlightPHP\{Captcha, Config, Csrf, Db, Error, Http, Log, Redis, Request, Response, Route, Tpl};
+use SlightPHP\{Captcha, Config, Csrf, Db, Error, Http, Log, Redis, Request, Response, Route, Session, Tpl};
 
 /** 可运行的插件实验；外部服务地址只从管理员的私有配置读取。 */
 class PluginController
 {
-    private const PLUGINS = ['config', 'log', 'db', 'redis', 'http', 'error', 'captcha', 'request', 'response'];
+    private const PLUGINS = ['session', 'config', 'log', 'db', 'redis', 'http', 'error', 'captcha', 'request', 'response'];
     private const CAPTCHA_KEY = 'slightphp_sample_captcha';
 
     #[Route(method: 'GET')]
@@ -17,6 +17,9 @@ class PluginController
         $result = $_SESSION['plugin_lab_result'][$id] ?? null;
         unset($_SESSION['plugin_lab_result'][$id]);
         $ready = $this->ready($id);
+        if ($id === 'session') {
+            $result = ['ok' => true, 'data' => $this->session()];
+        }
         if ($id === 'config') {
             $format = $request->get['format'] ?? 'jsonc';
             $zone = $request->get['zone'] ?? 'application';
@@ -67,6 +70,7 @@ class PluginController
             if (!$this->ready($id)) throw new \RuntimeException(SampleI18n::t('lab_not_ready'));
             $message = $this->text($request->post, 'message', 'Hello SlightPHP');
             $data = match ($id) {
+                'session' => $this->session($message),
                 'log' => $this->log($request, $message),
                 'error' => $this->error($request, $message),
                 'db' => $this->database($message),
@@ -209,6 +213,19 @@ class PluginController
     private static function encode(mixed $data): string
     {
         return json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE | JSON_THROW_ON_ERROR);
+    }
+
+    /** 只在受 CSRF 保护的 POST 中更新；GET 读取当前浏览器保存的数据。 */
+    private function session(?string $message = null): array
+    {
+        $session = &Session::get();
+        if ($message !== null) {
+            $session['plugin_session']['counter'] = ($session['plugin_session']['counter'] ?? 0) + 1;
+            Session::get()['plugin_session']['message'] = $message;
+        }
+        return ['name' => Session::name(), 'has_id' => Session::id() !== '',
+            'counter' => $session['plugin_session']['counter'] ?? 0,
+            'message' => $session['plugin_session']['message'] ?? null];
     }
 
     private function log(Request $request, string $message): array

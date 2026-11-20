@@ -127,7 +127,7 @@ $result = SlightPHP::run('/your/controller/entry');
 
 ## Route 的 CSRF 校验
 
-在写操作入口使用 `#[Route(method: 'POST', csrf: true)]`；`Csrf` 本身不是注解。`csrf: true` 使用默认名称开启检查，字符串（如 `csrf: '--csrf--token'`）同时指定表单字段和请求头名；省略参数或显式写 `csrf: false` 均关闭，`isCsrfRequired()` 返回是否启用，`getCsrfField()` 返回自定义名称（默认或关闭为 null）。`#[Route(method: 'POST', csrf)]` 不符合 PHP 的参数语法，不能使用。表单发送 `_csrf` 隐藏字段，Ajax 发送 `X-CSRF-Token`；`Csrf::token()` 按需启动会话并取得 token，可通过 `Csrf::$sessionHandler` 自定义启动，默认使用原生 `session_start()`。完整 API 与模板示例见 [Csrf 插件](plugins.md#csrf)。
+在写操作入口使用 `#[Route(method: 'POST', csrf: true)]`；`Csrf` 本身不是注解。`csrf: true` 使用默认名称开启检查，字符串（如 `csrf: '--csrf--token'`）同时指定表单字段和请求头名；省略参数或显式写 `csrf: false` 均关闭，`isCsrfRequired()` 返回是否启用，`getCsrfField()` 返回自定义名称（默认或关闭为 null）。`#[Route(method: 'POST', csrf)]` 不符合 PHP 的参数语法，不能使用。表单发送 `_csrf` 隐藏字段，Ajax 发送 `X-CSRF-Token`；`Csrf::token()` 按需启动会话并取得 token，默认使用 `Session::start()` 启动，应用通过 Session 配置定制名称、Cookie 和缓存策略，或通过 `Csrf::$sessionHandler` 提供初始化回调。完整 API 与模板示例见 [Csrf 插件](plugins.md#csrf)。
 
 调度器在请求类型、方法存在性、公开可见性及 HTTP 方法检查通过后，构造控制器之前校验 token。失败立即抛出 `SlightPHP\Exception`，不继续浅层候选查找、不更新当前顶层路由，也不执行构造函数和入口。无效 token 为 `CSRF_INVALID`（403）；Session 启动失败为 `CSRF_SESSION_NOT_STARTED`（500）。异常不直接发送响应。
 

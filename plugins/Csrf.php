@@ -4,7 +4,7 @@ namespace SlightPHP;
 
 /**
  * Session CSRF token API；通过 Route 的 csrf 参数启用入口校验。
- * 会话未激活时按需启动；sessionHandler 可提供应用初始化回调，null 使用原生启动。
+ * 会话未激活时按需启动；sessionHandler 可提供应用初始化回调，null 使用 Session::start()。
  * 原生启动失败统一报告 CSRF_SESSION_NOT_STARTED，抛出的原始异常通过 getPrevious() 保留。
  */
 final class Csrf
@@ -15,7 +15,7 @@ final class Csrf
     /** @var string 当前应用保存 token 的 Session 键名，由应用入口统一配置。 */
     public static string $sessionKey = '_slightphp_csrf';
 
-    /** @var callable|null 未启动 Session 时按需调用的应用 handler；null 使用原生 session_start()。 */
+    /** @var callable|null 未启动 Session 时按需调用的应用 handler；null 使用 Session::start()。 */
     public static $sessionHandler = null;
 
     /**
@@ -123,8 +123,7 @@ final class Csrf
         if (function_exists('session_status') && session_status() !== PHP_SESSION_ACTIVE) {
             if (self::$sessionHandler === null) {
                 try {
-                    // PHP 8 的存储/响应头错误仍可能发出警告并返回 false。
-                    @session_start();
+                    @Session::start();
                 } catch (\Throwable $error) {
                     throw new Exception('Unable to start the application session for CSRF protection',
                         Exception::CSRF_SESSION_NOT_STARTED, previous: $error);

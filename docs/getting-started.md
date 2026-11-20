@@ -1,6 +1,6 @@
 # 快速开始
 
-本文介绍 SlightPHP 6.x，当前发布版本为 6.7.3，官网：[https://slightphp.com/](https://slightphp.com/)。
+本文介绍 SlightPHP 6.x，当前发布版本为 6.7.4，官网：[https://slightphp.com/](https://slightphp.com/)。
 
 ## 运行仓库中的完整示例
 
@@ -34,10 +34,10 @@ samples/
 ## 在新项目中使用 Composer
 
 ```bash
-composer require hetao29/slightphp:^6.7.3
+composer require hetao29/slightphp:^6.7.4
 ```
 
-包仅强制要求 PHP >=8.0；PDO、Redis 扩展、Guzzle 与 Gregwar Captcha 等插件依赖通过 `suggest` 提示，默认不安装。使用对应插件时，在应用项目中[按需安装依赖](plugins.md#按需安装依赖)；额外依赖可能提高应用的最低 PHP 版本。
+包仅强制要求 PHP >=8.0；Session、PDO、Redis 扩展、Guzzle 与 Gregwar Captcha 等插件依赖通过 `suggest` 提示，默认不安装。使用对应插件时，在应用项目中[按需安装依赖](plugins.md#按需安装依赖)；额外依赖可能提高应用的最低 PHP 版本。
 
 已有项目升级请先阅读 [6.x 升级与迁移指南](../CHANGELOG.md#6x-升级与迁移指南)，按起始版本对照表完成适用的迁移步骤，包括控制器签名、模板实例和编码、调度异常、插件类名、配置与 Cookie。
 

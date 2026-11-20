@@ -12,12 +12,12 @@ Tpl 默认启用上下文自动转义，已移除 `setContextMode()`、`getConte
 
 ## 安装
 
-核心需要 PHP 8.0+。插件依赖通过 Composer 的 `suggest` 声明，默认不安装；使用 Db、Redis、Http、Csrf 或 Captcha 时，再按需安装对应扩展或 Composer 包，见[插件依赖](docs/plugins.md#按需安装依赖)。
+核心需要 PHP 8.0+。插件依赖通过 Composer 的 `suggest` 声明，默认不安装；使用 Db、Redis、Http、Session、Csrf 或 Captcha 时，再按需安装对应扩展或 Composer 包，见[插件依赖](docs/plugins.md#按需安装依赖)。
 
-当前发布版本为 6.7.3，新增 `Csrf::tokenMeta()`，samples 的 Ajax 示例从 meta 标签读取 token 并发送请求头，见 [6.7.3 修改说明](CHANGELOG.md#673--2026-11-19)。安装命令使用对应的包版本：
+当前发布版本为 6.7.4，新增 `SlightPHP\Session`，统一配置会话名称、Cookie 和缓存策略；Csrf 默认通过 `Session::start()` 按需启动会话，并保留 `Csrf::$sessionHandler` 自定义回调。用法见 [Session 手册](docs/session.md)，升级见 [6.7.4 修改说明](CHANGELOG.md#674--2026-11-20)。安装命令使用对应的包版本：
 
 ```bash
-composer require hetao29/slightphp:^6.7.3
+composer require hetao29/slightphp:^6.7.4
 ```
 
 ## 创建应用
@@ -72,7 +72,7 @@ class MainController
 
 在控制器方法上添加 `#[\SlightPHP\Route(method: 'POST')]` 或 `#[\SlightPHP\Route(methods: ['POST', 'GET'])]` 可限制 HTTP 方法；不匹配时抛出异常，由入口返回 405 和 Allow。详见 [Route 方法注解](docs/framework.md#route-方法注解)。
 
-写操作可在 Route 注解中设置 `csrf: true`，例如 `#[\SlightPHP\Route(method: 'POST', csrf: true)]`：通过按需启动会话的 `Csrf::token()` 生成表单 `_csrf` 字段或 `X-CSRF-Token` 请求头的值，调度器在构造控制器前校验，失败抛出异常。应用可配置 `Csrf::$sessionHandler` 自定义启动，默认按需调用原生 `session_start()`。详见 [Csrf 插件](docs/plugins.md#csrf)。
+写操作可在 Route 注解中设置 `csrf: true`，例如 `#[\SlightPHP\Route(method: 'POST', csrf: true)]`：通过按需启动会话的 `Csrf::token()` 生成表单 `_csrf` 字段或 `X-CSRF-Token` 请求头的值，调度器在构造控制器前校验，失败抛出异常。应用可配置 `Csrf::$sessionHandler` 自定义启动，默认按需调用 `Session::start()`。详见 [Csrf 插件](docs/plugins.md#csrf)。
 
 核心调度失败统一抛出 `SlightPHP\Exception`，不再返回 `false` 或直接生成错误响应。已有入口及内部调用需按 [核心异常与处理](docs/exceptions.md)调整。
 
@@ -85,6 +85,7 @@ class MainController
 - [自定义 URL 路由与 PHP / JSON 示例](docs/routes.md)
 - [Request 与 Response](docs/http.md)
 - [插件使用](docs/plugins.md)
+- [Session 使用手册与示例](docs/session.md)
 - [Tpl include / part 使用手册](docs/templates.md)
 - [示例与部署](docs/README.md)
 

@@ -499,7 +499,7 @@
     "tpl_demo_unexpected": "未依預期拒絕",
     "tpl_demo_direct": "單獨開啟自動模式範例 →",
     "csrf_session_tokens_and_entry_attributes": "Session CSRF token 產生、檢查、更新與入口方法註解。",
-    "start_session_before_using_csrf": "應用程式先啟動 Session；表單提交 _csrf，Ajax 提交 X-CSRF-Token。",
+    "start_session_before_using_csrf": "首次使用前設定 Session；Csrf 按需啟動，表單提交 _csrf，Ajax 提交 X-CSRF-Token。",
     "csrf_demo_title": "CSRF 表單防護",
     "csrf_demo_intro": "在同一瀏覽器會話中提交表單和 JSON 請求，比較有效、缺失及錯誤 token 的結果。",
     "csrf_demo_count": "已通過的提交次數：",
@@ -570,5 +570,8 @@
     "lab_intro_response": "觀察實際狀態碼與回應標頭，比較 write / end，測試 Cookie 設定、刪除與 303 重新導向。",
     "lab_request_card": "請求資料快照：查詢參數、表單、檔案、標頭與原始本文。",
     "lab_response_card": "輸出狀態、標頭、Cookie、本文與重新導向。",
-    "lab_request_need": "由框架建立 Request / Response；輸出標頭前不能先輸出本文。"
+    "lab_request_need": "由框架建立 Request / Response；輸出標頭前不能先輸出本文。",
+    "lab_session_card": "按需啟動原生會話，以引用讀寫資料並讀取會話名稱與 ID。",
+    "lab_session_need": "需要 ext-session；名稱、Cookie 和快取策略在首次使用前設定。",
+    "lab_intro_session": "提交文字以儲存到目前瀏覽器會話，每次有效提交增加計數。重新整理後資料保留，換一個瀏覽器會話可對比隔離結果；會話 ID 不在頁面顯示。"
 }

@@ -34,9 +34,9 @@ server {
 
 ## Cookie与会话安全
 
-Response Cookie 默认使用 `Secure=true`、`HttpOnly=true`、`SameSite=Lax`。示例入口在 `session_start()` 前明确启用严格会话 ID、仅 Cookie 传递会话、关闭 URL 会话 ID，并为会话设置 `HttpOnly`、`SameSite=Lax`、路径 `/`、空 Domain。Secure 根据 Web 服务器提供的 `HTTPS` 变量设置，因此纯 HTTP 本地开发仍可使用会话；语言偏好 Cookie 复用相同策略。入口不直接采用客户端发送的 `Forwarded` 或 `X-Forwarded-Proto`。
+Response Cookie 默认使用 `Secure=true`、`HttpOnly=true`、`SameSite=Lax`。示例入口在 `Session::start()` 前明确启用严格会话 ID、仅 Cookie 传递会话、关闭 URL 会话 ID，并通过 `Session::$cookieOptions` 为会话设置 `HttpOnly`、`SameSite=Lax`、路径 `/`、空 Domain。Secure 根据 Web 服务器提供的 `HTTPS` 变量设置，因此纯 HTTP 本地开发仍可使用会话；语言偏好 Cookie 复用相同策略。入口不直接采用客户端发送的 `Forwarded` 或 `X-Forwarded-Proto`。
 
-生产站点可固定安全策略，在第一次 `session_start()` 前完成配置：
+生产站点可固定安全策略，在第一次使用 Session / Csrf 前完成配置：
 
 ```php
 require dirname(__DIR__) . '/vendor/autoload.php';
@@ -45,15 +45,16 @@ require dirname(__DIR__) . '/vendor/autoload.php';
 ini_set('session.use_strict_mode', '1');
 ini_set('session.use_only_cookies', '1');
 ini_set('session.use_trans_sid', '0');
-session_set_cookie_params([
+\SlightPHP\Session::$cookieOptions = [
     'lifetime' => 0,
     'path' => '/',
     'domain' => '',
-] + \SlightPHP\Response::getCookieDefaults());
-session_start();
+] + \SlightPHP\Response::getCookieDefaults();
+// 仅配置不会启动会话；由 Csrf 或 Session::get() 按需启动。
+// 若应用入口需要立即使用会话，检查 Session::start() 的返回值。
 ```
 
-需关闭 `session.auto_start`，且入口前不能已有其他代码启动会话。示例不会重新配置已经活动的会话；由宿主预先启动会话时，宿主负责同等安全配置。生产环境的会话存储位置及访问权限由部署配置管理；这里沿用示例的存储方式。安全设置的含义及调用顺序见 PHP 官方的[会话安全设置](https://www.php.net/manual/en/session.security.ini.php)和[会话 Cookie 参数](https://www.php.net/manual/en/function.session-set-cookie-params.php)。
+需关闭 `session.auto_start`，且入口前不能已有其他代码启动会话。示例不会重新配置已经活动的会话；由宿主预先启动会话时，宿主负责同等安全配置。生产环境的会话存储位置及访问权限由部署配置管理；这里沿用示例的存储方式。Session 默认使用原生 `nocache` limiter；其他缓存策略通过 `Session::$cacheLimiter` 配置，见 [Session 手册](session.md)。安全设置的含义及调用顺序见 PHP 官方的[会话安全设置](https://www.php.net/manual/en/session.security.ini.php)和[会话 Cookie 参数](https://www.php.net/manual/en/function.session-set-cookie-params.php)。
 
 ### Nginx 直接终止 HTTPS
 

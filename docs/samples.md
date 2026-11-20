@@ -1,6 +1,6 @@
 # 完整示例说明
 
-示例统一展示 SlightPHP 6.x 当前行为。6.0 至 6.7 的修改已合并为 [6.x 更新记录](../CHANGELOG.md#6x)，旧应用按[统一迁移指南](../CHANGELOG.md#6x-升级与迁移指南)中的起始版本对照表和模块步骤升级。官网文档页首提供这两个入口。
+示例统一展示 SlightPHP 6.x 当前行为，当前发布版本为 6.7.4。Session 实验位于 `/lab/plugin/entry/session`，展示引用读写、跨请求保存和会话隔离，见 [Session 手册](session.md)。6.0 至 6.7 的修改已合并为 [6.x 更新记录](../CHANGELOG.md#6x)，旧应用按[统一迁移指南](../CHANGELOG.md#6x-升级与迁移指南)中的起始版本对照表和模块步骤升级。官网文档页首提供这两个入口。
 
 启动方法见 [快速开始](getting-started.md)。默认首页为框架介绍官网，详见 [框架官网说明](website.md)。从页脚进入任务工作台后，可按「任务工作台 → 路由实验室 → 插件与环境」体验框架。
 
@@ -80,11 +80,11 @@ samples 的全部模板和展示代码统一使用默认 `{` / `}`。入口调�
 
 ## 清理后的范围
 
-samples 仅包含官网与当前可运行的任务、路由、配置、JSON、模板组合、多语言和 CSRF 示例。历史 user、photos、guestbook、Auction、数据库与 Redis 测试、backend、locale、旧配置和模板缓存已删除。插件实现仍保留在仓库 plugins 中，可参考插件文档独立使用。
+samples 仅包含官网与当前可运行的任务、路由、配置、JSON、模板组合、多语言、Session 和 CSRF 示例。历史 user、photos、guestbook、Auction、数据库与 Redis 测试、backend、locale、旧配置和模板缓存已删除。插件实现仍保留在仓库 plugins 中，可参考插件文档独立使用。
 
 ## 插件交互实验
 
-官网插件页为 Tpl、Config、Log、Db、Redis、Http、Error、Captcha、Request、Response 提供独立运行与手册入口。Tpl 沿用 `/lab/template/entry`；其他入口为 `/lab/plugin/entry/{插件小写名}`。
+官网插件页为 Session、Tpl、Config、Log、Db、Redis、Http、Error、Captcha、Request、Response 提供独立运行与手册入口。Tpl 沿用 `/lab/template/entry`；其他入口为 `/lab/plugin/entry/{插件小写名}`。
 
 完整索引见[插件指南](plugins.md)。[Request 手册](request.md)包含 GET、multipart 上传元信息与 JSON / 请求头实验；[Response 手册](response.md)包含状态、响应头、write / end、Cookie 和 303 跳转实验。
 

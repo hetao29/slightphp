@@ -31,7 +31,7 @@
 | `METHOD_NOT_ALLOWED` | HTTP 方法不符合 Route 注解，或候选方法名的已配置类型前缀与 Request-Type 不匹配 | 405 |
 | `ALIAS_NOT_FOUND` | getZoneAlias / getPageAlias 查询未设置的别名 | 500 |
 | `CSRF_INVALID` | Csrf 校验时，Session 或请求中 token 缺失、格式无效或不匹配 | 403 |
-| `CSRF_SESSION_NOT_STARTED` | 原生 Session 启动失败、自定义 handler 返回后仍未激活，或缺少 session 扩展 | 500 |
+| `CSRF_SESSION_NOT_STARTED` | 默认 Session 启动失败、自定义 handler 返回后仍未激活，或缺少 session 扩展 | 500 |
 
 路径超限在加载控制器前抛出。Route 拒绝请求在构造控制器前抛出；其上下文包含 `requestMethod`、`allowedMethods`、`controller`、`method` 和 `path`。
 

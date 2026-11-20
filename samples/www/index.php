@@ -9,8 +9,11 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     ini_set('session.use_strict_mode', '1');
     ini_set('session.use_only_cookies', '1');
     ini_set('session.use_trans_sid', '0');
-    session_set_cookie_params(['lifetime' => 0, 'path' => '/', 'domain' => ''] + \SlightPHP\Response::getCookieDefaults());
-    session_start();
+    \SlightPHP\Session::$cookieOptions = ['lifetime' => 0, 'path' => '/', 'domain' => ''] + \SlightPHP\Response::getCookieDefaults();
+    if (!\SlightPHP\Session::start()) {
+        http_response_code(500);
+        exit('Unable to start the sample session');
+    }
 }
 require_once dirname(__DIR__) . '/app/I18n.php';
 SampleI18n::boot();
