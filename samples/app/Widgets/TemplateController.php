@@ -21,12 +21,16 @@ class TemplateController
     /** 独立自动模式片段：修饰器、各输出上下文、模板注释、默认分隔符和编译缓存。 */
     public function Context(Request $request, Response $response): void
     {
+        require_once __DIR__.'/../template-modifiers.php';
         $text = '<访客> & "hello" </script> ${notCode}';
         $tpl = new Tpl();
         $cacheTpl = new Tpl();
         $tpl->render('widgets/template-context.tpl', [
             'sample_text' => $text,
             'empty_name' => '',
+            'modifier_name' => 'Ada & Bob',
+            'modifier_text' => '  slightphp & tpl  ',
+            'modifier_prefix' => 'Member',
             'translation_key' => 'tpl_demo_translated_value',
             'debug_value' => ['mode' => 'auto', 'items' => [1, 2], 'text' => $text],
             'asset' => '/assets/demo.js',
@@ -50,6 +54,13 @@ class TemplateController
                 'version' => '{$asset|version:"2.0"}',
                 'raw' => '{$trusted_html|raw}',
                 'chain' => '{$empty_name|default:"<Guest>"|escape}',
+                'custom_definition' => file_get_contents(__DIR__.'/../template-modifiers.php'),
+                'custom_load' => "require_once __DIR__.'/../template-modifiers.php';",
+                'custom' => '{$modifier_name|sample_tpl_label:$modifier_prefix:"!"}',
+                'system_trim' => '{$modifier_text|trim}',
+                'system_upper' => '{$modifier_name|strtoupper}',
+                'system_substr' => '{$modifier_name|substr:0:3}',
+                'multilevel' => '{$modifier_text|trim|strtoupper|sample_tpl_label:"Framework":"!"|escape}',
                 'url' => '<a href="/lab/template/entry?q={$query|escape:"url"}">...</a>',
                 'javascript' => "const data = {\$payload};\nconst single = '{\$sample_text}';\nconst double = \"{\$sample_text}\";\nconst template = `{\$sample_text}`;\nconst regexp = /{\$sample_text}/u;",
                 'event' => '<button onclick="this.nextElementSibling.textContent={$sample_text}">...</button>',

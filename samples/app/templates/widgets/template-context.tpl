@@ -18,6 +18,34 @@
     </dl>
     <p>{SampleI18n::t('tpl_demo_modifier_note')}</p>
 
+    <h3>{SampleI18n::t('tpl_demo_custom_modifiers')}</h3>
+    <p>{SampleI18n::t('tpl_demo_custom_modifier_note')}</p>
+    <pre><code>{$sources['custom_definition']}</code></pre>
+    <pre><code>{$sources['custom_load']}</code></pre>
+    <dl>
+        <dt><code>{$sources['custom']}</code></dt>
+        <dd data-template-case="custom-modifier">{$modifier_name|sample_tpl_label:$modifier_prefix:"!"}</dd>
+    </dl>
+
+    <h3>{SampleI18n::t('tpl_demo_system_modifiers')}</h3>
+    <p>{SampleI18n::t('tpl_demo_system_modifier_note')}</p>
+    <dl>
+        <dt><code>{$sources['system_trim']}</code></dt>
+        <dd data-template-case="system-trim">{$modifier_text|trim}</dd>
+        <dt><code>{$sources['system_upper']}</code></dt>
+        <dd data-template-case="system-upper">{$modifier_name|strtoupper}</dd>
+        <dt><code>{$sources['system_substr']}</code></dt>
+        <dd data-template-case="system-substr">{$modifier_name|substr:0:3}</dd>
+    </dl>
+
+    <h3>{SampleI18n::t('tpl_demo_multilevel_modifiers')}</h3>
+    <p>{SampleI18n::t('tpl_demo_multilevel_modifier_note')}</p>
+    <dl>
+        <dt><code>{$sources['multilevel']}</code></dt>
+        <dd data-template-case="multilevel-modifier">{$modifier_text|trim|strtoupper|sample_tpl_label:"Framework":"!"|escape}</dd>
+    </dl>
+    <p>{SampleI18n::t('tpl_demo_modifier_resolution')}</p>
+
     <h3>{SampleI18n::t('tpl_demo_html_url')}</h3>
     <label for="tpl-context-input">{SampleI18n::t('tpl_demo_input')}</label>
     <input id="tpl-context-input" data-template-case="attribute" value="{$sample_text}" readonly>

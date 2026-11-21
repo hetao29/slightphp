@@ -237,6 +237,8 @@ $tpl->render('index.tpl', ['title' => '示例']);
 
 Tpl 默认对 HTML/属性、URL、JS、CSS 执行上下文自动转义，已移除 `setContextMode()`、`getContextMode()` 及兼容编译分支。直接创建 Tpl 实例，传入原始数据；内置 raw、escape、default、tr、tostring、version 及修饰链继续可用。末尾 raw 标记可信原文。默认分隔符仍为 `{` / `}`，普通 JS/CSS 花括号会保留，歧义片段可用 literal 消歧。支持边界见 [上下文自动转义](templates.md#上下文自动转义)，升级步骤见 [6.x 升级与迁移指南](../CHANGELOG.md#6x-升级与迁移指南)。
 
+Modifier 还支持直接使用 PHP 系统函数（如 `{$name|trim|strtoupper}`）和应用自定义全局函数。自定义函数在渲染前加载，无需注册；当前值自动传入第一个参数，冒号传入后续参数，多级 Modifier 从左到右执行。名称优先匹配框架内置方法，再匹配同名普通 PHP 函数。函数定义、加载、参数顺序与混合串联见 [Modifier 专章](templates.md#modifier自定义方法系统方法与多级串联)，示例位于 `/lab/template/entry` 第 5 节及 `/widgets/template/context`。
+
 默认 `{` / `}` 分隔符下支持 `{* ... *}` 单行、多行模板注释；编译时移除注释，内部模板标签不执行，输出 HTML 中也不保留。注释不能嵌套，未闭合抛出 `InvalidArgumentException`；literal 中按原文保留。完整规则和示例见 [模板注释](templates.md#模板注释)。
 
 自动模式的编译缓存保存静态块和编码计划。JS 词法结果由 Compiler 编译到计划表，动态新入口首次生成上下文变体，完整命中后不再执行 JS 词法扫描；CSS 仍按渲染流保存增量断点。首次编译会多做分析；HTML 实际状态、URL/CSS 检查和函数输出检测仍在运行时执行。见 [编译缓存与执行计划](templates.md#编译缓存与执行计划)。

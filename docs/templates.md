@@ -54,6 +54,109 @@ $tpl->render('workspace/template.tpl', [
 
 本文和 samples 统一使用默认 `{` / `}` 分隔符，注释写作 `{* ... *}`；调用 `Tpl::setDelimter()` 可恢复默认分隔符。可在 `/lab/template/entry` 或 `/widgets/template/context` 查看实际注释示例。
 
+## Modifier：自定义方法、系统方法与多级串联
+
+Modifier（修饰器）用 `|` 将值交给一个方法处理，用 `:` 传递附加参数。既可以使用框架内置方法，也可以直接使用 PHP 系统函数或应用自定义函数；同一条链中可以混合使用三者。
+
+```html
+{$value|modifier:参数1:参数2|next_modifier}
+```
+
+**当前值自动成为方法的第一个参数**，冒号后的参数从第二个开始依次传入；多个 Modifier **从左到右**执行，前一级的返回值成为后一级的第一个参数。参数可以是带引号的字符串、数字、变量或 PHP 表达式。字符串中的 `:`、`|` 应放在引号内。
+
+### 自定义方法：加载普通 PHP 函数，无需注册
+
+在应用中定义全局函数，渲染前加载即可，不需要修改 `SlightPHP\Tpl\Modifier`。可运行示例位于 `samples/app/template-modifiers.php`：
+
+```php
+<?php
+function sample_tpl_label($value, string $prefix = 'Member', string $suffix = ''): string
+{
+    return $prefix . ': ' . (string) $value . $suffix;
+}
+```
+
+在 `samples/app/Widgets/TemplateController.php` 的 `Context()` 中先加载函数，再渲染模板：
+
+```php
+require_once __DIR__.'/../template-modifiers.php';
+$tpl = new \SlightPHP\Tpl();
+$tpl->render('widgets/template-context.tpl', [
+    'modifier_name' => 'Ada & Bob',
+    'modifier_prefix' => 'Member',
+    'modifier_text' => '  slightphp & tpl  ',
+    // 这里仅列 Modifier 用到的数据，其余页面数据见示例控制器。
+]);
+```
+
+模板这样使用：
+
+```html
+<p>{$modifier_name|sample_tpl_label:$modifier_prefix:"!"}</p>
+```
+
+这次调用等价于 `sample_tpl_label($modifier_name, $modifier_prefix, "!")`，返回 `Member: Ada & Bob!`。在 HTML 中实际生成 `<p>Member: Ada &amp; Bob!</p>`，浏览器显示 `Member: Ada & Bob!`；自定义函数无需自行转义。
+
+函数应返回处理后的数据，不能用 `echo` 输出。**每次渲染前函数都必须可用，命中编译缓存也不例外**；也可在应用公共入口统一加载，或通过 Composer 的 `autoload.files` 加载。
+
+Modifier 名称使用简单标识符（如 `sample_tpl_label`），当前管道语法不直接接受 `Class::method`、`$object->method` 或带命名空间的函数名。需要复用类方法或命名空间函数时，定义全局包装函数，在函数内部调用目标方法，再返回其结果。
+
+### 系统方法：直接调用 PHP 内置函数
+
+PHP 内置函数可以直接放在 `|` 后，无需另写 Modifier：
+
+```html
+<p>{$modifier_text|trim}</p>
+<p>{$modifier_name|strtoupper}</p>
+<p>{$modifier_name|substr:0:3}</p>
+<p>{$amount|number_format:2:".":","}</p>
+```
+
+| Modifier 写法 | 等价 PHP 调用 | 作用 |
+| --- | --- | --- |
+| `trim` | `trim($modifier_text)` | 去掉首尾空白 |
+| `strtoupper` | `strtoupper($modifier_name)` | 转换英文大写 |
+| `substr:0:3` | `substr($modifier_name, 0, 3)` | 从位置 0 截取 3 个字节，本例得到 `Ada` |
+| `number_format:2:".":","` | `number_format($amount, 2, ".", ",")` | 保留两位小数并设置分隔符 |
+
+函数必须适合将当前值放在第一个参数的位置，附加参数、类型要求及返回值遵循 PHP 本身规则。例如 `str_replace($search, $replace, $subject)` 的待处理值在第三位，应通过自定义函数调整参数顺序。`substr` 按字节截取，中文等多字节文本可在已安装 mbstring 时使用 `mb_substr`，并按其参数约定传入编码。
+
+这里的系统函数与下文的框架内置 Modifier 不同。名称解析顺序为：先查找 `SlightPHP\Tpl\Modifier` 的可调用方法，再查找同名普通 PHP 函数。自定义函数不要与框架内置方法重名，重名时内置方法优先；不再查找旧的 `tpl_modifier_*` 前缀，也不存在 `json` 内置别名。未知名称抛出 `InvalidArgumentException`。
+
+### 多级 Modifier：上一级返回值交给下一级
+
+系统函数、自定义函数和框架内置方法可以组成任意多级修饰链：
+
+```html
+<p>{$modifier_text|trim|strtoupper|sample_tpl_label:"Framework":"!"|escape}</p>
+```
+
+当 `$modifier_text = '  slightphp & tpl  '` 时，执行过程如下：
+
+| 级别 | 调用 | 返回值或输出处理 |
+| --- | --- | --- |
+| 1 | `trim($modifier_text)` | `slightphp & tpl` |
+| 2 | `strtoupper(上一级返回值)` | `SLIGHTPHP & TPL` |
+| 3 | `sample_tpl_label(上一级返回值, "Framework", "!")` | `Framework: SLIGHTPHP & TPL!` |
+| 4 | `escape` | 标记显式转义意图，交由实际输出上下文编码，避免重复 HTML 编码 |
+
+最终 HTML 是 `<p>Framework: SLIGHTPHP &amp; TPL!</p>`，浏览器显示 `Framework: SLIGHTPHP & TPL!`。整个修饰链先处理数据，再由 Tpl 根据 HTML、URL、JS 或 CSS 位置编码；普通数据可以省略末尾 `|escape`。`raw` 只用于已确认可信的原文，应放在链末尾；链中间出现的 `raw` 不会跳过最终自动编码。更多规则见下文[上下文自动转义](#上下文自动转义)。
+
+### 框架内置 Modifier
+
+以下方法位于 `SlightPHP\Tpl\Modifier`，可单独使用或参与多级串联：
+
+| 方法 | Modifier 写法 | 行为 |
+| --- | --- | --- |
+| `default` | `default:"Guest"` | 使用 PHP `empty()` 语义选择默认值，`0`、`"0"`、false 等也使用默认值 |
+| `tr` | `tr:"main"` | 按 Language 当前语言翻译，第二个参数是词条分区 |
+| `tostring` | `tostring` | 返回 `print_r` 文本，适合查看数组等数据 |
+| `version` | `version:"2.0"` | 直接追加 `?2.0`，不解析已有查询串或片段 |
+| `escape` | `escape`、`escape:"url"` | 表达 HTML 转义或 URL 组成部分编码意图，具体输出仍结合上下文 |
+| `raw` | `raw` | 在链末尾明确要求可信原文输出 |
+
+运行 `/lab/template/entry` 第 5 节，或单独访问 `/widgets/template/context`，可以对照函数定义、加载代码、模板写法与实际结果；页面包含自定义方法、三个 PHP 系统函数以及四级混合串联示例。
+
 ## 上下文自动转义
 
 6.x 当前统一启用上下文自动转义，不再提供兼容模式。`setContextMode()`、`getContextMode()` 已移除，旧调用会报错；请删除调用并按 [6.x 升级与迁移指南](../CHANGELOG.md#6x-升级与迁移指南)迁移数据与模板。直接创建实例即可：
@@ -138,7 +241,7 @@ JSON 数据块也支持在静态 JSON 的值或双引号字符串中插值，不
 
 自动模式中，链末尾的 `escape` 交由真实输出位置编码，避免 HTML 二次转义，也避免把 HTML 编码误用到 JS 中。`escape:"url"` 位于 `/search?q=` 等 URL 属性组成部分时只编码一次；普通 HTML 文本中的 URL 转换结果仍保留。后续修饰器若没有改变 escape 的结果（如非空值上的 default），也保留这个编码意图；改变结果后则作为新的数据重新自动编码。建议将 escape 或 raw 放在链末尾。
 
-修饰器名优先解析 Modifier 方法，再尝试同名普通 PHP 函数，例如 `|strtoupper`；不存在 `json` 内置别名，也不再查找 `tpl_modifier_*` 前缀。未知修饰器在自动模式抛出异常。修饰器不能靠 echo 输出；翻译、默认值及版本文本仍受最终上下文的 URL/CSS 等检查。
+自定义方法、系统函数及多级串联的参数规则见前文 [Modifier](#modifier自定义方法系统方法与多级串联)。翻译、默认值、自定义函数返回值及版本文本仍受最终上下文的 URL/CSS 等检查。
 
 include 共享父模板的变量及输出状态，因此子模板可以位于属性或 script 内，变量仍按实际位置编码。if/elseif/else、foreach、for 及赋值按真实执行路径更新状态；无需假设所有分支输出相同结构。每次最外层渲染创建新的输出状态，正常结束或异常后均清理。普通 HTML 元素可以跨模板组合，最外层结束时不得停在未闭合的属性、注释、script/style 等词法状态，否则抛出异常。
 
@@ -297,12 +400,13 @@ PHP 直接调用 `Func::part()` 时，不开启、刷新或关闭输出缓冲，
 | --- | --- |
 | `samples/app/Lab/TemplateController.php` | 父页面控制器，分配 PARENT |
 | `samples/app/Widgets/TemplateController.php` | Card、Returned、Mixed、Nested、Ended 和自动模式 Context 模块 |
+| `samples/app/template-modifiers.php` | 自定义全局函数 sample_tpl_label，由 Context 在渲染前加载 |
 | `samples/app/templates/workspace/template.tpl` | include 工作台布局及公共模板，执行多个 part |
 | `samples/app/templates/widgets/template-shared.tpl` | 跨目录 include，继续 include workspace 下的模板 |
 | `samples/app/templates/workspace/template-note.tpl` | 展示嵌套 include 共享 PARENT |
 | `samples/app/templates/widgets/template-card.tpl`、`template-meta.tpl` | 独立模块及其 include，共享 CHILD |
 | `samples/app/templates/widgets/template-nested.tpl` | 模块内部继续 part，保留 NESTED |
-| `samples/app/templates/widgets/template-context.tpl` | 全部修饰器、串联、HTML/URL、JS/事件、CSS 和缓存结果 |
+| `samples/app/templates/widgets/template-context.tpl` | 框架内置、自定义及 PHP 系统 Modifier、多级串联、HTML/URL、JS/事件、CSS 和缓存结果 |
 | `samples/app/templates/widgets/template-default.tpl` | 实际使用默认 {}，展示美元符号、JS/CSS 花括号、原生模板字符串和 literal |
 | `samples/app/templates/widgets/template-comments.tpl` | 单行、多行注释不输出也不执行内部赋值；literal 保留注释原文 |
 | `samples/app/templates/widgets/template-cache.tpl` | 同一模板先后接收 FIRST、SECOND，验证缓存不冻结数据 |
@@ -313,6 +417,7 @@ PHP 直接调用 `Func::part()` 时，不开启、刷新或关闭输出缓冲，
 页面第 5 节通过 part 调用 `/widgets/template/context`，该模块和外层工作台均默认自动转义，各自创建 Tpl 实例。也可单独打开这个模块。用例包括：
 
 - 六种内置修饰器和 `default|escape` 串联；翻译、调试数组、资源版本和可信 HTML 均实际输出。
+- 自定义 `sample_tpl_label` 的定义、加载、变量和多参数传递，显示 `Member: Ada & Bob!`；系统函数 `trim`、`strtoupper`、`substr:0:3` 的实际结果；`trim|strtoupper|sample_tpl_label:"Framework":"!"|escape` 四级混合串联显示 `Framework: SLIGHTPHP & TPL!`，其中的 `&` 只编码一次。
 - 带引号的 input 属性与 URL 查询参数；`escape:"url"` 不出现 `%25` 二次编码。
 - JS 对象值、单/双引号字符串、反引号模板字符串、正则、动态 raw 入口，以及按钮 onclick。浏览器执行后显示 JSON；点击按钮将原始示例文本作为 textContent 写入右侧。
 - CSS 字符串与 color 简单值；特殊引号和尖括号作为 CSS 数据处理。

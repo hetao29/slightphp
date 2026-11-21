@@ -181,8 +181,15 @@ PHP],
 <p>{$scope|escape}</p>
 HTML],
             ['label' => 'SlightPHP\\Tpl · context mode', 'code' => <<<'PHP'
+require_once __DIR__.'/../template-modifiers.php';
 $tpl = new \SlightPHP\Tpl();
 $tpl->render('widgets/template-context.tpl', $data);
+PHP],
+            ['label' => 'samples/app/template-modifiers.php · custom Modifier', 'code' => <<<'PHP'
+function sample_tpl_label($value, string $prefix = 'Member', string $suffix = ''): string
+{
+    return $prefix . ': ' . (string) $value . $suffix;
+}
 PHP],
             ['label' => 'samples/app/templates/widgets/template-context.tpl', 'code' => <<<'HTML'
 <input value="{$empty_name|default:"Guest"|escape}">
@@ -190,12 +197,17 @@ PHP],
 <pre>{$debug_value|tostring}</pre>
 <code>{$asset|version:"2.0"}</code>
 <section>{$trusted_html|raw}</section>
+<p>{$modifier_name|sample_tpl_label:$modifier_prefix:"!"}</p>
+<p>{$modifier_text|trim}</p>
+<p>{$modifier_name|strtoupper}</p>
+<p>{$modifier_name|substr:0:3}</p>
+<p>{$modifier_text|trim|strtoupper|sample_tpl_label:"Framework":"!"|escape}</p>
 <script>const data = {$payload};</script>
 <a href="/search?q={$query|escape:"url"}">Search</a>
 HTML],
         ],
-        'notes' => ['sample_templates_composition', 'sample_templates_output'],
-        'sources' => ['samples/app/Workspace/MainController.php', 'samples/app/Lab/TemplateController.php', 'samples/app/Widgets/TemplateController.php', 'samples/app/templates/workspace/template.tpl', 'samples/app/templates/widgets/template-context.tpl', 'samples/app/templates/widgets/template-default.tpl'],
+        'notes' => ['sample_templates_composition', 'tpl_demo_custom_modifier_note', 'tpl_demo_system_modifier_note', 'tpl_demo_multilevel_modifier_note', 'sample_templates_output'],
+        'sources' => ['samples/app/Workspace/MainController.php', 'samples/app/Lab/TemplateController.php', 'samples/app/Widgets/TemplateController.php', 'samples/app/template-modifiers.php', 'samples/app/templates/workspace/template.tpl', 'samples/app/templates/widgets/template-context.tpl', 'samples/app/templates/widgets/template-default.tpl'],
         'links' => [['/lab/template/entry', 'run_the_template_example'], ['/site/main/docs?doc=templates.md', 'sample_read_guide']],
     ],
     [

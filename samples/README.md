@@ -13,8 +13,8 @@
 - `/site/main/examples`：以 samples 源码讲解目录规划、应用入口、路由映射、Route 方法注解、Request-Type、多语言、配置管理、模板组织、表单处理和数据库操作；提供交互运行入口。
 - `/site/main/docs`：统一浏览 docs 中的 Markdown 文档、API 参考和根目录 ChangeLog；`?doc=plugins.md` 打开插件文档，`?doc=CHANGELOG.md` 打开更新记录。
 - `/site/main/changelog`：旧地址跳转至文档中的 ChangeLog。
-- `/lab/template/entry`：跨目录 include、跨模块 part、变量隔离，以及全部修饰器、HTML/URL/JS/CSS 自动转义、模板注释、分隔符和缓存用例。
-- `/widgets/template/context`：独立自动模式片段，展示 raw/escape/default/tr/tostring/version、修饰链、JS/事件的实际运行、默认 {} 与 literal、模板注释、缓存变量更新和错误捕获。
+- `/lab/template/entry`：跨目录 include、跨模块 part、变量隔离，以及框架内置、自定义及 PHP 系统 Modifier、多级串联、HTML/URL/JS/CSS 自动转义、模板注释、分隔符和缓存用例。
+- `/widgets/template/context`：独立自动模式片段，展示 raw/escape/default/tr/tostring/version、自定义函数、trim/strtoupper/substr 系统函数、四级混合修饰链、JS/事件的实际运行、默认 {} 与 literal、模板注释、缓存变量更新和错误捕获。
 - `/lab/language/entry`：多语言实验，切换简体、繁体和英文，输入称呼，查看 demo.json 词条、实际翻译与缺失词条回退；[独立使用手册](../docs/language.md)。
 - `/lab/csrf/entry`：CSRF 实验，对比普通表单、JSON 请求、默认/自定义名称、缺失或错误 token，以及更新后旧表单失效；手册位于 `/site/main/docs?doc=csrf.md`。
 - `/lab/plugin/entry/session`：Session 引用读写、提交计数、刷新保留与会话隔离；手册位于 `/site/main/docs?doc=session.md`。
@@ -29,6 +29,8 @@
 公开 URL 不包含 index.php，静态资源为 `/assets/...`。部署时以 `samples/www` 为站点根目录，将 URI 转发到 `index.php` 并保留原始 REQUEST_URI。
 
 全部模板和页面展示的代码统一使用 Tpl 默认 `{` / `}` 分隔符；入口调用 `Tpl::setDelimter()`，模块不再局部切换。与模板语法完全同形的原生 JS/CSS 代码使用 `{literal}...{/literal}` 保留。
+
+Modifier 支持自定义方法、PHP 系统函数与多级串联。`app/template-modifiers.php` 定义全局函数 `sample_tpl_label`，由 `Widgets\TemplateController::Context()` 在渲染前加载，无需注册。`{$modifier_name|sample_tpl_label:$modifier_prefix:"!"}` 将当前值作为第一个参数，冒号后的参数依次传入；`{$modifier_text|trim|strtoupper|sample_tpl_label:"Framework":"!"|escape}` 从左到右执行四级处理，再按输出上下文编码。代码、参数规则与实际结果见 [Modifier 手册](../docs/templates.md#modifier自定义方法系统方法与多级串联)。
 
 默认 `{` / `}` 分隔符下，模板注释使用 `{* ... *}`，支持单行、多行，编译时移除且不执行内部标签；不能嵌套，未闭合会抛出 `InvalidArgumentException`。`app/templates/widgets/template-comments.tpl` 实际展示注释内的赋值与 HTML 被移除，变量仍输出 `VISIBLE`，literal 内的注释语法则按原文显示。完整规则、literal 写法及与 HTML 注释的区别见[模板注释手册](../docs/templates.md#模板注释)。
 

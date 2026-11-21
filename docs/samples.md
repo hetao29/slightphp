@@ -32,14 +32,14 @@
 | `/tasks`、`/tasks.json` | GET | 任务页面和 JSON 接口的短地址 |
 | `/tasks/save` | POST | 写操作短地址，仍需 CSRF token |
 | `/workspace/main/plugins` | GET | 真实解析 Config 配置及检测扩展 |
-| `/lab/template/entry` | GET | include/part、变量作用域、全部修饰器、模板注释、上下文转义与编译缓存 |
+| `/lab/template/entry` | GET | include/part、变量作用域、内置/自定义/PHP 系统 Modifier、多级串联、模板注释、上下文转义与编译缓存 |
 | `/lab/csrf/entry` | GET | 表单、Ajax、自定义字段、403 拒绝与 token 更新实验 |
 | `/lab/csrf/submit`、`/lab/csrf/customsubmit` | POST | 校验成功后计数并 303 跳转 |
 | `/lab/csrf/check`、`/lab/csrf/customcheck` | POST | 默认或自定义请求头校验，返回 JSON |
 | `/lab/csrf/rotate` | POST | 校验当前 token 后更新 |
 | `/lab/language/entry` | GET | 简体、繁体、英文切换、动态称呼、JSON 词条与缺失词条回退 |
 | `/widgets/template/card/direct` | GET | 独立渲染模块卡片，读取路径参数 direct |
-| `/widgets/template/context` | GET | 独立自动模式片段：修饰链、JS/CSS、事件、分隔符、缓存和错误用例 |
+| `/widgets/template/context` | GET | 独立自动模式片段：自定义函数加载、系统函数、多级修饰链、JS/CSS、事件、分隔符、缓存和错误用例 |
 | 不存在的控制器或方法 | 任意 | HTTP 404 和可返回首页的错误页 |
 
 `save` 的错误 HTTP 方法返回 405、CSRF 失败返回 403；业务输入错误通过跳转后的提示呈现。`Save`、`Api` 与路由实验室 `Entry` 使用 [Route 注解](framework.md#route-方法注解)限制 HTTP 方法；不匹配时框架抛出异常，由示例入口生成 405、Allow 和 `Method Not Allowed` 正文。入口同时将找不到文件或入口的异常转换为 404。
